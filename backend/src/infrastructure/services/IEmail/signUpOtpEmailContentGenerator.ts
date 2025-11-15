@@ -1,7 +1,7 @@
 import { BaseEmailContentGenerator } from "./baseEmailContentGenerator";
 import { IEmailTemplateGenerator } from "../../../application/interfaces/service/IEmail/emailTemplateGenerator";
 
-export class signUpOtpEmailContentGenerator extends BaseEmailContentGenerator implements IEmailTemplateGenerator {
+export class SignUpOtpEmailContentGenerator extends BaseEmailContentGenerator implements IEmailTemplateGenerator {
     generateHtml(data: Record<string, string>): string {
         const body = `
          <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:40px 0;">

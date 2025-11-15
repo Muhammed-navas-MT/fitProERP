@@ -10,5 +10,15 @@ export const ROUTES = {
             UPDATE_SUBSCRIPTION:"/update_subscription/:subscriptionId",
             LIST_SUBSCRIPTION:"/list_subscription"
         }
+    },
+
+    GYMADMIN:{
+        BASE:"/gym_admin",
+        AUTH:{
+            EMAIL_VERIFY:"/verify_email",
+            OTP_VERIFY:"/verify_otp",
+            SIGNUP:"/signup",
+            LOGIN:"/login",
+        }
     }
 }

@@ -1,7 +1,8 @@
 export interface IVerifyEmailRequestDTO {
-    email:string
+    email:string;
 }
 
 export interface IVerifyOtpRequestDTO {
-    otp:string
+    email:string;
+    otp:string;
 }

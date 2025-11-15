@@ -1,3 +1,4 @@
+import { PaymentStatus } from "../../enums/paymentStatus";
 import { Roles } from "../../enums/roles";
 import { Status } from "../../enums/status";
 
@@ -14,8 +15,8 @@ export interface GymAdminEntity {
     tagline:string;
     businessLicense:string;
     insuranceCertificate:string;
-    subscriptionId:string;
-    paymentStatus?:boolean;
+    subscriptionId?:string;
+    paymentStatus?:PaymentStatus;
     subscriptionStart?:Date;
     subscriptionEnd?:Date;
     logo:string;

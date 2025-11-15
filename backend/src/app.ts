@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { configEnv } from './config/envConfig';
 import { MongodbConfig } from "./config/mongoConfig";
-import express, { Express,Response,Request } from "express";
+import express, { Express} from "express";
 import { SuperAdminRoutes } from "./presentation/routes/superAdminRoutes";
 import { ROUTES } from "./presentation/shared/constants/routes";
-// import { env } from "process";
 import {errorHandleMiddleware} from "./presentation/middlewares/errorHandlingMiddleware"
+import { GymAdminRoutes } from './presentation/routes/gymAdminRoutes';
 
 
 
@@ -17,6 +17,7 @@ class Express_app {
         MongodbConfig.connect();
         this.setMiddleware();
         this._setSuperAdminRoutes();
+        this._setGymAdminRoutes();
         this._setErrorHandleMiddleware();
     };
 
@@ -29,6 +30,11 @@ class Express_app {
         const superAdminRoutes = new SuperAdminRoutes();
         this._app.use(ROUTES.AUTH.SUPERADMIN.BASE,superAdminRoutes.get_routes())
     };
+
+    private _setGymAdminRoutes(){
+        const gymAdminRoutes = new GymAdminRoutes();
+        this._app.use(ROUTES.GYMADMIN.BASE,gymAdminRoutes.get_routes());
+    }
 
     private _setErrorHandleMiddleware(){
         this._app.use(errorHandleMiddleware)

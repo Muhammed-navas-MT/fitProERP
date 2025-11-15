@@ -7,12 +7,12 @@ export interface ISignupRequsetDTO {
     phone:string;
     password:string;
     role:Roles;
-    subdomain:string;
     description:string;
+    subdomain:string;
     tagline:string;
     businessLicense:string;
     insuranceCertificate:string;
-    subscriptionId:string;
     logo:string;
+    confirmPassword:string;
 }
 

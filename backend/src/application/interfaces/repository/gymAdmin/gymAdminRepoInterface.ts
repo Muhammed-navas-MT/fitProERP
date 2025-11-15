@@ -1,8 +1,8 @@
-import { GymAdminEntity } from "../../../../domain/entities/gymAdmin/gymAdminEntity";
 import { IBaseRepository } from "../base/baseRepo";
-import { Status } from "../../../../domain/enums/status";
+import { IGymAdminModel } from "../../../../infrastructure/repository/databaseConfigs/models/gymAdminModel";
+import { GymAdminEntity } from "../../../../domain/entities/gymAdmin/gymAdminEntity";
 
 
 export interface IGymAdminRepository extends IBaseRepository<GymAdminEntity> {
-    findByEmail(email:string):Promise<GymAdminEntity|null>
+    findByEmail(email:string):Promise<boolean>
 }

@@ -2,8 +2,6 @@ import { SuperAdminEntity } from "../../../domain/entities/superAdmin/superAdmin
 import { ISuperAdminRepository } from "../../../application/interfaces/repository/superAdmin/superAdminRepoInterface";
 import { Model } from "mongoose";
 import { ISuperAdminModel } from "../databaseConfigs/models/superAdminModel";
-import { Roles } from "../../../domain/enums/roles";
-import { SuperAdminMapper } from "../../../application/mappers/superAdminMapper";
 
 
 export class SuperAdminRepository implements ISuperAdminRepository {

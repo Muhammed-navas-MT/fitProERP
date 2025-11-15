@@ -11,6 +11,7 @@ export class CacheService implements ICacheService {
         this._redisClient = createClient({url:env.REDIS_URL});
 
         this._redisClient.on("error",(err)=>{
+            console.log("navas")
             console.log(Error.REDIS_CONNECTED_ERROR)
         })
 

@@ -33,4 +33,16 @@ export class InvalidDataException extends ApplicationException {
     constructor(message:string){
         super(message)
     }
+};
+
+export class OtpExpiredException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
+}
+
+export class InvalidOtpException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
 }

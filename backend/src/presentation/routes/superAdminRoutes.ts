@@ -1,8 +1,4 @@
-import { superAdminModel } from "../../infrastructure/repository/databaseConfigs/models/superAdminModel";
-import { SuperAdminRepository } from "../../infrastructure/repository/superAdmin/superAdminRepo";
-import { SuperAdminController } from "../controller/superAdmin/superAdminLoginController";
 import { ROUTES } from "../shared/constants/routes";
-import { SuperAdminUseCase } from "../../application/useCases/superAdmin/superAdminLoginUseCase";
 import { Response,Request,NextFunction,Router} from "express";
 import { injectedSubscriptionController, injectedSuperAdminController } from "../../infrastructure/DI/superAdmin/superAdminInjection";
 
