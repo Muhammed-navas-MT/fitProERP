@@ -1,16 +1,18 @@
 import { Document, model, Model } from "mongoose";
 import { trainerSchema } from "../schemas/trainerSchema";
 import { Status } from "../../../../domain/enums/status";
+import { Roles } from "../../../../domain/enums/roles";
 
 export interface ITrainerModel extends Document {
     _id: string;
     gymId: string;
-    branchId: string;
+    branchId?: string;
     name: string;
     email: string;
     phone: string;
     password: string;
     address: string;
+    role:Roles;
     specialization: string[];
     experience: number;
     baseSalary?: number;

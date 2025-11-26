@@ -29,5 +29,14 @@ export class SubscriptionRepository extends BaseRepository<ISubscriptionModel> i
 
         return {subscription:subscriptions,total:total}
     }
+    
+    async getAllSubscriptions(): Promise<SubscriptionEntity[]> {
+        console.log("frentend request")
+        const subscriptions = await this._model.find({})
+        .sort({createdAt: -1})
+        .lean();
+    
+    return subscriptions;
+}
 
 }

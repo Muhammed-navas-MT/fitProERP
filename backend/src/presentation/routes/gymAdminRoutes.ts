@@ -1,6 +1,7 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request,Response,NextFunction,Router } from "express";
 import { injectedGymAdminSingUpController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { upload } from "../middlewares/multer";
 
 export class GymAdminRoutes {
     private _route:Router;
@@ -19,6 +20,11 @@ export class GymAdminRoutes {
             injectedGymAdminSingUpController.verifyOtp(req,res,next);
         });
         this._route.post(GYMADMIN.AUTH.SIGNUP,(req:Request,res:Response,next:NextFunction)=>{
+            upload.fields([
+                {name:"logo", maxCount:1},
+                {name:"businessLicense", maxCount:1},
+                {name:"insuranceCertificate",maxCount:1}
+            ])
             injectedGymAdminSingUpController.signup(req,res,next);
         })
     };

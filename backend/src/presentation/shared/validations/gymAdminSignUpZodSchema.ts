@@ -53,38 +53,9 @@ export const signupSchema = z.object({
     .string({ error: GymAdminAuthError.TAGLINE_INVALID_TYPE })
     .transform((val) => val.trim()),
 
-  businessLicense: z
-    .string({ error: GymAdminAuthError.BUSINESS_LICENSE_INVALID_TYPE })
-    .url({ error: GymAdminAuthError.BUSINESS_LICENSE_INVALID_URL })
-    .refine(
-      (val) => {
-        const validExtensions = [".pdf", ".jpg", ".jpeg", ".png"];
-        return validExtensions.some((ext) => val.toLowerCase().endsWith(ext));
-      },
-      { error: GymAdminAuthError.BUSINESS_LICENSE_INVALID_FORMAT }
-    ),
-
-  insuranceCertificate: z
-    .string({ error: GymAdminAuthError.INSURANCE_CERTIFICATE_INVALID_TYPE })
-    .url({ error: GymAdminAuthError.INSURANCE_CERTIFICATE_INVALID_URL })
-    .refine(
-      (val) => {
-        const validExtensions = [".pdf", ".jpg", ".jpeg", ".png"];
-        return validExtensions.some((ext) => val.toLowerCase().endsWith(ext));
-      },
-      { error: GymAdminAuthError.INSURANCE_CERTIFICATE_INVALID_FORMAT }
-    ),
-
-  logo: z
-    .string({ error: GymAdminAuthError.LOGO_INVALID_TYPE })
-    .url({ error: GymAdminAuthError.LOGO_INVALID_URL })
-    .refine(
-      (val) => {
-        const validExtensions = [".jpg", ".jpeg", ".png", ".svg", ".webp"];
-        return validExtensions.some((ext) => val.toLowerCase().endsWith(ext));
-      },
-      { error: GymAdminAuthError.LOGO_INVALID_FORMAT }
-    ),
+  businessLicense: z.string().optional(),  
+  insuranceCertificate: z.string().optional(),
+  logo: z.string().optional(),
 });
 
 export const signupWithConfirmPasswordSchema = signupSchema

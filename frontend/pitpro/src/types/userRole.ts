@@ -1,0 +1,1 @@
+export type UserRole = "MEMBER" | "TRAINER" | "GYMADMIN" | "SUPERADMIN" ;

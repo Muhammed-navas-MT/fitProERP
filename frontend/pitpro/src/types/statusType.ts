@@ -1,0 +1,1 @@
+export type StatusTypes = "ACTIVE" | "IN_ACTIVE" | "PENDING" | "REGECTED" | "BLOCKED" ;
