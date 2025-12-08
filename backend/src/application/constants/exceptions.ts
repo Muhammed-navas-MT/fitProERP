@@ -46,3 +46,21 @@ export class InvalidOtpException extends ApplicationException {
         super(message);
     }
 }
+
+export class ForbiddenException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
+};
+
+export class TokenMissingException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
+}
+
+export class TokenExpiredException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
+}

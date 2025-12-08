@@ -51,4 +51,10 @@ export enum GymAdminAuthError {
   SIGNUP_FAILED = "Failed to create account",
   ACCOUNT_CREATION_FAILED = "Failed to create account. Please try again",
   VERIFICATION_EMAIL_FAILED = "Account created but failed to send verification email",
+
+  GYM_NOT_FOUND = "Gym not found",
+  GYM_NOT_ACTIVE = "This gym is currently inactive. Please take Subscrption",
+  GYM_IS_PENDING = "Your gym account is currently pending approval. Please wait for admin verification",
+  GYM_IS_REGECTED = "The gym registration has been rejected by the administrator.",
+  GYM_STATUS_INVALID = "status is invalid"
 }

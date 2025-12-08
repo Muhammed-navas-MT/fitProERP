@@ -15,7 +15,6 @@ export class SuperAdminRoutes {
         const SUPERADMIN_AUTH = ROUTES.AUTH.SUPERADMIN;
 
         this._route.post(SUPERADMIN_AUTH.LOGIN,(req:Request,res:Response,next:NextFunction)=>{
-            console.log("in super admin routes", req.body)
             injectedSuperAdminController.superAdminLogin(req,res,next)
         });
 
@@ -24,11 +23,12 @@ export class SuperAdminRoutes {
             injectedSubscriptionController.createSubscription(req,res,next);
         });
 
-        this._route.get(SUPERADMIN_AUTH.BLOCK_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
+        this._route.put(SUPERADMIN_AUTH.BLOCK_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
+            console.log(req.params)
             injectedSubscriptionController.blockSubscription(req,res,next)
         });
 
-        this._route.get(SUPERADMIN_AUTH.UNBLOCK_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
+        this._route.put(SUPERADMIN_AUTH.UNBLOCK_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
             injectedSubscriptionController.unBlockSubscription(req,res,next)
         });
 
@@ -36,7 +36,7 @@ export class SuperAdminRoutes {
             injectedSubscriptionController.findSubscription(req,res,next)
         });
 
-        this._route.get(SUPERADMIN_AUTH.UPDATE_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
+        this._route.put(SUPERADMIN_AUTH.UPDATE_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
             injectedSubscriptionController.updateSubscription(req,res,next)
         });
 

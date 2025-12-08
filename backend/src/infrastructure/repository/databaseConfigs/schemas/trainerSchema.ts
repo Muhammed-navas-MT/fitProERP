@@ -1,5 +1,6 @@
 import { Schema } from "mongoose";
 import { Status } from "../../../../domain/enums/status";
+import { Roles } from "../../../../domain/enums/roles";
 
 export const trainerSchema = new Schema(
     {
@@ -11,8 +12,7 @@ export const trainerSchema = new Schema(
         },
         branchId: {
             type: Schema.Types.ObjectId,
-            ref: "Branch",
-            required: true,
+            ref: "Branch"
         },
         name: {
             type: String,
@@ -39,6 +39,11 @@ export const trainerSchema = new Schema(
             type: String,
             required: true,
             trim: true
+        },
+        role: { 
+            type: String,
+            enum: Object.values(Roles),
+            required: true 
         },
         specialization: {
             type: [String],

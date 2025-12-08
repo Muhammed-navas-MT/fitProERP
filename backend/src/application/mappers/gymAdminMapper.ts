@@ -16,10 +16,10 @@ export class GymAdminMapper {
             subdomain:data.subdomain,
             description:data.description,
             tagline:data.tagline,
-            businessLicense:data.businessLicense,
-            insuranceCertificate:data.insuranceCertificate,
+            businessLicense:data.businessLicense as string,
+            insuranceCertificate:data.insuranceCertificate as string,
             paymentStatus:PaymentStatus.PENDING,
-            logo:data.logo,
+            logo:data.logo as string,
             status:Status.PENDING,
         }
     }

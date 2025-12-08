@@ -4,5 +4,5 @@ import { GymAdminEntity } from "../../../../domain/entities/gymAdmin/gymAdminEnt
 
 
 export interface IGymAdminRepository extends IBaseRepository<GymAdminEntity> {
-    findByEmail(email:string):Promise<boolean>
+    findByEmail(email:string):Promise<GymAdminEntity|null>
 }

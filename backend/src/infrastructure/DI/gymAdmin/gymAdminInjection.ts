@@ -8,6 +8,7 @@ import { CacheService } from "../../services/cacheService";
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { SignUpUseCase } from "../../../application/useCases/gymAdmin/gymAdminSignUpUseCase";
 import { HashPassword } from "../../services/hashService";
+import { CloudinaryService } from "../../services/cloudinaryService";
 
 
 const otpService =new OtpService()
@@ -16,6 +17,7 @@ const emailService = new EmailService()
 const gymAdminRepository = new GymAdminRepository(gymAdminModel)
 const cacheService = new CacheService()
 const hashService = new HashPassword()
-const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService)
+const cloudinaryService = new CloudinaryService()
+const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService,cloudinaryService)
 const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(otpService,signUpOtpEmailContentGenerator,emailService,gymAdminRepository,cacheService)
 export const injectedGymAdminSingUpController = new SignUpController(verifyEmailAndOtpUseCase,signUpUseCase)

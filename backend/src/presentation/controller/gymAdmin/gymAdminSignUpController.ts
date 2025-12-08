@@ -10,6 +10,7 @@ import { signupSchema, signupWithConfirmPasswordSchema } from "../../shared/vali
 import { GymAdminAuthError } from "../../shared/constants/errorMessage/gymAdminAuthError";
 import { ISingupUseCase } from "../../../application/interfaces/useCase/gymAdmin/gymAdminSignUpUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
+import { MulterFiles } from "../../types/multerFileType";
 
 export class SignUpController {
     constructor(private _VerifyEmailAndOtpUseCase:IVerifyEmailAndOtpUseCase,private _singupUseCase:ISingupUseCase){};
@@ -51,14 +52,24 @@ export class SignUpController {
 
     async signup(req:Request,res:Response,next:NextFunction) {
         try {
+            console.log(req.files)
             const gymAdminData:ISignupRequsetDTO = req.body;
+            console.log(req.body)
             gymAdminData.subdomain = gymAdminData.gymName.toLowerCase();
+            const files = req.files as {
+                [fieldname:string]:Express.Multer.File[];
+            };
+            gymAdminData.logo = files?.logo?.[0]?.path;
+            gymAdminData.businessLicense = files?.businessLicense?.[0]?.path;
+            gymAdminData.insuranceCertificate = files?.insuranceCertificate?.[0]?.path;
+
+            console.log(gymAdminData)
 
             const zodValication =signupSchema.safeParse(gymAdminData);
             if(zodValication.error){
                 throw new InvalidDataException(zodValication.error.issues[0].message)
             }
-
+            
             const confirmPassword = signupWithConfirmPasswordSchema.safeParse(gymAdminData);
             if(confirmPassword.error){
                 throw new InvalidDataException(GymAdminAuthError.PASSWORDS_DO_NOT_MATCH)

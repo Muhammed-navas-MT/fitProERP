@@ -1,10 +1,16 @@
-import { Button } from "./components/ui/button"
+import {BrowserRouter,Route,Routes} from "react-router-dom";
+import SuperAdminRoutes from "./routes/superAdminRoutes";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
    <>
-   <h1>navas</h1>
-   <Button variant={"secondary"}  className="bg-green-600 text-stone-50">Button</Button>
+   <Toaster position="top-right" />
+   <BrowserRouter>
+    <Routes>
+      <Route path="/*" element={<SuperAdminRoutes/>}/>
+    </Routes>
+   </BrowserRouter>
    </>
   )
 }

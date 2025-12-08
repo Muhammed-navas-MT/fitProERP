@@ -1,0 +1,36 @@
+export const API_ROUTES = {
+    AUTH:{
+        REFRESH:"/refresh_token"
+    },
+    SUPERADMIN:{
+            BASE:"/super_admin",
+            LOGIN:"/login",
+            CREATE_SUBSCRIPTION:"/create_subscription",
+            BLOCK_SUBSCRIPTION:"/block_subscription",
+            UNBLOCK_SUBSCRIPTION:"/unblock_subscription",
+            FIND_SUBSCRIPTION:"/subsctiption",
+            UPDATE_SUBSCRIPTION:"/update_subscription",
+            LIST_SUBSCRIPTION:"/list_subscription"
+        },
+
+    GYMADMIN:{
+        BASE:"/gym_admin",
+        AUTH:{
+            EMAIL_VERIFY:"/verify_email",
+            OTP_VERIFY:"/verify_otp",
+            SIGNUP:"/signup",
+            LOGIN:"/login",
+        }
+    },
+
+    TRAINER:{
+        BASE:"/trainer",
+        AUTH:{
+            EMAIL_VERIFY:"/verify_email",
+            OTP_VERIFY:"/verify_otp",
+            SIGNUP:"/signup",
+            LOGIN:"/login",
+        },
+        ADD_MEMBER:"/add_member"
+    }
+}

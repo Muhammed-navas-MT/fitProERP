@@ -1,42 +1,57 @@
 import { BaseEmailContentGenerator } from "./baseEmailContentGenerator";
 import { IEmailTemplateGenerator } from "../../../application/interfaces/service/IEmail/emailTemplateGenerator";
 
-export class SignUpOtpEmailContentGenerator extends BaseEmailContentGenerator implements IEmailTemplateGenerator {
-    generateHtml(data: Record<string, string>): string {
-        const body = `
-         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff; padding:40px 0;">
-        <tr>
-          <td align="center">
-            <table width="600" cellpadding="0" cellspacing="0" style="width:600px; padding:0 20px;">
-              <tr>
-                <td style="color:#111827; font-size:16px; font-family:Arial, sans-serif; line-height:1.5;">
-                  
-                  <p style="margin:0 0 20px 0;">
-                    To complete your verification on <strong>VentureNest</strong>, please use the One-Time Password (OTP) below:
-                  </p>
+export class SignUpOtpEmailContentGenerator
+  extends BaseEmailContentGenerator
+  implements IEmailTemplateGenerator
+{
+  generateHtml(data: Record<string, string>): string {
+    const body = `
+      <!-- OTP Content -->
+      <div style="text-align: center; color: #1e293b; max-width: 520px; margin: 0 auto;">
+        <h2 style="font-size: 26px; font-weight: 700; margin: 0 0 16px 0; color: #0f172a;">
+          Verify Your Account
+        </h2>
+        
+        <p style="font-size: 16px; line-height: 1.6; color: #475569; margin: 0 0 32px 0;">
+          You're almost ready to start crushing your gym goals! 
+          Please use the One-Time Password (OTP) below to complete your signup.
+        </p>
 
-                  <p style="background-color:#f3f4f6; color:#111827; font-size:28px; font-weight:bold; text-align:center; padding:20px; border:2px dashed #3b82f6; letter-spacing:4px; margin:30px 0;">
-                    ${data.otp}
-                  </p>
+        <!-- OTP Box -->
+        <div style="
+          background: linear-gradient(135deg, #ef4444, #f97316);
+          color: white;
+          font-size: 36px;
+          font-weight: 900;
+          letter-spacing: 8px;
+          padding: 24px 20px;
+          border-radius: 16px;
+          margin: 40px 0;
+          text-align: center;
+          box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        ">
+          ${data.otp}
+        </div>
 
-                  <p style="margin:20px 0 0 0;">
-                    This OTP is valid for the next <strong>10 minutes</strong>. For your security, please do not share it with anyone.
-                  </p>
+        <p style="font-size: 15px; color: #64748b; line-height: 1.6; margin: 0 0 24px 0;">
+          This OTP is valid for the next <strong>10 minutes only</strong>.<br>
+          For security, do not share this code with anyone.
+        </p>
 
-                  <p style="margin:30px 0 0 0;">
-                    If you didn’t request this, you can safely ignore this email.
-                  </p>
+        <p style="font-size: 14px; color: #94a3b8; margin: 32px 0 0 0;">
+          Didn’t request this? No worries — just ignore this email.
+        </p>
 
-                  <p style="margin:30px 0 0 0;">
-                    Thanks,<br>
-                    <strong>The VentureNest Team 🚀</strong>
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>`;
-      return this.htmlWrapper(body);
-    }
+        <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #e2e8f0;">
+          <p style="font-size: 16px; color: #475569; margin: 0;">
+            Let's get stronger together,<br>
+            <strong style="color: #0f172a;">The Gym Management Team</strong>
+          </p>
+        </div>
+      </div>
+    `;
+
+    return this.htmlWrapper(body);
+  }
 }
