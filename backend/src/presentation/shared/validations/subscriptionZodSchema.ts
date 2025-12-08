@@ -15,7 +15,7 @@ export const subscriptionSchema = z.object({
 
     price:z.number({error:SubscriptionError.PRICE_INVALID_TYPE})
     .nonnegative(SubscriptionError.PRICE_NEGATIVE)
-    .max(9999,SubscriptionError.PRICE_TOO_SHORT),
+    .min(9999,SubscriptionError.PRICE_TOO_SHORT),
 
     duration:z
     .enum([Durations.ONE_MONTH,Durations.ONE_YEAR,Durations.TREE_MONTHS],{

@@ -3,15 +3,15 @@ export const API_ROUTES = {
         REFRESH:"/refresh_token"
     },
     SUPERADMIN:{
-        BASE:"/admin",
-        LOGIN:"/login",
-        CREATE_SUBSCRIPTION:"/create_subscription",
-        BLOCK_SUBSCRIPTION:"/block_subscription/:subscriptionId",
-        UNBLOCK_SUBSCRIPTION:"/unblock_subscription/:subscriptionId",
-        FIND_SUBSCRIPTION:"/subsctiption/:subscriptionId",
-        UPDATE_SUBSCRIPTION:"/update_subscription/:subscriptionId",
-        LIST_SUBSCRIPTION:"/list_subscription"
-    },
+            BASE:"/super_admin",
+            LOGIN:"/login",
+            CREATE_SUBSCRIPTION:"/create_subscription",
+            BLOCK_SUBSCRIPTION:"/block_subscription",
+            UNBLOCK_SUBSCRIPTION:"/unblock_subscription",
+            FIND_SUBSCRIPTION:"/subsctiption",
+            UPDATE_SUBSCRIPTION:"/update_subscription",
+            LIST_SUBSCRIPTION:"/list_subscription"
+        },
 
     GYMADMIN:{
         BASE:"/gym_admin",

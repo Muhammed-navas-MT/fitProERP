@@ -1,7 +1,7 @@
 export const ROUTES = {
     AUTH:{
         SUPERADMIN:{
-            BASE:"/admin",
+            BASE:"/super_admin",
             LOGIN:"/login",
             CREATE_SUBSCRIPTION:"/create_subscription",
             BLOCK_SUBSCRIPTION:"/block_subscription/:subscriptionId",

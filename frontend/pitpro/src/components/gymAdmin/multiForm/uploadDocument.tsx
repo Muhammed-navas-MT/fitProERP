@@ -1,12 +1,13 @@
 import type React from "react";
-import { Upload, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
 import { useState } from "react";
 import { SignupPayload } from "@/types/authPayload";
+
 
 interface Props {
   formData: SignupPayload;
   onDataChange: (data: Partial<SignupPayload>) => void;
-  errors: any;
+  errors: Record<string, string>;
 }
 
 export default function UploadDocumentsStep({ formData, onDataChange, errors }: Props) {
@@ -67,12 +68,12 @@ export default function UploadDocumentsStep({ formData, onDataChange, errors }: 
 
             <input
               type="file"
-              onChange={(e) => handleFileSelect(e, "fitnessLicense")}
+              onChange={(e) => handleFileSelect(e, "businessLicense")}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
           </div>
 
-          {errors.fitnessLicense && <p className="text-red-400 text-xs">{errors.fitnessLicense}</p>}
+          {errors.businessLicense && <p className="text-red-400 text-xs">{errors.businessLicense}</p>}
         </div>
 
         {/* INSURANCE CERTIFICATE */}

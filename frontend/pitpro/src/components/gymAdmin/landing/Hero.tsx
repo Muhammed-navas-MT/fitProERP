@@ -1,3 +1,4 @@
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 
@@ -5,11 +6,11 @@ export default function Hero() {
   const navigate = useNavigate();
 
     const goToSubscription = () => {
-    navigate("/subscription");
+    navigate(FRONTEND_ROUTES.SUBSCRPIPTION);
   };
 
   const goToRegistration = ()=>{
-    navigate("/signup");
+    navigate(FRONTEND_ROUTES.GYM_ADMIN.SIGNUP);
   }
 
   return (

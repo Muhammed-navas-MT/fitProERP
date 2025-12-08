@@ -2,20 +2,16 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { StatusTypes } from "@/types/statusType";
 import { UserRole } from "@/types/userRole";
 
-/* -----------------------------------------------
-   Base Interface
--------------------------------------------------*/
+
 interface BaseData {
   id: string;
   email: string;
   phone: string;
-  role: UserRole;       // ✔ Correct union type
+  role: UserRole;
   status: StatusTypes;
 }
 
-/* -----------------------------------------------
-   Extended User Types
--------------------------------------------------*/
+
 export interface MemberData extends BaseData {
   gymId: string;
   branchId: string;
@@ -43,9 +39,6 @@ export interface SuperAdminData extends BaseData {
   name: string;
 }
 
-/* -----------------------------------------------
-   Auth Data Union Type
--------------------------------------------------*/
 export type AuthData =
   | MemberData
   | TrainerData
@@ -53,9 +46,7 @@ export type AuthData =
   | SuperAdminData
   | null;
 
-/* -----------------------------------------------
-   Backend Response Payload Type
--------------------------------------------------*/
+
 type PayloadFromAPI = {
   _id: string;
   email: string;
@@ -63,29 +54,22 @@ type PayloadFromAPI = {
   role: UserRole;
   status: StatusTypes;
   createdAt: string;
-  [key: string]: any; // dynamic fields for each role
+  [key: string]: any; 
 };
 
-/* -----------------------------------------------
-   Allowed Update Types
--------------------------------------------------*/
+
 type AuthDataUpdate = Partial<
   Omit<MemberData | TrainerData | GymAdminData | SuperAdminData, "id" | "role">
 >;
 
-/* -----------------------------------------------
-   Initial State
--------------------------------------------------*/
 const initialState: AuthData = null;
 
-/* -----------------------------------------------
-   Slice
--------------------------------------------------*/
+
 const AuthDataSlice = createSlice({
   name: "AuthData",
   initialState,
   reducers: {
-    setData: (_, action: PayloadAction<PayloadFromAPI>): AuthData => {
+    setData: (state, action: PayloadAction<PayloadFromAPI>): AuthData => {
       const payload = action.payload;
 
       const baseData: BaseData = {
@@ -150,8 +134,5 @@ const AuthDataSlice = createSlice({
   },
 });
 
-/* -----------------------------------------------
-   Exports
--------------------------------------------------*/
 export const { setData, clearData, updateUserData } = AuthDataSlice.actions;
 export default AuthDataSlice.reducer;

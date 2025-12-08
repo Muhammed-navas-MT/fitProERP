@@ -4,7 +4,6 @@ import Footer from "@/components/gymAdmin/landing/Footer";
 import Hero from "@/components/gymAdmin/landing/Hero";
 import Stats from "@/components/gymAdmin/landing/Stats";
 
-
 export default function Home() {
   return (
     <main className="bg-black">

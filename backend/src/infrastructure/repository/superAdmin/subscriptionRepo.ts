@@ -1,6 +1,6 @@
 import { ISubscripctionRespoditery } from "../../../application/interfaces/repository/superAdmin/subscriptionRepoInterface";
 import { BaseRepository } from "../base/baseRepo";
-import { IListSubscriptionRequestDTO, ISubscriptionRequestDTO, ISubscriptionResponseDTO } from "../../../application/dtos/superAdminDto/subscriptionDto";
+import { IListSubscriptionRequestDTO } from "../../../application/dtos/superAdminDto/subscriptionDto";
 import { Model } from "mongoose";
 import { ISubscriptionModel } from "../databaseConfigs/models/subscriptionModel";
 import { SubscriptionEntity } from "../../../domain/entities/superAdmin/subscriptionEntity";
@@ -11,10 +11,11 @@ export class SubscriptionRepository extends BaseRepository<ISubscriptionModel> i
         super(model)
     };
 
-    async findByPlanName(planName: string): Promise<boolean> {
-        const doc = await this._model.findOne({planName});
-        return !!doc
-    }
+    async findByPlanName(planName: string): Promise<SubscriptionEntity | null> {
+    const doc = await this._model.findOne({ planName }).lean();
+    return doc;
+}
+
 
     async listAllSubscriptions(params:IListSubscriptionRequestDTO): Promise<{subscription:SubscriptionEntity[],total:number}> {
         const skip = (params.page-1)*params.limit;

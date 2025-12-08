@@ -39,27 +39,15 @@ AxiosInstance.interceptors.response.use(
         ) {
             try {
                 originalRequest._retry = true;
-
                 const response = await AxiosInstance.post(API_ROUTES.AUTH.REFRESH);
-
                 store.dispatch(setToken(response.data.data));
-
                 originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
-
                 return AxiosInstance(originalRequest);
 
             } catch (error) {
-                console.log("Refresh token failed:", error);
-
-                const role = store.getState().authData.role;
-
+                console.log(error);
                 store.dispatch(clearData());
                 store.dispatch(deleteToken());
-
-                const redirectRoute = role
-                    ? `/${role.toLowerCase()}/login`
-                    : "/login";
-                window.location.href = redirectRoute;
             }
         }
         return Promise.reject(err);

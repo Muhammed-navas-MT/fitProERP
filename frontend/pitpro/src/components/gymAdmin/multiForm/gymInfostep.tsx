@@ -1,12 +1,12 @@
 import type React from "react";
-import { Building2, Upload } from "lucide-react";
+import { Building2} from "lucide-react";
 import { useState } from "react";
 import { SignupPayload } from "@/types/authPayload";
 
 interface Props {
   formData: SignupPayload;
   onDataChange: (data: Partial<SignupPayload>) => void;
-  errors: any;
+  errors: Record<string, string>;
 }
 
 export default function GymInformationStep({ formData, onDataChange, errors }: Props) {
@@ -49,7 +49,6 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
       </div>
 
       <div className="px-8 py-8 space-y-6">
-        {/* Gym Name */}
         <div>
           <label className="block text-sm text-gray-300 mb-2">Gym Name</label>
           <input
@@ -62,7 +61,6 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
           {errors.gymName && <p className="text-red-500 text-xs">{errors.gymName}</p>}
         </div>
 
-        {/* Tagline */}
         <div>
           <label className="block text-sm text-gray-300 mb-2">Tagline</label>
           <input
@@ -75,7 +73,6 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
           {errors.tagline && <p className="text-red-500 text-xs">{errors.tagline}</p>}
         </div>
 
-        {/* Logo Upload */}
         <div>
           <label className="block text-sm text-gray-300 mb-2">Gym Logo</label>
           <div
@@ -104,7 +101,6 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
           {errors.logo && <p className="text-red-500 text-xs">{errors.logo}</p>}
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-sm text-gray-300 mb-2">Description</label>
           <textarea

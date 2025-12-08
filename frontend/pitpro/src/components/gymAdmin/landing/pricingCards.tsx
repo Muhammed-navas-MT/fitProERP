@@ -23,7 +23,6 @@ export function PricingCards() {
     );
   }
 
-  // Error state
   if (isError) {
     const err = error as AxiosError<{ message: string }>;
     toast.error(err.response?.data?.message || "Failed to load subscriptions");
@@ -35,7 +34,6 @@ export function PricingCards() {
     );
   }
 
-  // Empty state
   if (plans.length === 0) {
     return (
       <div className="py-16 text-center text-gray-600 font-semibold">

@@ -52,7 +52,9 @@ export class SignUpController {
 
     async signup(req:Request,res:Response,next:NextFunction) {
         try {
+            console.log(req.files)
             const gymAdminData:ISignupRequsetDTO = req.body;
+            console.log(req.body)
             gymAdminData.subdomain = gymAdminData.gymName.toLowerCase();
             const files = req.files as {
                 [fieldname:string]:Express.Multer.File[];

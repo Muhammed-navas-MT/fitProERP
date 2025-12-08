@@ -6,11 +6,13 @@ import { subscriptionModel } from "../../repository/databaseConfigs/models/subsc
 import { superAdminModel } from "../../repository/databaseConfigs/models/superAdminModel";
 import { SubscriptionRepository } from "../../repository/superAdmin/subscriptionRepo";
 import { SuperAdminRepository } from "../../repository/superAdmin/superAdminRepo";
+import { JwtService } from "../../services/jwtService";
 
 
 const superAdminRepo = new SuperAdminRepository(superAdminModel)
 const injectedSuperAdminUseCase = new SuperAdminUseCase(superAdminRepo)
-export const injectedSuperAdminController = new SuperAdminController(injectedSuperAdminUseCase)
+const jwtservice = new JwtService()
+export const injectedSuperAdminController = new SuperAdminController(injectedSuperAdminUseCase,jwtservice);
 
 const subscriptionRepo = new SubscriptionRepository(subscriptionModel);
 const injectedSubscriptionUseCase = new SubscriptionUseCase(subscriptionRepo)

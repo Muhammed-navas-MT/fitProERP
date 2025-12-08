@@ -4,7 +4,7 @@ import { ISubscriptionResponseDTO } from "../../../dtos/superAdminDto/subscripti
 import { IListSubscriptionRequestDTO } from "../../../dtos/superAdminDto/subscriptionDto";
 
 export interface ISubscripctionRespoditery extends IBaseRepository<SubscriptionEntity>{
-    findByPlanName(planName:string):Promise<boolean>;
+    findByPlanName(planName:string):Promise<SubscriptionEntity|null>;
     listAllSubscriptions(params:IListSubscriptionRequestDTO):Promise<{subscription:SubscriptionEntity[],total:number}>
     getAllSubscriptions():Promise<SubscriptionEntity[]>;
 }

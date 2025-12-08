@@ -1,9 +1,20 @@
-import { signupGymAdmin } from "@/services/gymAdmin/gymAdminSignUpService";
+import { emailVerifincation, otpVerification, signupGymAdmin } from "@/services/gymAdmin/gymAdminSignUpService";
 import { useMutation } from "@tanstack/react-query";
-import type { SignupPayload } from "@/types/authPayload";
 
 export const useGymAdminSignUp = () => {
   return useMutation({
-    mutationFn: (data: SignupPayload) => signupGymAdmin(data),
+    mutationFn: (data: FormData) => signupGymAdmin(data),
+  });
+};
+
+export const useGymAdminEmailVerification = ()=>{
+  return useMutation({
+    mutationFn:(email:string)=>emailVerifincation(email),
+  })
+}
+
+export const useGymAdminOtpVerification = () => {
+  return useMutation({
+    mutationFn: (otp:string) => otpVerification(otp),
   });
 };

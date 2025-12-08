@@ -1,9 +1,11 @@
+import { SignupPayload } from "@/types/authPayload"
 import { Users } from "lucide-react"
 
+
 interface OwnerInformationStepProps {
-  formData: any
-  onDataChange: (data: any) => void
-  errors: any
+  formData: SignupPayload
+  onDataChange: (data: Partial<SignupPayload>) => void
+  errors: Record<string, string>
 }
 
 export default function OwnerInformationStep({
@@ -11,7 +13,6 @@ export default function OwnerInformationStep({
   onDataChange,
   errors,
 }: OwnerInformationStepProps) {
-    console.log(errors, "from owner info")
   return (
     <div className="rounded-xl border-2 border-orange-500 bg-gray-800 overflow-hidden">
       <div className="bg-black px-8 py-8 text-center border-b border-gray-700">

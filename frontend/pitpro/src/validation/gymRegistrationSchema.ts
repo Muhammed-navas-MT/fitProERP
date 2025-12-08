@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export type UserRole = "MEMBER" | "TRAINER" | "GYMADMIN" | "SUPERADMIN";
+const fileSchema =  z.file().mime(["image/jpeg", "image/png", "image/svg+xml", "image/webp"]).max(5 * 1024 * 1024,"File must be under 5 MB")
 
-// -------- Step 1 ---------
 export const step1Schema = z
   .object({
     ownerName: z.string().min(3, "Full name is required"),
@@ -17,19 +17,15 @@ export const step1Schema = z
     path: ["confirmPassword"],
   });
 
-const fileSchema = z
-  .instanceof(File)
-  .refine((f) => f.size <= 5 * 1024 * 1024, "File must be under 5 MB");
 
 export const step2Schema = z.object({
   gymName: z.string().min(3, "Gym name is required"),
   tagline: z.string().min(3, "Tagline is required"),
   description: z.string().min(10, "Description is required"),
-  logo: fileSchema.optional(),
+  logo: fileSchema,
 });
 
-// -------- Step 3 ---------
 export const step3Schema = z.object({
-  businessLicense: fileSchema.optional(),
-  insuranceCertificate: fileSchema.optional(),
+  businessLicense:fileSchema,
+  insuranceCertificate:fileSchema,
 });

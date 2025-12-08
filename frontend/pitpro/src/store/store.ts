@@ -1,6 +1,6 @@
 import { combineReducers,configureStore } from "@reduxjs/toolkit";
 import tokenSlice from "./slice/tokenSlice";
-import authDataSlice from "./slice/authDataSlice"
+import superAdminSlice from "./slice/superAdminSlice";
 import storage from "redux-persist/lib/storage";
 import {persistReducer,persistStore,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER} from "redux-persist"
 
@@ -8,12 +8,12 @@ import {persistReducer,persistStore,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER
 const persistConfig = {
     key:"root",
     storage,
-    whitelist:["token","authDataSlice"]
+    whitelist:["token","superAdminData"]
 };
 
 const rootReducer = combineReducers({
     token:tokenSlice,
-    authData:authDataSlice
+    superAdminData:superAdminSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig,rootReducer);

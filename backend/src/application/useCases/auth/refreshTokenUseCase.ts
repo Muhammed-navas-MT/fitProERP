@@ -9,7 +9,7 @@ export class RefreshTokenUseCase implements IRefreshTokenUseCase {
         this._jwtService = jwtService
     }
     async refresh(token: string): Promise<string> {
-        const decoded = this._jwtService.verifyAccessToken(token);
+        const decoded = this._jwtService.verifyRefreshToken(token);
 
         if(!decoded){
             throw new TokenExpiredException(Error.REFRESH_TOKEN_INVALID);
