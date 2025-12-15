@@ -4,11 +4,18 @@ import Header from "@/components/superAdmin/Header"
 import MobileNav from "@/components/superAdmin/MobileNav"
 import SubscriptionTable from "@/components/superAdmin/SubscriptionTable"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
+import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook"
+import { useDispatch } from "react-redux"
+import { deleteToken } from "@/store/slice/tokenSlice"
+import { clearSuperAdminData } from "@/store/slice/superAdminSlice"
 
 export default function SubscriptionPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("subscription")
   const [isMobile, setIsMobile] = useState(false)
+
+  const { mutate: logout } = useSuperAdminLogout();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -20,9 +27,18 @@ export default function SubscriptionPage() {
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
-  const handleLogout = () => {
-    alert("Logged out successfully!")
-  };
+const handleLogout = () => {
+  logout(undefined, {
+    onSuccess: () => {
+      dispatch(deleteToken());
+      dispatch(clearSuperAdminData());
+    },
+    onError: (error) => {
+      console.error(error.message);
+    },
+  });
+};
+
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId)

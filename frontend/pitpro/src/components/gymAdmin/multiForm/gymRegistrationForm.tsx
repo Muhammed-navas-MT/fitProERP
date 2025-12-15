@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import OwnerInformationStep from "./ownerInfoStep";
 import GymInformationStep from "./gymInfostep";
@@ -10,6 +10,7 @@ import { useGymAdminEmailVerification, useGymAdminSignUp } from "@/hook/gymAdmin
 import { ZodError } from "zod";
 import { toast } from "sonner";
 import OTPGymAdminModal from "@/components/modal/OtpgymAdminModal";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export default function GymRegistrationForm() {
   const navigate = useNavigate();
@@ -120,17 +121,19 @@ export default function GymRegistrationForm() {
 
     if (currentStep < 3) {
       if(currentStep == 1){
-        emailVerification(formData.email,{
+        emailVerification({email:formData.email},{
           onSuccess:(res)=>{
-            toast.success(res.data.message || "Otp sent your Email!");
+            toast.success(res?.message || "Otp sent your Email!");
             setShowModal(true);
           },
           onError:(err)=>{
+            console.log(err)
             toast.error(err.message||"Please try again!")
           }
         })
+      }else{
+        setCurrentStep((s) => s + 1);
       }
-      setCurrentStep((s) => s + 1);
       setStepErrors({});
     } else {
       try {
@@ -149,12 +152,11 @@ export default function GymRegistrationForm() {
         registerGymAdmin(data, {
           onSuccess: () => {
             toast.success("Registration completed successfully!");
-            navigate("/gym-admin/dashboard");
+            navigate(FRONTEND_ROUTES.GYM_ADMIN.LOGIN);
           },
-          onError: (error: any) => {
+          onError: (error) => {
             const errorMessage =
-              error?.response?.data?.message || 
-              error?.message || 
+              error?.message ||  
               "Registration failed. Please try again.";
             
             toast.error(errorMessage);
@@ -173,6 +175,24 @@ export default function GymRegistrationForm() {
       setCurrentStep((s) => s - 1);
     }
   };
+
+  const handleCloseModal = ()=>{
+    setShowModal(false);
+    setCurrentStep((s) => s + 1);
+  };
+
+  const handleResendOtp = ()=>{
+    emailVerification({email:formData.email},{
+          onSuccess:(res)=>{
+            toast.success(res?.message || "Otp sent your Email!");
+            setShowModal(true);
+          },
+          onError:(err)=>{
+            console.log(err)
+            toast.error(err.message||"Please try again!")
+          }
+        })
+  }
 
   const steps = [
     { number: 1, label: "Owner\nInformation" },
@@ -212,34 +232,49 @@ export default function GymRegistrationForm() {
   };
   return (
   <div className="relative">
-    <OTPGymAdminModal open={showModal} onClose={() => setShowModal(false)} />
+    <OTPGymAdminModal open={showModal} onClose={handleCloseModal} email={formData.email} handleResendOtp={handleResendOtp}/>
     <div
       className={`flex flex-col min-h-screen bg-gray-900 text-white transition-all duration-300 ${
         showModal ? "blur-sm pointer-events-none" : ""
       }`}
     >
-      <header className="bg-gray-800">
-        <div className="flex items-center justify-between max-w-6xl mx-auto text-white py-3">
+      <header className="bg-gray-800 shadow-lg">
+        <div className="flex items-center justify-between max-w-6xl mx-auto text-white py-3 px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-sm hover:text-gray-200 transition"
+            className="flex items-center gap-2 text-sm hover:text-orange-400 transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
-            Back to Home
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </button>
-          <h1 className="text-2xl font-bold">Gym Registration</h1>
+          <h1 className="text-xl sm:text-2xl font-bold">Gym Registration</h1>
           <div className="text-sm">Step {currentStep} of 3</div>
         </div>
       </header>
 
-      <div className="bg-gray-800 py-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-4">
+      <div className="bg-gray-800 py-4 sm:py-6 shadow-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="sm:hidden flex justify-between items-center mb-4">
+            {steps.map((step) => (
+              <div key={step.number} className="flex flex-col items-center">
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                    step.number <= currentStep ? "bg-orange-500 shadow-lg" : "bg-gray-700"
+                  }`}
+                >
+                  {step.number}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden sm:flex justify-between items-center mb-4">
             {steps.map((step) => (
               <div key={step.number} className="flex flex-col items-center flex-1">
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-1 ${
-                    step.number <= currentStep ? "bg-orange-500" : "bg-gray-700"
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-1 transition-all ${
+                    step.number <= currentStep ? "bg-orange-500 shadow-lg" : "bg-gray-700"
                   }`}
                 >
                   {step.number}
@@ -260,16 +295,16 @@ export default function GymRegistrationForm() {
         </div>
       </div>
 
-      <div className="flex-1 px-6 py-12">
+      <div className="flex-1 px-4 sm:px-6 py-8 sm:py-12">
         <div className="max-w-2xl mx-auto">{renderStep()}</div>
       </div>
 
-      <div className="border-t border-gray-800 bg-gray-800 px-6 py-6">
+      <div className="border-t border-gray-800 bg-gray-800 px-4 sm:px-6 py-4 sm:py-6 shadow-lg">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <button
             onClick={handlePrevious}
             disabled={currentStep === 1}
-            className="px-6 py-2 rounded-lg border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700 transition"
+            className="px-4 sm:px-6 py-2 rounded-lg border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700 transition-all text-sm sm:text-base"
           >
             Previous
           </button>
@@ -277,7 +312,7 @@ export default function GymRegistrationForm() {
           <button
             onClick={handleNext}
             disabled={isPending}
-            className="px-6 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 sm:px-6 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-lg"
           >
             {isPending
               ? "Processing..."

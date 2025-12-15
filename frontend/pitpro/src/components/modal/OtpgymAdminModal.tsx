@@ -6,27 +6,23 @@ import { toast } from "sonner";
 interface OTPGymAdminModalProps {
   open: boolean;
   onClose: () => void;
+  email:string;
+  handleResendOtp: ()=>void;
 }
 
-export default function OTPGymAdminModal({ open, onClose }: OTPGymAdminModalProps) {
+export default function OTPGymAdminModal({ open, onClose,email,handleResendOtp }: OTPGymAdminModalProps) {
   const { mutate: verifyOtp, } = useGymAdminOtpVerification();
 
   const handleSubmit = async (otp: string) => {
-    verifyOtp(otp, {
+    verifyOtp({email,otp}, {
       onSuccess: () => {
         toast.success("OTP Verified Successfully!");
         onClose();
       },
-      onError: (err: any) => {
+      onError: (err) => {
         toast.error(err?.message || "OTP Verification Failed!");
       },
     });
-  };
-
-  const handleResend = async () => {
-    toast.info("Sending new OTP...");
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    toast.success("New OTP Sent!");
   };
 
   return (
@@ -34,7 +30,7 @@ export default function OTPGymAdminModal({ open, onClose }: OTPGymAdminModalProp
         <OTPVerification
           userType="GYMADMIN"
           onSubmit={handleSubmit}
-          onResend={handleResend}
+          onResend={async()=>handleResendOtp()}
         />
     </Modal>
   );

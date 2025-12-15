@@ -1,3 +1,3 @@
-export interface IInTokenValidationUseCase {
+export interface ITokenValidationUseCase {
     validate(token:string):Promise<void>;
 }

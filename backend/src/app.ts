@@ -26,9 +26,21 @@ class Express_app {
   setMiddleware() {
     this._app.use(
       cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-      })
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed = [
+        /^https?:\/\/localhost(:\d+)?$/,
+        /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+        /^https?:\/\/([a-zA-Z0-9-]+)\.localhost(:\d+)?$/,
+      ];
+
+      if (allowed.some((regex) => regex.test(origin))) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS Not Allowed"));
+    },
+    credentials: true,
+  })
     );
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
@@ -42,6 +54,7 @@ class Express_app {
 
   private _setGymAdminRoutes() {
     const gymAdminRoutes = new GymAdminRoutes();
+      console.log("adfasdfasd");
     this._app.use(ROUTES.GYMADMIN.BASE, gymAdminRoutes.get_routes());
   }
 

@@ -38,6 +38,7 @@ export class VerifyemailAndOtpUseCase implements IVerifyEmailAndOtpUseCase {
             throw new AlreadyExistException(GymAdminAuthError.EMAIL_ALREADY_EXISTS);
         };
         const otp = this._otpService.generateOtp();
+        console.log(otp)
        const htmlContent = this._otpTemplateGenerator.generateHtml({otp:otp});
        const emailPayload:EmailPayloadType = {
         recieverMailId:data.email,

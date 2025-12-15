@@ -1,7 +1,8 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Response,Request,NextFunction,Router} from "express";
 import { injectedSubscriptionController, injectedSuperAdminController } from "../../infrastructure/DI/superAdmin/superAdminInjection";
-
+import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { appendFile } from "fs";
 
 export class SuperAdminRoutes {
     private _route: Router;
@@ -17,6 +18,8 @@ export class SuperAdminRoutes {
         this._route.post(SUPERADMIN_AUTH.LOGIN,(req:Request,res:Response,next:NextFunction)=>{
             injectedSuperAdminController.superAdminLogin(req,res,next)
         });
+
+        this._route.use(injectAuthMiddleware.verify)
 
         this._route.post(SUPERADMIN_AUTH.CREATE_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
             console.log("new subscription ",req.body);
@@ -42,9 +45,12 @@ export class SuperAdminRoutes {
 
         this._route.get(SUPERADMIN_AUTH.LIST_SUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
             injectedSubscriptionController.listAllSubscription(req,res,next);
+        });
+
+        this._route.post(SUPERADMIN_AUTH.LOGOUT,(req:Request,res:Response,next:NextFunction)=>{
+            console.log("super amdin log out....")
+            injectedSuperAdminController.superAdminLogout(req,res,next);
         })
-
-
     }
 
     public get_routes():Router{

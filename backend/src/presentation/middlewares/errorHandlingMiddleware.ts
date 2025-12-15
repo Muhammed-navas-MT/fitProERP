@@ -1,7 +1,7 @@
 import { Request,Response,NextFunction } from "express";
 import { HTTP_STATUS_CODE } from "../shared/constants/statusCode/statusCode";
 import { ResponseHelper } from "../shared/utils/responseHelper";
-import { AlreadyExistException, ApplicationException, InvalidDataException, NOtFoundException, UpdateFailedException } from "../../application/constants/exceptions";
+import { AlreadyExistException, ApplicationException, InvalidDataException, NOtFoundException as NotFoundException, UpdateFailedException, TokenExpiredException } from "../../application/constants/exceptions";
 
 
 export const errorHandleMiddleware = (err:Error,req:Request,res:Response,next:NextFunction)=>{
@@ -9,7 +9,7 @@ export const errorHandleMiddleware = (err:Error,req:Request,res:Response,next:Ne
         let statusCode = HTTP_STATUS_CODE.BAD_REQUEST;
 
         if(err instanceof ApplicationException){
-            if(err instanceof NOtFoundException){
+            if(err instanceof NotFoundException){
                 statusCode = HTTP_STATUS_CODE.NOT_FOUND
             }else if(err instanceof AlreadyExistException){
                 statusCode = HTTP_STATUS_CODE.CONFLICT
@@ -18,9 +18,10 @@ export const errorHandleMiddleware = (err:Error,req:Request,res:Response,next:Ne
                 err instanceof InvalidDataException
             ){
                 statusCode = HTTP_STATUS_CODE.BAD_REQUEST
+            }else if(err instanceof TokenExpiredException){
+                statusCode = HTTP_STATUS_CODE.UNAUTHORIZED;
             }
-        }
-
+        };
         ResponseHelper.error(
             err instanceof Error ? statusCode : HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
             res,

@@ -2,9 +2,9 @@ import { FRONTEND_ROUTES } from '@/constants/frontendRoutes';
 import { rootstate } from '@/store/store';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom';
 
-const ProtectedSuperAdminLogin:React.FC = () => {
+const ProtectedGymAdminLogin:React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useSelector((state:rootstate)=>state.token.token);
     
@@ -25,4 +25,4 @@ const ProtectedSuperAdminLogin:React.FC = () => {
     return  !accessToken ? <Outlet/> : null;
 }
 
-export default ProtectedSuperAdminLogin
+export default ProtectedGymAdminLogin
