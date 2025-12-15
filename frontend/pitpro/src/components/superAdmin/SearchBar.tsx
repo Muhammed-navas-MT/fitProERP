@@ -59,8 +59,6 @@ export default function SearchBar({
           text-sm sm:text-base
         "
       />
-
-      {/* Search Button */}
       <button
         onClick={handleButton}
         className="
@@ -77,7 +75,6 @@ export default function SearchBar({
         Search
       </button>
 
-      {/* Clear Button */}
       {showClearButton && query && (
         <button
           onClick={handleClear}

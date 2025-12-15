@@ -3,11 +3,16 @@ export enum TrainerError {
   TRAINER_ALREADY_EXISTS = "A trainer with this email already exists",
   UNAUTHORIZED_ACCESS = "You are not authorized to perform this action",
   INVALID_CREDENTIALS = "Invalid email or password",
+  VALIDATION_FAILED = "Validation failed. Please check all fields",
+
   ACCOUNT_INACTIVE = "Your account is inactive. Please contact your gym administrator",
   ACCOUNT_BLOCKED = "Your account has been blocked. Please contact support",
+  TRAINER_IS_PENDING = "Your account is currently pending approval. Please wait for admin verification",
 
+  ID_INVALID = "Invalid ID format",
   GYM_ID_INVALID = "Invalid gym ID format",
   GYM_NOT_FOUND = "Gym not found",
+
   BRANCH_ID_INVALID = "Invalid branch ID format",
   BRANCH_NOT_FOUND = "Branch not found",
   BRANCH_NOT_BELONG_TO_GYM = "This branch does not belong to the specified gym",
@@ -20,6 +25,7 @@ export enum TrainerError {
   EMAIL_INVALID_FORMAT = "Invalid email format",
   EMAIL_ALREADY_EXISTS = "A trainer with this email already exists",
   EMAIL_ALREADY_REGISTERED = "This email is already registered in the system",
+  EMAIL_DATA_MISSING_IN_CACHE = "Email data is missing from cache",
 
   PHONE_INVALID_TYPE = "Phone number must be a string",
   PHONE_INVALID_FORMAT = "Invalid phone number format. Use format: +919876543210",
@@ -38,6 +44,10 @@ export enum TrainerError {
 
   ADDRESS_INVALID_TYPE = "Address must be a string",
   ADDRESS_TOO_SHORT = "Address must be at least 10 characters long",
+
+  ROLE_INVALID = "Invalid trainer role",
+  STATUS_INVALID = "Invalid trainer status",
+  STATUS_TRANSITION_INVALID = "Cannot change status from blocked to active directly",
 
   SPECIALIZATION_INVALID_TYPE = "Specialization must be an array of strings",
   SPECIALIZATION_EMPTY = "Specialization array cannot be empty",
@@ -59,38 +69,33 @@ export enum TrainerError {
   COMMISSION_RATE_TOO_HIGH = "Commission rate cannot exceed 100%",
   COMMISSION_RATE_INVALID_DECIMAL = "Commission rate can have at most 2 decimal places",
 
-  STATUS_INVALID_TYPE = "Status must be a string",
-  STATUS_TRANSITION_INVALID = "Cannot change status from blocked to active directly",
-
   DUTY_TIME_INVALID_TYPE = "Duty time must be an object",
-  START_TIME_REQUIRED = "Start time is required",
-  START_TIME_INVALID_TYPE = "Start time must be a string",
-  START_TIME_INVALID_FORMAT = "Start time must be in HH:MM format (e.g., 09:00)",
-  END_TIME_REQUIRED = "End time is required",
-  END_TIME_INVALID_TYPE = "End time must be a string",
-  END_TIME_INVALID_FORMAT = "End time must be in HH:MM format (e.g., 18:00)",
-  END_TIME_BEFORE_START = "End time must be after start time",
+  DUTY_START_TIME_INVALID = "Invalid duty start time",
+  DUTY_END_TIME_INVALID = "Invalid duty end time",
+  TIME_FORMAT_INVALID = "Time must be in HH:MM format (e.g., 09:00)",
+  DUTY_TIME_INVALID_RANGE = "End time must be after start time",
+
+  INVALID_OTP = "OTP is invalid",
+
+  PROFILE_PICTURE_INVALID_TYPE = "Profile picture must be an image file",
+  PROFILE_PICTURE_TOO_LARGE = "Profile picture size must not exceed 5MB",
+  PROFILE_PICTURE_UPLOAD_FAILED = "Failed to upload profile picture",
+
+  CERTIFICATE_UPLOAD_FAILED = "Failed to upload certificate",
+  CERTIFICATE_INVALID_FORMAT = "Certificate must be a PDF or image file",
 
   CREATION_FAILED = "Failed to create trainer account",
   UPDATE_FAILED = "Failed to update trainer information",
   DELETE_FAILED = "Failed to delete trainer",
   FETCH_FAILED = "Failed to fetch trainer information",
   LIST_FETCH_FAILED = "Failed to fetch trainers list",
-  VALIDATION_FAILED = "Validation failed. Please check all fields",
-  
+
   TRAINER_HAS_ACTIVE_SESSIONS = "Cannot delete trainer with active training sessions",
   TRAINER_HAS_ACTIVE_CLIENTS = "Cannot deactivate trainer with active client assignments",
-    
-  PROFILE_PICTURE_INVALID_TYPE = "Profile picture must be an image file",
-  PROFILE_PICTURE_TOO_LARGE = "Profile picture size must not exceed 5MB",
-  PROFILE_PICTURE_UPLOAD_FAILED = "Failed to upload profile picture",
-  CERTIFICATE_UPLOAD_FAILED = "Failed to upload certificate",
-  CERTIFICATE_INVALID_FORMAT = "Certificate must be a PDF or image file",
-  EMAIL_DATA_MISSING_IN_CACHE = "Email data is missing from cache",
-  INVALID_OTP = "OTP is invalid",
-  TRAINER_IS_PENDING = "Your account is currently pending approval. Please wait for admin verification",
 
+  GYM_NOT_ACTIVE = "This gym is currently inactive. Please contact support",
 }
+
 
 export enum TrainerSuccess {
   TRAINER_CREATED = "Trainer account created successfully",

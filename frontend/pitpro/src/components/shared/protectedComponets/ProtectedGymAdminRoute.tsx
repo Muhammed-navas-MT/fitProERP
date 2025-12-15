@@ -1,10 +1,10 @@
 import { FRONTEND_ROUTES } from '@/constants/frontendRoutes';
 import { rootstate } from '@/store/store'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom';
 
-const ProtectedSuperAdminRoute = () => {
+const ProtectedGymAdminRoute = () => {
     const accessToken = useSelector((state:rootstate)=>state.token.token);
     const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const ProtectedSuperAdminRoute = () => {
     useEffect(()=>{
         const timeout = setTimeout(()=>{
             if(!accessToken){
-                navigate(FRONTEND_ROUTES.SUPER_ADMIN.LOGIN);
+                navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`);
             };
             setIsChecking(false);
         },100);
@@ -24,4 +24,4 @@ const ProtectedSuperAdminRoute = () => {
     return accessToken ? <Outlet/> : null;
 }
 
-export default ProtectedSuperAdminRoute
+export default ProtectedGymAdminRoute

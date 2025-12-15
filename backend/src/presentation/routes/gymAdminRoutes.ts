@@ -1,11 +1,15 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectedGymAdminSingUpController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
+import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
+import { injectedTrainerSignUpController } from "../../infrastructure/DI/trainer/trainerInjection";
 
 export class GymAdminRoutes {
   private _route: Router;
+  private _middleware:SubdomainMiddleware
   constructor() {
+    this._middleware = new SubdomainMiddleware;
     this._route = Router();
     this._setRoute();
   }
@@ -16,7 +20,6 @@ export class GymAdminRoutes {
     this._route.post(
       GYMADMIN.AUTH.EMAIL_VERIFY,
       (req: Request, res: Response, next: NextFunction) => {
-        console.log("req body", req.body)
         injectedGymAdminSingUpController.verifyEmail(req, res, next);
       }
     );
@@ -37,6 +40,27 @@ export class GymAdminRoutes {
         injectedGymAdminSingUpController.signup(req, res, next);
       }
     );
+    this._route.post(
+      GYMADMIN.AUTH.LOGIN,
+      this._middleware.verifySubdomain,
+      (req:Request,res:Response,next:NextFunction) => {
+        injectedGymAdminLoginController.login(req,res,next);
+      }
+    );
+    this._route.post(
+      GYMADMIN.AUTH.LOGOUT,
+      this._middleware.verifySubdomain,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedGymAdminLogoutController.gymAdminLogout(req,res,next);
+      }
+    );
+    this._route.get(
+      GYMADMIN.LISTTRAINER,
+      this._middleware.verifySubdomain,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedTrainerSignUpController.listAllTrainer(req,res,next);
+      }
+    )
   }
 
   public get_routes(): Router {

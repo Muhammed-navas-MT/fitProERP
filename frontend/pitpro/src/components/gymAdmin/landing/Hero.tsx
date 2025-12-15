@@ -10,7 +10,7 @@ export default function Hero() {
   };
 
   const goToRegistration = ()=>{
-    navigate(FRONTEND_ROUTES.GYM_ADMIN.SIGNUP);
+    navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.SIGNUP}`);
   }
 
   return (

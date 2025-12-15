@@ -3,6 +3,7 @@ export const ROUTES = {
         SUPERADMIN:{
             BASE:"/super_admin",
             LOGIN:"/login",
+            LOGOUT:"/logout",
             CREATE_SUBSCRIPTION:"/create_subscription",
             BLOCK_SUBSCRIPTION:"/block_subscription/:subscriptionId",
             UNBLOCK_SUBSCRIPTION:"/unblock_subscription/:subscriptionId",
@@ -19,7 +20,9 @@ export const ROUTES = {
             OTP_VERIFY:"/verify_otp",
             SIGNUP:"/signup",
             LOGIN:"/login",
-        }
+            LOGOUT:"/logout"
+        },
+        LISTTRAINER:"/list_trainers"
     },
 
     TRAINER:{

@@ -1,7 +1,7 @@
 import { Status } from "../../../domain/enums/status";
 import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 import { ForbiddenException, NOtFoundException } from "../../constants/exceptions";
-import { LoginRequestDTO, GymAdminLoginResponseDTO } from "../../dtos/auth/loginDto";
+import { GymAdminLoginResponseDTO, GymAdminLoginRequestDTO } from "../../dtos/auth/loginDto";
 import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { ISubscripctionRespoditery } from "../../interfaces/repository/superAdmin/subscriptionRepoInterface";
 import { IHashService } from "../../interfaces/service/hashServiceInterface";
@@ -22,8 +22,12 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
         this._subscriptionRepository = subscriptionRepository
     };
 
-    async login(data: LoginRequestDTO): Promise<GymAdminLoginResponseDTO> {
+    async login(data: GymAdminLoginRequestDTO): Promise<GymAdminLoginResponseDTO> {
         try {
+            const findGym = await this._gymAdminRepository.findBySubdomian(data.subdomain);
+            if(!findGym){
+                throw new NOtFoundException("Enter valid subdomain....")
+            }
             const gymAdmin = await this._gymAdminRepository.findByEmail(data.email);
             if(!gymAdmin){
                 throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
@@ -38,8 +42,8 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
                 throw new ForbiddenException(GymAdminAuthError.GYM_IS_PENDING);
 
             }else if(gymAdmin.status === Status.IN_ACTIVE){
-                const subscriptions = await this._subscriptionRepository.getAllSubscriptions() || [];
-                const response = LoginMapper.gymAdminloginMapper(gymAdmin,subscriptions);
+                // const subscriptions = await this._subscriptionRepository.getAllSubscriptions() || [];
+                const response = LoginMapper.gymAdminloginMapper(gymAdmin);
                 return response;
             }else if (gymAdmin.status === Status.REGECTED){
                 throw new ForbiddenException(GymAdminAuthError.GYM_IS_REGECTED)

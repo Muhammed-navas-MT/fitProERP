@@ -15,4 +15,10 @@ export class GymAdminRepository extends BaseRepository<IGymAdminModel> implement
         if(!doc)return null
         return doc
     }
+
+    async findBySubdomian(subdomain: string): Promise<GymAdminEntity | null> {
+        const doc = await this._model.findOne({subdomain});
+        if(!doc)return null
+        return doc
+    }
 }

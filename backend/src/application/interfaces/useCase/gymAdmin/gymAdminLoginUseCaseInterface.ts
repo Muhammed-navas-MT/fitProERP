@@ -1,5 +1,5 @@
-import { GymAdminLoginResponseDTO, LoginRequestDTO } from "../../../dtos/auth/loginDto";
+import { GymAdminLoginRequestDTO, GymAdminLoginResponseDTO } from "../../../dtos/auth/loginDto";
 
 export interface IGymAdminLoginUseCase  {
-    login(data:LoginRequestDTO): Promise<GymAdminLoginResponseDTO>;
+    login(data:GymAdminLoginRequestDTO): Promise<GymAdminLoginResponseDTO>;
 }

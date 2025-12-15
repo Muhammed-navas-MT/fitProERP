@@ -25,7 +25,6 @@ export class AuthMiddleware {
         if(blackList){
             res.status(HTTP_STATUS_CODE.UNAUTHORIZED).json({success:false,message:Error.TOKEN_INVALID});
         }
-        res.locals.data = {role:decoded?.role,id:decoded?.id};
         next();
     }
 }

@@ -5,6 +5,7 @@ export const API_ROUTES = {
     SUPERADMIN:{
             BASE:"/super_admin",
             LOGIN:"/login",
+            LOGOUT:"/logout",
             CREATE_SUBSCRIPTION:"/create_subscription",
             BLOCK_SUBSCRIPTION:"/block_subscription",
             UNBLOCK_SUBSCRIPTION:"/unblock_subscription",
@@ -20,6 +21,8 @@ export const API_ROUTES = {
             OTP_VERIFY:"/verify_otp",
             SIGNUP:"/signup",
             LOGIN:"/login",
+            LOGOUT:"/logout",
+            LISTTRAINER:"/list_trainers"
         }
     },
 

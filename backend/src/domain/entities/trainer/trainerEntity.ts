@@ -13,10 +13,10 @@ export interface TrainerEntity {
     role:Roles;
     specialization: string[];
     experience: number;
-    baseSalary?: number;
-    commisionRate?: number;
-    status?: Status;
-    dutyTime?: {
+    baseSalary: number;
+    commisionRate: number;
+    status: Status;
+    dutyTime: {
         startTime: string;
         endTime: string;
     };

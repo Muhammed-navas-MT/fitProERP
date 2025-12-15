@@ -15,6 +15,7 @@ export class SubscriptionUseCase implements ISubscriptionUseCase {
         if(findSubscription){
             throw new AlreadyExistException (SubscriptionError.SUBSCRIPTION_AlREADY_EXIST);
         };
+        
         const id = await this._subscriptionRepository.create(subscription);
         return;
     }
