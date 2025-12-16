@@ -1,6 +1,5 @@
 import { Status } from "../../enums/status";
 import { Roles } from "../../enums/roles";
-import { BloodGroups } from "../../enums/bloocGroup";
 import { PaymentStatus } from "../../enums/paymentStatus";
 
 export interface MemberEntity {
@@ -8,7 +7,7 @@ export interface MemberEntity {
     gymId: string;
     branchId?: string;
     trainerId: string;
-    firstName: string;
+    name: string;
     email: string;
     phone: string;
     profileImg?: string;
@@ -21,19 +20,18 @@ export interface MemberEntity {
         dateOfBirth: Date;
         weight: {
             value: number;
-            unit: string;
+            unit?: string;
         };
         height: {
             value: number;
-            unit: string;
+            unit?: string;
         };
         targetWeight: {
             value: number;
-            unit: string;
+            unit?: string;
         };
-        bloodGroup: BloodGroups;
-        medicalConditions: string;
-        allergies: string;
+        medicalConditions?: string;
+        allergies?: string;
         fitnessGoal: string;
     };
     package?: {

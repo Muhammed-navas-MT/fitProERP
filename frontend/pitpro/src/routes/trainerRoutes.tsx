@@ -1,5 +1,5 @@
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
-import MembersPage from "@/page/trainer/memberListPage";
+import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerDashboardPage from "@/page/trainer/trainerDashboardPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
 import { Route, Routes } from "react-router-dom";

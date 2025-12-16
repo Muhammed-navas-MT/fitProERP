@@ -33,6 +33,7 @@ export const ROUTES = {
             SIGNUP:"/signup",
             LOGIN:"/login",
         },
-        ADD_MEMBER:"/add_member"
+        ADD_MEMBER:"/add_member",
+        LIST_MEMBER:"/list_members"
     }
 }

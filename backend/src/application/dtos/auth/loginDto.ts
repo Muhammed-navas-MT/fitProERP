@@ -36,7 +36,7 @@ export interface GymAdminLoginResponseDTO {
 
 export interface MemberLoginResponseDTO {
     email: string;
-    firstName: string;
+    name: string;
     _id: string;
     role: Roles;
     status:string,

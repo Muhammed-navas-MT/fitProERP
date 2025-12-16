@@ -2,7 +2,7 @@ import { Durations } from "../../../domain/enums/duration";
 import { Roles } from "../../../domain/enums/roles";
 import { Status } from "../../../domain/enums/status";
 
-export interface IListTrainerResponseDTO {
+export interface IListMemberResponseDTO {
     total:number;
     page:number;
     limit:number;
@@ -15,16 +15,15 @@ export interface IListTrainerResponseDTO {
             role?:Roles,
             email?:string,
             phone?:string,
-            joinDate?:string,
-            specializations?:string[],
+            profileImg?:string,
             status?:Status,
             avatar?:string,
         }>
 }
 
-export interface IListTrainerRequestDTO {
+export interface IListMemberRequestDTO {
     search:string;
     page:number;
     limit:number;
-    gymId:string;
+    trainerId:string;
 }

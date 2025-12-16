@@ -16,6 +16,7 @@ import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdm
 import { Status } from "../../../domain/enums/status";
 import { IListTrainerRequestDTO, IListTrainerResponseDTO } from "../../dtos/trainerDto/listAllTrainerDto";
 import { TrainerMapper } from "../../mappers/trainerMapper";
+import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 
 export class SingupTrainerUseCase implements ISingupTrainerUseCase {
   private _trainerRepository: ITrainerRepository;
@@ -55,7 +56,6 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
       }
 
       const password = await this._passwordGenerator.generate();
-      console.log(password, "fordsfsda");
       const hashPassword = await this._hashService.hash(password);
       await this._trainerRepository.create({ ...data, password: hashPassword });
 
@@ -67,7 +67,7 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
       });
       const payload: EmailPayloadType = {
         recieverMailId: data.email,
-        subject: "Trainer Created Successfully",
+        subject: "Your Created Successfully",
         content: htmlContent,
       };
       await this._emailService.sendEmail(payload);
@@ -76,8 +76,17 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
     }
   }
   async listAllTrainers(params: IListTrainerRequestDTO): Promise<IListTrainerResponseDTO | null> {
-      let {trainers,total} = await this._trainerRepository.listAllTrainers(params);
-      const response:IListTrainerResponseDTO = TrainerMapper.toListTrainersResponse(trainers,total,params);
-      return response;
+    const findGym = await this._gymAdminRepository.findById(params.gymId);
+    if(!findGym){
+      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
+    };
+    if(findGym.status !== Status.ACTIVE){
+      throw new ForbiddenException(GymAdminAuthError.GYM_NOT_ACTIVE)
+    };
+
+    let {trainers,total} = await this._trainerRepository.listAllTrainers(params);
+    
+    const response:IListTrainerResponseDTO = TrainerMapper.toListTrainersResponse(trainers,total,params);
+    return response;
   }
 }

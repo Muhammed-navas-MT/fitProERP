@@ -11,10 +11,11 @@ export const useAddTrainer = () => {
 export const useGetAllTrainers = (
   page: number,
   search: string,
+  gymId:string,
 ) => {
   return useQuery({
-    queryKey: ["trainers", page, search],
-    queryFn: () => getTrainers(page,search),
+    queryKey: ["trainers", page, search,gymId],
+    queryFn: () => getTrainers(page,search,gymId),
     placeholderData: keepPreviousData,
   });
 };

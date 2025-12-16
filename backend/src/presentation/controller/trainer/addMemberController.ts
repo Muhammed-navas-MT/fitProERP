@@ -6,6 +6,7 @@ import { InvalidDataException } from "../../../application/constants/exceptions"
 import { MemberSuccess } from "../../shared/constants/errorMessage/memberMessage";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
+import { IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
 
 export class AddMemberController {
     private _addMemberUseCase:IAddMemberUseCase;
@@ -33,5 +34,26 @@ export class AddMemberController {
         } catch (error) {
             next(error);
         }
+    };
+
+    async listAllMembers(req:Request,res:Response,next:NextFunction):Promise<void>{
+        try {
+            const params:IListMemberRequestDTO = {
+                limit:Number(req.query?.limit) || 5,
+                page:Number(req.query?.page) || 1,
+                search:(req.query?.search as string) || "",
+                trainerId:(req.query.trainerId as string)
+            };
+            const data = await this._addMemberUseCase.listAllTrainers(params);
+            ResponseHelper.success(
+                HTTP_STATUS_CODE.OK,
+                res,
+                MemberSuccess.MEMBERS_LISTED,
+                data
+            )
+        } catch (error) {
+            next(error);
+        }
     }
+
 }

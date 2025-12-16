@@ -14,11 +14,16 @@ export class TrainerRoutes {
             injectedTrainerSignUpController.signup(req,res,next);
         });
         this._route.post(TRAINER.ADD_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            console.log(req.body,"from add new member.....")
             injectedAddMemberController.addMember(req,res,next);
         })
         this._route.post(TRAINER.AUTH.LOGIN,(req:Request,res:Response,next:NextFunction)=>{
         console.log("req....",req.body)
             injectedTrainerLoginController.login(req,res,next);
+        })
+        this._route.get(TRAINER.LIST_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            console.log("list add members.....");
+            injectedAddMemberController.listAllMembers(req,res,next);
         })
     };
 

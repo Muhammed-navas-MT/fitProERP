@@ -18,9 +18,9 @@ export const addTrainerService = async (data: TrainerAddPayload) => {
   }
 };
 
-export const getTrainers = async (page: number, search: string) => {
+export const getTrainers = async (page: number, search: string,gymId:string) => {
   const response = await AxiosInstance.get(
-    `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.AUTH.LISTTRAINER}?page=${page}&'limit'=5&search=${search}`
+    `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.AUTH.LISTTRAINER}?page=${page}&limit=5&search=${search}&gymId=${gymId}`
   );
   return response.data;
 };

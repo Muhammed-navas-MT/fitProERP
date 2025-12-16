@@ -42,4 +42,23 @@ export type TrainerAddPayload = {
         startTime: string;
         endTime: string;
     };
+};
+
+export type MemberAddPayload = {
+  trainerId:string;
+  name: string;
+  email: string;
+  phone: string;
+  address:string;
+  emergencyNumber:string;
+  healthDetails:{
+    gender:string,
+    dateOfBirth:string,
+    weight:number,
+    height:number,
+    targetWeight:number
+    medicalConditions?:string,
+    allergies?:string,
+    fitnessGoal:string
+  }
 }

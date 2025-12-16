@@ -18,7 +18,9 @@ export class TrainerRepository extends BaseRepository<ITrainerModel> implements 
 
     async listAllTrainers(params: IListTrainerRequestDTO): Promise<{ trainers: TrainerEntity[]; total: number; }> {
         const skip = (params.page-1)* params.limit;
-        const filter = params.search ? {name:{$regex:params.search,$options:"i"}}:{};
+        const search = params.search?.trim();
+        const gymId = params.gymId
+        const filter = search ? {gymId,name:{$regex:search,$options:"i"}}:{gymId};
         const trainers = await this._model
         .find(filter)
         .skip(skip)

@@ -37,7 +37,8 @@ export class TrainerSignUpController {
             const params:IListTrainerRequestDTO = {
                 search:(req.query?.search as string) || "",
                 limit:Number(req.query?.limit) || 5,
-                page:Number(req.query?.page) || 1
+                page:Number(req.query?.page) || 1,
+                gymId:(req.query.gymId as string) || ""
             }
             const data = await this._singupTraninerUseCase.listAllTrainers(params);
             ResponseHelper.success(
