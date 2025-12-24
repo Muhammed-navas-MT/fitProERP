@@ -1,7 +1,7 @@
 import { Roles } from "../../../domain/enums/roles";
 import { Status } from "../../../domain/enums/status";
 
-export interface ITrainerSignUpRequestDTO {
+export interface ITrainerCreateRequestDTO {
     gymId: string;
     branchId?: string;
     name: string;

@@ -54,7 +54,6 @@ class Express_app {
 
   private _setGymAdminRoutes() {
     const gymAdminRoutes = new GymAdminRoutes();
-      console.log("adfasdfasd");
     this._app.use(ROUTES.GYMADMIN.BASE, gymAdminRoutes.get_routes());
   }
 

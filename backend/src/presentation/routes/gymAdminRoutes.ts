@@ -1,9 +1,8 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
-import { injectedTrainerSignUpController } from "../../infrastructure/DI/trainer/trainerInjection";
 
 export class GymAdminRoutes {
   private _route: Router;
@@ -54,11 +53,16 @@ export class GymAdminRoutes {
         injectedGymAdminLogoutController.gymAdminLogout(req,res,next);
       }
     );
+    this._route.post(
+      GYMADMIN.CREATE_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.createTrainer(req,res,next);
+      }
+    );
     this._route.get(
       GYMADMIN.LISTTRAINER,
-      this._middleware.verifySubdomain,
       (req:Request,res:Response,next:NextFunction)=>{
-        injectedTrainerSignUpController.listAllTrainer(req,res,next);
+        injectTrainerManagementController.listAllTrainers(req,res,next);
       }
     )
   }

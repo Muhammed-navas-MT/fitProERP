@@ -18,24 +18,19 @@ export default function AddSubscriptionPage() {
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
-  const handleLogout = () => {
-    alert("Logged out successfully!")
-  }
-
   return (
     <div className="min-h-screen bg-black text-white relative">
       {isMobile && (
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={() => setSidebarOpen(false)} 
-          onLogout={handleLogout}
           isMobile={true}
         />
       )}
 
       {!isMobile && (
         <div className="fixed left-0 top-0 h-full">
-          <Sidebar onLogout={handleLogout} />
+          <Sidebar />
         </div>
       )}
 
@@ -56,7 +51,6 @@ export default function AddSubscriptionPage() {
 
       {isMobile && (
         <MobileNav 
-          onLogout={handleLogout}
         />
       )}
     </div>

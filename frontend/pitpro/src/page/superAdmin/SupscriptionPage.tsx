@@ -4,18 +4,11 @@ import Header from "@/components/superAdmin/Header"
 import MobileNav from "@/components/superAdmin/MobileNav"
 import SubscriptionTable from "@/components/superAdmin/SubscriptionTable"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
-import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook"
-import { useDispatch } from "react-redux"
-import { deleteToken } from "@/store/slice/tokenSlice"
-import { clearSuperAdminData } from "@/store/slice/superAdminSlice"
 
 export default function SubscriptionPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("subscription")
   const [isMobile, setIsMobile] = useState(false)
-
-  const { mutate: logout } = useSuperAdminLogout();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -24,20 +17,8 @@ export default function SubscriptionPage() {
     checkIfMobile()
 
     window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, [])
-
-const handleLogout = () => {
-  logout(undefined, {
-    onSuccess: () => {
-      dispatch(deleteToken());
-      dispatch(clearSuperAdminData());
-    },
-    onError: (error) => {
-      console.error(error.message);
-    },
-  });
-};
 
 
   const handleTabChange = (tabId: string) => {
@@ -52,14 +33,13 @@ const handleLogout = () => {
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={() => setSidebarOpen(false)} 
-          onLogout={handleLogout}
           isMobile={true}
         />
       )}
 
       {!isMobile && (
         <div className="fixed left-0 top-0 h-full">
-          <Sidebar onLogout={handleLogout} />
+          <Sidebar />
         </div>
       )}
 
@@ -84,7 +64,6 @@ const handleLogout = () => {
       {isMobile && (
         <MobileNav 
           activeTab={activeTab} 
-          onLogout={handleLogout}
           onTabChange={handleTabChange}
         />
       )}

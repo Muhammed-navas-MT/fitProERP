@@ -4,14 +4,14 @@ import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { LoginRequestDTO } from "../../../application/dtos/auth/loginDto";
 import { IJwtService } from "../../../application/interfaces/service/jwtServiceInterface";
 import { setCookie } from "../../shared/utils/setCookie";
-import { ITokenValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
+import { ITokenInValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 
 export class SuperAdminController {
     constructor (
         private _superAdminLoginUseCase:SuperAdminLoginUseCase,
         private _jwtService:IJwtService,
-        private _tokenValidation:ITokenValidationUseCase
+        private _tokenValidation:ITokenInValidationUseCase
     ){}
 
      async superAdminLogin(req:Request,res:Response,next:NextFunction):Promise<void>{

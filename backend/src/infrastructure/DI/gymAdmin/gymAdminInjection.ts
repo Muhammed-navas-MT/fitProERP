@@ -17,6 +17,13 @@ import { JwtService } from "../../services/jwtService";
 import { AuthMiddleware } from "../../../presentation/middlewares/authMiddleware";
 import { GymAdminLogoutController } from "../../../presentation/controller/gymAdmin/gymAdminLogoutController";
 import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
+import { TrainerManagementController } from "../../../presentation/controller/gymAdmin/trainerMangement/trainerMangementController";
+import { listAllTrainersUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/listAllTrainersUseCase";
+import { TrainerRepository } from "../../repository/trainer/trainerRepo";
+import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
+import { CreateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/createTrainerUseCase";
+import { SendPasswordEmailContentGenerator } from "../../services/IEmail/sendPasswordContentGenerator";
+import { PasswordGenerator } from "../../services/passwordGenerater";
 
 
 const otpService =new OtpService()
@@ -37,4 +44,12 @@ export const injectedGymAdminLoginController = new GymAdminLoginController(login
 export const injectAuthMiddleware = new AuthMiddleware(jwtService,cacheService);
 
 const tokenValidtionUseCase = new TokenValidationUseCase(jwtService,cacheService);
-export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase)
+export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase);
+
+// trainer management
+const trainerRepository = new TrainerRepository(trainerModel);
+const passwordGenerator = new PasswordGenerator()
+const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
+const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
+const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
+export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers);

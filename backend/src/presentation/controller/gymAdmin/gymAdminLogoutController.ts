@@ -1,14 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
-import { IJwtService } from "../../../application/interfaces/service/jwtServiceInterface";
-import { ITokenValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
+import { ITokenInValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
 
 export class GymAdminLogoutController {
-  private _tokenValidation: ITokenValidationUseCase;
 
-  constructor(loginUseCase: ITokenValidationUseCase) {
-    this._tokenValidation = loginUseCase;
+  constructor( private _tokenValidation: ITokenInValidationUseCase) {
   }
   async gymAdminLogout(
     req: Request,

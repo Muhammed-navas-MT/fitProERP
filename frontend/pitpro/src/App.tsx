@@ -13,7 +13,7 @@ const App = () => {
     <Routes>
       <Route path={`${FRONTEND_ROUTES.TRAINER.BASE}/*`} element={<TrainerRoutes/>}/>
       <Route path={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/*`} element={<GymAdminRoutes/>}/>
-      <Route path="/*" element={<SuperAdminRoutes/>}/>
+      <Route path={`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/*`} element={<SuperAdminRoutes/>}/>
     </Routes>
    </BrowserRouter>
    </>

@@ -10,7 +10,6 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-900/30 p-4 transition-colors hover:border-zinc-700">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-        {/* Avatar and Name */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-500 font-semibold text-white">
             {employee.avatar}
@@ -23,7 +22,6 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
           </div>
         </div>
 
-        {/* Contact Info */}
         <div className="flex flex-col gap-3 text-sm sm:flex-row lg:gap-6">
           <div className="flex items-center gap-2 text-zinc-400">
             <Mail className="h-4 w-4" />
@@ -39,7 +37,6 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
           </div>
         </div>
 
-        {/* Specializations & Actions */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:gap-4">
           <div className="flex flex-wrap gap-2">
             {employee.specializations?.slice(0,2).map((spec:string, index:number) => (
@@ -52,7 +49,6 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
             ))}
           </div>
 
-          {/* Actions */}
           {
             <div className="flex items-center gap-2">
               <span

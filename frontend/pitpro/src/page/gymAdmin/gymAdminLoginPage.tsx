@@ -3,6 +3,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { useGymAdminLogin } from "@/hook/gymAdmin/gymAdminLoginHook";
 import { setAuthContext } from "@/store/slice/authContextState";
 import { setGymAdminData } from "@/store/slice/gymAdminSlice";
+import { setToken } from "@/store/slice/tokenSlice";
 import { LoginPayload } from "@/types/authPayload";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +19,8 @@ export default function GymAdminLoginPage() {
         onSuccess:(res)=>{
             toast.success(res.data.message||"Login successfully");
             dispatch(setGymAdminData(res.data.data))
-            console.log(res.data.data.subdomain,"from gym admin login page...")
             dispatch(setAuthContext({role:"GYMADMIN",subdomain:res.data.data.subdomain}));
+            dispatch(setToken(res.data.accessToken));
             navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`);
         },
         onError:(err)=>{

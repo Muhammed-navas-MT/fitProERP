@@ -102,7 +102,6 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f0f0f] border-t border-[#1f1f1f] px-4 py-2 z-50">
         <div className="flex justify-around items-center">
           <Button variant="ghost" size="sm" className="flex-col h-auto py-2 text-gray-400 hover:text-white">

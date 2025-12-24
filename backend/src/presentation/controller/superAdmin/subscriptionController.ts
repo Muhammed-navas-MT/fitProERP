@@ -1,13 +1,25 @@
 import { NextFunction, Request, Response } from "express";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
-import { ISubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscriptionUseCase";
 import { IListSubscriptionRequestDTO, ISubscriptionRequestDTO } from "../../../application/dtos/superAdminDto/subscriptionDto";
 import { subscriptionSchema } from "../../shared/validations/subscriptionZodSchema";
 import { SubscriptionError } from "../../shared/constants/errorMessage/subscriptionError";
 import { InvalidDataException } from "../../../application/constants/exceptions";
+import { IBlockSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/blockSubscriptionUseCaseInterface";
+import { ICreateSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/createSubscriptionUseCaseInterface";
+import { IFindSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/findSubscripitionUseCaseInterface";
+import { IListSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/listSubscriptionsUseCaseInterface";
+import { IUnBlockSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/unBlockSubscriptionUseCaseInterface";
+import { IUpdateSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/updateSubscriptionUseCaseInterface";
 
 export class SubscriptionController {
-  constructor(private _subscriptionUseCase: ISubscriptionUseCase) {}
+  constructor(
+    private _blockSubscriptionUseCase: IBlockSubscriptionUseCase,
+    private _createSubscriptionUseCase: ICreateSubscriptionUseCase,
+    private _findSubscriptionUseCase: IFindSubscriptionUseCase,
+    private _listSubscriptionUseCase: IListSubscriptionUseCase,
+    private _unBlockSubscriptionUseCase: IUnBlockSubscriptionUseCase,
+    private _updateSubscriptionUseCase: IUpdateSubscriptionUseCase
+  ) {}
 
   async createSubscription(
     req: Request,
@@ -23,7 +35,7 @@ export class SubscriptionController {
       }
 
       console.log("subsrtiption")
-      const id = await this._subscriptionUseCase.createSubscription(subscription);
+      const id = await this._createSubscriptionUseCase.createSubscription(subscription);
       ResponseHelper.success(
         201,
         res,
@@ -37,7 +49,7 @@ export class SubscriptionController {
   async blockSubscription(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
       const {subscriptionId} = req.params;
-      await this._subscriptionUseCase.blockSubscription(subscriptionId);
+      await this._blockSubscriptionUseCase.blockSubscription(subscriptionId);
       ResponseHelper.success(
         200,
         res,
@@ -51,7 +63,7 @@ export class SubscriptionController {
   async unBlockSubscription(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
       const {subscriptionId} = req.params;
-      await this._subscriptionUseCase.unBlockSubscription(subscriptionId);
+      await this._unBlockSubscriptionUseCase.unBlockSubscription(subscriptionId);
       ResponseHelper.success(
         200,
         res,
@@ -65,7 +77,7 @@ export class SubscriptionController {
   async findSubscription(req:Request,res:Response,next:NextFunction):Promise<void>{
     try {
       const {subscriptionId} = req.params;
-      const subscription = await this._subscriptionUseCase.findSubscripition(subscriptionId);
+      const subscription = await this._findSubscriptionUseCase.findSubscripition(subscriptionId);
       ResponseHelper.success(
         200,
         res,
@@ -87,7 +99,7 @@ export class SubscriptionController {
       }
 
       const {subscriptionId} = req.params;
-      await this._subscriptionUseCase.updateSubscription(subscription,subscriptionId);
+      await this._updateSubscriptionUseCase.updateSubscription(subscription,subscriptionId);
       ResponseHelper.success(
         200,
         res,
@@ -107,7 +119,7 @@ export class SubscriptionController {
         page:Number(req.query?.page) || 1
       }
 
-      const data = await this._subscriptionUseCase.listSubscriptions(params);
+      const data = await this._listSubscriptionUseCase.listSubscriptions(params);
       ResponseHelper.success(
         200,
         res,

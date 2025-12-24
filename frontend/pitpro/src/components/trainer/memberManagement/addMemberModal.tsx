@@ -106,7 +106,6 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
-          {/* Personal Details */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
               <span className="h-1 w-1 rounded-full bg-purple-400" />
@@ -221,7 +220,6 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
             </div>
           </div>
 
-          {/* Trainer */}
           <div className="space-y-2">
             <Label className="text-gray-300">Assigned Trainer</Label>
             <Select
@@ -232,7 +230,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
                 <SelectValue placeholder="Select a trainer" />
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                <SelectItem value="694114189fcb212b6ae48544">John Doe</SelectItem>
+                <SelectItem value="69413bb725dfc9aab6745043">John Doe</SelectItem>
                 <SelectItem value="694114189fcb212b6ae48544">Jane Smith</SelectItem>
               </SelectContent>
             </Select>

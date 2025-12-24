@@ -28,5 +28,9 @@ export class TrainerRepository extends BaseRepository<ITrainerModel> implements 
         .sort({createdAt:-1});
         const total = await this._model.countDocuments(filter);
         return {trainers:trainers,total:total};
-    } 
+    }
+
+    async countTrainersByGymId(gymId: string): Promise<number> {
+        return await this._model.countDocuments({gymId})
+    }
 }

@@ -9,20 +9,36 @@ import {
 import LogoutButton from "./LogoutButton"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 import { useLocation } from "react-router-dom"
+import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook"
+import { useDispatch } from "react-redux"
+import { deleteToken } from "@/store/slice/tokenSlice"
+import { clearSuperAdminData } from "@/store/slice/superAdminSlice"
 
 interface SidebarProps {
-  onLogout: () => void
   isOpen?: boolean
   onClose?: () => void
   isMobile?: boolean
 }
 
 export default function Sidebar({ 
-  onLogout, 
   isOpen = true, 
   onClose, 
   isMobile = false 
 }: SidebarProps) {
+
+  const dispatch = useDispatch()
+  const { mutate: logout } = useSuperAdminLogout();
+  const onLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        dispatch(deleteToken());
+        dispatch(clearSuperAdminData());
+      },
+      onError: (error) => {
+        console.error(error.message);
+      },
+    });
+  };
 
   const location = useLocation();
 
