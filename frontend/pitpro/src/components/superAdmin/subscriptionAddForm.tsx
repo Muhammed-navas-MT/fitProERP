@@ -47,7 +47,7 @@ export function SubscriptionForm() {
             }
             toast(res?.data?.message||"subscription created success fully...!");
             reset();
-            navigate(FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION)
+            navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`)
         },
         onError:(err)=>{
             toast(err.message);
@@ -59,7 +59,7 @@ export function SubscriptionForm() {
 
   const handleCancelButton = ()=>{
     reset()
-    navigate(FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION)
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`)
   }
 
   return (

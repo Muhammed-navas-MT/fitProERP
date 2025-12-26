@@ -23,14 +23,14 @@ export class SuperAdminController {
             const refreshToken = this._jwtService.createRefreshTken({id:superAdmin.id,role:superAdmin.role,subdomain:""})
             
             setCookie(res,"refreshToken",refreshToken,{
-                maxAge:60,
+                maxAge:7 * 24 * 60 * 60 * 1000,
                 httpOnly:true,
                 secure:true
             })
             ResponseHelper.success(
                 200,
                 res,
-                "superAdmin login successful",
+                "superAdmin login successfully",
                {data:superAdmin,accessToken}
             );
         } catch (error) {
@@ -48,7 +48,7 @@ export class SuperAdminController {
             ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,
                 res,
-                "superAdmin login successful"  
+                "superAdmin logout successfully"
             )
         } catch (error) {
             next(error);

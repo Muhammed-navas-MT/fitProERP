@@ -45,14 +45,18 @@ AxiosInstance.interceptors.response.use(
             return Promise.reject(err);
         }
 
+        console.log("navbass......");
+
         if (
             err.response.status === 401 &&
-            err.response.data?.message === "Token expired" &&
+            err.response.data?.message === "Access token has expired" &&
             !originalRequest._retry
         ) {
             try {
                 originalRequest._retry = true;
+                console.log("creating new access token.....");
                 const response = await AxiosInstance.post(API_ROUTES.AUTH.REFRESH);
+                console.log("created new access token via refresh token.....")
                 store.dispatch(setToken(response.data.data));
                 originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
                 return AxiosInstance(originalRequest);
@@ -62,8 +66,8 @@ AxiosInstance.interceptors.response.use(
                 const authContext = store.getState().authContext;
                 console.log(authContext);
                 if(authContext.role === "SUPERADMIN"){
-                    window.location.href=`${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`
                     store.dispatch(clearSuperAdminData())
+                    window.location.href=`${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`
                 }else if(authContext.role === "GYMADMIN"){
                     window.location.href = `http:${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`
                     store.dispatch(clearGymAdminData())                    

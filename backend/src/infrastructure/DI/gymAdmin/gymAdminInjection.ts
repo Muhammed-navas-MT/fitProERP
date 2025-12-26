@@ -24,6 +24,12 @@ import { trainerModel } from "../../repository/databaseConfigs/models/trainerMod
 import { CreateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/createTrainerUseCase";
 import { SendPasswordEmailContentGenerator } from "../../services/IEmail/sendPasswordContentGenerator";
 import { PasswordGenerator } from "../../services/passwordGenerater";
+import { subscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
+import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
+import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
+import { PurchaseSubscriptionUseCase } from "../../../application/useCases/gymAdmin/purchaseSubscriptionUseCase";
+import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
+import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 
 
 const otpService =new OtpService()
@@ -36,7 +42,7 @@ const cacheService = new CacheService()
 const hashService = new HashPassword()
 const cloudinaryService = new CloudinaryService()
 const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService,cloudinaryService)
-const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository,hashService,subsriptionRepository)
+const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository,hashService)
 const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(otpService,signUpOtpEmailContentGenerator,emailService,gymAdminRepository,cacheService)
 export const injectedGymAdminSingUpController = new SignUpController(verifyEmailAndOtpUseCase,signUpUseCase)
 export const injectedGymAdminLoginController = new GymAdminLoginController(loginUseCase,jwtService);
@@ -53,3 +59,11 @@ const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator(
 const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
 const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
 export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers);
+
+//subscription list controller
+const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
+export const injectedListSubscriptionController = new subscriptionlistController(listAllActiveSubscription);
+
+const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
+const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepository,subsriptionRepository,gymAdminRepository)
+export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)

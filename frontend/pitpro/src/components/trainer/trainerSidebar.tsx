@@ -15,26 +15,33 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
+import { useLocation, useNavigate } from "react-router-dom"
+
 
 const mainMenuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: false },
-  { icon: User, label: "Profile", active: false },
-  { icon: Calendar, label: "My Schedule", active: false },
-  { icon: ClipboardCheck, label: "Attendance", active: false },
-  { icon: DollarSign, label: "Salary", active: false },
-  { icon: FileText, label: "Leave Request", active: false },
-  { icon: Wallet, label: "Wallet", active: false },
+  { icon: LayoutDashboard, label: "Dashboard", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}` },
+  { icon: User, label: "Profile", path: "/trainer/profile" },
+  { icon: Calendar, label: "My Schedule", path: "/trainer/schedule" },
+  { icon: ClipboardCheck, label: "Attendance", path: "/trainer/attendance" },
+  { icon: DollarSign, label: "Salary", path: "/trainer/salary" },
+  { icon: FileText, label: "Leave Request", path: "/trainer/leave" },
+  { icon: Wallet, label: "Wallet", path: "/trainer/wallet" },
 ]
 
 const clientManagementItems = [
-  { icon: Users, label: "Members", active: true },
-  { icon: Dumbbell, label: "Workout Plan", active: false },
-  { icon: MessageSquare, label: "Chat", active: false },
-  { icon: Video, label: "Video Call", active: false },
-  { icon: Bell, label: "Notifications", active: false },
+  { icon: Users, label: "Members", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}` },
+  { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
+  { icon: MessageSquare, label: "Chat", path: "/trainer/chat" },
+  { icon: Video, label: "Video Call", path: "/trainer/video" },
+  { icon: Bell, label: "Notifications", path: "/trainer/notifications" },
 ]
 
+
 export function Sidebar() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   return (
     <>
       {/* Desktop Sidebar */}
@@ -49,22 +56,24 @@ export function Sidebar() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 py-4">
+        <div className="flex-1 overflow-y-hidden px-3 py-4">
           <div className="mb-6">
             <p className="px-3 mb-2 text-xs font-semibold text-purple-400 uppercase tracking-wider">Main</p>
             <nav className="space-y-1">
               {mainMenuItems.map((item) => (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
-                    item.active && "bg-[#1a1a1a] text-white",
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-sm">{item.label}</span>
-                </Button>
+               <Button
+  key={item.label}
+  variant="ghost"
+  onClick={() => navigate(item.path)}
+  className={cn(
+    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
+    location.pathname === item.path && "bg-[#1a1a1a] text-white"
+  )}
+>
+  <item.icon className="h-5 w-5" />
+  <span className="text-sm">{item.label}</span>
+</Button>
+
               ))}
             </nav>
           </div>
@@ -76,16 +85,17 @@ export function Sidebar() {
             <nav className="space-y-1">
               {clientManagementItems.map((item) => (
                 <Button
-                  key={item.label}
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
-                    item.active && "bg-[#1a1a1a] text-white",
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-sm">{item.label}</span>
-                </Button>
+  key={item.label}
+  variant="ghost"
+  onClick={() => navigate(item.path)}
+  className={cn(
+    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
+    location.pathname === item.path && "bg-[#1a1a1a] text-white"
+  )}
+>
+  <item.icon className="h-5 w-5" />
+  <span className="text-sm">{item.label}</span>
+</Button>
               ))}
             </nav>
           </div>

@@ -21,6 +21,7 @@ export interface IMember {
 
 export function MembersList() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState(1);
 
   const { _id } = useSelector((state: rootstate) => state.trainerData);
@@ -30,6 +31,11 @@ export function MembersList() {
 
   const members: IMember[] = data?.data?.data ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
+
+  const handleFilter = () => {
+    setPage(1);
+    setSearchQuery(searchInput);
+  };
 
   return (
     <Card className="bg-[#0f0f0f] border-[#2a2a2a] p-6">
@@ -41,16 +47,22 @@ export function MembersList() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
             <Input
               placeholder="Search members by name or email..."
-              value={searchQuery}
+              value={searchInput}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                setSearchInput(e.target.value);
                 setPage(1);
+              }}
+              onKeyDown={(e)=>{
+                if(e.key === "Enter"){
+                  e.preventDefault();
+                  handleFilter();
+                }
               }}
               className="pl-10 bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-gray-500"
             />
           </div>
 
-          <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+          <Button onClick={handleFilter}className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
             Filter by
           </Button>
         </div>

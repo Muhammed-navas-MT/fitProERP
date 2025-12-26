@@ -48,7 +48,7 @@ export default function SubscriptionPage() {
           title="Subscription Plans"
           description="Manage your subscription plans and pricing"
           showAddButton = {true}
-          url = {FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION}
+          url = {`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION}`}
           addButtonLabel="Add new Plan"
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)} 
           showMenuButton={isMobile}

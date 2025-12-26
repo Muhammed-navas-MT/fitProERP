@@ -6,5 +6,6 @@ export enum GymAdminAuthSuccess {
     LOGIN_SUCCESS = "Account login successfully",
     LOGOUT_SUCCESS = "Account logout successfully",
     GYMS_LISTED = "Gyms list retrieved successfully",
-    GYM_UPDATED = "Gym updated successfully"
+    GYM_UPDATED = "Gym updated successfully",
+    SUBSCRIPTION_PURCHASED = "Subscription purchased successfully",
 }

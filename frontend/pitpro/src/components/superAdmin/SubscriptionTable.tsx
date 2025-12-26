@@ -38,7 +38,7 @@ export default function SubscriptionTable() {
 
   const handleEdit = (id: string) => {
     console.log("Edit clicked for Plan ID:", id);
-    navigate(FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id",id));
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id",id)}`);
   };
 
   const handleBlock = (id: string) => {

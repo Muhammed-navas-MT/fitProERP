@@ -49,4 +49,9 @@ export class SubscriptionRepository
 
     return subscriptions;
   }
+
+  async listAllActiveSubscription(): Promise<SubscriptionEntity[]> {
+      const subsriptions = await this._model.find({isActive:true});
+      return subsriptions;
+  }
 }

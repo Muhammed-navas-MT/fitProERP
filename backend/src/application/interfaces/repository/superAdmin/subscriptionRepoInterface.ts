@@ -7,4 +7,5 @@ export interface ISubscripctionRespoditery extends IBaseRepository<SubscriptionE
     findByPlanName(planName:string):Promise<SubscriptionEntity|null>;
     listAllSubscriptions(params:IListSubscriptionRequestDTO):Promise<{subscription:SubscriptionEntity[],total:number}>
     getAllSubscriptions():Promise<SubscriptionEntity[]>;
+    listAllActiveSubscription():Promise<SubscriptionEntity[]>
 }

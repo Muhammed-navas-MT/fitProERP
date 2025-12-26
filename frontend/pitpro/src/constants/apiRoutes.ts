@@ -28,6 +28,8 @@ export const API_ROUTES = {
         },
         LISTTRAINER:"/list_trainers",
         CREATE_TRAINER:"/create_trainer",
+        LISTSUBSCRIPTION:"/list_active_subscription",
+        PURCHASESUBSCRIPTION:"/purchase_subscription",
     },
 
     TRAINER:{

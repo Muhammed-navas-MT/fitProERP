@@ -14,20 +14,33 @@ export default function GymAdminLoginPage() {
   const dispatch = useDispatch();
   const { mutate: login, isPending } = useGymAdminLogin();
 
-  const handleLogin = (data:LoginPayload) => {
-    login(data,{
-        onSuccess:(res)=>{
-            toast.success(res.data.message||"Login successfully");
-            dispatch(setGymAdminData(res.data.data))
-            dispatch(setAuthContext({role:"GYMADMIN",subdomain:res.data.data.subdomain}));
-            dispatch(setToken(res.data.accessToken));
-            navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`);
-        },
-        onError:(err)=>{
-            toast.error(err.message||"please try again");
-        }
-    });
-  };
+  const handleLogin = (data: LoginPayload) => {
+  login(data, {
+    onSuccess: (res) => {
+      const gymAdmin = res.data.data;
+
+      toast.success(res.data.message || "Login successful");
+
+      dispatch(setGymAdminData(gymAdmin));
+      dispatch(
+        setAuthContext({
+          role: "GYMADMIN",
+          subdomain: gymAdmin.subdomain,
+        })
+      );
+      dispatch(setToken(res.data.accessToken));
+      navigate(
+        `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`,
+        { replace: true }
+      );
+    },
+    onError: (err) => {
+      toast.error(err?.message || "Please try again");
+    },
+  });
+};
+
+
 
   return (
     <div className="min-h-screen bg-[#0D0F12] flex items-center justify-center px-4">

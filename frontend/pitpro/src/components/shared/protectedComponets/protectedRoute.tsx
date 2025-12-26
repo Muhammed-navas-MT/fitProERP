@@ -8,10 +8,10 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ redirectTo }) => {
   const token = useSelector((state: rootstate) => state.token.token);
+
   if (!token) {
     return <Navigate to={`${redirectTo}`} replace />;
   }
-
   return <Outlet />;
 };
 
