@@ -3,7 +3,6 @@ import { GymAdminAuthError } from "../../../presentation/shared/constants/errorM
 import { ForbiddenException, NOtFoundException } from "../../constants/exceptions";
 import { GymAdminLoginResponseDTO, GymAdminLoginRequestDTO } from "../../dtos/auth/loginDto";
 import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
-import { ISubscripctionRespoditery } from "../../interfaces/repository/superAdmin/subscriptionRepoInterface";
 import { IHashService } from "../../interfaces/service/hashServiceInterface";
 import { IGymAdminLoginUseCase } from "../../interfaces/useCase/gymAdmin/gymAdminLoginUseCaseInterface";
 import { LoginMapper } from "../../mappers/loginMapper";
@@ -11,15 +10,12 @@ import { LoginMapper } from "../../mappers/loginMapper";
 export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
     private _gymAdminRepository:IGymAdminRepository;
     private _hashService:IHashService;
-    private _subscriptionRepository:ISubscripctionRespoditery
     constructor(
         gymAdminRepository:IGymAdminRepository,
         hashService:IHashService,
-        subscriptionRepository:ISubscripctionRespoditery
     ){
         this._gymAdminRepository = gymAdminRepository;
         this._hashService = hashService;
-        this._subscriptionRepository = subscriptionRepository
     };
 
     async login(data: GymAdminLoginRequestDTO): Promise<GymAdminLoginResponseDTO> {
@@ -41,17 +37,11 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
             if(gymAdmin.status === Status.PENDING){
                 throw new ForbiddenException(GymAdminAuthError.GYM_IS_PENDING);
 
-            }else if(gymAdmin.status === Status.IN_ACTIVE){
-                // const subscriptions = await this._subscriptionRepository.getAllSubscriptions() || [];
-                const response = LoginMapper.gymAdminloginMapper(gymAdmin);
-                return response;
             }else if (gymAdmin.status === Status.REGECTED){
                 throw new ForbiddenException(GymAdminAuthError.GYM_IS_REGECTED)
-            }else if(gymAdmin.status == Status.ACTIVE){
+            }else{
                 const response = LoginMapper.gymAdminloginMapper(gymAdmin);
                 return response;
-            }else{
-                throw new ForbiddenException(GymAdminAuthError.GYM_STATUS_INVALID)
             }
         } catch (error) {
             throw error

@@ -1,15 +1,14 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
-import { injectedTrainerSignUpController } from "../../infrastructure/DI/trainer/trainerInjection";
 
 export class GymAdminRoutes {
   private _route: Router;
   private _middleware:SubdomainMiddleware
   constructor() {
-    this._middleware = new SubdomainMiddleware;
+    this._middleware = new SubdomainMiddleware();
     this._route = Router();
     this._setRoute();
   }
@@ -54,11 +53,29 @@ export class GymAdminRoutes {
         injectedGymAdminLogoutController.gymAdminLogout(req,res,next);
       }
     );
+    this._route.use(injectAuthMiddleware.verify);
+    this._route.post(
+      GYMADMIN.CREATE_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.createTrainer(req,res,next);
+      }
+    );
     this._route.get(
       GYMADMIN.LISTTRAINER,
-      this._middleware.verifySubdomain,
       (req:Request,res:Response,next:NextFunction)=>{
-        injectedTrainerSignUpController.listAllTrainer(req,res,next);
+        injectTrainerManagementController.listAllTrainers(req,res,next);
+      }
+    );
+    this._route.get(
+      GYMADMIN.LISTSUBSCRIPTION,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedListSubscriptionController.listAllActiveSubscription(req,res,next);
+      }
+    );
+    this._route.post(
+      GYMADMIN.PURCHASESUBSCRIPTION,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedPurchaseSubscriptionController.handle(req,res,next);
       }
     )
   }

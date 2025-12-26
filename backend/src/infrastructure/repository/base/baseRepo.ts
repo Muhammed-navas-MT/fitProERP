@@ -10,7 +10,6 @@ export abstract class  BaseRepository<T> implements IBaseRepository<T> {
     };
 
     async blockById(id: string): Promise<boolean> {
-        console.log("sldfjljsdf")
         const result = await this._model.findOneAndUpdate({_id:id},{$set:{isActive:false}});
         return !!result
     }

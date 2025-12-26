@@ -16,7 +16,6 @@ export const addSubscriptionService = async (data: FinalSubmissionType) => {
       `${API_ROUTES.SUPERADMIN.BASE}${API_ROUTES.SUPERADMIN.CREATE_SUBSCRIPTION}`,
       data
     );
-    console.log("response", response);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

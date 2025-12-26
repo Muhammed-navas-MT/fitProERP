@@ -17,6 +17,19 @@ import { JwtService } from "../../services/jwtService";
 import { AuthMiddleware } from "../../../presentation/middlewares/authMiddleware";
 import { GymAdminLogoutController } from "../../../presentation/controller/gymAdmin/gymAdminLogoutController";
 import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
+import { TrainerManagementController } from "../../../presentation/controller/gymAdmin/trainerMangement/trainerMangementController";
+import { listAllTrainersUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/listAllTrainersUseCase";
+import { TrainerRepository } from "../../repository/trainer/trainerRepo";
+import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
+import { CreateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/createTrainerUseCase";
+import { SendPasswordEmailContentGenerator } from "../../services/IEmail/sendPasswordContentGenerator";
+import { PasswordGenerator } from "../../services/passwordGenerater";
+import { subscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
+import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
+import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
+import { PurchaseSubscriptionUseCase } from "../../../application/useCases/gymAdmin/purchaseSubscriptionUseCase";
+import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
+import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 
 
 const otpService =new OtpService()
@@ -29,7 +42,7 @@ const cacheService = new CacheService()
 const hashService = new HashPassword()
 const cloudinaryService = new CloudinaryService()
 const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService,cloudinaryService)
-const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository,hashService,subsriptionRepository)
+const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository,hashService)
 const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(otpService,signUpOtpEmailContentGenerator,emailService,gymAdminRepository,cacheService)
 export const injectedGymAdminSingUpController = new SignUpController(verifyEmailAndOtpUseCase,signUpUseCase)
 export const injectedGymAdminLoginController = new GymAdminLoginController(loginUseCase,jwtService);
@@ -37,4 +50,20 @@ export const injectedGymAdminLoginController = new GymAdminLoginController(login
 export const injectAuthMiddleware = new AuthMiddleware(jwtService,cacheService);
 
 const tokenValidtionUseCase = new TokenValidationUseCase(jwtService,cacheService);
-export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase)
+export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase);
+
+// trainer management
+const trainerRepository = new TrainerRepository(trainerModel);
+const passwordGenerator = new PasswordGenerator()
+const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
+const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
+const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
+export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers);
+
+//subscription list controller
+const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
+export const injectedListSubscriptionController = new subscriptionlistController(listAllActiveSubscription);
+
+const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
+const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepository,subsriptionRepository,gymAdminRepository)
+export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)

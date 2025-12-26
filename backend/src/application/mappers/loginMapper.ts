@@ -32,7 +32,7 @@ export class LoginMapper {
     static memberLoginMapper(member:MemberEntity):MemberLoginResponseDTO{
         return {
             _id:member._id?.toString() ||"",
-            firstName:member.firstName || "",
+            name:member.name || "",
             email:member.email || "",
             role:member.role || "",
             status:member.status || ""

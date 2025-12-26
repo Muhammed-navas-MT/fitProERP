@@ -3,5 +3,5 @@ export interface IBaseRepository<T> {
     blockById(id:string):Promise<boolean>;
     unBlockById(id:string):Promise<boolean>;
     findById(id:string):Promise<T | null>;
-    update(data:T,id:string):Promise<boolean>;
+    update(data:Partial<T>,id:string):Promise<boolean>;
 }

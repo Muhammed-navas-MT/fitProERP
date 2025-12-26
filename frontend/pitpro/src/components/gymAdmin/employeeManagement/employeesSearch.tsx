@@ -13,7 +13,6 @@ export function EmployeesSearch() {
 
   return (
     <div className="mb-6 rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 lg:p-6">
-      {/* Search Bar */}
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
         <Input
@@ -23,7 +22,6 @@ export function EmployeesSearch() {
         />
       </div>
 
-      {/* Date Filters */}
       <div className="flex flex-col gap-4 lg:flex-row">
         <div className="flex-1">
           <label className="mb-2 block text-sm text-white">Starting date</label>

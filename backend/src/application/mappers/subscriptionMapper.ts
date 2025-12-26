@@ -1,5 +1,6 @@
 import { SubscriptionEntity } from "../../domain/entities/superAdmin/subscriptionEntity";
 import { Durations } from "../../domain/enums/duration";
+import { IListActiveSubscriptionResponseDTO } from "../dtos/gymAdminDto/subscriptionDto";
 import { IListSubscriptionRequestDTO, IListSubscriptionResponseDTO, ISubscriptionResponseDTO } from "../dtos/superAdminDto/subscriptionDto";
 
 export class SubscriptionMapper {
@@ -32,4 +33,18 @@ export class SubscriptionMapper {
 
         }
     }
+
+    static toListAllActiveSubscriptionResponse(
+  subscriptions: SubscriptionEntity[],
+): IListActiveSubscriptionResponseDTO {
+  return subscriptions?.map(subscription => ({
+    id: subscription._id?.toString(),
+    planName: subscription.planName,
+    price: subscription.price,
+    duration: subscription.duration,
+    features: subscription.features,
+    isActive: subscription.isActive
+  })) ?? [];
+}
+
 }

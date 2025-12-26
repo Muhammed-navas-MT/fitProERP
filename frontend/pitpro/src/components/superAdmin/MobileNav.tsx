@@ -1,4 +1,7 @@
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
+import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook"
+import { clearSuperAdminData } from "@/store/slice/superAdminSlice"
+import { deleteToken } from "@/store/slice/tokenSlice"
 import { 
   LayoutDashboard, 
   BarChart3, 
@@ -7,14 +10,27 @@ import {
   Wallet,
   LogOut
 } from "lucide-react"
+import { useDispatch } from "react-redux"
 
 interface MobileNavProps {
   activeTab?: string
-  onLogout?: () => void
   onTabChange?: (tabId: string) => void
 }
 
-export default function MobileNav({ activeTab = "dashboard", onLogout, onTabChange }: MobileNavProps) {
+export default function MobileNav({ activeTab = "dashboard", onTabChange }: MobileNavProps) {
+  const dispatch = useDispatch()
+  const { mutate: logout } = useSuperAdminLogout();
+  const onLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        dispatch(deleteToken());
+        dispatch(clearSuperAdminData());
+      },
+      onError: (error) => {
+        console.error(error.message);
+      },
+    });
+  };
   const menuItems = [
     { id: "dashboard", icon: LayoutDashboard, label: "Dashboard", href: `#`  },
     { id: "analytics", icon: BarChart3, label: "Analytics", href: `#` },

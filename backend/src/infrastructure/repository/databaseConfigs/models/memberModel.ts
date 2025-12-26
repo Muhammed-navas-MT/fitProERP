@@ -3,14 +3,13 @@ import { memberSchema } from "../schemas/memberSchema";
 import { Status } from "../../../../domain/enums/status";
 import { Roles } from "../../../../domain/enums/roles";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
-import { BloodGroups } from "../../../../domain/enums/bloocGroup";
 
 export interface IMemberModel extends Document {
     _id: string;
     gymId: string;
     branchId?: string;
     trainerId: string;
-    firstName: string;
+    name: string;
     email: string;
     phone: string;
     profileImg?: string;
@@ -23,19 +22,18 @@ export interface IMemberModel extends Document {
         dateOfBirth: Date;
         weight: {
             value: number;
-            unit: string;
+            unit?: string;
         };
         height: {
             value: number;
-            unit: string;
+            unit?: string;
         };
         targetWeight: {
             value: number;
-            unit: string;
+            unit?: string;
         };
-        bloodGroup: BloodGroups;
-        medicalConditions: string;
-        allergies: string;
+        medicalConditions?: string;
+        allergies?: string;
         fitnessGoal: string;
     };
     package?: {

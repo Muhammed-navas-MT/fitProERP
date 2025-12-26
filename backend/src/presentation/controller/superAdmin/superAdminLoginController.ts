@@ -4,14 +4,14 @@ import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { LoginRequestDTO } from "../../../application/dtos/auth/loginDto";
 import { IJwtService } from "../../../application/interfaces/service/jwtServiceInterface";
 import { setCookie } from "../../shared/utils/setCookie";
-import { ITokenValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
+import { ITokenInValidationUseCase } from "../../../application/interfaces/useCase/auth/tokenValidationUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 
 export class SuperAdminController {
     constructor (
         private _superAdminLoginUseCase:SuperAdminLoginUseCase,
         private _jwtService:IJwtService,
-        private _tokenValidation:ITokenValidationUseCase
+        private _tokenValidation:ITokenInValidationUseCase
     ){}
 
      async superAdminLogin(req:Request,res:Response,next:NextFunction):Promise<void>{
@@ -23,14 +23,14 @@ export class SuperAdminController {
             const refreshToken = this._jwtService.createRefreshTken({id:superAdmin.id,role:superAdmin.role,subdomain:""})
             
             setCookie(res,"refreshToken",refreshToken,{
-                maxAge:60,
+                maxAge:7 * 24 * 60 * 60 * 1000,
                 httpOnly:true,
                 secure:true
             })
             ResponseHelper.success(
                 200,
                 res,
-                "superAdmin login successful",
+                "superAdmin login successfully",
                {data:superAdmin,accessToken}
             );
         } catch (error) {
@@ -48,7 +48,7 @@ export class SuperAdminController {
             ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,
                 res,
-                "superAdmin login successful"  
+                "superAdmin logout successfully"
             )
         } catch (error) {
             next(error);

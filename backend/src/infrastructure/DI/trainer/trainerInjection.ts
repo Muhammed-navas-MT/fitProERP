@@ -1,8 +1,6 @@
-import { TrainerSignUpController } from "../../../presentation/controller/trainer/trainerSignupController";
 import { EmailService } from "../../services/IEmail/emailService";
 import { TrainerRepository } from "../../repository/trainer/trainerRepo";
 import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
-import { SingupTrainerUseCase } from "../../../application/useCases/trainer/trainerSignUpUseCase";
 import { HashPassword } from "../../services/hashService";
 import { AddMemberController } from "../../../presentation/controller/trainer/addMemberController";
 import { AddMemberUseCase } from "../../../application/useCases/trainer/addMemberUseCase";
@@ -18,13 +16,9 @@ import { JwtService } from "../../services/jwtService";
 
 const emailService = new EmailService()
 const hashService = new HashPassword();
-const passwordGenerator = new PasswordGenerator()
 const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
 const trainerRepository = new TrainerRepository(trainerModel)
-const gymAdminRepository = new GymAdminRepository(gymAdminModel)
-const singupTrainerUseCase = new SingupTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator)
-export const injectedTrainerSignUpController = new TrainerSignUpController(singupTrainerUseCase);
-
+const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const loginUseCase = new TrainerLoginUseCase(trainerRepository,hashService,gymAdminRepository);
 const jwtService = new JwtService();
 export const injectedTrainerLoginController = new TrainerLoginController(loginUseCase,jwtService);

@@ -11,7 +11,10 @@ export const API_ROUTES = {
             UNBLOCK_SUBSCRIPTION:"/unblock_subscription",
             FIND_SUBSCRIPTION:"/subsctiption",
             UPDATE_SUBSCRIPTION:"/update_subscription",
-            LIST_SUBSCRIPTION:"/list_subscription"
+            LIST_SUBSCRIPTION:"/list_subscription",
+            LIST_GYM:"/list_gym",
+            BLOCK_GYM:"/block_gyms/:gymId",
+            UNBLOCK_GYM:"/unblock_gym/:gymId",
         },
 
     GYMADMIN:{
@@ -22,8 +25,11 @@ export const API_ROUTES = {
             SIGNUP:"/signup",
             LOGIN:"/login",
             LOGOUT:"/logout",
-            LISTTRAINER:"/list_trainers"
-        }
+        },
+        LISTTRAINER:"/list_trainers",
+        CREATE_TRAINER:"/create_trainer",
+        LISTSUBSCRIPTION:"/list_active_subscription",
+        PURCHASESUBSCRIPTION:"/purchase_subscription",
     },
 
     TRAINER:{
@@ -34,6 +40,7 @@ export const API_ROUTES = {
             SIGNUP:"/signup",
             LOGIN:"/login",
         },
-        ADD_MEMBER:"/add_member"
+        ADD_MEMBER:"/add_member",
+        LIST_MEMBER:"/list_members"
     }
 }

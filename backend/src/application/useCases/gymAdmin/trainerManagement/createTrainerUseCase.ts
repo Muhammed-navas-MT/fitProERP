@@ -1,23 +1,17 @@
-import {
-  AlreadyExistException,
-  ForbiddenException,
-  NOtFoundException,
-} from "../../constants/exceptions";
-import { IHashService } from "../../interfaces/service/hashServiceInterface";
-import { ITrainerRepository } from "../../interfaces/repository/trainer.ts/tranerRepoInterface";
-import { ISingupTrainerUseCase } from "../../interfaces/useCase/trainer/signUpUseCaseInterface";
-import { ITrainerSignUpRequestDTO } from "../../dtos/auth/trainerDto";
-import { TrainerError } from "../../../presentation/shared/constants/errorMessage/trainerMessage";
-import { IPasswordGenerator } from "../../interfaces/service/passwordGenerator";
-import { IEmailService } from "../../interfaces/service/IEmail/emailServiceInterface";
-import { EmailPayloadType } from "../../../domain/type/emailPayload";
-import { ISendPasswordEmailContentGenerator } from "../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
-import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
-import { Status } from "../../../domain/enums/status";
-import { IListTrainerRequestDTO, IListTrainerResponseDTO } from "../../dtos/trainerDto/listAllTrainerDto";
-import { TrainerMapper } from "../../mappers/trainerMapper";
+import { Status } from "../../../../domain/enums/status";
+import { EmailPayloadType } from "../../../../domain/type/emailPayload";
+import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
+import { AlreadyExistException, ForbiddenException, NOtFoundException } from "../../../constants/exceptions";
+import { ITrainerCreateRequestDTO } from "../../../dtos/auth/trainerDto";
+import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
+import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
+import { IHashService } from "../../../interfaces/service/hashServiceInterface";
+import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
+import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
+import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
+import { ICreateTrainerUseCase } from "../../../interfaces/useCase/gymAdmin/trainerManagement/createTrainerUseCaseInterface";
 
-export class SingupTrainerUseCase implements ISingupTrainerUseCase {
+export class CreateTrainerUseCase implements ICreateTrainerUseCase {
   private _trainerRepository: ITrainerRepository;
   private _hashService: IHashService;
   private _passwordGenerator: IPasswordGenerator;
@@ -40,7 +34,8 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
     this._gymAdminRepository = gymAdminRepository;
     this._sendPasswordEmailContentGenerator = sendPasswordEmailContentGenerator;
   }
-  async signUp(data: ITrainerSignUpRequestDTO): Promise<void> {
+  async create(data: ITrainerCreateRequestDTO): Promise<void> {
+    console.log("navass....")
     try {
       const findTrainer = await this._trainerRepository.findByEmail(data.email);
       if (findTrainer) {
@@ -55,7 +50,7 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
       }
 
       const password = await this._passwordGenerator.generate();
-      console.log(password, "fordsfsda");
+      console.log(password)
       const hashPassword = await this._hashService.hash(password);
       await this._trainerRepository.create({ ...data, password: hashPassword });
 
@@ -67,17 +62,12 @@ export class SingupTrainerUseCase implements ISingupTrainerUseCase {
       });
       const payload: EmailPayloadType = {
         recieverMailId: data.email,
-        subject: "Trainer Created Successfully",
+        subject: "Your Created Successfully",
         content: htmlContent,
       };
       await this._emailService.sendEmail(payload);
     } catch (error) {
       throw error;
     }
-  }
-  async listAllTrainers(params: IListTrainerRequestDTO): Promise<IListTrainerResponseDTO | null> {
-      let {trainers,total} = await this._trainerRepository.listAllTrainers(params);
-      const response:IListTrainerResponseDTO = TrainerMapper.toListTrainersResponse(trainers,total,params);
-      return response;
   }
 }

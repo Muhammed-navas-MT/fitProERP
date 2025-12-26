@@ -26,4 +26,5 @@ export interface IListTrainerRequestDTO {
     search:string;
     page:number;
     limit:number;
+    gymId:string;
 }

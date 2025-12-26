@@ -3,6 +3,7 @@ import { IMemberRepository } from "../../../application/interfaces/repository/me
 import { IMemberModel } from "../databaseConfigs/models/memberModel";
 import { Model } from "mongoose";
 import { MemberEntity } from "../../../domain/entities/member/memberEntity";
+import { IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
 
 export class MemberRepository extends BaseRepository<IMemberModel> implements IMemberRepository {
     constructor(model:Model<IMemberModel>){
@@ -16,5 +17,17 @@ export class MemberRepository extends BaseRepository<IMemberModel> implements IM
        } catch (error) {
         throw error;
        }
+   };
+
+   async listAllMembers(params: IListMemberRequestDTO, gymId: string): Promise<{ members: MemberEntity[]; total: number; }> {
+        const skip = (params.page-1)* params.limit;
+        const search = params.search?.trim();
+        const filter = search ? {gymId,name:{$regex:search,$options:"i"}}:{gymId};
+        const members = await this._model.find(filter)
+        .skip(skip)
+        .limit(params.limit)
+        .sort({createdAt:-1});
+        const total = await this._model.countDocuments(filter);
+        return {members,total};
    }
 }

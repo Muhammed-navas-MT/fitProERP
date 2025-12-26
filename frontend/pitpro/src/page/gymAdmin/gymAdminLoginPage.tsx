@@ -3,6 +3,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { useGymAdminLogin } from "@/hook/gymAdmin/gymAdminLoginHook";
 import { setAuthContext } from "@/store/slice/authContextState";
 import { setGymAdminData } from "@/store/slice/gymAdminSlice";
+import { setToken } from "@/store/slice/tokenSlice";
 import { LoginPayload } from "@/types/authPayload";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,20 +14,33 @@ export default function GymAdminLoginPage() {
   const dispatch = useDispatch();
   const { mutate: login, isPending } = useGymAdminLogin();
 
-  const handleLogin = (data:LoginPayload) => {
-    login(data,{
-        onSuccess:(res)=>{
-            toast.success(res.data.message||"Login successfully");
-            dispatch(setGymAdminData(res.data.data))
-            console.log(res.data.data.subdomain,"from gym admin login page...")
-            dispatch(setAuthContext({role:"GYMADMIN",subdomain:res.data.data.subdomain}));
-            navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`);
-        },
-        onError:(err)=>{
-            toast.error(err.message||"please try again");
-        }
-    });
-  };
+  const handleLogin = (data: LoginPayload) => {
+  login(data, {
+    onSuccess: (res) => {
+      const gymAdmin = res.data.data;
+
+      toast.success(res.data.message || "Login successful");
+
+      dispatch(setGymAdminData(gymAdmin));
+      dispatch(
+        setAuthContext({
+          role: "GYMADMIN",
+          subdomain: gymAdmin.subdomain,
+        })
+      );
+      dispatch(setToken(res.data.accessToken));
+      navigate(
+        `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`,
+        { replace: true }
+      );
+    },
+    onError: (err) => {
+      toast.error(err?.message || "Please try again");
+    },
+  });
+};
+
+
 
   return (
     <div className="min-h-screen bg-[#0D0F12] flex items-center justify-center px-4">

@@ -1,10 +1,11 @@
 import { EmployeeCard } from "@/components/gymAdmin/employeeManagement/employeeCard";
 import { Button } from "@/components/ui/button";
 import { useGetAllTrainers } from "@/hook/gymAdmin/trainerManagementHook";
+import { rootstate } from "@/store/store";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export type EmployeeStatus = "ACTIVE" | "INACTIVE" | "PENDING";
-
 export interface Trainer {
   id: string;
   name: string;
@@ -21,7 +22,9 @@ export function EmployeesList() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {data,isPending} = useGetAllTrainers(page, searchQuery);
+  const {_id} = useSelector((state:rootstate)=>state.gymAdminData);
+
+  const {data,isPending} = useGetAllTrainers(page, searchQuery,_id);
   if (isPending) return null;
 
   const trainers: Trainer[] = data?.data?.data ?? [];
@@ -51,7 +54,6 @@ export function EmployeesList() {
         )}
       </div>
 
-      {/* Pagination */}
       <div className="mt-6 flex justify-center gap-2">
         <Button
           variant="outline"

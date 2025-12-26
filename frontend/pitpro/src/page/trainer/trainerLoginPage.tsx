@@ -18,10 +18,9 @@ export default function TrainerLoginPage() {
     login(data,{
         onSuccess:(res)=>{
             toast.success(res?.data?.message|| "Login successfully");
-            console.log(res.data.data,"from trainer login success...")
             dispatch(setTrainerData(res.data.data));
             dispatch(setAuthContext({role:res.data.data.role,subdomain:res.data.data.subdomain}));
-            dispatch(setToken(res.data.data.accessToken))
+            dispatch(setToken(res.data.accessToken))
             navigate(`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`);
         },
         onError:(err)=>{
