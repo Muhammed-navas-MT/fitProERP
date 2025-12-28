@@ -2,6 +2,7 @@ import { ROUTES } from "../shared/constants/routes";
 import { Response,Request,NextFunction,Router} from "express";
 import { injectedGymManagementController, injectedSubscriptionController, injectedSuperAdminController } from "../../infrastructure/DI/superAdmin/superAdminInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectedListSubscriptionController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 
 export class SuperAdminRoutes {
     private _route: Router;
@@ -17,6 +18,10 @@ export class SuperAdminRoutes {
         this._route.post(SUPERADMIN_AUTH.LOGIN,(req:Request,res:Response,next:NextFunction)=>{
             injectedSuperAdminController.superAdminLogin(req,res,next)
         });
+
+        this._route.get(ROUTES.GYMADMIN.LISTSUBSCRIPTION,(req:Request,res:Response,next:NextFunction)=>{
+            injectedListSubscriptionController.listAllActiveSubscription(req,res,next);
+        })
 
         this._route.use(injectAuthMiddleware.verify)
 
@@ -58,6 +63,18 @@ export class SuperAdminRoutes {
 
         this._route.put(SUPERADMIN_AUTH.UNBLOCK_GYM,(req:Request,res:Response,next:NextFunction)=>{
             injectedGymManagementController.unBlockGym(req,res,next);
+        });
+
+        this._route.get(SUPERADMIN_AUTH.DETAIL_GYM,(req:Request,res:Response,next:NextFunction)=>{
+            injectedGymManagementController.findGym(req,res,next);
+        });
+
+        this._route.put(SUPERADMIN_AUTH.APPROVE_GYM,(req:Request,res:Response,next:NextFunction)=>{
+            injectedGymManagementController.approveGym(req,res,next);
+        });
+
+        this._route.post(SUPERADMIN_AUTH.REJECT_GYM,(req:Request,res:Response,next:NextFunction)=>{
+            injectedGymManagementController.rejectGym(req,res,next);
         })
     }
 

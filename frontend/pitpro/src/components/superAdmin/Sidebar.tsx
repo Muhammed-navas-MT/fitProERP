@@ -43,12 +43,33 @@ export default function Sidebar({
   const location = useLocation();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: `${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}` },
-    { icon: BarChart3, label: "Analytics", href: "#" },
-    { icon: CreditCard, label: "Subscription", href: `${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}` },
-    { icon: Building2, label: "Gyms", href: FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS },
-    { icon: Wallet, label: "Payments", href: "#" },
-  ];
+  {
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}`,
+  },
+  {
+    icon: BarChart3,
+    label: "Analytics",
+    href: "#",
+  },
+  {
+    icon: CreditCard,
+    label: "Subscription",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`,
+  },
+  {
+    icon: Building2,
+    label: "Gyms",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS}`,
+  },
+  {
+    icon: Wallet,
+    label: "Payments",
+    href: "#",
+  },
+];
+
 
   const getLinkClasses = (href: string) => {
     const isActive = location.pathname === href;

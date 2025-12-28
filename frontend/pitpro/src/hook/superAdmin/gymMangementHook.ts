@@ -1,4 +1,4 @@
-import { blockGym, getGyms, unBlockGym } from "@/services/superAdmin/gymMangementService";
+import { approveGym, blockGym, findGymDetail, getGyms, rejectGym, unBlockGym } from "@/services/superAdmin/gymMangementService";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useGetGyms = (page: number, search: string) => {
@@ -21,3 +21,21 @@ export const useBlockGym = () => {
   });
 };
 
+export const useFindGym = (gymId:string)=>{
+  return useQuery({
+    queryKey:["gymDetail",gymId],
+    queryFn:()=>findGymDetail(gymId)
+  })
+};
+
+export const useApproveGym = () => {
+  return useMutation({
+    mutationFn: (gymId: string) => approveGym(gymId),
+  });
+};
+
+export const useRejectGym = () => {
+  return useMutation({
+    mutationFn:(data:{gymId: string,reason:string}) => rejectGym(data.gymId,data.reason),
+  });
+};

@@ -18,7 +18,6 @@ export class SignUpUseCase implements ISingupUseCase {
         this._cloudinaryService =cloudinaryService;
     }
     async signUp(data:ISignupRequsetDTO): Promise<void> {
-        console.log(data,"from datad  dadfa")
         try {
             const findGymAdmin = await this._gymAdminRepository.findByEmail(data.email);
             if(findGymAdmin){
@@ -39,8 +38,6 @@ export class SignUpUseCase implements ISingupUseCase {
             if (typeof data.insuranceCertificate !== "string") {
                 data.insuranceCertificate = await this._cloudinaryService.uploadImageToCloudinary(data.insuranceCertificate);
             }
-
-            console.log(data,"from signUp comdtroller");
 
             const gymAdminEntity = GymAdminMapper.toGymAdminEntity(data);
             await this._gymAdminRepository.create(gymAdminEntity);

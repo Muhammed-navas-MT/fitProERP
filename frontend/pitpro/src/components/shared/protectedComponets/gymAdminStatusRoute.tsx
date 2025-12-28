@@ -19,6 +19,16 @@ const GymAdminStatusRoute = () => {
     );
   }
 
+  if (gymAdmin.status === "PENDING") {
+    toast.error("Your account will verify in 24 hours");
+    return (
+      <Navigate
+        to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`}
+        replace
+      />
+    );
+  }
+
   if (gymAdmin.status === "IN_ACTIVE") {
     return (
       <Navigate

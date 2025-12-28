@@ -13,6 +13,7 @@ interface PricingPlan {
 
 export function PricingCards() {
   const { data, isLoading, isError, error } = useListSubscription();
+  console.log(data,"in list subscription landing pagee....")
   const plans: PricingPlan[] = Array.isArray(data?.data) ? data.data : [];
 
   if (isLoading) {

@@ -3,21 +3,32 @@ import Header from "@/components/superAdmin/Header";
 import SearchBar from "@/components/superAdmin/SearchBar";
 import Sidebar from "@/components/superAdmin/Sidebar";
 import MobileNav from "@/components/superAdmin/MobileNav";
-import { Eye, Ban } from "lucide-react";
-import { useGetGyms } from "@/hook/superAdmin/gymMangementHook";
+import { Eye, Check, X } from "lucide-react";
+import {
+  useGetGyms,
+  useBlockGym,
+  useUnBlockGym,
+  useApproveGym,
+  useRejectGym,
+} from "@/hook/superAdmin/gymMangementHook";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { useForm } from "react-hook-form";
 
 interface GymListItemDTO {
-    id: string;
-    gymName: string;
-    ownerName: string;
-    email: string;
-    phone: string;
-    plan: string;
-    branchesCount: number;
-    employeesCount: number;
-    status: string;
-    createdAt: string;
-  }
+  id: string;
+  gymName: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  plan: string;
+  branchesCount: number;
+  trainersCount: number;
+  status: string;
+  createdAt: string;
+}
 
 export default function GymsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,9 +36,28 @@ export default function GymsPage() {
   const [activeTab, setActiveTab] = useState("gyms");
   const [page, setPage] = useState(1);
 
-  const { data, isLoading } = useGetGyms(page, searchQuery);
+  const [approveGymId, setApproveGymId] = useState<string | null>(null);
+  const [rejectGymId, setRejectGymId] = useState<string | null>(null);
 
-  const gyms = data?.gyms ?? [];
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { data, isLoading } = useGetGyms(page, searchQuery);
+  const gyms = data?.data?.gyms ?? [];
+  const totalPages = data?.data?.totalPages ?? 1;
+  const totalGyms = data?.data?.totalGyms ?? 0;
+
+  const { mutate: blockGymMutate, isPending: isBlocking } = useBlockGym();
+  const { mutate: unBlockGymMutate, isPending: isUnBlocking } = useUnBlockGym();
+  const { mutate: approveGymMutate, isPending: isApproving } = useApproveGym();
+  const { mutate: rejectGymMutate, isPending: isRejecting } = useRejectGym();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<{ reason: string }>();
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -35,21 +65,35 @@ export default function GymsPage() {
   };
 
   const handleViewDetail = (gymId: string) => {
-    console.log("View gym:", gymId);
+    navigate(
+      `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/gym-detail/${gymId}`
+    );
   };
 
   const handleBlockGym = (gymId: string) => {
-    console.log("Block gym:", gymId);
+    blockGymMutate(gymId, {
+      onSuccess: (res) => {
+        toast.success(res.message);
+        queryClient.invalidateQueries({ queryKey: ["gyms"] });
+      },
+      onError: () => toast.error("Gym block failed"),
+    });
+  };
+
+  const handleUnblockGym = (gymId: string) => {
+    unBlockGymMutate(gymId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["gyms"] });
+      },
+    });
   };
 
   return (
     <div className="min-h-screen bg-[#0a0b0d] text-white">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block fixed left-0 top-0 h-screen">
         <Sidebar isOpen />
       </div>
 
-      {/* Mobile Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -85,7 +129,7 @@ export default function GymsPage() {
                       "Owner",
                       "Plan",
                       "Branches",
-                      "Employees",
+                      "Trainers",
                       "Status",
                       "Actions",
                     ].map((head) => (
@@ -104,6 +148,17 @@ export default function GymsPage() {
                     <tr>
                       <td colSpan={7} className="text-center py-6">
                         Loading...
+                      </td>
+                    </tr>
+                  )}
+
+                  {!isLoading && gyms.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="text-center py-6 text-gray-500"
+                      >
+                        No gyms found
                       </td>
                     </tr>
                   )}
@@ -132,11 +187,19 @@ export default function GymsPage() {
                           {gym.branchesCount}
                         </td>
                         <td className="px-6 py-4 text-center">
-                          {gym.employeesCount}
+                          {gym.trainersCount}
                         </td>
 
                         <td className="px-6 py-4 text-center">
-                          <span className="bg-blue-600 px-3 py-1 rounded-full text-xs">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs ${
+                              gym.status === "PENDING"
+                                ? "bg-yellow-600"
+                                : gym.status === "ACTIVE"
+                                ? "bg-green-600"
+                                : "bg-red-600"
+                            }`}
+                          >
                             {gym.status}
                           </span>
                         </td>
@@ -145,17 +208,46 @@ export default function GymsPage() {
                           <div className="flex justify-end gap-2">
                             <button
                               onClick={() => handleViewDetail(gym.id)}
-                              className="border border-gray-700 px-3 py-1.5 rounded-lg text-sm"
+                              className="border border-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-800"
                             >
                               <Eye size={14} />
                             </button>
 
-                            <button
-                              onClick={() => handleBlockGym(gym.id)}
-                              className="bg-red-600 px-3 py-1.5 rounded-lg text-sm"
-                            >
-                              <Ban size={14} />
-                            </button>
+                            {gym.status === "PENDING" ? (
+                              <>
+                                <button
+                                  onClick={() => setApproveGymId(gym.id)}
+                                  className="bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-lg flex items-center gap-1"
+                                >
+                                  <Check size={14} />
+                                  Approve
+                                </button>
+
+                                <button
+                                  onClick={() => setRejectGymId(gym.id)}
+                                  className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg flex items-center gap-1"
+                                >
+                                  <X size={14} />
+                                  Reject
+                                </button>
+                              </>
+                            ) : gym.status === "ACTIVE" ? (
+                              <button
+                                onClick={() => handleBlockGym(gym.id)}
+                                disabled={isBlocking}
+                                className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg disabled:opacity-50"
+                              >
+                                Block
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleUnblockGym(gym.id)}
+                                disabled={isUnBlocking}
+                                className="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg disabled:opacity-50"
+                              >
+                                Unblock
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -163,14 +255,131 @@ export default function GymsPage() {
                 </tbody>
               </table>
             </div>
+
+            {!isLoading && (
+              <div className="p-4 sm:p-6 border-t border-gray-800 flex justify-between">
+                <div className="text-sm text-gray-400">
+                  Page {page} of {totalPages} ({totalGyms} gyms)
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage(page - 1)}
+                    disabled={page === 1}
+                    className="px-4 py-2 border border-gray-700 rounded-lg disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+
+                  <button
+                    onClick={() => setPage(page + 1)}
+                    disabled={page >= totalPages}
+                    className="px-4 py-2 border border-gray-700 rounded-lg disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <MobileNav
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
+      <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {approveGymId && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-[#111418] border border-gray-800 rounded-xl p-6 w-full max-w-sm">
+            <h3 className="text-lg font-semibold mb-4">Approve Gym</h3>
+            <p className="text-gray-400 mb-6">
+              Are you sure you want to approve this gym?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setApproveGymId(null)}
+                className="px-4 py-2 border border-gray-700 rounded-lg"
+              >
+                Cancel
+              </button>
+
+              <button
+                disabled={isApproving}
+                onClick={() =>
+                  approveGymMutate(approveGymId, {
+                    onSuccess: () => {
+                      toast.success("Gym approved");
+                      queryClient.invalidateQueries({ queryKey: ["gyms"] });
+                      setApproveGymId(null);
+                    },
+                  })
+                }
+                className="px-4 py-2 bg-green-600 rounded-lg disabled:opacity-50"
+              >
+                Approve
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {rejectGymId && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-[#111418] border border-gray-800 rounded-xl p-6 w-full max-w-sm">
+            <h3 className="text-lg font-semibold mb-4">Reject Gym</h3>
+
+            <form
+              onSubmit={handleSubmit((data) => {
+                rejectGymMutate(
+                  { gymId: rejectGymId, reason: data.reason },
+                  {
+                    onSuccess: () => {
+                      toast.success("Gym rejected");
+                      queryClient.invalidateQueries({ queryKey: ["gyms"] });
+                      reset();
+                      setRejectGymId(null);
+                    },
+                  }
+                );
+              })}
+            >
+              <textarea
+                {...register("reason", { required: true })}
+                className="w-full bg-[#0a0b0d] border border-gray-700 rounded-lg p-3 mb-3"
+                rows={4}
+                placeholder="Enter rejection reason"
+              />
+
+              {errors.reason && (
+                <p className="text-red-500 text-xs mb-3">
+                  Reason is required
+                </p>
+              )}
+
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    reset();
+                    setRejectGymId(null);
+                  }}
+                  className="px-4 py-2 border border-gray-700 rounded-lg"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={isRejecting}
+                  className="px-4 py-2 bg-red-600 rounded-lg disabled:opacity-50"
+                >
+                  Reject
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

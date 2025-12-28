@@ -1,6 +1,5 @@
-"use client"
-
 import { useState } from "react"
+import { useFindGym } from "@/hook/superAdmin/gymMangementHook"
 import Sidebar from "@/components/superAdmin/Sidebar"
 import Header from "@/components/superAdmin/Header"
 import MobileNav from "@/components/superAdmin/MobileNav"
@@ -8,95 +7,96 @@ import GymDetailHeader from "@/components/superAdmin/gymDetailHeader"
 import StatCard from "../../components/superAdmin/stateCard"
 import OwnerInfoCard from "@/components/superAdmin/ownerInfoCard"
 import SubscriptionCard from "@/components/superAdmin/subscriptionCard"
-
-// Sample gym data - in a real app, this would be fetched based on the ID
-const gymData = {
-  id: "1",
-  name: "PowerFit Gym",
-  status: "active" as const,
-  totalMembers: 986,
-  totalBranches: 3,
-  totalEmployees: 37,
-  owner: {
-    name: "John Smith",
-    email: "john@powerfit.com",
-    phone: "+1 (555) 123-4567",
-    address: "123 Fitness Street, New York, NY 10001",
-  },
-  subscription: {
-    currentPlan: "Professional",
-    monthlyCost: "35,000",
-    memberSince: "2024-01-15",
-  },
-}
+import { useNavigate, useParams } from "react-router-dom"
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
+import DocumentCard from "@/components/superAdmin/documentCard"
+import ImagePreviewModal from "@/components/modal/imagePreviewModal"
 
 export default function GymDetailPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-
-  const handleLogout = () => {
-    console.log("Logging out...")
-  }
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const { gymId } = useParams<{ gymId: string }>()
+  const { data, isLoading, isError } = useFindGym(gymId||"");
+  const gymAdminData = data?.data;
+  const navigate = useNavigate();
 
   const handleBack = () => {
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS}`)
   }
 
-  const handleBlock = () => {
-    console.log("Block gym:", gymData.id)
-  }
+  if (isLoading) return <div className="p-6 text-white">Loading...</div>
+  if (isError || !gymAdminData) return <div className="p-6 text-red-500">Failed to load gym details.</div>
 
   return (
     <div className="flex h-screen bg-[#0a0b0d] overflow-hidden">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <Sidebar onLogout={handleLogout} isOpen={true} />
+        <Sidebar isOpen={true} />
       </div>
 
-      {/* Mobile Sidebar */}
-      <Sidebar onLogout={handleLogout} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} isMobile={true} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        isMobile
+      />
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header title="" description="" showMenuButton={true} onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <Header
+          title="Gym Details"
+          description={`Manage ${gymAdminData.name} in the system`}
+          showMenuButton
+          onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
 
         <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
-          {/* Gym Detail Header */}
           <GymDetailHeader
-            gymName={gymData.name}
-            gymId={gymData.id}
-            status={gymData.status}
+            gymName={gymAdminData.name}
+            gymId={gymAdminData.id}
+            status={gymAdminData.status}
             onBack={handleBack}
-            onBlock={handleBlock}
           />
 
-          {/* Content */}
           <div className="p-6 space-y-6">
-            {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard title="Total Members" value={gymData.totalMembers} />
-              <StatCard title="Total Branches" value={gymData.totalBranches} />
-              <StatCard title="Total Employees" value={gymData.totalEmployees} />
+              <StatCard title="Total Members" value={gymAdminData.totalMembers} />
+              <StatCard title="Total Branches" value={gymAdminData.totalBranches} />
+              <StatCard title="Total Trainers" value={gymAdminData.totalTrainers} />
             </div>
 
-            {/* Owner and Subscription Info */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <OwnerInfoCard
-                name={gymData.owner.name}
-                email={gymData.owner.email}
-                phone={gymData.owner.phone}
-                address={gymData.owner.address}
+              <OwnerInfoCard {...gymAdminData.owner} />
+              {gymAdminData.subscription && (
+                <SubscriptionCard
+                  currentPlan={gymAdminData.subscription.currentPlan}
+                  price={gymAdminData.subscription.price}
+                  memberSince={gymAdminData.subscription.memberSince}
+                />
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <DocumentCard
+                title="Business License"
+                image={gymAdminData.businessLicense}
+                onClick={setPreviewImage}
               />
-              <SubscriptionCard
-                currentPlan={gymData.subscription.currentPlan}
-                monthlyCost={gymData.subscription.monthlyCost}
-                memberSince={gymData.subscription.memberSince}
+              <DocumentCard
+                title="Insurance Certificate"
+                image={gymAdminData.insuranceCertificate}
+                onClick={setPreviewImage}
               />
             </div>
           </div>
         </main>
       </div>
 
-      {/* Mobile Navigation */}
-      <MobileNav activeTab="gyms" onLogout={handleLogout} />
+      <MobileNav activeTab="gyms" />
+
+      {previewImage && (
+        <ImagePreviewModal
+          image={previewImage}
+          onClose={() => setPreviewImage(null)}
+        />
+      )}
     </div>
   )
 }

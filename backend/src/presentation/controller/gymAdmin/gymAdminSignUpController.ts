@@ -11,6 +11,7 @@ import { GymAdminAuthError } from "../../shared/constants/errorMessage/gymAdminA
 import { ISingupUseCase } from "../../../application/interfaces/useCase/gymAdmin/gymAdminSignUpUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { MulterFiles } from "../../types/multerFileType";
+import cloudinary from "../../../config/cloudinary";
 
 export class SignUpController {
     constructor(private _VerifyEmailAndOtpUseCase:IVerifyEmailAndOtpUseCase,private _singupUseCase:ISingupUseCase){};
@@ -52,18 +53,30 @@ export class SignUpController {
 
     async signup(req:Request,res:Response,next:NextFunction) {
         try {
-            console.log(req.files)
             const gymAdminData:ISignupRequsetDTO = req.body;
-            console.log(req.body)
             gymAdminData.subdomain = gymAdminData.gymName.toLowerCase();
             const files = req.files as {
                 [fieldname:string]:Express.Multer.File[];
             };
-            gymAdminData.logo = files?.logo?.[0]?.path;
-            gymAdminData.businessLicense = files?.businessLicense?.[0]?.path;
-            gymAdminData.insuranceCertificate = files?.insuranceCertificate?.[0]?.path;
+        if (files?.logo?.[0]) {
+            const result = await cloudinary.uploader.upload(files.logo[0].path, {
+                folder: "gym_logos",
+            })
+            gymAdminData.logo = result.secure_url
+        }
+        if (files?.businessLicense?.[0]) {
+            const result = await cloudinary.uploader.upload(files.businessLicense[0].path, {
+                folder: "gym_documents",
+            })
+            gymAdminData.businessLicense = result.secure_url
+        }
 
-            console.log(gymAdminData)
+        if (files?.insuranceCertificate?.[0]) {
+            const result = await cloudinary.uploader.upload(files.insuranceCertificate[0].path, {
+                folder: "gym_documents",
+            })
+            gymAdminData.insuranceCertificate = result.secure_url
+        }
 
             const zodValication =signupSchema.safeParse(gymAdminData);
             if(zodValication.error){
@@ -74,7 +87,6 @@ export class SignUpController {
             if(confirmPassword.error){
                 throw new InvalidDataException(GymAdminAuthError.PASSWORDS_DO_NOT_MATCH)
             };
-
             await this._singupUseCase.signUp(gymAdminData);
             
             ResponseHelper.success(
