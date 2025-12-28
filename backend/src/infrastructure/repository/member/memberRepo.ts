@@ -29,5 +29,9 @@ export class MemberRepository extends BaseRepository<IMemberModel> implements IM
         .sort({createdAt:-1});
         const total = await this._model.countDocuments(filter);
         return {members,total};
-   }
+   };
+
+   async countMembersByGymId(gymId: string): Promise<number> {
+        return await this._model.countDocuments({gymId})
+    }
 }

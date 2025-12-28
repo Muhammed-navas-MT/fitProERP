@@ -3,7 +3,8 @@ import { IGymAdminModel } from "../databaseConfigs/models/gymAdminModel";
 import { Model } from "mongoose";
 import { BaseRepository } from "../base/baseRepo";
 import { GymAdminEntity } from "../../../domain/entities/gymAdmin/gymAdminEntity";
-import { IListGymsRequestDTO } from "../../../application/dtos/gymAdminDto/gymManagementDtos";
+import { IListGymsRequestDTO } from "../../../application/dtos/superAdminDto/gymManagementDtos";
+import { Status } from "../../../domain/enums/status";
 
 export class GymAdminRepository
   extends BaseRepository<IGymAdminModel>
@@ -36,13 +37,13 @@ export class GymAdminRepository
 
     const gymsData = await this._model
       .find(filter)
-      .populate("subscriptionId", "planName")
+      .populate("packageId", "planName")
       .skip(skip)
       .limit(params.limit)
       .sort({ createdAt: -1 });
 
     type GymWithSubscription = GymAdminEntity & {
-      subscriptionId?: {
+      packageId?: {
         planName: string;
       };
     };
@@ -51,11 +52,21 @@ export class GymAdminRepository
 
       return {
         ...g,
-        planName: g.subscriptionId?.planName ?? "",
+        planName: g.packageId?.planName ?? "",
       };
     });
 
     const total = await this._model.countDocuments(filter);
     return { gyms, total };
   };
+
+  async unBlockById(id: string): Promise<boolean> {
+    const result = await this._model.updateOne({_id:id},{$set:{status:Status.ACTIVE}});
+    return result.modifiedCount >0;
+  }
+
+  async blockById(id: string): Promise<boolean> {
+    const result = await this._model.updateOne({_id:id},{$set:{status:Status.BLOCKED}});
+    return result.modifiedCount >0;
+  }
 }

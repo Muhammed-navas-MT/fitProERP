@@ -1,4 +1,4 @@
-import { IListGymsRequestDTO, IListGymsResponseDTO } from "../../../../dtos/gymAdminDto/gymManagementDtos";
+import { IListGymsRequestDTO, IListGymsResponseDTO } from "../../../../dtos/superAdminDto/gymManagementDtos";
 
 export interface IListGymsUseCase {
     listAllGym(params:IListGymsRequestDTO):Promise<IListGymsResponseDTO | null>;

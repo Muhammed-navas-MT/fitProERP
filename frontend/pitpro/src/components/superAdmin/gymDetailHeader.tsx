@@ -1,15 +1,15 @@
-import { ArrowLeft, Ban } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { StatusTypes } from "@/types/statusType"
 
 interface GymDetailHeaderProps {
   gymName: string
   gymId: string
-  status: "active" | "inactive" | "blocked"
+  status: StatusTypes
   onBack: () => void
-  onBlock: () => void
 }
 
-export default function GymDetailHeader({ gymName, gymId, status, onBack, onBlock }: GymDetailHeaderProps) {
+export default function GymDetailHeader({ gymName, gymId, status, onBack }: GymDetailHeaderProps) {
   return (
     <div className="flex items-center justify-between p-6 border-b border-gray-800">
       <div className="flex items-center gap-4">
@@ -24,17 +24,13 @@ export default function GymDetailHeader({ gymName, gymId, status, onBack, onBloc
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold text-white">{gymName}</h1>
-            {status === "active" && (
+            {status === "ACTIVE" && (
               <span className="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-full">active</span>
             )}
           </div>
           <p className="text-sm text-gray-400 mt-1">Gym ID: {gymId}</p>
         </div>
       </div>
-      <Button variant="destructive" onClick={onBlock} className="bg-red-600 hover:bg-red-700 text-white gap-2">
-        <Ban className="h-4 w-4" />
-        Block
-      </Button>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { GymAdminEntity } from "../../../../domain/entities/gymAdmin/gymAdminEntity";
 import { InvalidDataException } from "../../../constants/exceptions";
-import { IListGymsRequestDTO, IListGymsResponseDTO } from "../../../dtos/gymAdminDto/gymManagementDtos";
+import { IListGymsRequestDTO, IListGymsResponseDTO } from "../../../dtos/superAdminDto/gymManagementDtos";
 import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
 import { IListGymsUseCase } from "../../../interfaces/useCase/superAdmin/gymMangement/listGymsUseCaseInterFace";
@@ -17,7 +17,6 @@ export class ListGymUseCase implements IListGymsUseCase {
   ): Promise<IListGymsResponseDTO> {
     try {
       const { gyms, total } = await this.gymAdminRepository.listGyms(params);
-
       const gymsWithTrainerCount = await Promise.all(
         gyms.map(async (gym) => {
             if(!gym._id){

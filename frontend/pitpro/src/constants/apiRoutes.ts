@@ -13,8 +13,11 @@ export const API_ROUTES = {
             UPDATE_SUBSCRIPTION:"/update_subscription",
             LIST_SUBSCRIPTION:"/list_subscription",
             LIST_GYM:"/list_gym",
-            BLOCK_GYM:"/block_gyms/:gymId",
-            UNBLOCK_GYM:"/unblock_gym/:gymId",
+            BLOCK_GYM:"/block_gyms",
+            UNBLOCK_GYM:"/unblock_gym",
+            DETAIL_GYM:"/gym_detail",
+            APPROVE_GYM:"/gym_approve",
+            REJECT_GYM:"/gym_reject",
         },
 
     GYMADMIN:{

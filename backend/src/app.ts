@@ -24,7 +24,6 @@ class Express_app {
   }
 
   setMiddleware() {
-    console.log("asdfasdfasd");
     this._app.use(
       cors({
         origin: (origin, callback) => {

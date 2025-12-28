@@ -26,13 +26,12 @@ export class EmailService implements IEmailService {
       .catch((err) => console.log(" Gmail connection failed:", err));
   };
 
-  async sendEmail(email: Required<EmailPayloadType>): Promise<void> {
+  async sendEmail(data: Required<EmailPayloadType>): Promise<void> {
       try {
-        console.log("email " + email.recieverMailId);
         await this._transporter.sendMail({
-            to:email.recieverMailId,
-            subject:email.subject,
-            html:email.content
+            to:data.recieverMailId,
+            subject:data.subject,
+            html:data.content
         })
       } catch (error) {
         throw error

@@ -35,7 +35,6 @@ export class CreateTrainerUseCase implements ICreateTrainerUseCase {
     this._sendPasswordEmailContentGenerator = sendPasswordEmailContentGenerator;
   }
   async create(data: ITrainerCreateRequestDTO): Promise<void> {
-    console.log("navass....")
     try {
       const findTrainer = await this._trainerRepository.findByEmail(data.email);
       if (findTrainer) {

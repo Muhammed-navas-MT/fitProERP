@@ -13,6 +13,9 @@ export const ROUTES = {
             LIST_GYM:"/list_gym",
             BLOCK_GYM:"/block_gyms/:gymId",
             UNBLOCK_GYM:"/unblock_gym/:gymId",
+            DETAIL_GYM:"/gym_detail/:gymId",
+            APPROVE_GYM:"/gym_approve/:gymId",
+            REJECT_GYM:"/gym_reject/:gymId",
         },
     },
 

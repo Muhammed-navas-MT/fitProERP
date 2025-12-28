@@ -3,7 +3,7 @@ export const FRONTEND_ROUTES = {
     SUBSCRPIPTION:"/subscription",
     GYM_ADMIN: {
         BASE:"/gym-admin",
-        SIGNUP:"signup",
+        SIGNUP:"/signup",
         LOGIN:"login",
         OTP:"/gym-admin/otp-verification",
         DASHBOARD:"dashboard",
@@ -19,7 +19,7 @@ export const FRONTEND_ROUTES = {
         ADD_SUBSCRIPTION:"add-subscription",
         EDIT_SUBSCRIPTION:"edit-subscription/:id",
         LIST_GYMS:"gyms",
-        GYM_DETAIL:"gym-detail",
+        GYM_DETAIL:"gym-detail/:gymId",
     },
     TRAINER:{
         BASE:"/trainer",
