@@ -9,6 +9,7 @@ import ProtectedRoute from "@/components/shared/protectedComponets/protectedRout
 import SubscriptionListPage from "@/page/gymAdmin/SubscriptionListPag";
 import GymAdminStatusRoute from "@/components/shared/protectedComponets/gymAdminStatusRoute";
 import SubscriptionAccessRoute from "@/components/shared/protectedComponets/subscriptionAccessRoute";
+import BranchesPage from "@/page/gymAdmin/BranchListPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -53,6 +54,9 @@ const GymAdminRoutes = () => {
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}
             element={<EmployeesPage />}
           />
+          <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}
+           element={<BranchesPage/>}
+           />
         </Route>
       </Route>
     </Routes>

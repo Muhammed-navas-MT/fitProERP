@@ -33,4 +33,11 @@ export class TrainerRepository extends BaseRepository<ITrainerModel> implements 
     async countTrainersByGymId(gymId: string): Promise<number> {
         return await this._model.countDocuments({gymId})
     }
+
+    async countByBranchId(branchId: string): Promise<number> {
+    return this._model.countDocuments({
+      branchId,
+      isActive: true,
+    });
+  }
 }

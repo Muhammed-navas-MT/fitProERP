@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -76,6 +76,42 @@ export class GymAdminRoutes {
       GYMADMIN.PURCHASESUBSCRIPTION,
       (req:Request,res:Response,next:NextFunction)=>{
         injectedPurchaseSubscriptionController.handle(req,res,next);
+      }
+    );
+    this._route.post(
+      GYMADMIN.CREATE_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.createBranch(req,res,next);
+      }
+    );
+    this._route.get(
+      GYMADMIN.LIST_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.listBranches(req,res,next);
+      }
+    );
+    this._route.put(
+      GYMADMIN.BLOCK_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.blockBranch(req,res,next);
+      }
+    );
+    this._route.put(
+      GYMADMIN.UNBLOCK_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.unBlockBranch(req,res,next);
+      }
+    )
+    this._route.get(
+      GYMADMIN.FIND_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.findBranch(req,res,next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.UPDATE_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.updateBranch(req,res,next);
       }
     )
   }

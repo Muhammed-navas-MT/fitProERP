@@ -30,6 +30,17 @@ import { PurchaseSubscriptionController } from "../../../presentation/controller
 import { PurchaseSubscriptionUseCase } from "../../../application/useCases/gymAdmin/purchaseSubscriptionUseCase";
 import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
 import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
+import { CreateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/createBranchUseCase";
+import { ListBranchUseCase } from "../../../application/useCases/gymAdmin/branch/listBranchUseCase";
+import { BlockBranchUseCase } from "../../../application/useCases/gymAdmin/branch/blockBranchUseCase";
+import { UnBlockBranchUseCase } from "../../../application/useCases/gymAdmin/branch/unBlockBranchUseCase";
+import { FindBranchUseCase } from "../../../application/useCases/gymAdmin/branch/findBranchUseCase";
+import { BranchController } from "../../../presentation/controller/gymAdmin/branchController";
+import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
+import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
+import { UpdateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/updateBranchUseCase";
+import { MemberRepository } from "../../repository/member/memberRepo";
+import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 
 
 const otpService =new OtpService()
@@ -67,3 +78,14 @@ export const injectedListSubscriptionController = new subscriptionlistController
 const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
 const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepository,subsriptionRepository,gymAdminRepository)
 export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)
+
+// branch controller
+const memberRepository = new MemberRepository(memberModel)
+const branchRepository = new BranchRepository(branchModel);
+const createBranch = new CreateBranchUseCase(branchRepository,gymAdminRepository);
+const updateBranch = new UpdateBranchUseCase(branchRepository)
+const listBranch = new ListBranchUseCase(branchRepository,memberRepository,trainerRepository);
+const blockBranch = new BlockBranchUseCase(branchRepository);
+const unBlockBranch = new UnBlockBranchUseCase(branchRepository);
+const findBranch = new FindBranchUseCase(branchRepository);
+export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch);
