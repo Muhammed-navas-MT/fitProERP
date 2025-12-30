@@ -15,7 +15,7 @@ export interface GymAdminEntity {
     tagline:string;
     businessLicense:string;
     insuranceCertificate:string;
-    subscriptionId?:string;
+    packageId?:string;
     paymentStatus?:PaymentStatus;
     subscriptionStart?:Date;
     subscriptionEnd?:Date;

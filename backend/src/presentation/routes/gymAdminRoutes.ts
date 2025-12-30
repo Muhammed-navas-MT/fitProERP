@@ -2,10 +2,13 @@ import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
 import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
+import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
 export class GymAdminRoutes {
   private _route: Router;
+  private _middleware:SubdomainMiddleware
   constructor() {
+    this._middleware = new SubdomainMiddleware();
     this._route = Router();
     this._setRoute();
   }
@@ -16,7 +19,6 @@ export class GymAdminRoutes {
     this._route.post(
       GYMADMIN.AUTH.EMAIL_VERIFY,
       (req: Request, res: Response, next: NextFunction) => {
-        console.log("req body", req.body)
         injectedGymAdminSingUpController.verifyEmail(req, res, next);
       }
     );

@@ -1,7 +1,6 @@
 import { Schema } from "mongoose";
 import { Status } from "../../../../domain/enums/status";
 import { Roles } from "../../../../domain/enums/roles";
-import { BloodGroups } from "../../../../domain/enums/bloocGroup";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
 import { Gender } from "../../../../domain/enums/gender";
 
@@ -21,7 +20,7 @@ export const memberSchema = new Schema(
             ref: "Trainer",
             required: true,
         },
-        firstName: {
+        name: {
             type: String,
             required: true,
             trim: true
@@ -107,11 +106,6 @@ export const memberSchema = new Schema(
                     type: String,
                     default: "kg"
                 }
-            },
-            bloodGroup: {
-                type: String,
-                required: true,
-                enum: Object.values(BloodGroups)
             },
             medicalConditions: {
                 type: String,

@@ -69,7 +69,7 @@ export function EditSubscriptionForm() {
       {
         onSuccess: (res) => {
           toast(res?.message || "Subscription updated successfully");
-          navigate(FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION);
+          navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`);
         },
         onError: (err) => {
             console.log(err,"from edit page....")

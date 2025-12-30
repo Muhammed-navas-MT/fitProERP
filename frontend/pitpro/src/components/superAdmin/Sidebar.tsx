@@ -9,30 +9,67 @@ import {
 import LogoutButton from "./LogoutButton"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 import { useLocation } from "react-router-dom"
+import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook"
+import { useDispatch } from "react-redux"
+import { deleteToken } from "@/store/slice/tokenSlice"
+import { clearSuperAdminData } from "@/store/slice/superAdminSlice"
 
 interface SidebarProps {
-  onLogout: () => void
   isOpen?: boolean
   onClose?: () => void
   isMobile?: boolean
 }
 
 export default function Sidebar({ 
-  onLogout, 
   isOpen = true, 
   onClose, 
   isMobile = false 
 }: SidebarProps) {
 
+  const dispatch = useDispatch()
+  const { mutate: logout } = useSuperAdminLogout();
+  const onLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        dispatch(deleteToken());
+        dispatch(clearSuperAdminData());
+      },
+      onError: (error) => {
+        console.error(error.message);
+      },
+    });
+  };
+
   const location = useLocation();
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: `${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}` },
-    { icon: BarChart3, label: "Analytics", href: "#" },
-    { icon: CreditCard, label: "Subscription", href: `${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}` },
-    { icon: Building2, label: "Gyms", href: "#" },
-    { icon: Wallet, label: "Payments", href: "#" },
-  ];
+  {
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}`,
+  },
+  {
+    icon: BarChart3,
+    label: "Analytics",
+    href: "#",
+  },
+  {
+    icon: CreditCard,
+    label: "Subscription",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`,
+  },
+  {
+    icon: Building2,
+    label: "Gyms",
+    href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS}`,
+  },
+  {
+    icon: Wallet,
+    label: "Payments",
+    href: "#",
+  },
+];
+
 
   const getLinkClasses = (href: string) => {
     const isActive = location.pathname === href;

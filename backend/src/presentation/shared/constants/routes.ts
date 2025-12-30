@@ -9,8 +9,14 @@ export const ROUTES = {
             UNBLOCK_SUBSCRIPTION:"/unblock_subscription/:subscriptionId",
             FIND_SUBSCRIPTION:"/subscription/:subscriptionId",
             UPDATE_SUBSCRIPTION:"/update_subscription/:subscriptionId",
-            LIST_SUBSCRIPTION:"/list_subscription"
-        }
+            LIST_SUBSCRIPTION:"/list_subscription",
+            LIST_GYM:"/list_gym",
+            BLOCK_GYM:"/block_gyms/:gymId",
+            UNBLOCK_GYM:"/unblock_gym/:gymId",
+            DETAIL_GYM:"/gym_detail/:gymId",
+            APPROVE_GYM:"/gym_approve/:gymId",
+            REJECT_GYM:"/gym_reject/:gymId",
+        },
     },
 
     GYMADMIN:{
@@ -42,6 +48,7 @@ export const ROUTES = {
             SIGNUP:"/signup",
             LOGIN:"/login",
         },
-        ADD_MEMBER:"/add_member"
+        ADD_MEMBER:"/add_member",
+        LIST_MEMBER:"/list_members"
     }
 }

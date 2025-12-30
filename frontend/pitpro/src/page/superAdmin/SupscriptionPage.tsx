@@ -17,12 +17,9 @@ export default function SubscriptionPage() {
     checkIfMobile()
 
     window.addEventListener("resize", checkIfMobile)
-    return () => window.removeEventListener("resize", checkIfMobile)
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, [])
 
-  const handleLogout = () => {
-    alert("Logged out successfully!")
-  };
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId)
@@ -36,14 +33,13 @@ export default function SubscriptionPage() {
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={() => setSidebarOpen(false)} 
-          onLogout={handleLogout}
           isMobile={true}
         />
       )}
 
       {!isMobile && (
         <div className="fixed left-0 top-0 h-full">
-          <Sidebar onLogout={handleLogout} />
+          <Sidebar />
         </div>
       )}
 
@@ -52,7 +48,7 @@ export default function SubscriptionPage() {
           title="Subscription Plans"
           description="Manage your subscription plans and pricing"
           showAddButton = {true}
-          url = {FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION}
+          url = {`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION}`}
           addButtonLabel="Add new Plan"
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)} 
           showMenuButton={isMobile}
@@ -68,7 +64,6 @@ export default function SubscriptionPage() {
       {isMobile && (
         <MobileNav 
           activeTab={activeTab} 
-          onLogout={handleLogout}
           onTabChange={handleTabChange}
         />
       )}

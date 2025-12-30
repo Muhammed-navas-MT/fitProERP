@@ -2,7 +2,9 @@ export const FRONTEND_ROUTES = {
     LANDING:"/",
     SUBSCRPIPTION:"/subscription",
     GYM_ADMIN: {
-        SIGNUP:"/gym-admin/signup",
+        BASE:"/gym-admin",
+        SIGNUP:"/signup",
+        LOGIN:"login",
         OTP:"/gym-admin/otp-verification",
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
@@ -11,10 +13,19 @@ export const FRONTEND_ROUTES = {
         LIST_BRANCH:"branches"
     },
     SUPER_ADMIN:{
-        LOGIN:"/super-admin/login",
-        DASHBOARD:"/super-admin/dashboard",
-        LIST_SUBSCRIPTION:"/super-admin/subscriptions",
-        ADD_SUBSCRIPTION:"/super-admin/add-subscription",
-        EDIT_SUBSCRIPTION:"/super-admin/edit-subscription/:id",
+        BASE:"/super-admin",
+        LOGIN:"login",
+        DASHBOARD:"dashboard",
+        LIST_SUBSCRIPTION:"subscriptions",
+        ADD_SUBSCRIPTION:"add-subscription",
+        EDIT_SUBSCRIPTION:"edit-subscription/:id",
+        LIST_GYMS:"gyms",
+        GYM_DETAIL:"gym-detail/:gymId",
+    },
+    TRAINER:{
+        BASE:"/trainer",
+        LOGIN:"login",
+        DASHBOARD:"dashboard",
+        LIST_MEMBERS:"members",
     }
 }

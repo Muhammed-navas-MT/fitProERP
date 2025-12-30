@@ -101,7 +101,7 @@ export function SignInForm({
       <Button
         type="submit"
         disabled={isLoading}
-        className={`${buttonColor} h-12 rounded-md`}
+        className={`${buttonColor} w-full h-12 rounded-md`}
       >
         {isLoading ? "Signing in..." : "Sign In"}
       </Button>
@@ -119,7 +119,7 @@ export function SignInForm({
             </div>
           </div>
 
-          <Button variant="outline" className="bg-[#1A1D23] border-[#2A2D31]">
+          <Button  variant="outline" className="bg-[#1A1D23] border-[#2A2D31] w-full">
             Google
           </Button>
 

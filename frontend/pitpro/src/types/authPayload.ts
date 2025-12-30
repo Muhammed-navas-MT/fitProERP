@@ -24,3 +24,41 @@ export type SignupPayload = {
   businessLicense: File | null;
   insuranceCertificate: File | null;
 }
+
+export type TrainerAddPayload = {
+    gymId: string;
+    branchId?: string;
+    name: string;
+    email: string;
+    phone: string;
+    role:UserRole;
+    address: string;
+    specialization: string[];
+    experience: number;
+    baseSalary: number;
+    commisionRate: number;
+    status: string;
+    dutyTime: {
+        startTime: string;
+        endTime: string;
+    };
+};
+
+export type MemberAddPayload = {
+  trainerId:string;
+  name: string;
+  email: string;
+  phone: string;
+  address:string;
+  emergencyNumber:string;
+  healthDetails:{
+    gender:string,
+    dateOfBirth:string,
+    weight:number,
+    height:number,
+    targetWeight:number
+    medicalConditions?:string,
+    allergies?:string,
+    fitnessGoal:string
+  }
+}

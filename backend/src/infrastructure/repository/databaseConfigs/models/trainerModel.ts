@@ -15,14 +15,14 @@ export interface ITrainerModel extends Document {
     role:Roles;
     specialization: string[];
     experience: number;
-    baseSalary?: number;
-    commisionRate?: number;
-    status?: Status;
-    dutyTime?: {
+    baseSalary: number;
+    commisionRate: number;
+    status: Status;
+    dutyTime: {
         startTime: string;
         endTime: string;
     };
-    createdAt: Date;
+    createdAt?: Date;
 }
 
 export const trainerModel: Model<ITrainerModel> = model<ITrainerModel>(

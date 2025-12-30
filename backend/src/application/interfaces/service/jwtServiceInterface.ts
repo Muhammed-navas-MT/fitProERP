@@ -5,4 +5,5 @@ export interface IJwtService {
     createRefreshTken(payload:JWTPayloadType):string;
     verifyAccessToken(token:string):JWTPayloadType | null;
     verifyRefreshToken(token:string):JWTPayloadType | null;
+    decode(token:string):JWTPayloadType | null;
 }

@@ -29,6 +29,8 @@ export enum SubscriptionError {
 
     SUBSCRIPTION_CREATED = "Subscription created successfully",
     SUBSCRIPTION_UPDATED = "Subscription updated successfully",
-    SUBSCRIPTION_FOUND = "Subscription fetched successfull"
+    SUBSCRIPTION_FOUND = "Subscription fetched successfully",
+    SUBSCRIPTION_LIST = "Subscription listed successfully",
+    SUBSCRIPTION_INACTIVE = "Subscription plan is inactive"
 
 }

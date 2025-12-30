@@ -10,34 +10,29 @@ export class LoginMapper {
         return{
             _id:gymAdmin._id?.toString()||"",
             gymName:gymAdmin.gymName || "",
+            ownerName:gymAdmin.ownerName || "",
             role:gymAdmin.role || "",
             email:gymAdmin.email || "",
-            status:gymAdmin.status || "",
-            subscriptions:!!subscription ? subscription.map((val)=>{
-                return{
-                    _id:val._id?.toString()||"",
-                    planName:val.planName || "",
-                    price:val.price || 0,
-                    duration:val.duration || "",
-                    features:val.features || [],
-                }
-            }):[]
+            phone:gymAdmin.phone || "",
+            subdomain:gymAdmin.subdomain || "",
+            status:gymAdmin.status || ""
         }
     };
-    static trainerLoginMapper(trainer:TrainerEntity):TrainerLoginResponseDTO{
+    static trainerLoginMapper(data:{trainer:TrainerEntity,subdomain:string}):TrainerLoginResponseDTO{
         return{
-            name:trainer.name || "",
-            _id:trainer._id?.toString() || "",
-            email:trainer.email || "",
-            role:trainer.role || "",
-            status:trainer.status || "",
+            name:data.trainer.name || "",
+            _id:data.trainer._id?.toString() || "",
+            email:data.trainer.email || "",
+            role:data.trainer.role || "",
+            status:data.trainer.status || "",
+            subdomain:data.subdomain ||"",
         }
     }
 
     static memberLoginMapper(member:MemberEntity):MemberLoginResponseDTO{
         return {
             _id:member._id?.toString() ||"",
-            firstName:member.firstName || "",
+            name:member.name || "",
             email:member.email || "",
             role:member.role || "",
             status:member.status || ""

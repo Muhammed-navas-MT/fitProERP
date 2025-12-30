@@ -60,7 +60,13 @@ export class TokenMissingException extends ApplicationException {
 }
 
 export class TokenExpiredException extends ApplicationException {
-    constructor(message:string){
+    public role?: string;
+    public subdomain?: string;
+
+    constructor(message: string, role?: string, subdomain?: string) {
         super(message);
+        this.role = role;
+        this.subdomain = subdomain;
+        this.name = "TokenExpiredException";
     }
 }

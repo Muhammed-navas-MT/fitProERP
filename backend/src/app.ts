@@ -26,7 +26,19 @@ class Express_app {
   setMiddleware() {
     this._app.use(
       cors({
-        origin: "http://localhost:5173",
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true);
+          const allowed = [
+            /^https?:\/\/localhost(:\d+)?$/,
+            /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+            /^https?:\/\/([a-zA-Z0-9-]+)\.localhost(:\d+)?$/,
+          ];
+
+          if (allowed.some((regex) => regex.test(origin))) {
+            return callback(null, true);
+          }
+          return callback(new Error("CORS Not Allowed"));
+        },
         credentials: true,
       })
     );
@@ -56,7 +68,12 @@ class Express_app {
 
   listen() {
     this._app.listen(Number(configEnv.PORT), () =>
-      console.log("server is Running....")
+      console.log(
+        "server is Running....",
+        `🔐 RoleGuard middleware
+         ⛔ Block access if subscription expired
+         📊 Subscription status endpoint`
+      )
     );
   }
 }

@@ -19,8 +19,8 @@ export class TrainerLoginController {
              const {email,password}:LoginRequestDTO = req.body;
              const response = await this._loginUseCase.login({email,password});
 
-             const accessToken = this._jwtService.createAccessToken({id:response._id,role:response.role})
-             const refreshToken = this._jwtService.createRefreshTken({id:response._id,role:response.role});
+             const accessToken = this._jwtService.createAccessToken({id:response._id,role:response.role,subdomain:""})
+             const refreshToken = this._jwtService.createRefreshTken({id:response._id,role:response.role,subdomain:""});
 
              setCookie(res,"refreshToken",refreshToken,{
                 maxAge:604800,

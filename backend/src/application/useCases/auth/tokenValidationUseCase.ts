@@ -3,9 +3,9 @@ import { Error } from "../../../presentation/shared/constants/errorMessage/Error
 import { TokenMissingException } from "../../constants/exceptions";
 import { ICacheService } from "../../interfaces/service/cacheServiceInterface";
 import { IJwtService } from "../../interfaces/service/jwtServiceInterface";
-import { IInTokenValidationUseCase } from "../../interfaces/useCase/auth/tokenValidationUseCaseInterface";
+import { ITokenInValidationUseCase } from "../../interfaces/useCase/auth/tokenValidationUseCaseInterface";
 
-export class InTokenValidationUseCase implements IInTokenValidationUseCase {
+export class TokenValidationUseCase implements ITokenInValidationUseCase {
     private _jwtService:IJwtService;
     private _cacheService:ICacheService
     constructor(jwtService:IJwtService,cacheService:ICacheService){

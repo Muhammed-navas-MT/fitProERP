@@ -9,12 +9,12 @@ export const useGymAdminSignUp = () => {
 
 export const useGymAdminEmailVerification = ()=>{
   return useMutation({
-    mutationFn:(email:string)=>emailVerifincation(email),
+    mutationFn:(data:{email:string})=>emailVerifincation(data),
   })
 }
 
 export const useGymAdminOtpVerification = () => {
   return useMutation({
-    mutationFn: (otp:string) => otpVerification(otp),
+    mutationFn: (data:{email:string,otp:string}) => otpVerification(data),
   });
 };

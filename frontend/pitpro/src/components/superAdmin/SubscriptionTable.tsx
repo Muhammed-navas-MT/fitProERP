@@ -38,11 +38,8 @@ export default function SubscriptionTable() {
 
   const handleEdit = (id: string) => {
     console.log("Edit clicked for Plan ID:", id);
-    navigate(FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id",id));
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id",id)}`);
   };
-
-  // const handleView = (id: string) => {
-  // };
 
   const handleBlock = (id: string) => {
     blockPlan(id, {
@@ -166,7 +163,7 @@ export default function SubscriptionTable() {
                     )}
 
                     {/* <button
-                      onClick={() => handleView(plan.id)}
+                      onClick={() =>(){}}
                       className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition"
                       title="View"
                     >
