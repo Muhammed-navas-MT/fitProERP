@@ -1,0 +1,38 @@
+export enum BranchError {
+  NOT_FOUND = "Branch not found",
+  INVALID_DATA = "Invalid branch data",
+  ALREADY_EXISTS = "Branch already exists in this location",
+  GYM_NOT_FOUND = "Gym not found",
+  GYM_NOT_ACTIVE = "Gym is not active",
+  ID_REQUIRED = "Branch id is required",
+  REQUIRED = "This field is required",
+  INVALID_ID = "Invalid id",
+  INVALID_PHONE = "Invalid phone number",
+  INVALID_TIME = "Time must be in HH:MM format",
+  INVALID_PINCODE = "Invalid pincode",
+  MIN_LENGTH = "Must be at least 2 characters",
+  GYM_ID_REQUIRED = "Gym id is required",
+  BRANCH_NAME_REQUIRED = "Branch name is required",
+  PHONE_REQUIRED = "Phone number is required",
+  ADDRESS_REQUIRED = "Address is required",
+  STREET_REQUIRED = "Street is required",
+  CITY_REQUIRED = "City is required",
+  STATE_REQUIRED = "State is required",
+  COUNTRY_REQUIRED = "Country is required",
+  PINCODE_REQUIRED = "Pincode is required",
+  CLOSE_TIME_MUST_BE_GREATER = "Closing time must be greater than opening time",
+  INVALID_TIME_RANGE = "Hour must be 00–23 and minute must be 00–59",
+  BRANCH_ID_REQUIRED = "Branch id is required",
+  BRANCH_DATA = "Branch data is required",
+  BRANCH_NOT_FOUND = "Branch not found",
+  CREATION_FAILD = "Failed to create branch"
+}
+
+export enum BranchSuccess {
+  CREATED = "Branch created successfully",
+  UPDATED = "Branch updated successfully",
+  BLOCKED = "Branch blocked successfully",
+  UNBLOCKED = "Branch unblocked successfully",
+  LISTED = "Branch list retrieved successfully",
+  FOUND = "Branch details retrieved successfully",
+}

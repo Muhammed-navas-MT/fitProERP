@@ -4,6 +4,11 @@ export const FRONTEND_ROUTES = {
     GYM_ADMIN: {
         SIGNUP:"/gym-admin/signup",
         OTP:"/gym-admin/otp-verification",
+        DASHBOARD:"dashboard",
+        LIST_MEMBERS:"members",
+        LIST_EMPLOYEES:"employees",
+        LIST_SUBSCRIPTION:"list-subscription",
+        LIST_BRANCH:"branches"
     },
     SUPER_ADMIN:{
         LOGIN:"/super-admin/login",

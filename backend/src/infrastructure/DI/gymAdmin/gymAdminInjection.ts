@@ -9,6 +9,38 @@ import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminM
 import { SignUpUseCase } from "../../../application/useCases/gymAdmin/gymAdminSignUpUseCase";
 import { HashPassword } from "../../services/hashService";
 import { CloudinaryService } from "../../services/cloudinaryService";
+import { GymAdminLoginController } from "../../../presentation/controller/gymAdmin/gymAdminLoginController";
+import { GymAdminLoginUseCase } from "../../../application/useCases/gymAdmin/gymAdminLoginUseCase";
+import { SubscriptionRepository } from "../../repository/superAdmin/subscriptionRepo";
+import { subscriptionModel } from "../../repository/databaseConfigs/models/subscriptionModel";
+import { JwtService } from "../../services/jwtService";
+import { AuthMiddleware } from "../../../presentation/middlewares/authMiddleware";
+import { GymAdminLogoutController } from "../../../presentation/controller/gymAdmin/gymAdminLogoutController";
+import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
+import { TrainerManagementController } from "../../../presentation/controller/gymAdmin/trainerMangement/trainerMangementController";
+import { listAllTrainersUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/listAllTrainersUseCase";
+import { TrainerRepository } from "../../repository/trainer/trainerRepo";
+import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
+import { CreateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/createTrainerUseCase";
+import { SendPasswordEmailContentGenerator } from "../../services/IEmail/sendPasswordContentGenerator";
+import { PasswordGenerator } from "../../services/passwordGenerater";
+import { subscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
+import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
+import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
+import { PurchaseSubscriptionUseCase } from "../../../application/useCases/gymAdmin/purchaseSubscriptionUseCase";
+import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
+import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
+import { CreateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/createBranchUseCase";
+import { ListBranchUseCase } from "../../../application/useCases/gymAdmin/branch/listBranchUseCase";
+import { BlockBranchUseCase } from "../../../application/useCases/gymAdmin/branch/blockBranchUseCase";
+import { UnBlockBranchUseCase } from "../../../application/useCases/gymAdmin/branch/unBlockBranchUseCase";
+import { FindBranchUseCase } from "../../../application/useCases/gymAdmin/branch/findBranchUseCase";
+import { BranchController } from "../../../presentation/controller/gymAdmin/branchController";
+import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
+import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
+import { UpdateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/updateBranchUseCase";
+import { MemberRepository } from "../../repository/member/memberRepo";
+import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 
 
 const otpService =new OtpService()
@@ -21,3 +53,36 @@ const cloudinaryService = new CloudinaryService()
 const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService,cloudinaryService)
 const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(otpService,signUpOtpEmailContentGenerator,emailService,gymAdminRepository,cacheService)
 export const injectedGymAdminSingUpController = new SignUpController(verifyEmailAndOtpUseCase,signUpUseCase)
+export const injectedGymAdminLoginController = new GymAdminLoginController(loginUseCase,jwtService);
+
+export const injectAuthMiddleware = new AuthMiddleware(jwtService,cacheService);
+
+const tokenValidtionUseCase = new TokenValidationUseCase(jwtService,cacheService);
+export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase);
+
+// trainer management
+const trainerRepository = new TrainerRepository(trainerModel);
+const passwordGenerator = new PasswordGenerator()
+const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
+const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
+const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
+export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers);
+
+//subscription list controller
+const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
+export const injectedListSubscriptionController = new subscriptionlistController(listAllActiveSubscription);
+
+const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
+const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepository,subsriptionRepository,gymAdminRepository)
+export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)
+
+// branch controller
+const memberRepository = new MemberRepository(memberModel)
+const branchRepository = new BranchRepository(branchModel);
+const createBranch = new CreateBranchUseCase(branchRepository,gymAdminRepository);
+const updateBranch = new UpdateBranchUseCase(branchRepository)
+const listBranch = new ListBranchUseCase(branchRepository,memberRepository,trainerRepository);
+const blockBranch = new BlockBranchUseCase(branchRepository);
+const unBlockBranch = new UnBlockBranchUseCase(branchRepository);
+const findBranch = new FindBranchUseCase(branchRepository);
+export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch);

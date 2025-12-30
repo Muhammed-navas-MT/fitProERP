@@ -14,4 +14,11 @@ export class TrainerRepository extends BaseRepository<ITrainerModel> implements 
         if(!doc)return null
         return doc
     }
+
+    async countByBranchId(branchId: string): Promise<number> {
+    return this._model.countDocuments({
+      branchId,
+      isActive: true,
+    });
+  }
 }

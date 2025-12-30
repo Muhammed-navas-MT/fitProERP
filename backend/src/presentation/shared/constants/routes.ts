@@ -3,10 +3,11 @@ export const ROUTES = {
         SUPERADMIN:{
             BASE:"/super_admin",
             LOGIN:"/login",
-            CREATE_SUBSCRIPTION:"/create_subscription",
-            BLOCK_SUBSCRIPTION:"/block_subscription/:subscriptionId",
+            LOGOUT:"/logout",
+            CREATE_SUBSCRIPTION:"/create_subscriptionId",
+            BLOCK_SUBSCRIPTION:"/block_subscriptionh/:subscriptionId",
             UNBLOCK_SUBSCRIPTION:"/unblock_subscription/:subscriptionId",
-            FIND_SUBSCRIPTION:"/subsctiption/:subscriptionId",
+            FIND_SUBSCRIPTION:"/subscription/:subscriptionId",
             UPDATE_SUBSCRIPTION:"/update_subscription/:subscriptionId",
             LIST_SUBSCRIPTION:"/list_subscription"
         }
@@ -19,7 +20,18 @@ export const ROUTES = {
             OTP_VERIFY:"/verify_otp",
             SIGNUP:"/signup",
             LOGIN:"/login",
-        }
+            LOGOUT:"/logout"
+        },
+        LISTTRAINER:"/list_trainers",
+        CREATE_TRAINER:"/create_trainer",
+        LISTSUBSCRIPTION:"/list_active_subscription",
+        PURCHASESUBSCRIPTION:"/purchase_branch",
+        CREATE_BRANCH:"/create_branch",
+        BLOCK_BRANCH:"/block_branch/:branchId",
+        UNBLOCK_BRANCH:"/unblock_branch/:branchId",
+        FIND_BRANCH:"/branch_detail/:branchId",
+        UPDATE_BRANCH:"/update_branch/:branchId",
+        LIST_BRANCH:"/list_branch",
     },
 
     TRAINER:{

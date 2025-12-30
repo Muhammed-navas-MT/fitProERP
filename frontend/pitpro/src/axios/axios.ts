@@ -15,6 +15,15 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use((config) => {
     const accessToken = store.getState().token.token;
+    const host = window.location.hostname;
+    const parts = host.split('.');
+    let subdomain = null;
+    if(parts.length === 2 && parts[1] === "localhost") {
+        subdomain = parts[0];
+    }
+    if(subdomain){
+        config.headers["X-Tenant"] = subdomain;
+    }
     if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
     }
