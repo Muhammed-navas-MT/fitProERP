@@ -12,7 +12,7 @@ export function EmployeesSearch() {
   console.log(gymAdminData," form search page ....")
 
   return (
-    <div className="mb-6 rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 lg:p-6">
+    <div className="mb-6 rounded-lg border border-orange-500/20 bg-black/40 p-4 lg:p-6">
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
         <Input

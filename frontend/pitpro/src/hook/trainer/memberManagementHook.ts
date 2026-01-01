@@ -1,4 +1,4 @@
-import { addMemberService, getMembersService } from "@/services/trainer/memberService";
+import { addMemberService, getAllActiveTrainers, getMembersService } from "@/services/trainer/memberService";
 import { MemberAddPayload } from "@/types/authPayload";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
@@ -19,3 +19,10 @@ export const useAddMember = ()=>{
     mutationFn:(data:MemberAddPayload) => addMemberService(data)
   })
 };
+
+export const useGetAllActiveTrainers = () => {
+  return useQuery({
+    queryKey: ["active-trainers"],
+    queryFn: getAllActiveTrainers,
+  })
+}

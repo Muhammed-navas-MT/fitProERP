@@ -12,7 +12,7 @@ export interface MemberEntity {
     phone: string;
     profileImg?: string;
     address: string;
-    password?: string;
+    password: string;
     role: Roles;
     emergencyNumber: string;
     healthDetails: {
@@ -41,7 +41,7 @@ export interface MemberEntity {
         price: number;
         status: PaymentStatus;
     };
-    status?: Status;
+    status: Status;
     createdAt?: Date;
     updatedAt?: Date;
 }

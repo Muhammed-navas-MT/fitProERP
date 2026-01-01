@@ -29,13 +29,14 @@ export class LoginMapper {
         }
     }
 
-    static memberLoginMapper(member:MemberEntity):MemberLoginResponseDTO{
+    static memberLoginMapper(member:MemberEntity,subdomain:string):MemberLoginResponseDTO{
         return {
             _id:member._id?.toString() ||"",
             name:member.name || "",
             email:member.email || "",
             role:member.role || "",
-            status:member.status || ""
+            status:member.status || "",
+            subdomain:subdomain
         }
     }
 }

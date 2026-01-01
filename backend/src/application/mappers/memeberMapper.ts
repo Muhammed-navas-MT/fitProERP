@@ -1,5 +1,6 @@
 import { MemberEntity } from "../../domain/entities/member/memberEntity";
 import { Roles } from "../../domain/enums/roles";
+import { Status } from "../../domain/enums/status";
 import { IAddMemberDTO } from "../dtos/auth/memberDto";
 import { IListMemberRequestDTO, IListMemberResponseDTO } from "../dtos/memberDto/listAllMembersDto";
 
@@ -34,6 +35,7 @@ export class TrainerMapper {
             phone:member.phone,
             address:member.address,
             password:password,
+            status:Status.ACTIVE,
             emergencyNumber:member.emergencyNumber,
             healthDetails:{
                 gender:member.healthDetails.gender,

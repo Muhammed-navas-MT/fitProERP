@@ -152,7 +152,7 @@ export default function GymRegistrationForm() {
         registerGymAdmin(data, {
           onSuccess: () => {
             toast.success("Registration completed successfully!");
-            navigate(FRONTEND_ROUTES.GYM_ADMIN.LOGIN);
+            navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}`);
           },
           onError: (error) => {
             const errorMessage =

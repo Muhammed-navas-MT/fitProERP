@@ -33,8 +33,6 @@ export class SubscriptionController {
       if(validationError.error){
         throw new InvalidDataException(validationError.error.issues[0].message);
       }
-
-      console.log("subsrtiption")
       const id = await this._createSubscriptionUseCase.createSubscription(subscription);
       ResponseHelper.success(
         201,

@@ -18,8 +18,8 @@ export class MemberLoginController {
         try {
              const {email,password}:LoginRequestDTO = req.body;
              const response:MemberLoginResponseDTO = await this._loginUseCase.login({email,password});
-             const accessToken = this._jwtService.createAccessToken({id:response._id,role:response.role,subdomain:""})
-             const refreshToken = this._jwtService.createRefreshTken({id:response._id,role:response.role,subdomain:""});
+             const accessToken = this._jwtService.createAccessToken({id:response._id,role:response.role,subdomain:response.subdomain})
+             const refreshToken = this._jwtService.createRefreshTken({id:response._id,role:response.role,subdomain:response.subdomain});
 
              setCookie(res,"refreshToken",refreshToken,{
                 maxAge:604800,

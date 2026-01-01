@@ -10,7 +10,8 @@ export const FRONTEND_ROUTES = {
         LIST_MEMBERS:"members",
         LIST_EMPLOYEES:"employees",
         LIST_SUBSCRIPTION:"list-subscription",
-        LIST_BRANCH:"branches"
+        LIST_BRANCH:"branches",
+        PENDINGAPPROVAL:"approval"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",
@@ -27,5 +28,10 @@ export const FRONTEND_ROUTES = {
         LOGIN:"login",
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
+    },
+    MEMBER:{
+        BASE:"/member",
+        LOGIN:"login",
+        DASHBOARD:"dashboard",
     }
 }

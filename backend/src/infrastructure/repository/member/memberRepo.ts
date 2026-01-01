@@ -14,7 +14,7 @@ export class MemberRepository
   }
   async findByEmail(email: string): Promise<MemberEntity | null> {
     try {
-      const findMember = await this._model.findOne({ email });
+      const findMember = await this._model.findOne({ email }).lean();
       if (!findMember) return null;
       return findMember;
     } catch (error) {

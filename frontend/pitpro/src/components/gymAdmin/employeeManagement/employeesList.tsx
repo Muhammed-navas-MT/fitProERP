@@ -31,7 +31,7 @@ export function EmployeesList() {
   const totalPages = data?.data?.totalPages ?? 1;
 
   return (
-    <div className="rounded-lg border border-gray-800 bg-[#1a1a1a] p-4 lg:p-6">
+    <div className="rounded-lg border border-orange-500/20 bg-black/40 p-4 lg:p-6">
       <div className="mb-6">
         <h2 className="mb-1 text-xl font-bold text-white lg:text-2xl">
           All Employees

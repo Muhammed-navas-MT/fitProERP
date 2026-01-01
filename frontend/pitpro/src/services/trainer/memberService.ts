@@ -25,3 +25,16 @@ export const addMemberService = async (data:MemberAddPayload)=>{
     throw error;
   }
 }
+
+export const getAllActiveTrainers = async ()=>{
+    try {
+        const response = await AxiosInstance.get(`${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_ACTIVE_TRAINER}`);
+        console.log(response)
+        return response.data;
+    } catch (error) {
+        if(error instanceof AxiosError){
+            throw new Error(error.response?.data.message);
+        };
+        throw error;
+    }
+}

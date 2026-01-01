@@ -40,4 +40,5 @@ export interface MemberLoginResponseDTO {
     _id: string;
     role: Roles;
     status:string,
+    subdomain:string
 }

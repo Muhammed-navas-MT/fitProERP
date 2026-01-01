@@ -80,7 +80,7 @@ export function EditSubscriptionForm() {
   };
 
   const handleCancelButton = () => {
-    navigate(FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION);
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}`);
   };
 
   if (isLoading) return <p className="text-white">Loading...</p>;

@@ -46,7 +46,7 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
         trainer.password
       );
       if (!isPassswordValid) {
-        throw new NOtFoundException(TrainerError.GYM_NOT_FOUND);
+        throw new ForbiddenException(TrainerError.INVALID_CREDENTIALS);
       }
       if (gym.status !== Status.ACTIVE) {
         throw new ForbiddenException(TrainerError.GYM_NOT_ACTIVE);

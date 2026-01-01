@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import {
   LayoutDashboard,
   Users,
@@ -15,20 +15,19 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { clearAuthContext } from "@/store/slice/authContextState"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { deleteToken } from "@/store/slice/tokenSlice"
 import { clearGymAdminData } from "@/store/slice/gymAdminSlice"
-import { rootstate } from "@/store/store"
 import { useGymAdminLogout } from "@/hook/gymAdmin/gymAdminLogoutHook"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 
 
 const navItems = [
-  { name: "Dashboard", href: FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD, icon: LayoutDashboard },
-  { name: "Members", href: FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS, icon: Users },
-  { name: "Employees", href: "/employees", icon: UserCog },
+  { name: "Dashboard", href:`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`, icon: LayoutDashboard },
+  { name: "Members", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS}`, icon: Users },
+  { name: "Trainers", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}`, icon: UserCog },
   { name: "Packages", href: "/packages", icon: Package },
-  { name: "Branches", href: "/branches", icon: Building2 },
+  { name: "Branches", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`, icon: Building2 },
   { name: "Expenses", href: "/expenses", icon: TrendingDown },
   { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
   { name: "Payments", href: "/payments", icon: CreditCard },
@@ -41,7 +40,7 @@ export function Sidebar() {
   const location = useLocation()
   const pathname = location.pathname
   const dispatch = useDispatch();
-  const {subdomain} = useSelector((state:rootstate)=>state.authContext);
+  const navigate = useNavigate()
 
   const {mutate:logout} = useGymAdminLogout();
 
@@ -50,8 +49,8 @@ export function Sidebar() {
       onSuccess: () => {
         dispatch(deleteToken());
         dispatch(clearGymAdminData());
-        dispatch(clearAuthContext())
-         window.location.href = `http://${subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`;
+        dispatch(clearAuthContext());
+         navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`,{ replace: true });
       },
       onError: (error) => {
         console.error(error.message);
@@ -60,7 +59,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 hidden h-screen w-52 flex-col border-r border-zinc-800 bg-zinc-950 lg:flex">
+    <aside className="fixed left-0 top-0 hidden h-screen w-52 flex-col border-r border-zinc-800 bg-black/40 lg:flex">
       <div className="flex items-center gap-3 border-b border-zinc-800 p-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
           <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none">

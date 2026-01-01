@@ -1,6 +1,7 @@
 export const API_ROUTES = {
   AUTH: {
     REFRESH: "/refresh_token",
+    BASE:"/auth",
   },
   SUPERADMIN: {
     BASE: "/super_admin",
@@ -9,7 +10,7 @@ export const API_ROUTES = {
     CREATE_SUBSCRIPTION: "/create_subscription",
     BLOCK_SUBSCRIPTION: "/block_subscription",
     UNBLOCK_SUBSCRIPTION: "/unblock_subscription",
-    FIND_SUBSCRIPTION: "/subsctiption",
+    FIND_SUBSCRIPTION: "/subscription",
     UPDATE_SUBSCRIPTION: "/update_subscription",
     LIST_SUBSCRIPTION: "/list_subscription",
     LIST_GYM: "/list_gym",
@@ -51,5 +52,10 @@ export const API_ROUTES = {
     },
     ADD_MEMBER: "/add_member",
     LIST_MEMBER: "/list_members",
+    LIST_ACTIVE_TRAINER:"/active_trainers",
   },
+  MEMBER:{
+    BASE:"/member",
+    LOGIN:"/login"
+  }
 };

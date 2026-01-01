@@ -6,7 +6,6 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
     findByEmail(email:string):Promise<TrainerEntity | null>
     listAllTrainers(params:IListTrainerRequestDTO):Promise<{trainers:TrainerEntity[],total:number}>
     countTrainersByGymId(gymId: string): Promise<number>;
-    listAllTrainers(params:IListTrainerRequestDTO):Promise<{trainers:TrainerEntity[],total:number}>
-    countTrainersByGymId(gymId: string): Promise<number>;
     countByBranchId(branchId: string): Promise<number>;
+    listAllActiveTrainers(gymId:string):Promise<TrainerEntity[]>
 }
