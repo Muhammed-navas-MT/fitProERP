@@ -15,7 +15,7 @@ const colorClasses = {
 
 export function StatCard({ label, value, color }: StatCardProps) {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 lg:p-6">
+    <div className="rounded-lg border-2 border-orange-500/30 bg-black/40 p-6 transition-all hover:border-orange-500/50">
       <div className={cn("mb-2 text-3xl font-bold lg:text-4xl", colorClasses[color])}>{value}</div>
       <div className="text-xs text-zinc-400 lg:text-sm">{label}</div>
     </div>

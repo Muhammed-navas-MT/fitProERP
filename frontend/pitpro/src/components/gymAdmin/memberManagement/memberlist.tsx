@@ -52,7 +52,7 @@ const members: Member[] = [
 
 export function MembersList() {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 lg:p-6">
+    <div className="rounded-lg border  border-orange-500/20 bg-black/40 p-4 lg:p-6">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-white">All Members</h2>

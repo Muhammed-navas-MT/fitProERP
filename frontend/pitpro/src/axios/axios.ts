@@ -54,8 +54,8 @@ AxiosInstance.interceptors.response.use(
             try {
                 originalRequest._retry = true;
                 console.log("creating new access token.....");
-                const response = await AxiosInstance.post(API_ROUTES.AUTH.REFRESH);
-                console.log("created new access token via refresh token.....")
+                const response = await AxiosInstance.post(`${API_ROUTES.AUTH.BASE}${API_ROUTES.AUTH.REFRESH}`);
+                console.log("created new access token via refresh token.....",response);
                 store.dispatch(setToken(response.data.data));
                 originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
                 return AxiosInstance(originalRequest);
@@ -66,12 +66,12 @@ AxiosInstance.interceptors.response.use(
                 console.log(authContext);
                 if(authContext.role === "SUPERADMIN"){
                     store.dispatch(clearSuperAdminData())
-                    window.location.href=`${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`
+                    window.location.href=`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`
                 }else if(authContext.role === "GYMADMIN"){
-                    window.location.href = `http:${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`
+                    window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`
                     store.dispatch(clearGymAdminData())                    
                 }else if(authContext.role === "TRAINER"){
-                    window.location.href = `http:\\${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`
+                    window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`
                     store.dispatch(clearTrainerData())
                 }
                 store.dispatch(deleteToken());

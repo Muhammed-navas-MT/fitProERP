@@ -81,10 +81,10 @@ export class AddMemberUseCase implements IAddMemberUseCase {
         throw new ForbiddenException(MemberError.TRAINER_NOT_ACTIVE);
       }
       const password = await this._generatePassword.generate();
+      console.log(password,"member")
       const hashPassword = await this._hashService.hash(password);
       const newMember = TrainerMapper.toMemberEntity(data,findTrainer.gymId,hashPassword)
       await this._memberRepository.create(newMember);
-      console.log("navasdfasd")
 
       const htmlContent = this._sendPasswordTemplateGenerator.generateHtml({
         loginUrl: `http://${gym.subdomain}.localhost:5173/member/login`,

@@ -10,6 +10,8 @@ import { errorHandleMiddleware } from "./presentation/middlewares/errorHandlingM
 import { GymAdminRoutes } from "./presentation/routes/gymAdminRoutes";
 import { TrainerRoutes } from "./presentation/routes/trainerRoutes";
 import cookieParser from "cookie-parser";
+import { MemberRoutes } from "./presentation/routes/memberRoutes";
+import { AuthRoutes } from "./presentation/routes/authRoutes";
 
 class Express_app {
   private _app: Express;
@@ -17,9 +19,11 @@ class Express_app {
     this._app = express();
     MongodbConfig.connect();
     this.setMiddleware();
+    this._setAuthRoutes();
     this._setSuperAdminRoutes();
     this._setGymAdminRoutes();
     this._setTrainerRoutes();
+    this._setMemberRoutes();
     this._setErrorHandleMiddleware();
   }
 
@@ -62,18 +66,23 @@ class Express_app {
     this._app.use(ROUTES.TRAINER.BASE, trainerRoutes.get_routes());
   }
 
+  private _setMemberRoutes(){
+    const memberRoutes = new MemberRoutes();
+    this._app.use(ROUTES.MEMBER.BASE,memberRoutes.get_routes());
+  }
+
+  private _setAuthRoutes(){
+    const auth = new AuthRoutes();
+    this._app.use(ROUTES.REFRESH_BASE,auth.get_routes());
+  }
+
   private _setErrorHandleMiddleware() {
     this._app.use(errorHandleMiddleware);
   }
 
   listen() {
     this._app.listen(Number(configEnv.PORT), () =>
-      console.log(
-        "server is Running....",
-        `🔐 RoleGuard middleware
-         ⛔ Block access if subscription expired
-         📊 Subscription status endpoint`
-      )
+      console.log("server is Running....")
     );
   }
 }

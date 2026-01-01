@@ -7,11 +7,16 @@ import { MemberSuccess } from "../../shared/constants/errorMessage/memberMessage
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
+import { IListActiveTrainersUseCase } from "../../../application/interfaces/useCase/trainer/listAllActiveTrainerUseCaseInterface";
+import { TrainerSuccess } from "../../shared/constants/errorMessage/trainerMessage";
 
 export class AddMemberController {
     private _addMemberUseCase:IAddMemberUseCase;
 
-    constructor(addMemberUseCase:IAddMemberUseCase){
+    constructor(
+        addMemberUseCase:IAddMemberUseCase,
+        private _listAllActiveTrainers:IListActiveTrainersUseCase
+    ){
         this._addMemberUseCase = addMemberUseCase
     };
 
@@ -54,6 +59,19 @@ export class AddMemberController {
         } catch (error) {
             next(error);
         }
+    };
+    async listAllActiveTrainers(req:Request,res:Response,next:NextFunction):Promise<void>{
+        try {
+            console.log(res.locals.data.id,"sdfasdfsadf")
+            const trainers = await this._listAllActiveTrainers.listActiveTrainers(res.locals.data.id);
+            ResponseHelper.success(
+                HTTP_STATUS_CODE.OK,
+                res,
+                TrainerSuccess.TRAINERS_LISTED,
+                trainers
+            )
+        } catch (error) {
+            next(error)
+        }
     }
-
 }

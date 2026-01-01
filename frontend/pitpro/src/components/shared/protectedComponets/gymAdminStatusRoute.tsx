@@ -23,7 +23,7 @@ const GymAdminStatusRoute = () => {
     toast.error("Your account will verify in 24 hours");
     return (
       <Navigate
-        to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`}
+        to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}`}
         replace
       />
     );

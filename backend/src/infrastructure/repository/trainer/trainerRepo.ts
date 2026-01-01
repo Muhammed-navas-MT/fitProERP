@@ -4,6 +4,7 @@ import { ITrainerRepository } from "../../../application/interfaces/repository/t
 import { Model } from "mongoose";
 import { TrainerEntity } from "../../../domain/entities/trainer/trainerEntity";
 import { IListTrainerRequestDTO } from "../../../application/dtos/trainerDto/listAllTrainerDto";
+import { Status } from "../../../domain/enums/status";
 
 export class TrainerRepository extends BaseRepository<ITrainerModel> implements ITrainerRepository {
     constructor(model:Model<ITrainerModel>){
@@ -39,5 +40,9 @@ export class TrainerRepository extends BaseRepository<ITrainerModel> implements 
       branchId,
       isActive: true,
     });
+  }
+
+  async listAllActiveTrainers(gymId:string): Promise<TrainerEntity[]> {
+      return this._model.find({status:Status.ACTIVE,gymId})
   }
 }

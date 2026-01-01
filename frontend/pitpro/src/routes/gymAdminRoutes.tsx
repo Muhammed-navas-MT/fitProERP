@@ -10,6 +10,7 @@ import SubscriptionListPage from "@/page/gymAdmin/SubscriptionListPag";
 import GymAdminStatusRoute from "@/components/shared/protectedComponets/gymAdminStatusRoute";
 import SubscriptionAccessRoute from "@/components/shared/protectedComponets/subscriptionAccessRoute";
 import BranchesPage from "@/page/gymAdmin/BranchListPage";
+import PendingApprovalPage from "@/components/gymAdmin/PendingApprovalPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const GymAdminRoutes = () => {
           path={FRONTEND_ROUTES.GYM_ADMIN.LOGIN}
           element={<GymAdminLoginPage />}
         />
+        <Route path={FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL} element={<PendingApprovalPage/>}/>
       </Route>
 
       <Route element={<SubscriptionAccessRoute />}>

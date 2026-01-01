@@ -13,6 +13,7 @@ import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminM
 import { TrainerLoginController } from "../../../presentation/controller/trainer/trainerLoginController";
 import { TrainerLoginUseCase } from "../../../application/useCases/trainer/trainerLoginUseCase";
 import { JwtService } from "../../services/jwtService";
+import { ListActiveTrainers } from "../../../application/useCases/trainer/listAllActiveTrainersUseCase";
 
 const emailService = new EmailService()
 const hashService = new HashPassword();
@@ -27,4 +28,5 @@ export const injectedTrainerLoginController = new TrainerLoginController(loginUs
 const memberRepository = new MemberRepository(memberModel)
 const generatePassword = new PasswordGenerator();
 const addMemberUseCase = new AddMemberUseCase(memberRepository,hashService,emailService,generatePassword,sendPasswordEmailContentGenerator,gymAdminRepository,trainerRepository);
-export const injectedAddMemberController = new AddMemberController(addMemberUseCase)
+const listActiveTrainers = new ListActiveTrainers(trainerRepository,gymAdminRepository);
+export const injectedAddMemberController = new AddMemberController(addMemberUseCase,listActiveTrainers)
