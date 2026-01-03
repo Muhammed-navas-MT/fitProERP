@@ -6,6 +6,7 @@ import {
   findBranchService,
   listBranchService,
   updateBranchService,
+  listActiveBranch,
 } from "@/services/gymAdmin/branchServices";
 import {
   ICreateBranchType,
@@ -61,5 +62,12 @@ export const useUnBlockBranch = () => {
   return useMutation({
     mutationFn: (branchId: string) =>
       unBlockBranchService(branchId),
+  });
+};
+
+export const useListActiveBranch = () => {
+  return useQuery({
+    queryKey: ["active-branches"],
+    queryFn: listActiveBranch,
   });
 };

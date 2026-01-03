@@ -32,6 +32,10 @@ export const ROUTES = {
     },
     LISTTRAINER: "/list_trainers",
     CREATE_TRAINER: "/create_trainer",
+    UPDATE_TRAINER:"/update_trainer/:trainerId",
+    FIND_TRAINER:"/find_trainer/:trainerId",
+    UNBLOCK_TRAINER:"/unblock_trainer/:trainerId",
+    BLOCK_TRAINER:"/block_trainer/:trainerId",
     LISTSUBSCRIPTION: "/list_active_subscription",
     PURCHASESUBSCRIPTION: "/purchase_subscription",
     CREATE_BRANCH: "/create_branch",
@@ -40,6 +44,7 @@ export const ROUTES = {
     FIND_BRANCH: "/branch_detail/:branchId",
     UPDATE_BRANCH: "/update_branch/:branchId",
     LIST_BRANCH: "/list_branch",
+    LIST_ACTIVE_BRANCH:"/list_active_branch"
   },
 
   TRAINER: {

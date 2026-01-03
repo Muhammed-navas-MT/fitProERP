@@ -1,4 +1,3 @@
-import { Durations } from "../../../domain/enums/duration";
 import { Roles } from "../../../domain/enums/roles";
 import { Status } from "../../../domain/enums/status";
 
@@ -32,4 +31,44 @@ export interface IListTrainerRequestDTO {
 export interface IListActiveTrainers {
     id:string,
     name:string
+}
+
+export interface TrainerDTO {
+  id: string;
+  gymId: string;
+  branchId: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: Roles;
+  specialization: string[];
+  experience: number;
+  baseSalary: number;
+  commisionRate: number;
+  status: Status;
+  dutyTime: {
+    startTime: string;
+    endTime: string;
+  };
+  address: string;
+  createdAt: Date;
+}
+
+export interface IUpdateTrainerDTO {
+  name?: string;
+  email?: string;
+  phone?: string;
+  password?: string; // optional if you want to allow password updates
+  address?: string;
+  role?: Roles;
+  specialization?: string[];
+  experience?: number;
+  baseSalary?: number;
+  commisionRate?: number;
+  status?: Status;
+  dutyTime?: {
+    startTime: string;
+    endTime: string;
+  };
+  branchId?: string; // update the branch if needed
 }

@@ -16,6 +16,14 @@ export class GymAdminRoutes {
   private _setRoute() {
     const GYMADMIN = ROUTES.GYMADMIN;
 
+    this._route.use(this._middleware.verifySubdomain);
+
+    this._route.post(
+      GYMADMIN.AUTH.LOGIN,
+      (req:Request,res:Response,next:NextFunction) => {
+        injectedGymAdminLoginController.login(req,res,next);
+      }
+    );
     this._route.post(
       GYMADMIN.AUTH.EMAIL_VERIFY,
       (req: Request, res: Response, next: NextFunction) => {
@@ -39,13 +47,7 @@ export class GymAdminRoutes {
         injectedGymAdminSingUpController.signup(req, res, next);
       }
     );
-    this._route.post(
-      GYMADMIN.AUTH.LOGIN,
-      this._middleware.verifySubdomain,
-      (req:Request,res:Response,next:NextFunction) => {
-        injectedGymAdminLoginController.login(req,res,next);
-      }
-    );
+    this._route.use(injectAuthMiddleware.verify);
     this._route.post(
       GYMADMIN.AUTH.LOGOUT,
       this._middleware.verifySubdomain,
@@ -53,7 +55,6 @@ export class GymAdminRoutes {
         injectedGymAdminLogoutController.gymAdminLogout(req,res,next);
       }
     );
-    this._route.use(injectAuthMiddleware.verify);
     this._route.post(
       GYMADMIN.CREATE_TRAINER,
       (req:Request,res:Response,next:NextFunction)=>{
@@ -64,6 +65,30 @@ export class GymAdminRoutes {
       GYMADMIN.LISTTRAINER,
       (req:Request,res:Response,next:NextFunction)=>{
         injectTrainerManagementController.listAllTrainers(req,res,next);
+      }
+    );
+    this._route.put(
+      GYMADMIN.BLOCK_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.blockTrainer(req,res,next);
+      }
+    );
+    this._route.put(
+      GYMADMIN.UNBLOCK_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.unBlockTrainer(req,res,next);
+      }
+    );
+    this._route.get(
+      GYMADMIN.FIND_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.findTrainer(req,res,next);
+      }
+    );
+    this._route.post(
+      GYMADMIN.UPDATE_TRAINER,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.updateTrainer(req,res,next);
       }
     );
     this._route.get(
@@ -112,6 +137,12 @@ export class GymAdminRoutes {
       GYMADMIN.UPDATE_BRANCH,
       (req:Request,res:Response,next:NextFunction)=>{
         injectedBranchController.updateBranch(req,res,next);
+      }
+    )
+    this._route.get(
+      GYMADMIN.LIST_ACTIVE_BRANCH,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedBranchController.listActiveBranch(req,res,next);
       }
     )
   }

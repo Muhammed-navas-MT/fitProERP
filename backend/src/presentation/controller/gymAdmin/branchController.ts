@@ -10,6 +10,7 @@ import { InvalidDataException } from "../../../application/constants/exceptions"
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { BranchSuccess } from "../../shared/constants/messages/branchMessages";
+import { IListActiveBranchUseCase } from "../../../application/interfaces/useCase/gymAdmin/branch/listAllActiveBranchUseCaseInterface";
 
 export class BranchController {
   constructor(
@@ -18,7 +19,8 @@ export class BranchController {
     private readonly _findBranchUseCase: IFindBranchUseCase,
     private readonly _unBlockBranchUseCase: IUnBlockBranchUseCase,
     private readonly _blockBranchUseCase: IBlockBranchUseCase,
-    private readonly _updateBranchUseCase: IUpdateBranchUseCase
+    private readonly _updateBranchUseCase: IUpdateBranchUseCase,
+    private readonly _listActiveBranchUseCase:IListActiveBranchUseCase
   ) {}
 
   createBranch = async (
@@ -154,4 +156,18 @@ export class BranchController {
       next(error);
     }
   };
+
+  listActiveBranch = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+      const branches = await this._listActiveBranchUseCase.listActiveBranch(res.locals.data.id);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        BranchSuccess.LISTED,
+        branches
+      )
+    } catch (error) {
+      next(error);
+    }
+  }
 }

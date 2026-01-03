@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { MemberCard } from "@/components/trainer/memberManagement/memberCard";
 import { useGetAllMembers } from "@/hook/trainer/memberManagementHook";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
+import { toast } from "sonner";
 
 export interface IMember {
   id: string;
@@ -26,9 +27,13 @@ export function MembersList() {
 
   const { _id } = useSelector((state: rootstate) => state.trainerData);
 
-  const { data, isPending } = useGetAllMembers(page, searchQuery, _id);
+  const { data, isPending,error } = useGetAllMembers(page, searchQuery, _id);
+  useEffect(() => {
+    if (error) {
+        toast.error(`${error?.response?.data?.message || "Something went wrong"}`);
+    }
+}, [error]);
   if (isPending) return null;
-
   const members: IMember[] = data?.data?.data ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
 

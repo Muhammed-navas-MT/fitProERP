@@ -8,7 +8,7 @@ export class SubdomainMiddleware {
       req.tenant= subdomain;
       return next();
     }else{
-      return res.status(400).json({success:false,message:"Enter valid URL...."});
+      return res.status(400).json({success:false,message:"Your gym is not exixt.! Please enter valid URL.!"});
     }
   }
 }

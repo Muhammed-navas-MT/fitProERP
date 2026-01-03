@@ -38,7 +38,7 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:gap-4">
-          <div className="flex flex-wrap gap-2">
+          {/* <div className="flex flex-wrap gap-2">
             {employee.specializations?.slice(0,2).map((spec:string, index:number) => (
               <span
                 key={index}
@@ -47,7 +47,9 @@ export function EmployeeCard({ employee }: EmployeeCardProps) {
                 {spec}
               </span>
             ))}
-          </div>
+          </div> */}
+
+          
 
           {
             <div className="flex items-center gap-2">

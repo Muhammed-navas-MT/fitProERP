@@ -16,6 +16,7 @@ export enum TrainerError {
   BRANCH_ID_INVALID = "Invalid branch ID format",
   BRANCH_NOT_FOUND = "Branch not found",
   BRANCH_NOT_BELONG_TO_GYM = "This branch does not belong to the specified gym",
+  BRANCH_BLOCK = " This branch is Blocked",
 
   NAME_INVALID_TYPE = "Trainer name must be a string",
   NAME_TOO_SHORT = "Trainer name must be at least 2 characters long",
@@ -94,6 +95,7 @@ export enum TrainerError {
   TRAINER_HAS_ACTIVE_CLIENTS = "Cannot deactivate trainer with active client assignments",
 
   GYM_NOT_ACTIVE = "This gym is currently inactive. Please contact support",
+  ONE_TRAINER_REQUIRED = "At least one active trainer is required",
 }
 
 

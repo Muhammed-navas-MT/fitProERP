@@ -3,11 +3,12 @@ import {
   IListActiveTrainers,
   IListTrainerRequestDTO,
   IListTrainerResponseDTO,
+  TrainerDTO,
 } from "../dtos/trainerDto/listAllTrainerDto";
 
 export class TrainerMapper {
   static toListTrainersResponse(
-    trainers: TrainerEntity[],
+    trainers: (TrainerEntity & { branchName: string })[],
     total: number,
     params: IListTrainerRequestDTO
   ): IListTrainerResponseDTO {
@@ -24,7 +25,7 @@ export class TrainerMapper {
         email: trainer.email,
         phone: trainer.phone,
         joinDate: trainer.createdAt?.toDateString(),
-        specializations: trainer.specialization,
+        branchName: trainer.branchName,
         status: trainer.status,
         avatar: trainer.name
           .split(" ")
@@ -33,12 +34,33 @@ export class TrainerMapper {
       })),
     };
   }
+
   static toActiveTrainersResponse(
     trainers: TrainerEntity[]
   ): IListActiveTrainers[] {
     return trainers.map((trainer) => ({
-      id: trainer._id?.toString()||"",
+      id: trainer._id?.toString() || "",
       name: trainer.name,
     }));
+  }
+
+  static toFindTrainerResponse(trainer: TrainerEntity): TrainerDTO {
+    return {
+      id: trainer._id!,
+      gymId: trainer.gymId,
+      branchId: trainer.branchId || "",
+      name: trainer.name,
+      email: trainer.email,
+      phone: trainer.phone,
+      role: trainer.role,
+      specialization: trainer.specialization,
+      experience: trainer.experience,
+      baseSalary: trainer.baseSalary,
+      commisionRate: trainer.commisionRate,
+      status: trainer.status,
+      dutyTime: trainer.dutyTime,
+      address: trainer.address,
+      createdAt: trainer.createdAt || new Date(),
+    };
   }
 }

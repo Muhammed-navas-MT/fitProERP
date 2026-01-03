@@ -9,6 +9,7 @@ export const FRONTEND_ROUTES = {
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
         LIST_EMPLOYEES:"employees",
+        DETAIL_EMPLOYEES:"detail-employees",
         LIST_SUBSCRIPTION:"list-subscription",
         LIST_BRANCH:"branches",
         PENDINGAPPROVAL:"approval"

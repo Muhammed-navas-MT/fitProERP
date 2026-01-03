@@ -7,6 +7,7 @@ import {
   IListBranchRequestDTO,
 } from "../../../application/dtos/gymAdminDto/BranchDto";
 import { IBranchEntity } from "../../../domain/entities/gymAdmin/branchEntity";
+import { Status } from "../../../domain/enums/status";
 
 export class BranchRepository
   extends BaseRepository<IBranchModel>
@@ -40,9 +41,6 @@ export class BranchRepository
       gymId,
     };
 
-    /**
-     * ✅ SEARCH BY NAME + ADDRESS
-     */
     if (search) {
       query.$or = [
         { branchName: { $regex: search, $options: "i" } },
@@ -72,4 +70,16 @@ export class BranchRepository
       total,
     };
   }
+  async listAllActiveBranch(gymId: string): Promise<IBranchEntity[]> {
+  try {
+    const branches = await this._model
+      .find({ gymId, status: Status.ACTIVE })
+      .lean();
+
+    return branches;
+  } catch (error) {
+    throw error;
+  }
+}
+
 }

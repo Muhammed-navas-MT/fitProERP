@@ -57,5 +57,7 @@ export enum GymAdminAuthError {
   GYM_IS_PENDING = "Your gym account is currently pending approval. Please wait for admin verification",
   GYM_IS_REGECTED = "The gym registration has been rejected by the administrator.",
   GYM_STATUS_INVALID = "Status is invalid",
-  UPDATE_STATUS_FAILD = "Status update Failed"
+  UPDATE_STATUS_FAILD = "Status update Failed",
+
+  SUBSCRIPTION_END = "Your subscription has ended"
 }

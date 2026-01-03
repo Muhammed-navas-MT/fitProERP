@@ -14,6 +14,9 @@ import { TrainerLoginController } from "../../../presentation/controller/trainer
 import { TrainerLoginUseCase } from "../../../application/useCases/trainer/trainerLoginUseCase";
 import { JwtService } from "../../services/jwtService";
 import { ListActiveTrainers } from "../../../application/useCases/trainer/listAllActiveTrainersUseCase";
+import { CheckTrainerAccessMiddleWare } from "../../../presentation/middlewares/checkTrainerAccessMiddleware";
+import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
+import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
 
 const emailService = new EmailService()
 const hashService = new HashPassword();
@@ -27,6 +30,8 @@ export const injectedTrainerLoginController = new TrainerLoginController(loginUs
 // add member
 const memberRepository = new MemberRepository(memberModel)
 const generatePassword = new PasswordGenerator();
+const branchRepository = new BranchRepository(branchModel)
 const addMemberUseCase = new AddMemberUseCase(memberRepository,hashService,emailService,generatePassword,sendPasswordEmailContentGenerator,gymAdminRepository,trainerRepository);
 const listActiveTrainers = new ListActiveTrainers(trainerRepository,gymAdminRepository);
-export const injectedAddMemberController = new AddMemberController(addMemberUseCase,listActiveTrainers)
+export const injectedAddMemberController = new AddMemberController(addMemberUseCase,listActiveTrainers);
+export const injectedCheckAccessTrainerMiddleware = new CheckTrainerAccessMiddleWare(gymAdminRepository,branchRepository,trainerRepository)

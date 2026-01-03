@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request,Response,NextFunction,Router } from "express";
-import { injectedAddMemberController, injectedTrainerLoginController } from "../../infrastructure/DI/trainer/trainerInjection";
+import { injectedAddMemberController, injectedCheckAccessTrainerMiddleware, injectedTrainerLoginController } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 export class TrainerRoutes {
     private _route:Router;
@@ -15,7 +15,10 @@ export class TrainerRoutes {
             injectedTrainerLoginController.login(req,res,next);
         })
 
-        this._route.use(injectAuthMiddleware.verify)
+        this._route.use([
+            injectAuthMiddleware.verify,
+            injectedCheckAccessTrainerMiddleware.execute
+        ]);
 
         this._route.post(TRAINER.ADD_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
             injectedAddMemberController.addMember(req,res,next);

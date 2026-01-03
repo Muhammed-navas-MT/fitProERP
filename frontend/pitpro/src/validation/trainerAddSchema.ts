@@ -9,7 +9,7 @@ const onlyLettersRegex = /^[A-Za-z\s]+$/;
 export const trainerSignupSchema = z.object({
   gymId: objectIdSchema.optional(),
 
-  branchId: objectIdSchema.optional(),
+  branchId: objectIdSchema,
 
   name: z
     .string()

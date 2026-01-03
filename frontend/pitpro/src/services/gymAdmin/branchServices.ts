@@ -74,3 +74,15 @@ export const updateBranchService = async (data:IUpdateBranchType,branchId:string
         throw error;
     }
 }
+
+export const listActiveBranch = async()=>{
+    try {
+        const response = await AxiosInstance.get(`${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.LIST_ACTIVE_BRANCH}`);
+        return response.data
+    } catch (error) {
+        if(error instanceof AxiosError){
+            throw new Error(error.response?.data.message);
+        };
+        throw error
+    }
+}
