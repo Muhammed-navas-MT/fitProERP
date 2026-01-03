@@ -44,5 +44,13 @@ export interface IFindByNameAndLocationDTO {
   branchName:string,
   city:string,
   pincode:string
+};
+
+export interface IListActiveBranchResponseDTO {
+  branches: {
+    id: string;
+    branchName: string;
+    address: string;
+  }[];
 }
 

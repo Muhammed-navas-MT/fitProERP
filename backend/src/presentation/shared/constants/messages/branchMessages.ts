@@ -25,7 +25,9 @@ export enum BranchError {
   BRANCH_ID_REQUIRED = "Branch id is required",
   BRANCH_DATA = "Branch data is required",
   BRANCH_NOT_FOUND = "Branch not found",
-  CREATION_FAILD = "Failed to create branch"
+  CREATION_FAILD = "Failed to create branch",
+  BRANCH_BLOCK = "branch is Blocked successfully",
+  FAILED_TO_LIST_ACTIVE_BRANCH = "Unable to retrieve active branch details",
 }
 
 export enum BranchSuccess {

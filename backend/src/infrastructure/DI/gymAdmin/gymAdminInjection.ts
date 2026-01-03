@@ -41,6 +41,11 @@ import { branchModel } from "../../repository/databaseConfigs/models/branchModel
 import { UpdateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/updateBranchUseCase";
 import { MemberRepository } from "../../repository/member/memberRepo";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
+import { ListActveBranchUseCase } from "../../../application/useCases/gymAdmin/branch/listAllActiveBranchesUseCase";
+import { BlockTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/blockTrainerUseCase";
+import { UnBlockTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/unBlockTrainerUseCase";
+import { FindTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/findTrainerUseCase";
+import { UpdateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/updateTrainerUseCase";
 
 
 const otpService =new OtpService()
@@ -64,12 +69,17 @@ const tokenValidtionUseCase = new TokenValidationUseCase(jwtService,cacheService
 export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase);
 
 // trainer management
+const memberRepository = new MemberRepository(memberModel)
 const trainerRepository = new TrainerRepository(trainerModel);
 const passwordGenerator = new PasswordGenerator()
 const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
 const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
+const blockTrainer = new BlockTrainerUseCase(trainerRepository,memberRepository);
+const unBlockTrainer = new UnBlockTrainerUseCase(trainerRepository);
+const findTrainer = new FindTrainerUseCase(trainerRepository);
+const updateTrainer = new UpdateTrainerUseCase(trainerRepository,memberRepository);
 const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
-export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers);
+export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers,blockTrainer,unBlockTrainer,findTrainer,updateTrainer);
 
 //subscription list controller
 const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
@@ -80,7 +90,6 @@ const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepos
 export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)
 
 // branch controller
-const memberRepository = new MemberRepository(memberModel)
 const branchRepository = new BranchRepository(branchModel);
 const createBranch = new CreateBranchUseCase(branchRepository,gymAdminRepository);
 const updateBranch = new UpdateBranchUseCase(branchRepository)
@@ -88,4 +97,5 @@ const listBranch = new ListBranchUseCase(branchRepository,memberRepository,train
 const blockBranch = new BlockBranchUseCase(branchRepository);
 const unBlockBranch = new UnBlockBranchUseCase(branchRepository);
 const findBranch = new FindBranchUseCase(branchRepository);
-export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch);
+const listActiveBranch = new ListActveBranchUseCase(branchRepository);
+export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch,listActiveBranch);

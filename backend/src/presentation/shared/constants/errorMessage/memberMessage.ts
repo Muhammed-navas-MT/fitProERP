@@ -11,11 +11,11 @@ export enum MemberError {
   GYM_NOT_ACTIVE = "This gym is currently inactive. Please contact support",
   BRANCH_ID_INVALID = "Invalid branch ID format",
   BRANCH_NOT_FOUND = "Branch not found",
+  BRANCH_BLOCK = "Branch is Blocked",
   TRAINER_ID_INVALID = "Invalid trainer ID format",
   TRAINER_NOT_FOUND = "Trainer not found",
   TRAINER_NOT_AVAILABLE = "Selected trainer is not available",
   TRAINER_NOT_ACTIVE = "This trainer is currently inactive.",
-
 
   FIRST_NAME_INVALID_TYPE = "First name must be a string",
   FIRST_NAME_TOO_SHORT = "First name must be at least 2 characters long",

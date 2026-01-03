@@ -32,6 +32,10 @@ export const API_ROUTES = {
     },
     LISTTRAINER: "/list_trainers",
     CREATE_TRAINER: "/create_trainer",
+    UPDATE_TRAINER:"/update_trainer",
+    FIND_TRAINER:"/find_trainer",
+    UNBLOCK_TRAINER:"/unblock_trainer",
+    BLOCK_TRAINER:"/block_trainer",
     LISTSUBSCRIPTION: "/list_active_subscription",
     PURCHASESUBSCRIPTION: "/purchase_subscription",
     CREATE_BRANCH: "/create_branch",
@@ -40,6 +44,7 @@ export const API_ROUTES = {
     FIND_BRANCH: "/branch_detail",
     UPDATE_BRANCH: "/update_branch",
     LIST_BRANCH: "/list_branch",
+    LIST_ACTIVE_BRANCH:"/list_active_branch",
   },
 
   TRAINER: {

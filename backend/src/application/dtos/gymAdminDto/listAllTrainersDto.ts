@@ -15,6 +15,7 @@ export interface IListTrainerResponseDTO {
             email?:string,
             phone?:string,
             joinDate?:string,
+            branchName?:string,
             specializations?:string[],
             status?:Status,
             avatar?:string,

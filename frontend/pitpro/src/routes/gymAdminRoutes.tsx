@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import GymAdminLoginPage from "@/page/gymAdmin/gymAdminLoginPage";
 import GymAdminDashboard from "@/page/gymAdmin/GymAdminDashboard";
-import MembersPage from "@/page/gymAdmin/GymadminMemberListPage";
 import EmployeesPage from "@/page/gymAdmin/gymAdminEmpoyeesPage";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
@@ -11,6 +10,8 @@ import GymAdminStatusRoute from "@/components/shared/protectedComponets/gymAdmin
 import SubscriptionAccessRoute from "@/components/shared/protectedComponets/subscriptionAccessRoute";
 import BranchesPage from "@/page/gymAdmin/BranchListPage";
 import PendingApprovalPage from "@/components/gymAdmin/PendingApprovalPage";
+import EmployeeDetailsPage from "@/page/gymAdmin/trainerDetailPage";
+import MemeberListPage from "@/page/gymAdmin/memberListPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -50,11 +51,14 @@ const GymAdminRoutes = () => {
           />
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS}
-            element={<MembersPage />}
+            element={<MemeberListPage />}
           />
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}
             element={<EmployeesPage />}
+          />
+          <Route path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_EMPLOYEES}/:id`}
+          element={<EmployeeDetailsPage/>}
           />
           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}
            element={<BranchesPage/>}

@@ -14,7 +14,6 @@ export class MemberRoutes {
             injectedMemberLoginController.login(req,res,next);
         })
     };
-
     public get_routes():Router{
         return this._route;
     }

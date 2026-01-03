@@ -16,10 +16,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { trainerSignupSchema } from "@/validation/trainerAddSchema";
 import type { TrainerFormData } from "@/validation/trainerAddSchema";
 import { useAddTrainer } from "@/hook/gymAdmin/trainerManagementHook";
+import { useListActiveBranch } from "@/hook/gymAdmin/branchHooks";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
 import { TrainerAddPayload } from "@/types/authPayload";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 interface AddEmployeeDialogProps {
   open: boolean;
@@ -31,7 +34,12 @@ export function AddEmployeeDialog({
   onOpenChange,
 }: AddEmployeeDialogProps) {
   const { mutate: addTrainer, isPending } = useAddTrainer();
+  const { data, isError } = useListActiveBranch();
+  const branchData = data?.data?.branches ?? [];
+  console.log(branchData)
   const [newSpec, setNewSpec] = useState("");
+  const queryClient = useQueryClient();
+
 
   const {
     register,
@@ -100,6 +108,9 @@ export function AddEmployeeDialog({
     addTrainer(payload, {
       onSuccess: (res) => {
         toast.success(res.message);
+        queryClient.invalidateQueries({
+          queryKey: ["trainers"],
+        });
         reset();
         onOpenChange(false);
       },
@@ -111,7 +122,7 @@ export function AddEmployeeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-zinc-800 bg-zinc-900 text-white">
+      <DialogContent className="max-h-[90vh] max-w-2xl border-zinc-800 bg-zinc-900 text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl text-orange-500">
             Add New Employee
@@ -121,10 +132,11 @@ export function AddEmployeeDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(
-          onSubmit,
-          (err)=>console.log(err)
-        )} className="mt-4 space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit, (err) => console.log(err))}
+          className="mt-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2"
+        >
+          {/* Name & Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label className="text-white">Name *</Label>
@@ -150,6 +162,7 @@ export function AddEmployeeDialog({
             </div>
           </div>
 
+          {/* Phone */}
           <div>
             <Label className="text-white">Phone *</Label>
             <Input
@@ -161,6 +174,7 @@ export function AddEmployeeDialog({
             )}
           </div>
 
+          {/* Address */}
           <div>
             <Label className="text-white">Address</Label>
             <Textarea
@@ -172,6 +186,7 @@ export function AddEmployeeDialog({
             )}
           </div>
 
+          {/* Specializations */}
           <div>
             <Label className="text-white">Specializations</Label>
             <div className="mt-1 flex gap-2">
@@ -220,6 +235,7 @@ export function AddEmployeeDialog({
             </div>
           </div>
 
+          {/* Experience, Salary, Commission */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Input
@@ -229,9 +245,7 @@ export function AddEmployeeDialog({
                 className="border-zinc-800 bg-black text-white"
               />
               {errors.experience && (
-                <p className="text-red-500 text-sm">
-                  {errors.experience.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.experience.message}</p>
               )}
             </div>
 
@@ -243,9 +257,7 @@ export function AddEmployeeDialog({
                 className="border-zinc-800 bg-black text-white"
               />
               {errors.baseSalary && (
-                <p className="text-red-500 text-sm">
-                  {errors.baseSalary.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.baseSalary.message}</p>
               )}
             </div>
 
@@ -257,13 +269,12 @@ export function AddEmployeeDialog({
                 className="border-zinc-800 bg-black text-white"
               />
               {errors.commisionRate && (
-                <p className="text-red-500 text-sm">
-                  {errors.commisionRate.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.commisionRate.message}</p>
               )}
             </div>
           </div>
 
+          {/* Duty Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Input
@@ -293,14 +304,48 @@ export function AddEmployeeDialog({
             </div>
           </div>
 
-          <select
-            {...register("status")}
-            className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
-          >
-            <option value="ACTIVE">Active</option>
-            <option value="IN_ACTIVE">Inactive</option>
-          </select>
+          {/* Status & Branch in one row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Status */}
+            <div>
+              <Label className="text-white">Status *</Label>
+              <select
+                {...register("status")}
+                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
+              >
+                <option value="ACTIVE">Active</option>
+                <option value="IN_ACTIVE">Inactive</option>
+              </select>
+              {errors.status && (
+                <p className="text-red-500 text-sm">{errors.status.message}</p>
+              )}
+            </div>
 
+            {/* Branch */}
+            <div>
+              <Label className="text-white">Branch *</Label>
+              <select
+                {...register("branchId")}
+                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
+              >
+                <option value="">Select branch</option>
+                {branchData?.map((branch:{id:string,branchName:string,address:string}) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName} - 
+                    {branch.address}
+                  </option>
+                ))}
+              </select>
+              {errors.branchId && (
+                <p className="text-red-500 text-sm">{errors.branchId.message}</p>
+              )}
+              {isError && (
+                <p className="text-red-500 text-sm">Failed to load branches</p>
+              )}
+            </div>
+          </div>
+
+          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4">
             <Button
               type="button"

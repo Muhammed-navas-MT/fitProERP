@@ -19,7 +19,6 @@ export class listAllTrainersUseCase implements IListAllTrainersUseCase {
     this._gymAdminRepository = gymAdminRepository;
   }
   async listAllTrainers(params: IListTrainerRequestDTO): Promise<IListTrainerResponseDTO | null> {
-    console.log(params,"navasss....navas.....")
     const findGym = await this._gymAdminRepository.findById(params.gymId);
     if(!findGym){
       throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);

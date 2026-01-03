@@ -59,6 +59,12 @@ export class TokenMissingException extends ApplicationException {
     }
 }
 
+export class BadRequestException extends ApplicationException {
+    constructor(message:string){
+        super(message);
+    }
+}
+
 export class TokenExpiredException extends ApplicationException {
     public role?: string;
     public subdomain?: string;

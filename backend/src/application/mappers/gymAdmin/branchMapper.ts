@@ -1,5 +1,5 @@
 import { IBranchEntity } from "../../../domain/entities/gymAdmin/branchEntity";
-import { IListBranchResponseDTO, ISingleBranchResponseDTO } from "../../dtos/gymAdminDto/BranchDto";
+import { IListActiveBranchResponseDTO, IListBranchResponseDTO, ISingleBranchResponseDTO } from "../../dtos/gymAdminDto/BranchDto";
 
 export class BranchResponseMapper {
   static toFindBranchResponse(
@@ -37,6 +37,16 @@ export class BranchResponseMapper {
         status:item.branch.status
       })),
       total,
+    };
+  };
+
+  static toListActiveItem(branch: IBranchEntity[]): IListActiveBranchResponseDTO {
+    return {
+       branches:branch.map((item) => ({
+        id: item._id?.toString() || "",
+        branchName: item.branchName || "",
+        address: `${item.address.street}, ${item.address.city}` || ""
+      }))
     };
   }
 }
