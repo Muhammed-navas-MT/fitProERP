@@ -23,6 +23,7 @@ interface AddMemberModalProps {
 
 interface FormData {
   name: string
+  branchId:string
   email: string
   phone: string
   address: string
@@ -48,6 +49,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
       name: "",
       email: "",
       phone: "",
+      branchId:"",
       address: "",
       dateOfBirth: "",
       gender: "",
@@ -67,6 +69,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
       trainerId: data.trainerId,
       name: data.name,
       email: data.email,
+      branchId:data.branchId,
       phone: data.phone,
       address: data.address,
       emergencyNumber: data.emergencyContact,

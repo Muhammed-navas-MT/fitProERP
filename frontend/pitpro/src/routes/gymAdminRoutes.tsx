@@ -12,6 +12,7 @@ import BranchesPage from "@/page/gymAdmin/BranchListPage";
 import PendingApprovalPage from "@/components/gymAdmin/PendingApprovalPage";
 import EmployeeDetailsPage from "@/page/gymAdmin/trainerDetailPage";
 import MemeberListPage from "@/page/gymAdmin/memberListPage";
+import MemberDetailPage from "@/page/gymAdmin/memberDetailpage";
 
 const GymAdminRoutes = () => {
   return (
@@ -52,6 +53,10 @@ const GymAdminRoutes = () => {
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS}
             element={<MemeberListPage />}
+          />
+          <Route
+           path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_MEMBER}/:memberId`}
+           element={<MemberDetailPage/>}
           />
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}

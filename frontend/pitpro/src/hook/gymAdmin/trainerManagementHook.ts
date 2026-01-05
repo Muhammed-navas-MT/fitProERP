@@ -11,6 +11,7 @@ import {
   findTrainerService,
   blockTrainerService,
   unblockTrainerService,
+  listActiveTrainers,
 } from "@/services/gymAdmin/trainerService"
 
 import { TrainerAddPayload } from "@/types/authPayload"
@@ -31,6 +32,16 @@ export const useGetAllTrainers = (
   return useQuery({
     queryKey: ["trainers", page, search, gymId],
     queryFn: () => getTrainers(page, search, gymId),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export const useGetAllActiveTrainers = (
+  branchId:string
+) => {
+  return useQuery({
+    queryKey: ["active-trainers",branchId],
+    queryFn: () => listActiveTrainers(branchId),
     placeholderData: keepPreviousData,
   })
 }

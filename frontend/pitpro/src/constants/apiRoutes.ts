@@ -31,6 +31,7 @@ export const API_ROUTES = {
       LOGOUT: "/logout",
     },
     LISTTRAINER: "/list_trainers",
+    LIST_ACTIVE_TRAINERS: "/list_active_trainers",
     CREATE_TRAINER: "/create_trainer",
     UPDATE_TRAINER:"/update_trainer",
     FIND_TRAINER:"/find_trainer",
@@ -45,6 +46,12 @@ export const API_ROUTES = {
     UPDATE_BRANCH: "/update_branch",
     LIST_BRANCH: "/list_branch",
     LIST_ACTIVE_BRANCH:"/list_active_branch",
+    LISTMEMBER: "/list_member",
+    CREATE_MEMBER: "/create_member",
+    UPDATE_MEMBER:"/update_member",
+    FIND_MEMBER:"/find_member",
+    UNBLOCK_MEMBER:"/unblock_member",
+    BLOCK_MEMBER:"/block_member",
   },
 
   TRAINER: {

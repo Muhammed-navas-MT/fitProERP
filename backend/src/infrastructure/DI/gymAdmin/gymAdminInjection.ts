@@ -46,6 +46,14 @@ import { BlockTrainerUseCase } from "../../../application/useCases/gymAdmin/trai
 import { UnBlockTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/unBlockTrainerUseCase";
 import { FindTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/findTrainerUseCase";
 import { UpdateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/updateTrainerUseCase";
+import { MemberManagementController } from "../../../presentation/controller/gymAdmin/membermanagement/memberManagementController";
+import { CreateMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/createMemberUseCase";
+import { UpdateMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/updateMemberUseCase";
+import { FindMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/findMemberUseCase";
+import { BlockMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/blockMemberUseCase";
+import { UnBlockMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/unblockMemberUseCase";
+import { ListAllMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/listAllMemberUseCase";
+import { ListAllActiveTrainersByBranch } from "../../../application/useCases/gymAdmin/trainerManagement/listAllActiveTrainersUseCase";
 
 
 const otpService =new OtpService()
@@ -78,8 +86,9 @@ const blockTrainer = new BlockTrainerUseCase(trainerRepository,memberRepository)
 const unBlockTrainer = new UnBlockTrainerUseCase(trainerRepository);
 const findTrainer = new FindTrainerUseCase(trainerRepository);
 const updateTrainer = new UpdateTrainerUseCase(trainerRepository,memberRepository);
+const listAllActiveTrainers = new ListAllActiveTrainersByBranch(trainerRepository)
 const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
-export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers,blockTrainer,unBlockTrainer,findTrainer,updateTrainer);
+export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers,blockTrainer,unBlockTrainer,findTrainer,updateTrainer,listAllActiveTrainers);
 
 //subscription list controller
 const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
@@ -99,3 +108,20 @@ const unBlockBranch = new UnBlockBranchUseCase(branchRepository);
 const findBranch = new FindBranchUseCase(branchRepository);
 const listActiveBranch = new ListActveBranchUseCase(branchRepository);
 export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch,listActiveBranch);
+
+// member management controller
+const createMember = new CreateMemberUseCase(
+    memberRepository,
+    hashService,
+    emailService,
+    passwordGenerator,
+    sendPasswordEmailContentGenerator,
+    gymAdminRepository,trainerRepository,
+    branchRepository
+);
+const updateMember = new UpdateMemberUseCase(memberRepository);
+const findMember = new FindMemberUseCase(memberRepository);
+const blockMember = new BlockMemberUseCase(memberRepository);
+const unBlockMember = new UnBlockMemberUseCase(memberRepository);
+const listMembers = new ListAllMemberUseCase(memberRepository,gymAdminRepository);
+export const injectedMemberManagementController = new MemberManagementController(createMember,listMembers,findMember,updateMember,blockMember,unBlockMember);

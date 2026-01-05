@@ -62,7 +62,6 @@ export class AddMemberController {
     };
     async listAllActiveTrainers(req:Request,res:Response,next:NextFunction):Promise<void>{
         try {
-            console.log(res.locals.data.id,"sdfasdfsadf")
             const trainers = await this._listAllActiveTrainers.listActiveTrainers(res.locals.data.id);
             ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,

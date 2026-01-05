@@ -12,7 +12,8 @@ export const FRONTEND_ROUTES = {
         DETAIL_EMPLOYEES:"detail-employees",
         LIST_SUBSCRIPTION:"list-subscription",
         LIST_BRANCH:"branches",
-        PENDINGAPPROVAL:"approval"
+        PENDINGAPPROVAL:"approval",
+        DETAIL_MEMBER:"detail-member",
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",

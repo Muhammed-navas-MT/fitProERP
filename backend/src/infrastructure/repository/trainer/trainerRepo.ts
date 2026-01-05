@@ -14,8 +14,6 @@ export class TrainerRepository
     super(model);
   }
 
-  /* ================= BASIC ================= */
-
   async findByEmail(email: string): Promise<TrainerEntity | null> {
     return this._model.findOne({ email });
   }
@@ -30,8 +28,6 @@ export class TrainerRepository
       status: Status.ACTIVE,
     });
   }
-
-  /* ================= LIST ================= */
 
   async listAllTrainers(
     params: IListTrainerRequestDTO
