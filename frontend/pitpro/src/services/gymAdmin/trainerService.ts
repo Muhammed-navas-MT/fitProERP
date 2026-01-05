@@ -26,6 +26,13 @@ export const getTrainers = async (page: number, search: string,gymId:string) => 
   return response.data;
 };
 
+export const listActiveTrainers = async (branchId:string) => {
+  const response = await AxiosInstance.get(
+    `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.LIST_ACTIVE_TRAINERS}?branchId=${branchId}`
+  );
+  return response.data;
+};
+
 export const updateTrainerService = async (
   trainerId: string,
   data:UpdateTrainerType

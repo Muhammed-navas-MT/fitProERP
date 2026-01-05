@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -65,6 +65,12 @@ export class GymAdminRoutes {
       GYMADMIN.LISTTRAINER,
       (req:Request,res:Response,next:NextFunction)=>{
         injectTrainerManagementController.listAllTrainers(req,res,next);
+      }
+    );
+    this._route.get(
+      GYMADMIN.LIST_ACTIVE_TRAINERS,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectTrainerManagementController.listAllActiveTrainers(req,res,next);
       }
     );
     this._route.put(
@@ -143,6 +149,47 @@ export class GymAdminRoutes {
       GYMADMIN.LIST_ACTIVE_BRANCH,
       (req:Request,res:Response,next:NextFunction)=>{
         injectedBranchController.listActiveBranch(req,res,next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.CREATE_MEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.createMember(req, res, next);
+      }
+    );
+
+    this._route.get(
+      GYMADMIN.LISTMEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.listMembers(req, res, next);
+      }
+    );
+
+    this._route.get(
+      GYMADMIN.FIND_MEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.findMember(req, res, next);
+      }
+    );
+
+    this._route.post(
+      GYMADMIN.UPDATE_MEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.updateMember(req, res, next);
+      }
+    );
+
+    this._route.put(
+      GYMADMIN.BLOCK_MEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.blockMember(req, res, next);
+      }
+    );
+
+    this._route.put(
+      GYMADMIN.UNBLOCK_MEMBER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberManagementController.unBlockMember(req, res, next);
       }
     )
   }

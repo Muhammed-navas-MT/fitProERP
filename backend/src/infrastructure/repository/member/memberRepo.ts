@@ -1,9 +1,10 @@
 import { BaseRepository } from "../base/baseRepo";
 import { IMemberRepository } from "../../../application/interfaces/repository/member/addMemberRepoInterface";
 import { IMemberModel } from "../databaseConfigs/models/memberModel";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { MemberEntity } from "../../../domain/entities/member/memberEntity";
-import { IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
+import { IListMemberInGymRequestDTO, IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
+import { IPopulatedBranch, IPopulatedMember } from "../databaseConfigs/types/populatedMemberType";
 
 export class MemberRepository
   extends BaseRepository<IMemberModel>
@@ -18,27 +19,32 @@ export class MemberRepository
   }
 
   async listAllMembers(
-    params: IListMemberRequestDTO,
-    gymId: string
-  ): Promise<{ members: MemberEntity[]; total: number }> {
-    const skip = (params.page - 1) * params.limit;
-    const search = params.search?.trim();
+  params: IListMemberRequestDTO,
+  gymId: string
+): Promise<{ members: IPopulatedMember[]; total: number }> {
+  const skip = (params.page - 1) * params.limit;
+  const search = params.search?.trim();
 
-    const filter = search
-      ? { gymId, name: { $regex: search, $options: "i" } }
-      : { gymId };
+  const filter = search
+    ? { gymId, name: { $regex: search, $options: "i" } }
+    : { gymId };
 
-    const members = await this._model
-      .find(filter)
-      .skip(skip)
-      .limit(params.limit)
-      .sort({ createdAt: -1 })
-      .lean();
+  const members = await this._model
+    .find(filter)
+    .populate<{ branchId: IPopulatedBranch }>({
+      path: "branchId",
+      select: "branchName",
+    })
+    .skip(skip)
+    .limit(params.limit)
+    .sort({ createdAt: -1 })
+    .lean<IPopulatedMember[]>();
 
-    const total = await this._model.countDocuments(filter);
+  const total = await this._model.countDocuments(filter);
 
-    return { members, total };
-  }
+  return { members, total };
+}
+
 
   async countMembersByGymId(gymId: string): Promise<number> {
     return this._model.countDocuments({ gymId });
@@ -77,4 +83,36 @@ export class MemberRepository
       await this._model.bulkWrite(bulkOps);
     }
   }
+
+async listAllMembersByGymId(
+  params: IListMemberInGymRequestDTO
+): Promise<{ members: IPopulatedMember[]; total: number }> {
+  const skip = (params.page - 1) * params.limit;
+  const search = params.search?.trim();
+
+  const filter = search
+    ? { gymId: params.gymId, name: { $regex: search, $options: "i" } }
+    : { gymId: params.gymId };
+
+  const members = await this._model
+    .find(filter)
+    .populate<{
+      branchId: {
+        _id: Types.ObjectId;
+        branchName: string;
+      };
+    }>({
+      path: "branchId",
+      select: "branchName",
+    })
+    .skip(skip)
+    .limit(params.limit)
+    .sort({ createdAt: -1 })
+    .lean<IPopulatedMember[]>();
+
+  const total = await this._model.countDocuments(filter);
+
+  return { members, total };
+}
+
 }

@@ -5,6 +5,7 @@ import { BloodGroups } from "../../../domain/enums/bloocGroup";
 
 export interface IAddMemberDTO {
   trainerId: string;
+  branchId:string;
   name: string;
   email: string;
   phone: string;
@@ -50,4 +51,27 @@ export interface IUpdateMemberDTO {
     fitnessGoal?: string;
   };
   status?: Status;
+};
+
+export interface UpdateMemberDTO {
+  trainerId?: string;
+  branchId?:string
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  profileImg?: string;
+  emergencyNumber?: string;
+  status?:Status;
+  healthDetails?: {
+    gender?: string;
+    dateOfBirth?: string;
+    weight?: number;
+    height?: number;
+    targetWeight?: number;
+    medicalConditions?: string;
+    allergies?: string;
+    fitnessGoal?: string;
+  };
 }
+

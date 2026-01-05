@@ -14,6 +14,7 @@ import { IFindTrainerUseCase } from "../../../../application/interfaces/useCase/
 import { IUpdateTrainerUseCase } from "../../../../application/interfaces/useCase/gymAdmin/trainerManagement/updateTrainerUseCaseInterface";
 import { IUpdateSubscriptionUseCase } from "../../../../application/interfaces/useCase/superAdmin/subscription/updateSubscriptionUseCaseInterface";
 import { IUpdateTrainerDTO } from "../../../../application/dtos/trainerDto/listAllTrainerDto";
+import { IListActiveTrainersByBranchIdUseCase } from "../../../../application/interfaces/useCase/gymAdmin/trainerManagement/listActiveTrainersUseCase";
 
 export class TrainerManagementController {
     constructor(
@@ -22,8 +23,8 @@ export class TrainerManagementController {
         private _blockTrainerUseCase:IBlockTrainerUseCase,
         private _unBlockTrainerUseCase:IUnBlockTrainerUseCase,
         private _findTrainerUseCase:IFindTrainerUseCase,
-        private _updateTrainerUseCase:IUpdateTrainerUseCase
-
+        private _updateTrainerUseCase:IUpdateTrainerUseCase,
+        private _listaAllActiveTrainers:IListActiveTrainersByBranchIdUseCase
     ){}
 
     async createTrainer(req:Request,res:Response,next:NextFunction){
@@ -117,6 +118,21 @@ export class TrainerManagementController {
                 HTTP_STATUS_CODE.OK,
                 res,
                 TrainerSuccess.PROFILE_UPDATED
+            )
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async listAllActiveTrainers(req:Request,res:Response,next:NextFunction){
+        try {
+            const branchId = req.query.branchId as string || ""
+            const trainers = await this._listaAllActiveTrainers.listTrainers(res.locals.data.id,branchId);
+            ResponseHelper.success(
+                HTTP_STATUS_CODE.OK,
+                res,
+                TrainerSuccess.TRAINERS_LISTED,
+                trainers
             )
         } catch (error) {
             next(error);
