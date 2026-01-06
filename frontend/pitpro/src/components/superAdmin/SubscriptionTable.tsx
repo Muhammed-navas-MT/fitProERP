@@ -5,30 +5,42 @@ import {
   useGetSubscription,
   useUnBlockSubscription,
 } from "@/hook/superAdmin/getSubscriptionHook";
-import { Edit2, X } from "lucide-react";
+import { Edit2, Eye, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {toast} from "sonner";
+import { toast } from "sonner";
+import SubscriptionViewModal from "./subscriptionViewModal";
 
-interface Plan {
+export interface Plan {
   id: string;
   planName: string;
   price: number;
   duration: string;
   features: string[];
+  limits: {
+    maxBranches: number;
+    maxMembers: number;
+    maxTrainers: number;
+  };
   isActive: boolean;
 }
 
 export default function SubscriptionTable() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewOpen, setViewOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const navigate = useNavigate();
 
-  const { data, error, isPending,refetch } = useGetSubscription(page, searchQuery);
+  const { data, error, isPending, refetch } = useGetSubscription(
+    page,
+    searchQuery
+  );
   const { mutate: blockPlan } = useBlockSubscription();
-  const {mutate:unBlockPlan} = useUnBlockSubscription();
+  const { mutate: unBlockPlan } = useUnBlockSubscription();
 
   const plans: Plan[] = data?.data?.data ?? [];
+  console.log(plans, "adkfasdkjfasd");
   const totalPages = data?.data?.totalPages ?? 1;
 
   const handleSearch = (value: string) => {
@@ -37,31 +49,37 @@ export default function SubscriptionTable() {
   };
 
   const handleEdit = (id: string) => {
-    console.log("Edit clicked for Plan ID:", id);
-    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id",id)}`);
+    navigate(
+      `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION.replace(":id", id)}`
+    );
+  };
+
+  const handleView = (plan: Plan) => {
+    setSelectedPlan(plan);
+    setViewOpen(true);
   };
 
   const handleBlock = (id: string) => {
     blockPlan(id, {
       onSuccess: () => {
-        toast("Blocked successfully")
+        toast("Blocked successfully");
         refetch();
       },
-      onError:(err)=>{
-        toast(err.message)
-      }
+      onError: (err) => {
+        toast(err.message);
+      },
     });
   };
 
   const handleUnblock = (id: string) => {
     unBlockPlan(id, {
       onSuccess: () => {
-        toast("UnBlocked successfully")
+        toast("UnBlocked successfully");
         refetch();
       },
-      onError:(err)=>{
-        toast(err.message)
-      }
+      onError: (err) => {
+        toast(err.message);
+      },
     });
   };
 
@@ -162,13 +180,13 @@ export default function SubscriptionTable() {
                       </button>
                     )}
 
-                    {/* <button
-                      onClick={() =>(){}}
+                    <button
+                      onClick={() => handleView(plan)}
                       className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition"
                       title="View"
                     >
                       <Eye size={16} />
-                    </button> */}
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -243,12 +261,12 @@ export default function SubscriptionTable() {
                 </button>
               )}
 
-              {/* <button
-                onClick={() => handleView(plan.id)}
+              <button
+                onClick={() => handleView(plan)}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg flex items-center justify-center gap-2 transition"
               >
                 <Eye size={16} /> View
-              </button> */}
+              </button>
             </div>
           </div>
         ))}
@@ -278,6 +296,11 @@ export default function SubscriptionTable() {
           Next
         </button>
       </div>
+      <SubscriptionViewModal
+        open={viewOpen}
+        onClose={() => setViewOpen(false)}
+        plan={selectedPlan}
+      />
     </div>
   );
 }

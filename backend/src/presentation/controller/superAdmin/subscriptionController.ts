@@ -29,6 +29,7 @@ export class SubscriptionController {
     try {
       const subscription: ISubscriptionRequestDTO = req.body;
 
+
       const validationError = subscriptionSchema.safeParse(subscription);
       if(validationError.error){
         throw new InvalidDataException(validationError.error.issues[0].message);

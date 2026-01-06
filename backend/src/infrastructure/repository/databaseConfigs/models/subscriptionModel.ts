@@ -8,6 +8,11 @@ export interface ISubscriptionModel extends Document {
     price:number;
     duration:Durations;
     features:string[];
+    limits:{
+        maxBranches: number;
+        maxTrainers: number;
+        maxMembers: number;
+    }
     isActive:boolean;
     createdAt:Date;
 };
