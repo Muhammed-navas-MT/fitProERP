@@ -13,8 +13,7 @@ export enum GymOwnerFeature {
 
   PAYMENTS = "PAYMENTS",
   INVOICES = "INVOICES",
-
-  REPORTS = "REPORTS",
+  
   ANALYTICS = "ANALYTICS",
 
   NOTIFICATIONS = "NOTIFICATIONS",

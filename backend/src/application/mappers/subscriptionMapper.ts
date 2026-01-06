@@ -11,6 +11,11 @@ export class SubscriptionMapper {
             price:subscription.price||0,
             duration:subscription.duration,
             features:subscription.features,
+            limits:{
+              maxBranches:subscription.limits.maxBranches,
+              maxMembers:subscription.limits.maxMembers,
+              maxTrainers:subscription.limits.maxTrainers
+            },
             isActive:subscription.isActive
         }
     }
@@ -28,6 +33,11 @@ export class SubscriptionMapper {
                 price:subscription.price,
                 duration:subscription.duration,
                 features:subscription.features,
+                limits:{
+                  maxBranches:subscription.limits.maxBranches,
+                  maxMembers:subscription.limits.maxMembers,
+                  maxTrainers:subscription.limits.maxTrainers,
+                },
                 isActive:subscription.isActive
             })) ?? []
 
@@ -43,6 +53,11 @@ export class SubscriptionMapper {
     price: subscription.price,
     duration: subscription.duration,
     features: subscription.features,
+    limits:{
+      maxBranches:subscription.limits.maxBranches,
+      maxMembers:subscription.limits.maxMembers,
+      maxTrainers:subscription.limits.maxTrainers,
+    },
     isActive: subscription.isActive
   })) ?? [];
 }

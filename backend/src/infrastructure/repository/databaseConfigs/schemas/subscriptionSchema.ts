@@ -6,6 +6,11 @@ export const subscriptionSchema = new mongoose.Schema({
     price:{type:Number,required:true},
     duration:{type:String,enum:Object.values(Durations)},
     features:[{type:String}],
+    limits: {
+      maxBranches: { type: Number, required: true },
+      maxTrainers: { type: Number, required: true },
+      maxMembers: { type: Number, required: true },
+    },
     isActive:{type:Boolean}
 },
  { timestamps: true }

@@ -6,5 +6,10 @@ export type IListActiveSubscriptionResponseDTO = Array<{
   price?: number;
   duration?: Durations;
   features?: string[];
+  limits?: {
+    maxMembers?: number,
+    maxTrainers?: number,
+    maxBranches?: number,
+  },
   isActive?: boolean;
 }>;
