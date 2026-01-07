@@ -12,35 +12,62 @@ import {
   Video,
   Bell,
   LogOut,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
-import { useLocation, useNavigate } from "react-router-dom"
-
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useTrainerLogout } from "@/hook/trainer/trainerLogoutHook";
+import { useDispatch } from "react-redux";
+import { deleteToken } from "@/store/slice/tokenSlice";
+import { clearTrainerData } from "@/store/slice/trainerSlice";
+import { clearAuthContext } from "@/store/slice/authContextState";
 
 const mainMenuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}` },
+  {
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`,
+  },
   { icon: User, label: "Profile", path: "/trainer/profile" },
   { icon: Calendar, label: "My Schedule", path: "/trainer/schedule" },
   { icon: ClipboardCheck, label: "Attendance", path: "/trainer/attendance" },
   { icon: DollarSign, label: "Salary", path: "/trainer/salary" },
   { icon: FileText, label: "Leave Request", path: "/trainer/leave" },
   { icon: Wallet, label: "Wallet", path: "/trainer/wallet" },
-]
+];
 
 const clientManagementItems = [
-  { icon: Users, label: "Members", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}` },
+  {
+    icon: Users,
+    label: "Members",
+    path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`,
+  },
   { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
   { icon: MessageSquare, label: "Chat", path: "/trainer/chat" },
   { icon: Video, label: "Video Call", path: "/trainer/video" },
   { icon: Bell, label: "Notifications", path: "/trainer/notifications" },
-]
-
+];
 
 export function Sidebar() {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const {mutate:logout} = useTrainerLogout();
+  
+    const handleLogout = () => {
+      logout(undefined, {
+        onSuccess: () => {
+          dispatch(deleteToken());
+          dispatch(clearTrainerData());
+          dispatch(clearAuthContext());
+           navigate(`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`,{ replace: true });
+        },
+        onError: (error) => {
+          console.error(error.message);
+        },
+      });
+    };
 
   return (
     <>
@@ -58,22 +85,23 @@ export function Sidebar() {
 
         <div className="flex-1 overflow-y-hidden px-3 py-4">
           <div className="mb-6">
-            <p className="px-3 mb-2 text-xs font-semibold text-purple-400 uppercase tracking-wider">Main</p>
+            <p className="px-3 mb-2 text-xs font-semibold text-purple-400 uppercase tracking-wider">
+              Main
+            </p>
             <nav className="space-y-1">
               {mainMenuItems.map((item) => (
-               <Button
-  key={item.label}
-  variant="ghost"
-  onClick={() => navigate(item.path)}
-  className={cn(
-    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
-    location.pathname === item.path && "bg-[#1a1a1a] text-white"
-  )}
->
-  <item.icon className="h-5 w-5" />
-  <span className="text-sm">{item.label}</span>
-</Button>
-
+                <Button
+                  key={item.label}
+                  variant="ghost"
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
+                    location.pathname === item.path && "bg-[#1a1a1a] text-white"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-sm">{item.label}</span>
+                </Button>
               ))}
             </nav>
           </div>
@@ -85,17 +113,17 @@ export function Sidebar() {
             <nav className="space-y-1">
               {clientManagementItems.map((item) => (
                 <Button
-  key={item.label}
-  variant="ghost"
-  onClick={() => navigate(item.path)}
-  className={cn(
-    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
-    location.pathname === item.path && "bg-[#1a1a1a] text-white"
-  )}
->
-  <item.icon className="h-5 w-5" />
-  <span className="text-sm">{item.label}</span>
-</Button>
+                  key={item.label}
+                  variant="ghost"
+                  onClick={() => navigate(item.path)}
+                  className={cn(
+                    "w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]",
+                    location.pathname === item.path && "bg-[#1a1a1a] text-white"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-sm">{item.label}</span>
+                </Button>
               ))}
             </nav>
           </div>
@@ -103,6 +131,7 @@ export function Sidebar() {
 
         <div className="border-t border-[#1f1f1f] p-3">
           <Button
+          onClick={()=>handleLogout()}
             variant="ghost"
             className="w-full justify-start gap-3 text-gray-300 hover:text-white hover:bg-[#1a1a1a]"
           >
@@ -114,24 +143,40 @@ export function Sidebar() {
 
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#0f0f0f] border-t border-[#1f1f1f] px-4 py-2 z-50">
         <div className="flex justify-around items-center">
-          <Button variant="ghost" size="sm" className="flex-col h-auto py-2 text-gray-400 hover:text-white">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-col h-auto py-2 text-gray-400 hover:text-white"
+          >
             <LayoutDashboard className="h-5 w-5" />
             <span className="text-xs mt-1">Dashboard</span>
           </Button>
-          <Button variant="ghost" size="sm" className="flex-col h-auto py-2 text-white">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-col h-auto py-2 text-white"
+          >
             <Users className="h-5 w-5" />
             <span className="text-xs mt-1">Members</span>
           </Button>
-          <Button variant="ghost" size="sm" className="flex-col h-auto py-2 text-gray-400 hover:text-white">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-col h-auto py-2 text-gray-400 hover:text-white"
+          >
             <MessageSquare className="h-5 w-5" />
             <span className="text-xs mt-1">Chat</span>
           </Button>
-          <Button variant="ghost" size="sm" className="flex-col h-auto py-2 text-gray-400 hover:text-white">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-col h-auto py-2 text-gray-400 hover:text-white"
+          >
             <Bell className="h-5 w-5" />
             <span className="text-xs mt-1">Alerts</span>
           </Button>
         </div>
       </nav>
     </>
-  )
+  );
 }

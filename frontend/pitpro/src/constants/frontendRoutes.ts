@@ -30,6 +30,7 @@ export const FRONTEND_ROUTES = {
         LOGIN:"login",
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
+        PROFILE:"profile"
     },
     MEMBER:{
         BASE:"/member",

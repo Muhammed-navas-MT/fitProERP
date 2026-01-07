@@ -61,10 +61,14 @@ export const ROUTES = {
       OTP_VERIFY: "/verify_otp",
       SIGNUP: "/signup",
       LOGIN: "/login",
+      LOGOUT:"/logout"
     },
     ADD_MEMBER: "/add_member",
     LIST_MEMBER: "/list_members",
-    LIST_ACTIVE_TRAINER:"/active_trainers"
+    LIST_ACTIVE_TRAINER:"/active_trainers",
+    VIEW_PROFILE:"/trainer_profile",
+    UPDATE_PROFILE:"/trainer_profile_update",
+    CHANGE_PASSWORD:"/trainer_password_change"
   },
 
   MEMBER: {

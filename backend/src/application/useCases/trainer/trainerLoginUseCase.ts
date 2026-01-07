@@ -22,7 +22,7 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
   constructor(
     trainerRepository: ITrainerRepository,
     hashService: IHashService,
-    gymAdminRepository: IGymAdminRepository,
+    gymAdminRepository: IGymAdminRepository
   ) {
     this._trainerRepository = trainerRepository;
     this._hashService = hashService;
@@ -38,14 +38,15 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
 
       const gym = await this._gymAdminRepository.findById(trainer.gymId);
       if (!gym) {
-    throw new NOtFoundException(TrainerError.GYM_NOT_FOUND);
-    }
+        throw new NOtFoundException(TrainerError.GYM_NOT_FOUND);
+      }
 
-      const isPassswordValid = this._hashService.compare(
+      const isPasswordValid = await this._hashService.compare(
         data.password,
         trainer.password
       );
-      if (!isPassswordValid) {
+
+      if (!isPasswordValid) {
         throw new ForbiddenException(TrainerError.INVALID_CREDENTIALS);
       }
       if (gym.status !== Status.ACTIVE) {
@@ -55,7 +56,10 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
       if (trainer.status === Status.PENDING) {
         throw new ForbiddenException(TrainerError.TRAINER_IS_PENDING);
       } else if (trainer.status === Status.ACTIVE) {
-        const response = LoginMapper.trainerLoginMapper({trainer,subdomain:gym.subdomain});
+        const response = LoginMapper.trainerLoginMapper({
+          trainer,
+          subdomain: gym.subdomain,
+        });
         return response;
       } else {
         throw new ForbiddenException(TrainerError.STATUS_INVALID);

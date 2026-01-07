@@ -1,30 +1,30 @@
 import {
   MemberError,
   MemberSuccess,
-} from "../../../presentation/shared/constants/errorMessage/memberMessage";
+} from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import {
   AlreadyExistException,
   NOtFoundException,
   ForbiddenException,
-} from "../../constants/exceptions";
-import { IAddMemberDTO } from "../../dtos/auth/memberDto";
-import { IMemberRepository } from "../../interfaces/repository/member/addMemberRepoInterface";
-import { IHashService } from "../../interfaces/service/hashServiceInterface";
-import { IEmailService } from "../../interfaces/service/IEmail/emailServiceInterface";
-import { IPasswordGenerator } from "../../interfaces/service/passwordGenerator";
-import { IAddMemberUseCase } from "../../interfaces/useCase/trainer/addMemberUseCaseInterface";
-import { EmailPayloadType } from "../../../domain/type/emailPayload";
-import { ISendPasswordEmailContentGenerator } from "../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
-import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
-import { ITrainerRepository } from "../../interfaces/repository/trainer.ts/tranerRepoInterface";
-import { Status } from "../../../domain/enums/status";
+} from "../../../constants/exceptions";
+import { IAddMemberDTO } from "../../../dtos/auth/memberDto";
+import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
+import { IHashService } from "../../../interfaces/service/hashServiceInterface";
+import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
+import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
+import { IAddMemberUseCase } from "../../../interfaces/useCase/trainer/addMemberUseCaseInterface";
+import { EmailPayloadType } from "../../../../domain/type/emailPayload";
+import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
+import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
+import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
+import { Status } from "../../../../domain/enums/status";
 import {
   IListMemberRequestDTO,
   IListMemberResponseDTO,
-} from "../../dtos/memberDto/listAllMembersDto";
-import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
-import { TrainerError } from "../../../presentation/shared/constants/errorMessage/trainerMessage";
-import { TrainerMapper } from "../../mappers/memeberMapper";
+} from "../../../dtos/memberDto/listAllMembersDto";
+import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
+import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
+import { TrainerMapper } from "../../../mappers/memeberMapper";
 
 export class AddMemberUseCase implements IAddMemberUseCase {
   private _hashService: IHashService;

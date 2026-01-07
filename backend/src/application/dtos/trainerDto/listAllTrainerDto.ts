@@ -58,7 +58,7 @@ export interface IUpdateTrainerDTO {
   name?: string;
   email?: string;
   phone?: string;
-  password?: string; // optional if you want to allow password updates
+  password?: string;
   address?: string;
   role?: Roles;
   specialization?: string[];
@@ -70,5 +70,11 @@ export interface IUpdateTrainerDTO {
     startTime: string;
     endTime: string;
   };
-  branchId?: string; // update the branch if needed
+  branchId?: string;
+}
+
+export interface IChangePasswordRequestDTO {
+  trainerId: string;
+  oldPassword: string;
+  newPassword: string;
 }
