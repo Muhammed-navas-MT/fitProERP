@@ -101,9 +101,7 @@ export default function UploadDocumentsStep({
     setCrop({ unit: "%", width: 50, aspect: 1 });
   };
 
-  const closeCropper = () => {
-    setShowCropper(null);
-  };
+  const closeCropper = () => setShowCropper(null);
 
   const applyCrop = async () => {
     if (!completedCrop || !imageRef.current) return;
@@ -159,10 +157,10 @@ export default function UploadDocumentsStep({
   };
 
   return (
-    <div className="rounded-xl border-2 border-orange-500 bg-gray-800 overflow-hidden shadow-xl">
-      <div className="bg-black px-4 sm:px-8 py-6 sm:py-8 text-center border-b border-gray-700">
+    <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black overflow-hidden shadow-[0_0_40px_-12px_rgba(249,115,22,0.4)]">
+      <div className="bg-black px-4 sm:px-8 py-6 sm:py-8 text-center border-b border-neutral-800">
         <div className="flex justify-center mb-4">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-orange-500 flex items-center justify-center shadow-lg">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30">
             <FileText className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
           </div>
         </div>
@@ -170,7 +168,7 @@ export default function UploadDocumentsStep({
         <h2 className="text-xl sm:text-2xl font-bold text-orange-500 mb-2">
           Upload Documents
         </h2>
-        <p className="text-xs sm:text-sm text-gray-400">
+        <p className="text-xs sm:text-sm text-neutral-400">
           Required documents for verification
         </p>
       </div>
@@ -213,14 +211,14 @@ export default function UploadDocumentsStep({
         previewUrls[showCropper] &&
         previewUrls[showCropper] !== "file" && (
           <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col">
-              <div className="flex justify-between items-center p-4 border-b border-gray-700">
+            <div className="bg-gradient-to-b from-neutral-900 via-neutral-950 to-black rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col shadow-[0_0_40px_-12px_rgba(249,115,22,0.4)]">
+              <div className="flex justify-between items-center p-4 border-b border-neutral-800">
                 <h3 className="text-lg font-semibold text-white">Crop Image</h3>
                 <button
                   onClick={closeCropper}
-                  className="p-2 rounded-full hover:bg-gray-700 transition-colors"
+                  className="p-2 rounded-full hover:bg-neutral-800 transition-colors"
                 >
-                  <X className="h-5 w-5 text-gray-400" />
+                  <X className="h-5 w-5 text-neutral-400" />
                 </button>
               </div>
 
@@ -241,10 +239,10 @@ export default function UploadDocumentsStep({
                 </ReactCrop>
               </div>
 
-              <div className="p-4 border-t border-gray-700 flex justify-end gap-2">
+              <div className="p-4 border-t border-neutral-800 flex justify-end gap-2">
                 <button
                   onClick={closeCropper}
-                  className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors"
+                  className="px-4 py-2 rounded-lg border border-neutral-700 text-neutral-300 hover:bg-neutral-800 transition-colors"
                 >
                   Cancel
                 </button>
@@ -295,12 +293,12 @@ function DocumentUploader({
 }: DocUploaderProps) {
   return (
     <div>
-      <label className="block text-sm text-gray-300 mb-2">{label}</label>
+      <label className="block text-sm text-neutral-300 mb-2">{label}</label>
 
       {previewUrls[field] ? (
         <div className="relative">
           {isImage(field) ? (
-            <div className="rounded-lg overflow-hidden border-2 border-gray-600 bg-gray-700">
+            <div className="rounded-lg overflow-hidden border-2 border-neutral-700 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black">
               <img
                 src={previewUrls[field]}
                 alt="Preview"
@@ -308,13 +306,13 @@ function DocumentUploader({
               />
             </div>
           ) : (
-            <div className="rounded-lg border-2 border-gray-600 bg-gray-700 p-6 flex items-center justify-center">
+            <div className="rounded-lg border-2 border-neutral-700 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black p-6 flex items-center justify-center">
               <div className="text-center">
-                <FileImage className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-300 text-sm truncate max-w-xs">
+                <FileImage className="h-12 w-12 text-neutral-400 mx-auto mb-2" />
+                <p className="text-neutral-300 text-sm truncate max-w-xs">
                   {getFileName(field)}
                 </p>
-                <p className="text-gray-500 text-xs mt-1">Document uploaded</p>
+                <p className="text-neutral-500 text-xs mt-1">Document uploaded</p>
               </div>
             </div>
           )}
@@ -347,15 +345,15 @@ function DocumentUploader({
           className={`relative px-4 sm:px-6 py-6 sm:py-8 rounded-lg border-2 border-dashed text-center transition-all ${
             previewUrls[field]
               ? "border-orange-500 bg-orange-500/10"
-              : "border-gray-600 bg-gray-700 hover:bg-gray-650"
+              : "border-neutral-700 bg-gradient-to-br from-neutral-900 via-neutral-950 to-black hover:bg-neutral-800"
           }`}
         >
           <div className="flex flex-col items-center justify-center">
-            <Upload className="h-8 w-8 text-gray-400 mb-2" />
-            <p className="text-gray-400 text-sm text-center">
+            <Upload className="h-8 w-8 text-neutral-400 mb-2" />
+            <p className="text-neutral-400 text-sm text-center">
               Click to upload or drag and drop
             </p>
-            <p className="text-gray-500 text-xs mt-1">PDF, JPG, PNG (max. 5MB)</p>
+            <p className="text-neutral-500 text-xs mt-1">PDF, JPG, PNG (max. 5MB)</p>
           </div>
 
           <input
@@ -367,7 +365,7 @@ function DocumentUploader({
         </div>
       )}
 
-      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
   );
 }

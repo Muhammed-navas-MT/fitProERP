@@ -3,7 +3,7 @@ import { NOtFoundException } from "../../../constants/exceptions";
 import { MemberDTO } from "../../../dtos/memberDto/listAllMembersDto";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
 import { IFindMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/findMemberUseCaseInterface";
-import { TrainerMapper } from "../../../mappers/memeberMapper";
+import { MemberMapper } from "../../../mappers/memeberMapper";
 
 export class FindMemberUseCase implements IFindMemberUseCase {
   constructor(private readonly _memberRepository: IMemberRepository) {}
@@ -14,6 +14,6 @@ export class FindMemberUseCase implements IFindMemberUseCase {
     if (!member) {
       throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
-    return TrainerMapper.toMemberDTO(member);
+    return MemberMapper.toMemberDTO(member);
   }
 }

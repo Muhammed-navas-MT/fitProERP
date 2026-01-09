@@ -19,6 +19,11 @@ export interface GymAdminEntity {
     paymentStatus?:PaymentStatus;
     subscriptionStart?:Date;
     subscriptionEnd?:Date;
+    limits?: {
+      maxMembers: number,
+      maxTrainers: number,
+      maxBranches: number,
+    },
     logo:string;
     status?:Status;
     branches?:string[];

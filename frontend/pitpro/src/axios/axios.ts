@@ -6,7 +6,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { clearAuthContext } from "@/store/slice/authContextState";
 import { clearSuperAdminData } from "@/store/slice/superAdminSlice";
 import { clearGymAdminData } from "@/store/slice/gymAdminSlice";
-import { clearTrainerData } from "@/store/slice/trainerSlice";
+import { clearData } from "@/store/slice/authSlice";
 
 const AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -72,7 +72,7 @@ AxiosInstance.interceptors.response.use(
                     store.dispatch(clearGymAdminData())                    
                 }else if(authContext.role === "TRAINER"){
                     window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`
-                    store.dispatch(clearTrainerData())
+                    store.dispatch(clearData())
                 }
                 store.dispatch(deleteToken());
                 store.dispatch(clearAuthContext());

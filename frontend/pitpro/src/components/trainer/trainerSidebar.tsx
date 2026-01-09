@@ -20,7 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTrainerLogout } from "@/hook/trainer/trainerLogoutHook";
 import { useDispatch } from "react-redux";
 import { deleteToken } from "@/store/slice/tokenSlice";
-import { clearTrainerData } from "@/store/slice/trainerSlice";
+import { clearData } from "@/store/slice/authSlice";
 import { clearAuthContext } from "@/store/slice/authContextState";
 
 const mainMenuItems = [
@@ -59,7 +59,7 @@ export function Sidebar() {
       logout(undefined, {
         onSuccess: () => {
           dispatch(deleteToken());
-          dispatch(clearTrainerData());
+          dispatch(clearData());
           dispatch(clearAuthContext());
            navigate(`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`,{ replace: true });
         },

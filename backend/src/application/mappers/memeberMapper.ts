@@ -4,8 +4,9 @@ import { Status } from "../../domain/enums/status";
 import { IPopulatedMember } from "../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
 import { IAddMemberDTO, UpdateMemberDTO } from "../dtos/auth/memberDto";
 import { IListMemberInGymRequestDTO, IListMemberRequestDTO, IListMemberResponseDTO, MemberDTO } from "../dtos/memberDto/listAllMembersDto";
+import { UpdateMemberProfileDTO } from "../dtos/memberDto/profileManagementDtos";
 
-export class TrainerMapper {
+export class MemberMapper {
     static toListMemebersResponse(members:IPopulatedMember[],total:number,params:IListMemberRequestDTO):IListMemberResponseDTO{
         return{
             total:total,
@@ -47,12 +48,12 @@ export class TrainerMapper {
         }
     };
 
-    static toMemberEntity(member:IAddMemberDTO,gymId:string,password:string):MemberEntity{
+    static toMemberEntity(member:IAddMemberDTO,gymId:string,password:string,branchId:string):MemberEntity{
         return{
             gymId:gymId,
             role:Roles.MEMBER,
             trainerId:member.trainerId,
-            branchId:member.branchId,
+            branchId:branchId,
             name:member.name,
             email:member.email,
             phone:member.phone,
@@ -85,13 +86,10 @@ static toUpdateMemberEntity(dto: UpdateMemberDTO): Record<string, any> {
   if (dto.trainerId !== undefined) update.trainerId = dto.trainerId;
   if (dto.branchId !== undefined) update.branchId = dto.branchId;
   if (dto.name !== undefined) update.name = dto.name;
-  if (dto.email !== undefined) update.email = dto.email;
   if (dto.phone !== undefined) update.phone = dto.phone;
   if (dto.address !== undefined) update.address = dto.address;
-  if (dto.profileImg !== undefined) update.profileImg = dto.profileImg;
   if (dto.emergencyNumber !== undefined)
     update.emergencyNumber = dto.emergencyNumber;
-  if (dto.status !== undefined) update.status = dto.status;
 
   if (dto.healthDetails) {
     if (dto.healthDetails.gender !== undefined)
@@ -111,13 +109,6 @@ static toUpdateMemberEntity(dto: UpdateMemberDTO): Record<string, any> {
     if (dto.healthDetails.targetWeight !== undefined)
       update["healthDetails.targetWeight.value"] =
         dto.healthDetails.targetWeight;
-
-    if (dto.healthDetails.medicalConditions !== undefined)
-      update["healthDetails.medicalConditions"] =
-        dto.healthDetails.medicalConditions;
-
-    if (dto.healthDetails.allergies !== undefined)
-      update["healthDetails.allergies"] = dto.healthDetails.allergies;
 
     if (dto.healthDetails.fitnessGoal !== undefined)
       update["healthDetails.fitnessGoal"] = dto.healthDetails.fitnessGoal;
@@ -172,6 +163,49 @@ static toMemberDTO(member: MemberEntity): MemberDTO {
 
       status: member.status,
     };
+  };
+
+  static toProfileUpdateMemberEntity(dto: UpdateMemberProfileDTO): Record<string, any> {
+  const update: Record<string, any> = {};
+
+  if (dto.name !== undefined) update.name = dto.name;
+  if (dto.phone !== undefined) update.phone = dto.phone;
+  if (dto.address !== undefined) update.address = dto.address;
+  if (dto.emergencyNumber !== undefined)
+    update.emergencyNumber = dto.emergencyNumber;
+
+  if (dto.healthDetails) {
+    if (dto.healthDetails.gender !== undefined)
+      update["healthDetails.gender"] = dto.healthDetails.gender;
+
+    if (dto.healthDetails.dateOfBirth !== undefined)
+      update["healthDetails.dateOfBirth"] = new Date(
+        dto.healthDetails.dateOfBirth
+      );
+
+    if (dto.healthDetails.weight !== undefined)
+      update["healthDetails.weight.value"] = dto.healthDetails.weight;
+
+    if (dto.healthDetails.height !== undefined)
+      update["healthDetails.height.value"] = dto.healthDetails.height;
+
+    if (dto.healthDetails.targetWeight !== undefined)
+      update["healthDetails.targetWeight.value"] =
+        dto.healthDetails.targetWeight;
+
+    if (dto.healthDetails.medicalConditions !== undefined)
+      update["healthDetails.medicalConditions"] =
+        dto.healthDetails.medicalConditions;
+
+    if (dto.healthDetails.allergies !== undefined)
+      update["healthDetails.allergies"] = dto.healthDetails.allergies;
+
+    if (dto.healthDetails.fitnessGoal !== undefined)
+      update["healthDetails.fitnessGoal"] = dto.healthDetails.fitnessGoal;
   }
+
+  return update;
+}
+
 
 }

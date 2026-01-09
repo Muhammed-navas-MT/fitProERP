@@ -9,12 +9,21 @@ interface PricingPlan {
   price: number;
   duration: string;
   features: string[];
+  limits: {
+    maxMembers: number;
+    maxTrainers: number;
+    maxBranches: number;
+  };
 }
 
 export function PricingCards() {
   const { data, isLoading, isError, error } = useListSubscription();
-  console.log(data,"in list subscription landing pagee....")
-  const plans: PricingPlan[] = Array.isArray(data?.data) ? data.data : [];
+
+  console.log(data, "in list subscription landing page....");
+
+  const plans: PricingPlan[] = Array.isArray(data?.data)
+    ? data.data
+    : [];
 
   if (isLoading) {
     return (
@@ -46,7 +55,11 @@ export function PricingCards() {
   return (
     <section className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <div className="grid md:grid-cols-3 gap-8">
+        <h2 className="mb-10 text-center text-3xl font-bold">
+          Choose the Right Plan for Your Gym
+        </h2>
+
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan) => (
             <PricingCard
               key={plan.id}
@@ -54,6 +67,7 @@ export function PricingCards() {
               price={plan.price}
               duration={plan.duration}
               features={plan.features}
+              limits={plan.limits} 
             />
           ))}
         </div>

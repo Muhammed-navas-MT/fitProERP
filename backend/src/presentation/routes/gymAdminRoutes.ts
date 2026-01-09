@@ -16,14 +16,7 @@ export class GymAdminRoutes {
   private _setRoute() {
     const GYMADMIN = ROUTES.GYMADMIN;
 
-    this._route.use(this._middleware.verifySubdomain);
-
-    this._route.post(
-      GYMADMIN.AUTH.LOGIN,
-      (req:Request,res:Response,next:NextFunction) => {
-        injectedGymAdminLoginController.login(req,res,next);
-      }
-    );
+    
     this._route.post(
       GYMADMIN.AUTH.EMAIL_VERIFY,
       (req: Request, res: Response, next: NextFunction) => {
@@ -45,6 +38,13 @@ export class GymAdminRoutes {
       ]),
       (req: Request, res: Response, next: NextFunction) => {
         injectedGymAdminSingUpController.signup(req, res, next);
+      }
+    );
+    this._route.use(this._middleware.verifySubdomain);
+    this._route.post(
+      GYMADMIN.AUTH.LOGIN,
+      (req:Request,res:Response,next:NextFunction) => {
+        injectedGymAdminLoginController.login(req,res,next);
       }
     );
     this._route.use(injectAuthMiddleware.verify);

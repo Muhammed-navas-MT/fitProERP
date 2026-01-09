@@ -1,13 +1,24 @@
 import { SignInForm } from "@/components/shared/loginForm"
 import { useMemberLogin } from "@/hook/member/memberLoginHook";
+import { setAuthContext } from "@/store/slice/authContextState";
+import { setData } from "@/store/slice/authSlice";
+import { setToken } from "@/store/slice/tokenSlice";
 import type { LoginSchemaType } from "@/validation/loginShema"
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 
 export default function MemberLoginPage() {
+
   const {mutate:login,isPending} = useMemberLogin();
+  const dispatch = useDispatch()
+
   const handleLogin = (data: LoginSchemaType) => {
     login(data,{
       onSuccess:(res)=>{
+        console.log(res.data.accessToken)
+        dispatch(setData(res.data.data))
+        dispatch(setToken(res.data.accessToken))
+        dispatch(setAuthContext({role:res.data.data.role,subdomain:res.data.data.subdomain}))
         toast.success(res.data.message || "Login successfully")
       },
       onError:(err)=>{

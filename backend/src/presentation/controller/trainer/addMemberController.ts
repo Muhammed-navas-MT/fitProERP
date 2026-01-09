@@ -23,7 +23,7 @@ export class AddMemberController {
     async addMember(req:Request,res:Response,next:NextFunction):Promise<void> {
         try {
             const memberData:IAddMemberDTO = req.body;
-
+            console.log(memberData)
             const zodValication = memberSignupSchema.safeParse(memberData);
             if(zodValication.error){
                 throw new InvalidDataException(zodValication.error.issues[0].message);

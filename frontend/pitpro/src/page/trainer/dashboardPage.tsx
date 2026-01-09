@@ -18,7 +18,7 @@ const mockAttendanceData: ("present" | "absent" | "late" | "none")[][] = [
 ]
 
 export default function DashboardPage() {
-  const name = useSelector((state:rootstate)=>state.trainerData.name);
+  const name = useSelector((state:rootstate)=>state.authData.name);
   const avatarText = name
   ?.split(" ")
   .map(word => word[0])

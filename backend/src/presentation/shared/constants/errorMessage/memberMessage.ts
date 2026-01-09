@@ -42,6 +42,7 @@ export enum MemberError {
   PROFILE_IMG_INVALID_TYPE = "Profile image must be a string",
   PROFILE_IMG_INVALID_URL = "Profile image must be a valid URL",
   PROFILE_IMG_INVALID_FORMAT = "Profile image must be an image file (jpg, jpeg, png, webp)",
+  PROFILE_IMG_REQUIRED = "Profile image is required",
 
   ADDRESS_INVALID_TYPE = "Address must be a string",
   ADDRESS_TOO_SHORT = "Address must be at least 10 characters long",
@@ -122,6 +123,7 @@ export enum MemberSuccess {
 
   PROFILE_UPDATED = "Profile updated successfully",
   PROFILE_PICTURE_UPDATED = "Profile picture updated successfully",
+  PROFILE_PICTURE_DELETED = "Profile picture deleted",
   PASSWORD_CHANGED = "Password changed successfully",
   PASSWORD_RESET = "Password reset successfully",
 

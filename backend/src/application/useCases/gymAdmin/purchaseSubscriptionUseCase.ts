@@ -52,7 +52,7 @@ export class PurchaseSubscriptionUseCase
     );
 
     await this._gymAdminRepository.update(
-      {...updatedGymData,status:Status.ACTIVE},
+      {...updatedGymData,status:Status.ACTIVE,limits:subscription.limits},
       data.gymId
     );
   }

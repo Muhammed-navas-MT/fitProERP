@@ -3,7 +3,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { useTrainerLogin } from "@/hook/trainer/trainerLoginHook";
 import { setAuthContext } from "@/store/slice/authContextState";
 import { setToken } from "@/store/slice/tokenSlice";
-import { setTrainerData } from "@/store/slice/trainerSlice";
+import { setData } from "@/store/slice/authSlice";
 import { LoginPayload } from "@/types/authPayload";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +18,7 @@ export default function TrainerLoginPage() {
     login(data,{
         onSuccess:(res)=>{
             toast.success(res?.data?.message|| "Login successfully");
-            dispatch(setTrainerData(res.data.data));
+            dispatch(setData(res.data.data));
             dispatch(setAuthContext({role:res.data.data.role,subdomain:res.data.data.subdomain}));
             dispatch(setToken(res.data.accessToken))
             navigate(`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`);

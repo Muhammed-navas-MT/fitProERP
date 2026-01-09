@@ -8,6 +8,7 @@ import { useGetAllMembers } from "@/hook/trainer/memberManagementHook";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
 import { toast } from "sonner";
+import { MembersListSkeleton } from "./memberListSkeleton";
 
 export interface IMember {
   id: string;
@@ -25,15 +26,18 @@ export function MembersList() {
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState(1);
 
-  const { _id } = useSelector((state: rootstate) => state.trainerData);
+  const { _id } = useSelector((state: rootstate) => state.authData);
 
-  const { data, isPending,error } = useGetAllMembers(page, searchQuery, _id);
+  const { data, isPending, error } = useGetAllMembers(page, searchQuery, _id);
   useEffect(() => {
     if (error) {
-        toast.error(`${error?.response?.data?.message || "Something went wrong"}`);
+      console.log(error)
+      toast.error("Something went wrong");
     }
-}, [error]);
-  if (isPending) return null;
+  }, [error]);
+
+  if (isPending) return <MembersListSkeleton />;
+
   const members: IMember[] = data?.data?.data ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
 
@@ -57,8 +61,8 @@ export function MembersList() {
                 setSearchInput(e.target.value);
                 setPage(1);
               }}
-              onKeyDown={(e)=>{
-                if(e.key === "Enter"){
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   e.preventDefault();
                   handleFilter();
                 }
@@ -67,7 +71,10 @@ export function MembersList() {
             />
           </div>
 
-          <Button onClick={handleFilter}className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+          <Button
+            onClick={handleFilter}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+          >
             Filter by
           </Button>
         </div>
@@ -80,13 +87,29 @@ export function MembersList() {
               No members found
             </h3>
             <p className="max-w-sm text-sm text-gray-400">
-              No members match your search. Try a different keyword or check back
-              later.
+              No members match your search. Try a different keyword or check
+              back later.
             </p>
           </div>
         ) : (
           members.map((member) => (
-            <MemberCard key={member.id} member={member} />
+            <MemberCard
+              key={member.id}
+              member={member}
+              onView={(id) => {
+                console.log("View member", id);
+                // navigate to member details page or open modal
+              }}
+              onEdit={(id) => {
+                console.log("Edit member", id);
+                // navigate to edit page or open edit modal
+              }}
+              onToggleBlock={(id, status) => {
+                console.log("Toggle block for", id, "current status:", status);
+                // call API to block/unblock the member
+                // then refresh the members list
+              }}
+            />
           ))
         )}
       </div>

@@ -74,5 +74,10 @@ export const ROUTES = {
   MEMBER: {
     BASE: "/member",
     LOGIN: "/login",
+    VIEW_PROFILE:"/member_profile",
+    UPDATE_PROFILE:"/member_profile_update",
+    CHANGE_PASSWORD:"/member_password_change",
+    UPLOAD_PROFILE_PICTURE:"/member_profile_picture_upload",
+    DELETE_PROFILE_PICTURE:"/member_profile_picture_delete",
   }
 };

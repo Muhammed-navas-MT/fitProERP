@@ -1,4 +1,4 @@
-export function MemberTableSkeleton() {
+export function TableSkeleton() {
   return (
     <div className="rounded-lg border border-orange-500/20 bg-black/40 p-4 lg:p-6 overflow-x-auto animate-pulse">
       <table className="w-full border-collapse text-sm">
