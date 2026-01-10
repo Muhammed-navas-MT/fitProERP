@@ -17,7 +17,6 @@ export function AddMemberFormSkeleton() {
         <div className="h-20 w-full bg-zinc-800 rounded" />
       </div>
 
-      {/* HEALTH DETAILS */}
       <div className="space-y-4">
         <div className="h-5 w-40 bg-zinc-800 rounded" />
 

@@ -3,7 +3,7 @@ import tokenSlice from "./slice/tokenSlice";
 import superAdminSlice from "./slice/superAdminSlice";
 import authContextSlice from "./slice/authContextState";
 import gymAdminSlcie from "./slice/gymAdminSlice";
-import trainerSlice from "./slice/trainerSlice"
+import authSlice from "./slice/authSlice"
 import storage from "redux-persist/lib/storage";
 import {persistReducer,persistStore,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER} from "redux-persist"
 
@@ -11,7 +11,7 @@ import {persistReducer,persistStore,FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER
 const persistConfig = {
     key:"root",
     storage,
-    whitelist:["token","superAdminData","authContext","gymAdminData","trainerData"]
+    whitelist:["token","superAdminData","authContext","gymAdminData","authData"]
 };
 
 const rootReducer = combineReducers({
@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
     superAdminData:superAdminSlice,
     authContext:authContextSlice,
     gymAdminData:gymAdminSlcie,
-    trainerData:trainerSlice,
+    authData:authSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig,rootReducer);

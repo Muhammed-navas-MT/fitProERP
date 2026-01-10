@@ -14,6 +14,7 @@ export const FRONTEND_ROUTES = {
         LIST_BRANCH:"branches",
         PENDINGAPPROVAL:"approval",
         DETAIL_MEMBER:"detail-member",
+        GYM_INFO:"gym-info",
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",
@@ -30,10 +31,12 @@ export const FRONTEND_ROUTES = {
         LOGIN:"login",
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
+        PROFILE:"profile"
     },
     MEMBER:{
         BASE:"/member",
         LOGIN:"login",
         DASHBOARD:"dashboard",
+        PROFILE:"profile"
     }
 }

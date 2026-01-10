@@ -21,6 +21,11 @@ export interface IGymAdminModel extends Document {
     paymentStatus?:PaymentStatus;
     subscriptionStart?:Date;
     subscriptionEnd?:Date;
+    limits?:{
+        maxBranches: number;
+        maxTrainers: number;
+        maxMembers: number;
+    }
     logo:string;
     status?:Status;
     branches?:string[];

@@ -12,11 +12,7 @@ export const memberSignupSchema = z
       .transform((val) => val.trim()),
 
       branchId: z
-      .string({ error: MemberError.BRANCH_ID_INVALID })
-      .regex(/^[0-9a-fA-F]{24}$/, {
-        error: MemberError.TRAINER_ID_INVALID,
-      })
-      .transform((val) => val.trim()),
+      .string({ error: MemberError.BRANCH_ID_INVALID }),
 
     name: z
       .string({ error: MemberError.FIRST_NAME_INVALID_TYPE })

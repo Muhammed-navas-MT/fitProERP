@@ -52,6 +52,9 @@ export const API_ROUTES = {
     FIND_MEMBER:"/find_member",
     UNBLOCK_MEMBER:"/unblock_member",
     BLOCK_MEMBER:"/block_member",
+    VIEW_PROFILE:"/gym_admin_profile",
+    UPDATE_PROFILE:"/gym_admin_profile_update",
+    CHANGE_PASSWORD:"/gym_admin_password_change",
   },
 
   TRAINER: {
@@ -61,13 +64,23 @@ export const API_ROUTES = {
       OTP_VERIFY: "/verify_otp",
       SIGNUP: "/signup",
       LOGIN: "/login",
+      LOGOUT:"/logout",
     },
     ADD_MEMBER: "/add_member",
     LIST_MEMBER: "/list_members",
     LIST_ACTIVE_TRAINER:"/active_trainers",
+    VIEW_PROFILE:"/trainer_profile",
+    UPDATE_PROFILE:"/trainer_profile_update",
+    CHANGE_PASSWORD:"/trainer_password_change",
   },
   MEMBER:{
     BASE:"/member",
-    LOGIN:"/login"
+    LOGIN:"/login",
+    LOGOUT:"/logout",
+    VIEW_PROFILE:"/member_profile",
+    UPDATE_PROFILE:"/member_profile_update",
+    CHANGE_PASSWORD:"/member_password_change",
+    UPLOAD_PROFILE_PICTURE:"/member_profile_picture_upload",
+    DELETE_PROFILE_PICTURE:"/member_profile_picture_delete",
   }
 };

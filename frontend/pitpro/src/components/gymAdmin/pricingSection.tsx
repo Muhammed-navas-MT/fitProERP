@@ -9,6 +9,11 @@ interface DataType {
   price: number;
   duration: Durations;
   features: string[];
+  limits:{
+    maxBranches:number,
+    maxMembers:number,
+    maxTrainers:number
+  }
   isActive: boolean;
 }
 
@@ -86,6 +91,7 @@ export function PricingSection() {
                 planName={plan.planName}
                 price={plan.price}
                 duration={plan.duration}
+                limits={plan.limits}
                 features={plan.features}
               />
             ))}

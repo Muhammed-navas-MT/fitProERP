@@ -21,6 +21,11 @@ export const gymAdminSchema = new mongoose.Schema({
     paymentStatus: { type: String,enum:Object.values(PaymentStatus), default: PaymentStatus.PENDING },
     packageStart: { type: Date },
     packageEnd: { type: Date },
+    limits: {
+      maxBranches: { type: Number },
+      maxTrainers: { type: Number },
+      maxMembers: { type: Number },
+    },
     logo: { type: String, required: true },
     status: { type: String, enum:Object.values(Status), default: Status.PENDING },
     branches: [{ type: Schema.Types.ObjectId, ref: "Branch" }],

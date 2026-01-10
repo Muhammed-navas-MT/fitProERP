@@ -1,10 +1,12 @@
 import { Sidebar } from "@/components/trainer/trainerSidebar"
-import { DashboardHeader } from "@/components/trainer/trainerHeader"
+import { Header } from "@/components/trainer/trainerHeader"
 import { StatCard } from "@/components/trainer/dashboard/statCard"
 import { ScheduleItem } from "@/components/trainer/dashboard/scheduleItem"
 import { AttendanceCard } from "@/components/trainer/dashboard/attendanceCardComponent"
 import { AttendanceCalendar } from "@/components/trainer/dashboard/attendanceComponent"
 import { Users, Calendar, IndianRupee } from "lucide-react"
+import { useSelector } from "react-redux"
+import { rootstate } from "@/store/store"
 
 // Mock data for the attendance calendar
 const mockAttendanceData: ("present" | "absent" | "late" | "none")[][] = [
@@ -16,12 +18,18 @@ const mockAttendanceData: ("present" | "absent" | "late" | "none")[][] = [
 ]
 
 export default function DashboardPage() {
+  const name = useSelector((state:rootstate)=>state.authData.name);
+  const avatarText = name
+  ?.split(" ")
+  .map(word => word[0])
+  .join("")
+  .toUpperCase()
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
       <Sidebar />
 
       <div className="lg:pl-[220px]">
-        <DashboardHeader />
+        <Header title="Dashboard" subtitle="Manage training sessions and member performance" avatar={avatarText}/>
 
         <main className="p-4 lg:p-6 pb-20 lg:pb-6">
           {/* Welcome Section */}

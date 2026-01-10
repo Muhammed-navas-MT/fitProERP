@@ -11,7 +11,7 @@ import { useDebounce } from "@/hook/useDebounce";
 import { useNavigate } from "react-router-dom";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { MembersSearch } from "./memberSearch";
-import { MemberTableSkeleton } from "./memberTableSkeleton";
+import { TableSkeleton } from "./TableSkeleton";
 import { NoMembersFound } from "./noMembersFound";
 import { UpdateMemberModal } from "./updateMemberFormModal";
 
@@ -28,7 +28,7 @@ export function MemberList() {
   
   useFindMember(selectedMemberId);
 
-  if (isPending) return <MemberTableSkeleton />;
+  if (isPending) return <TableSkeleton />;
   const members = data?.data?.data ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
 

@@ -29,7 +29,7 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
                 throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
             };
 
-            const isPassswordValid = this._hashService.compare(data.password,gymAdmin.password);
+            const isPassswordValid = await this._hashService.compare(data.password,gymAdmin.password);
             if(!isPassswordValid){
                 throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
             };

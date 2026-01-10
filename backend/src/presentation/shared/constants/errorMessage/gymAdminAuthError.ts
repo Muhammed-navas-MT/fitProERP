@@ -32,8 +32,10 @@ export enum GymAdminAuthError {
   ROLE_INVALID = "Invalid role selected",
 
   DESCRIPTION_INVALID_TYPE = "Description must be a string",
+  DESCRIPTION_TOO_LONG = " Description is too long",
 
   TAGLINE_INVALID_TYPE = "Tagline must be a string",
+  TAGLINE_TOO_LONG = "Tagline is too long",
 
   BUSINESS_LICENSE_INVALID_TYPE = "Business license must be a string",
   BUSINESS_LICENSE_INVALID_URL = "Business license must be a valid URL",
@@ -59,5 +61,6 @@ export enum GymAdminAuthError {
   GYM_STATUS_INVALID = "Status is invalid",
   UPDATE_STATUS_FAILD = "Status update Failed",
 
-  SUBSCRIPTION_END = "Your subscription has ended"
+  SUBSCRIPTION_END = "Your subscription has ended",
+  PASSWORD_INCORRECT = "Current password is incorrect",
 }

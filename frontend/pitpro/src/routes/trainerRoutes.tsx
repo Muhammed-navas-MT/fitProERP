@@ -4,6 +4,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import DashboardPage from "@/page/trainer/dashboardPage";
 import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
+import ProfilePage from "@/page/trainer/trainerProfilePage";
 import { Route, Routes } from "react-router-dom";
 
 const TrainerRoutes = () => {
@@ -36,6 +37,10 @@ const TrainerRoutes = () => {
         <Route
           path={FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}
           element={<MembersPage />}
+        />
+        <Route
+        path={FRONTEND_ROUTES.TRAINER.PROFILE}
+        element={<ProfilePage/>}
         />
 
       </Route>

@@ -3,7 +3,7 @@ import { NOtFoundException } from "../../../constants/exceptions";
 import { UpdateMemberDTO } from "../../../dtos/auth/memberDto";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
 import { IUpdateMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/updateMemberUseCaseInterface";
-import { TrainerMapper } from "../../../mappers/memeberMapper";
+import { MemberMapper } from "../../../mappers/memeberMapper";
 
 export class UpdateMemberUseCase implements IUpdateMemberUseCase {
   constructor(private readonly _memberRepository: IMemberRepository) {}
@@ -13,7 +13,7 @@ export class UpdateMemberUseCase implements IUpdateMemberUseCase {
     if (!existingMember) {
       throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
-    const memberData = TrainerMapper.toUpdateMemberEntity(member);
+    const memberData = MemberMapper.toUpdateMemberEntity(member);
     await this._memberRepository.update(memberData,memberId)
   }
 }

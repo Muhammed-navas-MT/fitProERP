@@ -81,12 +81,9 @@ export default function GymRegistrationForm() {
 
       if (!result.success) {
         const errorsFormatted: Record<string, string> = {};
-
         result.error.issues.forEach((err) => {
           const field = err.path[0] as string;
-          if (!errorsFormatted[field]) {
-            errorsFormatted[field] = err.message;
-          }
+          if (!errorsFormatted[field]) errorsFormatted[field] = err.message;
         });
 
         setStepErrors(errorsFormatted);
@@ -96,21 +93,17 @@ export default function GymRegistrationForm() {
       setStepErrors({});
       return true;
     } catch (error) {
-      
       if (error instanceof ZodError) {
         const errorsFormatted: Record<string, string> = {};
         error.issues.forEach((err) => {
           const field = err.path[0] as string;
-          if (!errorsFormatted[field]) {
-            errorsFormatted[field] = err.message;
-          }
+          if (!errorsFormatted[field]) errorsFormatted[field] = err.message;
         });
         setStepErrors(errorsFormatted);
         toast.error("Validation failed. Please check your inputs.");
       } else {
         toast.error("An unexpected error occurred during validation");
       }
-      
       return false;
     }
   };
@@ -138,14 +131,10 @@ export default function GymRegistrationForm() {
     } else {
       try {
         const data = new FormData();
-
         Object.entries(formData).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
-            if (value instanceof File) {
-              data.append(key, value);
-            } else {
-              data.append(key, String(value));
-            }
+            if (value instanceof File) data.append(key, value);
+            else data.append(key, String(value));
           }
         });
 
@@ -155,10 +144,7 @@ export default function GymRegistrationForm() {
             navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}`);
           },
           onError: (error) => {
-            const errorMessage =
-              error?.message ||  
-              "Registration failed. Please try again.";
-            
+            const errorMessage = error?.message || "Registration failed. Please try again.";
             toast.error(errorMessage);
           },
         });
@@ -171,27 +157,25 @@ export default function GymRegistrationForm() {
 
   const handlePrevious = () => {
     setStepErrors({});
-    if (currentStep > 1) {
-      setCurrentStep((s) => s - 1);
-    }
+    if (currentStep > 1) setCurrentStep((s) => s - 1);
   };
 
-  const handleCloseModal = ()=>{
+  const handleCloseModal = ()=> {
     setShowModal(false);
     setCurrentStep((s) => s + 1);
   };
 
-  const handleResendOtp = ()=>{
+  const handleResendOtp = ()=> {
     emailVerification({email:formData.email},{
-          onSuccess:(res)=>{
-            toast.success(res?.message || "Otp sent your Email!");
-            setShowModal(true);
-          },
-          onError:(err)=>{
-            console.log(err)
-            toast.error(err.message||"Please try again!")
-          }
-        })
+      onSuccess:(res)=>{
+        toast.success(res?.message || "Otp sent your Email!");
+        setShowModal(true);
+      },
+      onError:(err)=>{
+        console.log(err)
+        toast.error(err.message||"Please try again!")
+      }
+    })
   }
 
   const steps = [
@@ -203,126 +187,109 @@ export default function GymRegistrationForm() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return (
-          <OwnerInformationStep
-            formData={formData}
-            onDataChange={handleFormDataChange}
-            errors={stepErrors}
-          />
-        );
+        return <OwnerInformationStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
       case 2:
-        return (
-          <GymInformationStep
-            formData={formData}
-            onDataChange={handleFormDataChange}
-            errors={stepErrors}
-          />
-        );
+        return <GymInformationStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
       case 3:
-        return (
-          <UploadDocumentsStep
-            formData={formData}
-            onDataChange={handleFormDataChange}
-            errors={stepErrors}
-          />
-        );
+        return <UploadDocumentsStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
       default:
         return null;
     }
   };
+
   return (
-  <div className="relative">
-    <OTPGymAdminModal open={showModal} onClose={handleCloseModal} email={formData.email} handleResendOtp={handleResendOtp}/>
-    <div
-      className={`flex flex-col min-h-screen bg-gray-900 text-white transition-all duration-300 ${
-        showModal ? "blur-sm pointer-events-none" : ""
-      }`}
-    >
-      <header className="bg-gray-800 shadow-lg">
-        <div className="flex items-center justify-between max-w-6xl mx-auto text-white py-3 px-4 sm:px-6 lg:px-8">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-sm hover:text-orange-400 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Back to Home</span>
-            <span className="sm:hidden">Back</span>
-          </button>
-          <h1 className="text-xl sm:text-2xl font-bold">Gym Registration</h1>
-          <div className="text-sm">Step {currentStep} of 3</div>
+    <div className="relative">
+      <OTPGymAdminModal
+        open={showModal}
+        onClose={handleCloseModal}
+        email={formData.email}
+        handleResendOtp={handleResendOtp}
+      />
+
+      <div className={`flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 via-neutral-950 to-black text-white transition-all duration-300 ${showModal ? "blur-sm pointer-events-none" : ""}`}>
+        <header className="bg-neutral-900 shadow-[0_0_30px_-10px_rgba(249,115,22,0.4)]">
+          <div className="flex items-center justify-between max-w-6xl mx-auto text-white py-3 px-4 sm:px-6 lg:px-8">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-sm hover:text-orange-400 transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Back to Home</span>
+              <span className="sm:hidden">Back</span>
+            </button>
+            <h1 className="text-xl sm:text-2xl font-bold">Gym Registration</h1>
+            <div className="text-sm text-neutral-400">Step {currentStep} of 3</div>
+          </div>
+        </header>
+
+        <div className="bg-neutral-900 py-4 sm:py-6 shadow-[0_0_20px_-8px_rgba(0,0,0,0.5)]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="sm:hidden flex justify-between items-center mb-4">
+              {steps.map((step) => (
+                <div key={step.number} className="flex flex-col items-center">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
+                      step.number <= currentStep ? "bg-orange-500 shadow-lg shadow-orange-500/30" : "bg-neutral-800"
+                    }`}
+                  >
+                    {step.number}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden sm:flex justify-between items-center mb-4">
+              {steps.map((step) => (
+                <div key={step.number} className="flex flex-col items-center flex-1">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-1 transition-all ${
+                      step.number <= currentStep ? "bg-orange-500 shadow-lg shadow-orange-500/30" : "bg-neutral-800"
+                    }`}
+                  >
+                    {step.number}
+                  </div>
+                  <div className="text-xs text-center text-neutral-400 whitespace-pre-line">{step.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="w-full h-2 bg-neutral-800 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-orange-500 transition-all"
+                style={{ width: `${(currentStep / 3) * 100}%` }}
+              />
+            </div>
+          </div>
         </div>
-      </header>
 
-      <div className="bg-gray-800 py-4 sm:py-6 shadow-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="sm:hidden flex justify-between items-center mb-4">
-            {steps.map((step) => (
-              <div key={step.number} className="flex flex-col items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                    step.number <= currentStep ? "bg-orange-500 shadow-lg" : "bg-gray-700"
-                  }`}
-                >
-                  {step.number}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="hidden sm:flex justify-between items-center mb-4">
-            {steps.map((step) => (
-              <div key={step.number} className="flex flex-col items-center flex-1">
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-1 transition-all ${
-                    step.number <= currentStep ? "bg-orange-500 shadow-lg" : "bg-gray-700"
-                  }`}
-                >
-                  {step.number}
-                </div>
-                <div className="text-xs text-center text-gray-400 whitespace-pre-line">
-                  {step.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-orange-500 transition-all"
-              style={{ width: `${(currentStep / 3) * 100}%` }}
-            />
-          </div>
+        <div className="flex-1 px-4 sm:px-6 py-8 sm:py-12">
+          <div className="max-w-2xl mx-auto">{renderStep()}</div>
         </div>
-      </div>
 
-      <div className="flex-1 px-4 sm:px-6 py-8 sm:py-12">
-        <div className="max-w-2xl mx-auto">{renderStep()}</div>
-      </div>
+        <div className="border-t border-neutral-800 bg-neutral-900 px-4 sm:px-6 py-4 sm:py-6 shadow-[0_0_20px_-8px_rgba(249,115,22,0.4)]">
+          <div className="max-w-2xl mx-auto flex justify-between items-center">
+            <button
+              onClick={handlePrevious}
+              disabled={currentStep === 1}
+              className="px-4 sm:px-6 py-2 rounded-lg border border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-800 transition-all text-sm sm:text-base"
+            >
+              Previous
+            </button>
 
-      <div className="border-t border-gray-800 bg-gray-800 px-4 sm:px-6 py-4 sm:py-6 shadow-lg">
-        <div className="max-w-2xl mx-auto flex justify-between items-center">
-          <button
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-            className="px-4 sm:px-6 py-2 rounded-lg border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-700 transition-all text-sm sm:text-base"
-          >
-            Previous
-          </button>
-
-          <button
-            onClick={handleNext}
-            disabled={isPending}
-            className="px-4 sm:px-6 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-lg"
-          >
-            {isPending
-              ? "Processing..."
-              : currentStep === 3
-              ? "Complete Registration"
-              : "Next Step"}
-          </button>
+            <button
+              onClick={handleNext}
+              disabled={isPending}
+              className="px-4 sm:px-6 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-lg shadow-orange-500/30"
+            >
+              {isPending
+                ? "Processing..."
+                : currentStep === 3
+                ? "Complete Registration"
+                : "Next Step"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }

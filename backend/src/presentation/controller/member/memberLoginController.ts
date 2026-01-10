@@ -15,6 +15,7 @@ export class MemberLoginController {
         this._jwtService = jwtService
     }
     async login(req:Request,res:Response,next:NextFunction):Promise<void> {
+        console.log("adsfasdf")
         try {
              const {email,password}:LoginRequestDTO = req.body;
              const response:MemberLoginResponseDTO = await this._loginUseCase.login({email,password});
@@ -26,7 +27,7 @@ export class MemberLoginController {
                 httpOnly:true,
                 secure:true
              })
-
+             console.log(accessToken,"navas token....")
              ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,
                 res,

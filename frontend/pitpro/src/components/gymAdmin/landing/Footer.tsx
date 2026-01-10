@@ -1,25 +1,39 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-800 bg-gray-900 px-6 py-12 sm:px-12">
+    <footer className="border-t border-orange-500/20 bg-gradient-to-b from-neutral-950 via-black to-black px-6 py-14 sm:px-12">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-orange-500 text-sm font-bold text-white">
+        {/* Brand */}
+        <div className="mb-10 flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 text-sm font-extrabold text-white shadow-lg shadow-orange-500/30">
             F
           </div>
-          <span className="font-bold text-white">FitPro ERP</span>
+          <span className="text-lg font-extrabold tracking-wide text-white">
+            FitPro ERP
+          </span>
         </div>
 
-        <div className="mb-8">
-          <h3 className="mb-2 text-lg font-bold text-white">Ready to Transform Your Gym?</h3>
-          <p className="text-sm text-gray-400">
-            Join hundreds of successful gym owners whose streamlined their operations with FitPro ERP.
+        {/* CTA */}
+        <div className="mb-10 max-w-xl">
+          <h3 className="mb-3 text-xl font-bold text-white">
+            Ready to Transform Your Gym?
+          </h3>
+          <p className="text-sm leading-relaxed text-neutral-400">
+            Join hundreds of successful gym owners who’ve streamlined their
+            operations using <span className="text-orange-400">FitPro ERP</span>.
           </p>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-          <p>© 2025 FitPro ERP. All rights reserved. Powering the future of fitness management.</p>
+        {/* Divider */}
+        <div className="border-t border-neutral-800 pt-8 text-center">
+          <p className="text-xs text-neutral-500">
+            © 2025 FitPro ERP. All rights reserved.
+            <span className="hidden sm:inline">
+              {" "}
+              Powering the future of fitness management.
+            </span>
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

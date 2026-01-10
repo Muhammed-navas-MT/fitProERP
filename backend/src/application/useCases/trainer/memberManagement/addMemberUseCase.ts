@@ -1,30 +1,30 @@
 import {
   MemberError,
   MemberSuccess,
-} from "../../../presentation/shared/constants/errorMessage/memberMessage";
+} from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import {
   AlreadyExistException,
   NOtFoundException,
   ForbiddenException,
-} from "../../constants/exceptions";
-import { IAddMemberDTO } from "../../dtos/auth/memberDto";
-import { IMemberRepository } from "../../interfaces/repository/member/addMemberRepoInterface";
-import { IHashService } from "../../interfaces/service/hashServiceInterface";
-import { IEmailService } from "../../interfaces/service/IEmail/emailServiceInterface";
-import { IPasswordGenerator } from "../../interfaces/service/passwordGenerator";
-import { IAddMemberUseCase } from "../../interfaces/useCase/trainer/addMemberUseCaseInterface";
-import { EmailPayloadType } from "../../../domain/type/emailPayload";
-import { ISendPasswordEmailContentGenerator } from "../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
-import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
-import { ITrainerRepository } from "../../interfaces/repository/trainer.ts/tranerRepoInterface";
-import { Status } from "../../../domain/enums/status";
+} from "../../../constants/exceptions";
+import { IAddMemberDTO } from "../../../dtos/auth/memberDto";
+import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
+import { IHashService } from "../../../interfaces/service/hashServiceInterface";
+import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
+import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
+import { IAddMemberUseCase } from "../../../interfaces/useCase/trainer/addMemberUseCaseInterface";
+import { EmailPayloadType } from "../../../../domain/type/emailPayload";
+import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
+import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
+import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
+import { Status } from "../../../../domain/enums/status";
 import {
   IListMemberRequestDTO,
   IListMemberResponseDTO,
-} from "../../dtos/memberDto/listAllMembersDto";
-import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
-import { TrainerError } from "../../../presentation/shared/constants/errorMessage/trainerMessage";
-import { TrainerMapper } from "../../mappers/memeberMapper";
+} from "../../../dtos/memberDto/listAllMembersDto";
+import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
+import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
+import { MemberMapper } from "../../../mappers/memeberMapper";
 
 export class AddMemberUseCase implements IAddMemberUseCase {
   private _hashService: IHashService;
@@ -83,7 +83,8 @@ export class AddMemberUseCase implements IAddMemberUseCase {
       const password = await this._generatePassword.generate();
       console.log(password,"member")
       const hashPassword = await this._hashService.hash(password);
-      const newMember = TrainerMapper.toMemberEntity(data,findTrainer.gymId,hashPassword)
+      const branchId = trainer.branchId || "";
+      const newMember = MemberMapper.toMemberEntity(data,findTrainer.gymId,hashPassword,branchId)
       await this._memberRepository.create(newMember);
 
       const htmlContent = this._sendPasswordTemplateGenerator.generateHtml({
@@ -129,7 +130,7 @@ export class AddMemberUseCase implements IAddMemberUseCase {
 
       const { members, total } = await this._memberRepository.listAllMembers( params,findGym._id );
 
-      const response = TrainerMapper.toListMemebersResponse(members,total,params);
+      const response = MemberMapper.toListMemebersResponse(members,total,params);
       return response;
     } catch (error) {
       throw error;

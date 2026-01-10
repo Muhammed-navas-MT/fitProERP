@@ -10,5 +10,6 @@ export enum GymAdminAuthSuccess {
     SUBSCRIPTION_PURCHASED = "Subscription purchased successfully",
     GYM_DETAIL = "Gym details retrieved successfully",
     GYM_APPROVED = "Gym account Approved successfully",
-    GYM_REJECTED = "Gym account Rejected"
+    GYM_REJECTED = "Gym account Rejected",
+    PASSWORD_CHANGED = "Password changed successfully",
 }

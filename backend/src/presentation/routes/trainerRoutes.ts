@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request,Response,NextFunction,Router } from "express";
-import { injectedAddMemberController, injectedCheckAccessTrainerMiddleware, injectedTrainerLoginController } from "../../infrastructure/DI/trainer/trainerInjection";
+import { injectedAddMemberController, injectedCheckAccessTrainerMiddleware, injectedProfileController, injectedTrainerLoginController, injectedTrainerLogoutController } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 export class TrainerRoutes {
     private _route:Router;
@@ -20,6 +20,10 @@ export class TrainerRoutes {
             injectedCheckAccessTrainerMiddleware.execute
         ]);
 
+        this._route.post(TRAINER.AUTH.LOGOUT,(req:Request,res:Response,next:NextFunction)=>{
+            injectedTrainerLogoutController.trainerLogout(req,res,next);
+        })
+
         this._route.post(TRAINER.ADD_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
             injectedAddMemberController.addMember(req,res,next);
         })
@@ -30,6 +34,18 @@ export class TrainerRoutes {
         
         this._route.get(TRAINER.LIST_ACTIVE_TRAINER,(req:Request,res:Response,next:NextFunction)=>{
             injectedAddMemberController.listAllActiveTrainers(req,res,next);
+        })
+
+        this._route.get(TRAINER.VIEW_PROFILE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedProfileController.viewProfile(req,res,next)
+        })
+
+        this._route.post(TRAINER.CHANGE_PASSWORD,(req:Request,res:Response,next:NextFunction)=>{
+            injectedProfileController.changePassword(req,res,next)
+        })
+
+        this._route.post(TRAINER.UPDATE_PROFILE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedProfileController.updateProfile(req,res,next);
         })
     };
 

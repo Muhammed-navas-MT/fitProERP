@@ -54,6 +54,10 @@ import { BlockMemberUseCase } from "../../../application/useCases/gymAdmin/membe
 import { UnBlockMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/unblockMemberUseCase";
 import { ListAllMemberUseCase } from "../../../application/useCases/gymAdmin/memberManagement/listAllMemberUseCase";
 import { ListAllActiveTrainersByBranch } from "../../../application/useCases/gymAdmin/trainerManagement/listAllActiveTrainersUseCase";
+import { ViewGymAdminProfileUseCase } from "../../../application/useCases/gymAdmin/profileManagement/viewGymAdminProfileUseCase";
+import { UpdateGymAdminProfileUseCase } from "../../../application/useCases/gymAdmin/profileManagement/updateGymAdminProfileUseCase";
+import { ChangeGymAdminPasswordUseCase } from "../../../application/useCases/gymAdmin/profileManagement/changeGymAdminPasswordUseCase";
+import { GymAdminProfileController } from "../../../presentation/controller/gymAdmin/profileManagementController";
 
 
 const otpService =new OtpService()
@@ -125,3 +129,9 @@ const blockMember = new BlockMemberUseCase(memberRepository);
 const unBlockMember = new UnBlockMemberUseCase(memberRepository);
 const listMembers = new ListAllMemberUseCase(memberRepository,gymAdminRepository);
 export const injectedMemberManagementController = new MemberManagementController(createMember,listMembers,findMember,updateMember,blockMember,unBlockMember);
+
+//profile management
+const updateProfile = new UpdateGymAdminProfileUseCase(gymAdminRepository);
+const viewProfile = new ViewGymAdminProfileUseCase(gymAdminRepository);
+const changePassword = new ChangeGymAdminPasswordUseCase(gymAdminRepository,hashService);
+export const injectedGymAdminProfileControler = new GymAdminProfileController(viewProfile,updateProfile,changePassword);

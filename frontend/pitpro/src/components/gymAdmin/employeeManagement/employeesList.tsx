@@ -14,6 +14,7 @@ import { EmployeesSearch } from "@/components/gymAdmin/employeeManagement/employ
 import { useNavigate } from "react-router-dom"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 import { EditEmployeeDialog } from "@/components/gymAdmin/employeeManagement/updateTrainerModal"
+import { TableSkeleton } from "../memberManagement/TableSkeleton"
 
 export type EmployeeStatus = "ACTIVE" | "IN_ACTIVE" | "PENDING"
 
@@ -40,7 +41,7 @@ export function EmployeesList() {
   const { data: trainerDetails, isPending: isTrainerLoading } =
     useFindTrainer(selectedTrainerId)
 
-  if (isPending) return null
+  if (isPending) return <TableSkeleton/>
 
   const trainers = data?.data?.data ?? []
   const totalPages = data?.data?.totalPages ?? 1

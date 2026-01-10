@@ -5,7 +5,7 @@ import { IListMemberInGymRequestDTO, IListMemberResponseDTO } from "../../../dto
 import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
 import { IListAllMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/listMembersUseCaseInterface";
-import { TrainerMapper } from "../../../mappers/memeberMapper";
+import { MemberMapper } from "../../../mappers/memeberMapper";
 
 export class ListAllMemberUseCase implements IListAllMemberUseCase {
   constructor(
@@ -29,7 +29,7 @@ export class ListAllMemberUseCase implements IListAllMemberUseCase {
     const { members, total } =
       await this._memberRepository.listAllMembersByGymId(params);
 
-    return TrainerMapper.toListMemebersByGymResponse(
+    return MemberMapper.toListMemebersByGymResponse(
       members,
       total,
       params

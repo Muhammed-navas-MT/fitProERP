@@ -13,7 +13,7 @@ import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceIn
 import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
 import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
 import { ICreateMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/createMemberUseCaseInterface";
-import { TrainerMapper } from "../../../mappers/memeberMapper";
+import { MemberMapper } from "../../../mappers/memeberMapper";
 import { BranchStatus } from "../../../../domain/enums/branchStatus";
 
 export class CreateMemberUseCase implements ICreateMemberUseCase {
@@ -80,12 +80,14 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
       }
 
       const password = await this._generatePassword.generate();
+      console.log(password)
       const hashPassword = await this._hashService.hash(password);
 
-      const newMember = TrainerMapper.toMemberEntity(
+      const newMember = MemberMapper.toMemberEntity(
         data,
         trainer.gymId,
-        hashPassword
+        hashPassword,
+        data.branchId
       );
 
       await this._memberRepository.create(newMember);

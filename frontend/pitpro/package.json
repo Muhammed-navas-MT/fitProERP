@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -40,6 +41,7 @@
     "redux-persist": "^6.0.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.1.12"
   },

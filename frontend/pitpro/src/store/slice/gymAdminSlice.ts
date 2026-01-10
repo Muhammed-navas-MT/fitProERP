@@ -26,7 +26,7 @@ const initialState:IGymAdmin = {
 }
 
 const gymAdminSlice = createSlice({
-    name:"SuperAdmin",
+    name:"GymAdmin",
     initialState,
     reducers:{
         setGymAdminData:(state,action:PayloadAction<IGymAdmin>):IGymAdmin => {
