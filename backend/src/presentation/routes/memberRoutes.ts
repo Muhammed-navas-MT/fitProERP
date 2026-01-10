@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ROUTES } from "../shared/constants/routes";
 import {
   injectedMemberLoginController,
+  injectedMemberLogoutController,
   injectedMemberProfileController,
 } from "../../infrastructure/DI/member/memberInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
@@ -19,6 +20,12 @@ export class MemberRoutes {
       ROUTES.MEMBER.LOGIN,
       (req: Request, res: Response, next: NextFunction) => {
         injectedMemberLoginController.login(req, res, next);
+      }
+    );
+    this._route.post(
+      ROUTES.MEMBER.LOGOUT,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberLogoutController.logout(req, res, next);
       }
     );
     this._route.use(injectAuthMiddleware.verify);

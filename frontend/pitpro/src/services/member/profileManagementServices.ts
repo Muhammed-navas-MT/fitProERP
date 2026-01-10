@@ -39,16 +39,18 @@ export const updateMemberPasswordService = async(data:{oldPassword:string,newPas
     }
 }
 
-export const uploacdProfilePicturedService = async (image: FormData) => {
+export const uploacdProfilePicturedService = async (image: File) => {
+    const formData = new FormData()
+    formData.append("profileImg", image) 
 
   const response = await AxiosInstance.post(
     `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.UPLOAD_PROFILE_PICTURE}`,
-    image,
+    formData,
     {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+    }
   )
 
   return response.data

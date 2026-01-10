@@ -15,12 +15,12 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTrainerLogout } from "@/hook/trainer/trainerLogoutHook";
 import { useDispatch } from "react-redux";
 import { deleteToken } from "@/store/slice/tokenSlice";
 import { clearData } from "@/store/slice/authSlice";
 import { clearAuthContext } from "@/store/slice/authContextState";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { useMemberLogout } from "@/hook/member/memberLogoutHook";
 
 interface SidebarItem {
   icon: React.ReactNode;
@@ -48,7 +48,7 @@ export function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const { mutate: logout, isPending } = useTrainerLogout();
+  const { mutate: logout, isPending } = useMemberLogout();
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);

@@ -43,9 +43,8 @@ export const useChangeMemberPassword = () => {
 
 export const useUploadProfilePicture = () => {
   const queryClient = useQueryClient()
-  console.log("khgjghjkghjg")
   return useMutation({
-    mutationFn: (file: FormData) => uploacdProfilePicturedService(file),
+    mutationFn: (file: File) => uploacdProfilePicturedService(file),
 
     onSuccess: (data) => {
       queryClient.setQueryData<MemberDTO>(

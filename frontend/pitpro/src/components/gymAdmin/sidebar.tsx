@@ -32,7 +32,7 @@ const navItems = [
   { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
   { name: "Payments", href: "/payments", icon: CreditCard },
   { name: "Problems", href: "/problems", icon: AlertCircle },
-  { name: "Gym Info", href: "/info", icon: Info },
+  { name: "Gym Info", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: Info },
   { name: "Salary", href: "/salary", icon: DollarSign },
 ]
 

@@ -52,6 +52,9 @@ export const ROUTES = {
     FIND_MEMBER:"/find_member/:memberId",
     UNBLOCK_MEMBER:"/unblock_member/:memberId",
     BLOCK_MEMBER:"/block_member/:memberId",
+    VIEW_PROFILE:"/gym_admin_profile",
+    UPDATE_PROFILE:"/gym_admin_profile_update",
+    CHANGE_PASSWORD:"/gym_admin_password_change"
   },
 
   TRAINER: {
@@ -74,6 +77,7 @@ export const ROUTES = {
   MEMBER: {
     BASE: "/member",
     LOGIN: "/login",
+    LOGOUT:"/logout",
     VIEW_PROFILE:"/member_profile",
     UPDATE_PROFILE:"/member_profile_update",
     CHANGE_PASSWORD:"/member_password_change",

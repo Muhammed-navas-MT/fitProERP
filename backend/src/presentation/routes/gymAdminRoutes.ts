@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -190,6 +190,25 @@ export class GymAdminRoutes {
       GYMADMIN.UNBLOCK_MEMBER,
       (req: Request, res: Response, next: NextFunction) => {
         injectedMemberManagementController.unBlockMember(req, res, next);
+      }
+    )
+    this._route.get(
+      GYMADMIN.VIEW_PROFILE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminProfileControler.viewProfile(req, res, next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.UPDATE_PROFILE,
+      upload.single("logo"),
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminProfileControler.updateProfile(req, res, next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.CHANGE_PASSWORD,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminProfileControler.changePassword(req, res, next);
       }
     )
   }

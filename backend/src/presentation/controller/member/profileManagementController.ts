@@ -75,12 +75,6 @@ export class ProfileController {
   async uploadProfilePicture(req: Request, res: Response, next: NextFunction) {
   try {
     const memberId = res.locals.data.id
-    console.log(req.file)
-    const files = req.files as {
-        [fieldname: string]: Express.Multer.File[];
-      };
-      console.log(files)
-
     const file = req.file
     if (!file) {
       throw new BadRequestException(MemberError.PROFILE_IMG_REQUIRED)

@@ -52,6 +52,9 @@ export const API_ROUTES = {
     FIND_MEMBER:"/find_member",
     UNBLOCK_MEMBER:"/unblock_member",
     BLOCK_MEMBER:"/block_member",
+    VIEW_PROFILE:"/gym_admin_profile",
+    UPDATE_PROFILE:"/gym_admin_profile_update",
+    CHANGE_PASSWORD:"/gym_admin_password_change",
   },
 
   TRAINER: {
@@ -73,6 +76,7 @@ export const API_ROUTES = {
   MEMBER:{
     BASE:"/member",
     LOGIN:"/login",
+    LOGOUT:"/logout",
     VIEW_PROFILE:"/member_profile",
     UPDATE_PROFILE:"/member_profile_update",
     CHANGE_PASSWORD:"/member_password_change",
