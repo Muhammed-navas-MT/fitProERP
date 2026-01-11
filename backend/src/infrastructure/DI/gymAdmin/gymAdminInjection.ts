@@ -58,12 +58,22 @@ import { ViewGymAdminProfileUseCase } from "../../../application/useCases/gymAdm
 import { UpdateGymAdminProfileUseCase } from "../../../application/useCases/gymAdmin/profileManagement/updateGymAdminProfileUseCase";
 import { ChangeGymAdminPasswordUseCase } from "../../../application/useCases/gymAdmin/profileManagement/changeGymAdminPasswordUseCase";
 import { GymAdminProfileController } from "../../../presentation/controller/gymAdmin/profileManagementController";
+import { ViewPackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/viewPackageUseCase";
+import { CreatePackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/createPackageUseCase";
+import { UpdatePackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/updatePackageUseCase";
+import { BlockPackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/blockPackageUseCase";
+import { UnBlockPackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/unBlockPackageUseCase";
+import { ListPackageUseCase } from "../../../application/useCases/gymAdmin/packageManagement/listPackageUseCase";
+import { PackageController } from "../../../presentation/controller/gymAdmin/packageManagementController";
+import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
+import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
 
 
 const otpService =new OtpService()
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator()
 const emailService = new EmailService()
 const gymAdminRepository = new GymAdminRepository(gymAdminModel)
+const packageRepository = new PackageRepository(PackageModel);
 const subsriptionRepository = new SubscriptionRepository(subscriptionModel)
 const jwtService = new JwtService()
 const cacheService = new CacheService()
@@ -135,3 +145,12 @@ const updateProfile = new UpdateGymAdminProfileUseCase(gymAdminRepository);
 const viewProfile = new ViewGymAdminProfileUseCase(gymAdminRepository);
 const changePassword = new ChangeGymAdminPasswordUseCase(gymAdminRepository,hashService);
 export const injectedGymAdminProfileControler = new GymAdminProfileController(viewProfile,updateProfile,changePassword);
+
+//package management
+const viewPackage = new ViewPackageUseCase(packageRepository);
+const createPackage = new CreatePackageUseCase(packageRepository);
+const updatePackage = new UpdatePackageUseCase(packageRepository);
+const blockPackage = new BlockPackageUseCase(packageRepository);
+const unBlockPackage = new UnBlockPackageUseCase(packageRepository);
+const listPackages = new ListPackageUseCase(packageRepository);
+export const injectedPackageController = new PackageController(blockPackage,createPackage,viewPackage,listPackages,unBlockPackage,updatePackage);

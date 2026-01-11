@@ -54,7 +54,12 @@ export const ROUTES = {
     BLOCK_MEMBER:"/block_member/:memberId",
     VIEW_PROFILE:"/gym_admin_profile",
     UPDATE_PROFILE:"/gym_admin_profile_update",
-    CHANGE_PASSWORD:"/gym_admin_password_change"
+    CHANGE_PASSWORD:"/gym_admin_password_change",
+    CREATE_PACKAGE: "/create_package",
+    BLOCK_PACKAGE: "/block_package/:packageId",
+    UNBLOCK_PACKAGE: "/unblock_package/:packageId",
+    FIND_PACKAGE: "/package/:packageId",
+    UPDATE_PACKAGE: "/update_package/:packageId",
   },
 
   TRAINER: {
