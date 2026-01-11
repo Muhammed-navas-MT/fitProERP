@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPackageController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -209,6 +209,42 @@ export class GymAdminRoutes {
       GYMADMIN.CHANGE_PASSWORD,
       (req: Request, res: Response, next: NextFunction) => {
         injectedGymAdminProfileControler.changePassword(req, res, next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.CREATE_PACKAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.createPackage(req, res, next);
+      }
+    )
+    this._route.get(
+      GYMADMIN.FIND_PACKAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.viewPackage(req, res, next);
+      }
+    )
+    this._route.post(
+      GYMADMIN.UPDATE_PACKAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.updatePackage(req, res, next);
+      }
+    )
+    this._route.put(
+      GYMADMIN.BLOCK_PACKAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.blockPackage(req, res, next);
+      }
+    )
+    this._route.put(
+      GYMADMIN.UNBLOCK_TRAINER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.unBlockPackage(req, res, next);
+      }
+    )
+    this._route.get(
+      GYMADMIN.UPDATE_PACKAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageController.listAllPackage(req, res, next);
       }
     )
   }
