@@ -14,6 +14,7 @@ import EmployeeDetailsPage from "@/page/gymAdmin/trainerDetailPage";
 import MemeberListPage from "@/page/gymAdmin/memberListPage";
 import MemberDetailPage from "@/page/gymAdmin/memberDetailpage";
 import GymInfoPage from "@/page/gymAdmin/gymProfileInfoPage";
+import PackagePage from "@/page/gymAdmin/packageListPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -71,6 +72,9 @@ const GymAdminRoutes = () => {
            />
            <Route path={FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}
            element={<GymInfoPage/>}
+           />
+           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}
+           element={<PackagePage/>}
            />
         </Route>
       </Route>

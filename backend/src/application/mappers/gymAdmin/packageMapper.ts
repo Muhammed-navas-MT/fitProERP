@@ -1,4 +1,5 @@
 import { PackageEntity } from "../../../domain/entities/gymAdmin/packageEntity";
+import { IPackageWithBranch } from "../../../infrastructure/repository/databaseConfigs/types/packagePersistenceTypes";
 import {
   IListPackageRequestDTO,
   IListPackageResponseDTO,
@@ -7,44 +8,46 @@ import {
 
 export class PackageMapper {
   static toListPackageResponse(
-    packages: PackageEntity[],
+    packages: IPackageWithBranch[],
     total: number,
     params: IListPackageRequestDTO
   ): IListPackageResponseDTO {
+
     return {
       total,
       page: params.page,
       limit: params.limit,
       totalPages: Math.ceil(total / params.limit),
       search: params.search,
-      data:
-        packages?.map((pkg) => ({
-          id: pkg.id ?? "",
-          gymId: pkg.gymId,
-          branchId: pkg.branchId,
-          name: pkg.name,
-          price: pkg.price,
-          durationInDays: pkg.durationInDays,
-          features: pkg.features,
-          isDailySession: pkg.isDailySession,
-          isActive: pkg.isActive,
-        })) ?? [],
-    };
+      data: packages.map((pkg) => ({
+        id: pkg._id?.toString() ?? "",
+        gymId: pkg.gymId,
+        branchId: pkg.branchId?._id?.toString() ?? "",
+        branchName: pkg.branchId?.branchName ?? "",
+        name: pkg.name,
+        price: pkg.price,
+        durationInDays: pkg.durationInDays,
+        features: pkg.features,
+        isDailySession: pkg.isDailySession,
+        isActive: pkg.isActive,
+      })),
+    }
   }
 
   static toViewPackageResponse(
-    packages: PackageEntity
+    pkg: IPackageWithBranch
   ): IViewPackageResponseDTO {
     return {
-      branchId: packages.branchId,
-      durationInDays: packages.durationInDays,
-      features: packages.features,
-      gymId: packages.gymId,
-      id: packages.id?.toString() || "",
-      isActive: packages.isActive,
-      isDailySession: packages.isDailySession,
-      name: packages.name,
-      price: packages.price,
-    };
+      id: pkg._id,
+      gymId: pkg.gymId,
+      branchId: pkg.branchId?._id?.toString() ?? "",
+      branchName: pkg.branchId?.branchName ?? "",
+      name: pkg.name,
+      price: pkg.price,
+      durationInDays: pkg.durationInDays,
+      features: pkg.features,
+      isDailySession: pkg.isDailySession,
+      isActive: pkg.isActive,
+    }
   }
 }

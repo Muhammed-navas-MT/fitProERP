@@ -236,15 +236,15 @@ export class GymAdminRoutes {
       }
     )
     this._route.put(
-      GYMADMIN.UNBLOCK_TRAINER,
+      GYMADMIN.UNBLOCK_PACKAGE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedPackageController.unBlockPackage(req, res, next);
       }
     )
     this._route.get(
-      GYMADMIN.UPDATE_PACKAGE,
-      (req: Request, res: Response, next: NextFunction) => {
-        injectedPackageController.listAllPackage(req, res, next);
+      GYMADMIN.LIST_PACKAGE,
+      (req:Request,res:Response,next:NextFunction)=> {
+        injectedPackageController.listAllPackage(req,res,next);
       }
     )
   }

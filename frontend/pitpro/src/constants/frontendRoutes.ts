@@ -15,6 +15,7 @@ export const FRONTEND_ROUTES = {
         PENDINGAPPROVAL:"approval",
         DETAIL_MEMBER:"detail-member",
         GYM_INFO:"gym-info",
+        LIST_PACKAGE:"packages"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",

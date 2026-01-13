@@ -55,6 +55,12 @@ export const API_ROUTES = {
     VIEW_PROFILE:"/gym_admin_profile",
     UPDATE_PROFILE:"/gym_admin_profile_update",
     CHANGE_PASSWORD:"/gym_admin_password_change",
+    CREATE_PACKAGE: "/create_package",
+    BLOCK_PACKAGE: "/block_package",
+    UNBLOCK_PACKAGE: "/unblock_package",
+    FIND_PACKAGE: "/package",
+    UPDATE_PACKAGE: "/update_package",
+    LIST_PACKAGE: "/list_package",
   },
 
   TRAINER: {

@@ -4,6 +4,10 @@ import { IPackageRespository } from "../../../application/interfaces/repository/
 import { PackageEntity } from "../../../domain/entities/gymAdmin/packageEntity";
 import { IPackageModel } from "../databaseConfigs/models/packageModel";
 import { IListPackageRequestDTO } from "../../../application/dtos/gymAdminDto/packageDto";
+import {
+  IBranchPopulated,
+  IPackageWithBranch,
+} from "../databaseConfigs/types/packagePersistenceTypes";
 
 export class PackageRepository
   extends BaseRepository<IPackageModel>
@@ -13,52 +17,94 @@ export class PackageRepository
     super(model);
   }
 
-  async findByNameAndBranch(name: string,branchId: string): Promise<PackageEntity | null> {
-    const query: FilterQuery<IPackageModel> = {
-      name: { $regex: new RegExp(`^${name}$`, "i") },
-    }
-    if (branchId) {
-      query.branchId = branchId
-    }
+  async findByNameAndBranch(
+  name: string,
+  branchId?: string
+): Promise<IPackageWithBranch | null> {
 
-    const doc = await this._model.findOne(query)
-    if(!doc) return null;
-    return doc
+  const query: FilterQuery<IPackageModel> = {
+    name: { $regex: new RegExp(`^${name}$`, "i") },
   }
+
+  if (branchId) {
+    query.branchId = branchId
+  }
+
+  const doc = await this._model
+    .findOne(query)
+    .populate<{ branchId: IBranchPopulated }>({
+      path: "branchId",
+      select: "branchName",
+    })
+    .lean<IPackageWithBranch>()
+
+  return doc ?? null
+}
 
   async listAllPackage(
     params: IListPackageRequestDTO,
     gymId: string
-  ): Promise<{ packages: PackageEntity[]; total: number }> {
-    const { page, limit, search, branchId } = params
+  ): Promise<{ packages: IPackageWithBranch[]; total: number }> {
+    const { page, limit, search, branchId } = params;
 
-    const query: FilterQuery<IPackageModel> = {
-      gymId,
-    }
+    const query: FilterQuery<IPackageModel> = { gymId };
+
     if (search) {
-      query.name = { $regex: search, $options: "i" }
+      query.name = { $regex: search, $options: "i" };
     }
-    if (branchId && branchId.trim() !== "") {
-      query.branchId = branchId
+
+    if (branchId?.trim()) {
+      query.branchId = branchId;
     }
-    const skip = (page - 1) * limit
+
+    const skip = (page - 1) * limit;
 
     const [packages, total] = await Promise.all([
-      this._model.find(query)
+      this._model
+        .find(query)
+        .populate<{ branchId: IBranchPopulated }>({
+          path: "branchId",
+          select: "branchName",
+        })
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean<IPackageWithBranch[]>(),
       this._model.countDocuments(query),
-    ])
+    ]);
 
-    return {packages,total};
+    return { packages, total };
   }
 
   async listAllActivePackage(): Promise<PackageEntity[] | null> {
     const docs = await this._model.find({
       isActive: true,
+    });
+    if (!docs) return null;
+    return docs;
+  }
+
+  async findByIdAndBranch(
+  id: string,
+  branchId?: string
+): Promise<IPackageWithBranch | null> {
+
+  const query: FilterQuery<IPackageModel> = {
+    _id:id,
+  }
+
+  if (branchId) {
+    query.branchId = branchId
+  }
+
+  const doc = await this._model
+    .findOne(query)
+    .populate<{ branchId: IBranchPopulated }>({
+      path: "branchId",
+      select: "branchName",
     })
-    if(!docs)return null
-    return docs
-  } 
+    .lean<IPackageWithBranch>()
+
+  return doc ?? null
+}
 }

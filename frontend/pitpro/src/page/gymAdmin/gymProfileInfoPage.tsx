@@ -54,7 +54,7 @@ export default function GymInfoPage() {
 
  if (isLoading) return <GymInfoSkeleton />
   const gymAdminData = data?.data ?? {}
-  if (isError || !gymAdminData) return <p className="text-red-500 p-4">Failed to load profile</p>
+  if (isError || !gymAdminData) return <GymInfoSkeleton />
 
   return (
     <div className="flex min-h-screen bg-zinc-950">

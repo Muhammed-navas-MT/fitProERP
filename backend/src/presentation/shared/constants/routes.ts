@@ -60,6 +60,7 @@ export const ROUTES = {
     UNBLOCK_PACKAGE: "/unblock_package/:packageId",
     FIND_PACKAGE: "/package/:packageId",
     UPDATE_PACKAGE: "/update_package/:packageId",
+    LIST_PACKAGE: "/list_package",
   },
 
   TRAINER: {

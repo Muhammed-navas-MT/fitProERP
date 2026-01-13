@@ -1,4 +1,4 @@
-export interface ICreatePackageRequestDTO {
+export interface ICreatePackageType {
   branchId:string;  
   name: string;
   price: number;
@@ -6,7 +6,7 @@ export interface ICreatePackageRequestDTO {
   features:string[];
   isDailySession:boolean;
 }
-export interface IUpdatePackageRequestDTO {
+export interface IUpdatePackageType {
   branchId:string;  
   name: string;
   price: number;
@@ -15,7 +15,7 @@ export interface IUpdatePackageRequestDTO {
   isDailySession:boolean;
 }
 
-export interface IViewPackageResponseDTO {
+export interface IViewPackageType {
   id: string
   gymId: string
   branchId: string
@@ -29,14 +29,7 @@ export interface IViewPackageResponseDTO {
 }
 
 
-export interface IListPackageRequestDTO {
-  search: string;
-  page: number;
-  limit: number;
-  branchId:string
-}
-
-export interface IListPackageItemDTO {
+export interface IListPackageItemType {
   id: string
   gymId: string
   branchId: string
@@ -49,11 +42,11 @@ export interface IListPackageItemDTO {
   isActive: boolean
 }
 
-export interface IListPackageResponseDTO {
+export interface IListPackagesType {
   total: number
   page: number
   limit: number
   totalPages: number
   search?: string
-  data: IListPackageItemDTO[]
+  data: IListPackageItemType[]
 }
