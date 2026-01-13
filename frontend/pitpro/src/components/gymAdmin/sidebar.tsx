@@ -26,7 +26,7 @@ const navItems = [
   { name: "Dashboard", href:`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`, icon: LayoutDashboard },
   { name: "Members", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS}`, icon: Users },
   { name: "Trainers", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}`, icon: UserCog },
-  { name: "Packages", href: "/packages", icon: Package },
+  { name: "Packages", href:  `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}`, icon: Package },
   { name: "Branches", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`, icon: Building2 },
   { name: "Expenses", href: "/expenses", icon: TrendingDown },
   { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
