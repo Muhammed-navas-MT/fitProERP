@@ -77,7 +77,11 @@ export const ROUTES = {
     LIST_ACTIVE_TRAINER:"/active_trainers",
     VIEW_PROFILE:"/trainer_profile",
     UPDATE_PROFILE:"/trainer_profile_update",
-    CHANGE_PASSWORD:"/trainer_password_change"
+    CHANGE_PASSWORD:"/trainer_password_change",
+    MARK_ATTENDANCE:"/mark_attendance",
+    CHECK_OUT_ATTENDANCE:"/ckeckout_attendance",
+    GET_ATTENDANCE:"/get_attendance",
+    GET_ALL_ATTENDANCE:"/get_all_attendance"
   },
 
   MEMBER: {
