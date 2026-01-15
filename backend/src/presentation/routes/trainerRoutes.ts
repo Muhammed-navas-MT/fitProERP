@@ -2,6 +2,7 @@ import { ROUTES } from "../shared/constants/routes";
 import { Request,Response,NextFunction,Router } from "express";
 import { injectedAddMemberController, injectedCheckAccessTrainerMiddleware, injectedProfileController, injectedTrainerLoginController, injectedTrainerLogoutController } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 export class TrainerRoutes {
     private _route:Router;
     constructor(){
@@ -46,6 +47,26 @@ export class TrainerRoutes {
 
         this._route.post(TRAINER.UPDATE_PROFILE,(req:Request,res:Response,next:NextFunction)=>{
             injectedProfileController.updateProfile(req,res,next);
+        })
+
+        this._route.post(TRAINER.MARK_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.markAttendance(req,res,next);
+        })
+
+        this._route.post(TRAINER.MARK_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.markAttendance(req,res,next);
+        })
+
+        this._route.post(TRAINER.CHECK_OUT_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.updateAttendance(req,res,next);
+        })
+
+        this._route.get(TRAINER.GET_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.getAttendance(req,res,next);
+        })
+
+        this._route.get(TRAINER.GET_ALL_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.getAttendanceList(req,res,next);
         })
     };
 

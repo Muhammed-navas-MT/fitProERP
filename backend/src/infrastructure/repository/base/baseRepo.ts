@@ -26,7 +26,6 @@ export abstract class  BaseRepository<T> implements IBaseRepository<T> {
     }
 
     async update(data:Partial<T>, id: string): Promise<boolean> {
-        console.log(data,"from updating data .......")
         const result = await this._model.findByIdAndUpdate(id,{$set:data})
         return !!result;
     }
