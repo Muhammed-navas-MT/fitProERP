@@ -9,19 +9,13 @@ import {
   useMarkAttendance,
   useUpdateAttendance,
   useTodayAttendance,
+  useCurrentMonthAttendance,
 } from "@/hook/trainer/attendanceHook";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
 import { toast } from "sonner";
+import { mapAttendanceToCalendar, UIStatus } from "@/utils/mapAttendanceToCalendar";
 import { GetAttendanceType } from "@/types/attendanceType";
-
-const mockAttendanceData: ("present" | "absent" | "late" | "none")[][] = [
-  ["none", "none", "none", "present", "present", "present", "present"],
-  ["late", "present", "absent", "present", "absent", "present", "present"],
-  ["late", "present", "present", "present", "present", "present", "present"],
-  ["late", "present", "present", "present", "present", "present", "none"],
-  ["none", "none", "none", "none", "none", "none", "none"],
-];
 
 export default function DashboardPage() {
   const name = useSelector((state: rootstate) => state.authData.name);
@@ -33,22 +27,15 @@ export default function DashboardPage() {
     .join("")
     .toUpperCase();
 
-  const {
-    data: todayAttendanceRes,
-    isLoading: isTodayAttendanceLoading,
-    refetch,
-  } = useTodayAttendance();
+  const { data: todayAttendanceRes, isLoading: isTodayAttendanceLoading, refetch } =
+    useTodayAttendance();
 
-  const { mutate: markAttendance, isPending: isCheckInPending } =
-    useMarkAttendance();
+  const { mutate: markAttendance, isPending: isCheckInPending } = useMarkAttendance();
+  const { mutate: updateAttendance, isPending: isCheckOutPending } = useUpdateAttendance();
 
-  const { mutate: updateAttendance, isPending: isCheckOutPending } =
-    useUpdateAttendance();
+  const { data: currentMonthAttendance, isLoading: isCurrentMonthLoading,refetch:refetchCurrentMonathAttendance } = useCurrentMonthAttendance();
 
-  const attendance: GetAttendanceType | undefined =
-    todayAttendanceRes?.data ?? todayAttendanceRes;
-
-  console.log(attendance, "dfasdfasdfasdfsadfasdf");
+  const attendance: GetAttendanceType | undefined = todayAttendanceRes?.data ?? todayAttendanceRes;
 
   const isCheckedIn = !!attendance?.checkInTime;
   const isCheckedOut = !!attendance?.checkOutTime;
@@ -61,7 +48,6 @@ export default function DashboardPage() {
         ? "Checked In"
         : "Not Checked In";
 
-  // 🔹 Handlers
   const handleCheckIn = () => {
     markAttendance(undefined, {
       onSuccess: (res) => {
@@ -80,12 +66,23 @@ export default function DashboardPage() {
       onSuccess: (res) => {
         toast.success(res?.data?.message || "Attendance Checked Out");
         refetch();
+        refetchCurrentMonathAttendance()
       },
       onError: (err) => {
         toast.error(err.message || "Error while checking out!");
       },
     });
   };
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const monthName = now.toLocaleString("default", { month: "long" });
+
+  let calendarData: UIStatus[][] = [];
+  if (currentMonthAttendance?.data) {
+    calendarData = mapAttendanceToCalendar(currentMonthAttendance.data, currentYear, currentMonth);
+  }
 
   return (
     <div className="min-h-screen bg-[#0f0f0f]">
@@ -159,8 +156,8 @@ export default function DashboardPage() {
           </div>
 
           <AttendanceCalendar
-            month="October"
-            attendanceData={mockAttendanceData}
+            month={monthName}
+            attendanceData={isCurrentMonthLoading ? [] : calendarData}
           />
         </main>
       </div>

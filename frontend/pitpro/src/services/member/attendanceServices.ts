@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 export const MarkAttendanceService = async ()=>{
   try {
     const response = await AxiosInstance.post(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.MARK_ATTENDANCE}`
+      `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.MARK_ATTENDANCE}`
     );
     return response.data;
   } catch (error) {
@@ -19,7 +19,7 @@ export const MarkAttendanceService = async ()=>{
 export const getTodayAttendanceService = async ()=>{
   try {
     const response = await AxiosInstance.get(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.GET_ATTENDANCE}`
+      `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.GET_ATTENDANCE}`
     );
     return response.data;
   } catch (error) {
@@ -33,7 +33,7 @@ export const getTodayAttendanceService = async ()=>{
 export const getAttendanceListService = async ()=>{
   try {
     const response = await AxiosInstance.get(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.GET_ALL_ATTENDANCE}`
+      `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.GET_ALL_ATTENDANCE}`
     );
     return response.data;
   } catch (error) {
@@ -47,7 +47,7 @@ export const getAttendanceListService = async ()=>{
 export const updateAttendanceService = async (id:string)=>{
   try {
     const response = await AxiosInstance.post(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.CHECK_OUT_ATTENDANCE}`,
+      `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.CHECK_OUT_ATTENDANCE}`,
       {id}
     );
     return response.data;
@@ -62,9 +62,8 @@ export const updateAttendanceService = async (id:string)=>{
 export const getCurrentMonthAttendanceService = async ()=>{
   try {
     const response = await AxiosInstance.get(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.GET_CURRENT_MONTH_ATTENDANCE}`
+      `${API_ROUTES.MEMBER.BASE}${API_ROUTES.MEMBER.GET_CURRENT_MONTH_ATTENDANCE}`
     );
-    console.log(response,"get current month attendance....")
     return response.data;
   } catch (error) {
     if(error instanceof AxiosError){

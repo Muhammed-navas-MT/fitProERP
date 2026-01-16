@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { CheckCircle, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface AttendanceCardProps {
   status: string
@@ -12,6 +13,10 @@ interface AttendanceCardProps {
   isCheckOutLoading: boolean
   disabledCheckIn?: boolean
   disabledCheckOut?: boolean
+
+  titleColor?: string
+  backgroundColor?: string
+  innerBackgroundColor?: string
 }
 
 export function AttendanceCard({
@@ -24,6 +29,9 @@ export function AttendanceCard({
   isCheckOutLoading,
   disabledCheckIn,
   disabledCheckOut,
+  titleColor = "text-white",
+  backgroundColor = "bg-[#1a1a1a]",
+  innerBackgroundColor = "bg-[#2a2a2a]",
 }: AttendanceCardProps) {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString())
 
@@ -35,12 +43,22 @@ export function AttendanceCard({
   }, [])
 
   return (
-    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
-      <h3 className="text-white font-semibold text-lg mb-6">
+    <div
+      className={cn(
+        backgroundColor,
+        "border border-[#2a2a2a] rounded-lg p-6"
+      )}
+    >
+      <h3 className={cn("font-semibold text-lg mb-6", titleColor)}>
         {"Today's Attendance"}
       </h3>
 
-      <div className="bg-[#2a2a2a] rounded-lg p-4 mb-6">
+      <div
+        className={cn(
+          innerBackgroundColor,
+          "rounded-lg p-4 mb-6"
+        )}
+      >
         <div className="flex items-center justify-between mb-2">
           <span className="text-gray-400 text-sm">Status</span>
           <span className="text-white font-semibold">{status}</span>
