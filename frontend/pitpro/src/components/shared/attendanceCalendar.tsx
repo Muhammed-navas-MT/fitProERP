@@ -1,58 +1,61 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils";
 
 interface AttendanceCalendarProps {
-  month: string
-  year: number
-  data: Record<string, string[]> // { "Su": ["present", "absent", "present"], ... }
-  primaryColor?: string
-  secondaryColor?: string
+  month: string;
+  attendanceData: ("present" | "absent" | "late" | "none")[][];
+  titleColor?: string;
+  cardBgColor?: string;
 }
 
 export function AttendanceCalendar({
   month,
-  year,
-  data,
-  primaryColor = "bg-emerald-500",
-  secondaryColor = "bg-red-500",
+  attendanceData,
+  titleColor = "text-white",
+  cardBgColor = "bg-[#1a1a1a]",
 }: AttendanceCalendarProps) {
-  const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+  const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-  const getStatusColor = (status: string) => {
-    if (status === "present") return primaryColor
-    if (status === "absent") return secondaryColor
-    return "bg-slate-300 dark:bg-slate-600"
-  }
+  const getStatusColor = (status: "present" | "absent" | "late" | "none") => {
+    switch (status) {
+      case "present":
+        return "bg-green-500";
+      case "absent":
+        return "bg-red-500";
+      case "late":
+        return "bg-yellow-500";
+      default:
+        return "bg-gray-600"; 
+    }
+  };
 
   return (
-    <Card className="border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-slate-900 dark:text-white">{month} Attendance</CardTitle>
-        <CardDescription className="text-slate-600 dark:text-slate-400">
-          {year} • Track your weekly attendance
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-7 gap-2">
-          {/* Day headers */}
-          {days.map((day) => (
-            <div key={day} className="text-center text-indigo-600 dark:text-indigo-400 font-semibold text-sm py-2">
-              {day}
-            </div>
-          ))}
+    <div className={cn(cardBgColor, "border border-[#2a2a2a] rounded-lg p-6")}>
+      <h3 className={cn("font-semibold text-lg mb-6", titleColor)}>
+        {month} month Attendance
+      </h3>
 
-          {/* Attendance dots */}
-          {days.map((day) => (
-            <div key={`${day}-dots`} className="flex flex-col gap-1">
-              {data[day]?.map((status, idx) => (
-                <div
-                  key={`${day}-${idx}`}
-                  className={`w-5 h-5 rounded-full ${getStatusColor(status)} transition-transform hover:scale-110`}
-                />
-              ))}
-            </div>
-          ))}
+      <div className="overflow-x-auto">
+        <div className="min-w-[500px]">
+          <div className="grid grid-cols-7 gap-4 mb-4">
+            {days.map(day => (
+              <div
+                key={day}
+                className="text-center text-gray-400 text-sm font-semibold"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-4">
+            {attendanceData.flat().map((status, index) => (
+              <div key={index} className="flex flex-col gap-2 items-center">
+                <div className={cn("h-4 w-4 rounded-full", getStatusColor(status))} />
+              </div>
+            ))}
+          </div>
         </div>
-      </CardContent>
-    </Card>
-  )
+      </div>
+    </div>
+  );
 }

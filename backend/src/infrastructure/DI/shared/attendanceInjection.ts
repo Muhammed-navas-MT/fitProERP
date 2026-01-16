@@ -1,5 +1,6 @@
 import { GetAttendanceListUseCase } from "../../../application/useCases/shared/attendanceManagement/getAttendanceListUseCase";
 import { GetAttendanceUseCase } from "../../../application/useCases/shared/attendanceManagement/getAttendanceUseCase";
+import { GetCurrentMonthAttendanceUseCase } from "../../../application/useCases/shared/attendanceManagement/getCurrentMonthAttendanceUseCase";
 import { MarkAttendanceUseCase } from "../../../application/useCases/shared/attendanceManagement/markAttendanceUseCase";
 import { UpdateAttendanceUseCase } from "../../../application/useCases/shared/attendanceManagement/updateAttendanceUseCase";
 import { AttendanceController } from "../../../presentation/controller/shared/attendanceController";
@@ -18,4 +19,5 @@ const markAttendanceUseCase = new MarkAttendanceUseCase(attendanceRepository,tra
 const updateAttendanceUseCase = new UpdateAttendanceUseCase(attendanceRepository,trainerRepository,memberRepository);
 const getAttendanceUseCase = new GetAttendanceUseCase(attendanceRepository);
 const getAttendanceListUseCase = new GetAttendanceListUseCase(attendanceRepository);
-export const injectedAttendanceController = new AttendanceController(markAttendanceUseCase,updateAttendanceUseCase,getAttendanceUseCase,getAttendanceListUseCase);
+const getCurrentMonthAttendanceUseCase = new GetCurrentMonthAttendanceUseCase(attendanceRepository,trainerRepository,memberRepository);
+export const injectedAttendanceController = new AttendanceController(markAttendanceUseCase,updateAttendanceUseCase,getAttendanceUseCase,getAttendanceListUseCase,getCurrentMonthAttendanceUseCase);

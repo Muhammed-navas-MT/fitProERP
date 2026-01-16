@@ -53,10 +53,6 @@ export class TrainerRoutes {
             injectedAttendanceController.markAttendance(req,res,next);
         })
 
-        this._route.post(TRAINER.MARK_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
-            injectedAttendanceController.markAttendance(req,res,next);
-        })
-
         this._route.post(TRAINER.CHECK_OUT_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
             injectedAttendanceController.updateAttendance(req,res,next);
         })
@@ -67,6 +63,10 @@ export class TrainerRoutes {
 
         this._route.get(TRAINER.GET_ALL_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
             injectedAttendanceController.getAttendanceList(req,res,next);
+        })
+
+        this._route.get(TRAINER.GET_CURRENT_MONTH_ATTENDANCE,(req:Request,res:Response,next:NextFunction)=>{
+            injectedAttendanceController.getCurrentMonthAttendance(req,res,next);
         })
     };
 

@@ -8,13 +8,16 @@ import { IGetAttendanceListUseCase } from "../../../application/interfaces/useCa
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { ListAttendanceRequestDto } from "../../../application/dtos/shared/markAttendanceDTO";
+import { IGetCurrentMonthAttendanceUseCase } from "../../../application/interfaces/useCase/shared/attendanceManagement/getCurrentMonthAttendanceUseCaseInterface";
+import { attendanceMessage } from "../../shared/constants/messages/attendanceMessages";
 
 export class AttendanceController {
   constructor(
     private _markAttendanceUseCase: IMarkAttendanceUseCase,
     private _updateAttendanceUseCase: IUpdateAttendceUseCase,
     private _getAttendanceUseCase: IGetAttendanceUseCase,
-    private _getAttendanceListUseCase: IGetAttendanceListUseCase
+    private _getAttendanceListUseCase: IGetAttendanceListUseCase,
+    private _getCurrentMonthAttendanceUseCase:IGetCurrentMonthAttendanceUseCase
   ) {}
 
   markAttendance = async (req: Request, res: Response, next: NextFunction) => {
@@ -95,4 +98,25 @@ export class AttendanceController {
       next(error);
     }
   };
+
+  getCurrentMonthAttendance = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+      const userId = res.locals.data.id;
+      const userType =
+        res?.locals?.data?.role === Roles.TRAINER
+          ? AttendanceUserType.TRAINER
+          : AttendanceUserType.MEMBER;
+          
+      const attendances = await this._getCurrentMonthAttendanceUseCase.execute(userId,userType);
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        attendanceMessage.FETCH_ALL_SUCCESS,
+        attendances
+      )
+    } catch (error) {
+      next(error);
+    }
+  }
 }

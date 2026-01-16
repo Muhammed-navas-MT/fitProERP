@@ -7,6 +7,7 @@ import {
 } from "../../infrastructure/DI/member/memberInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
+import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 
 export class MemberRoutes {
   private _route: Router;
@@ -58,6 +59,41 @@ export class MemberRoutes {
       ROUTES.MEMBER.CHANGE_PASSWORD,
       (req: Request, res: Response, next: NextFunction) => {
         injectedMemberProfileController.changePassword(req, res, next);
+      }
+    );
+
+    this._route.post(
+      ROUTES.MEMBER.MARK_ATTENDANCE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedAttendanceController.markAttendance(req, res, next);
+      }
+    );
+
+    this._route.post(
+      ROUTES.MEMBER.CHECK_OUT_ATTENDANCE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedAttendanceController.updateAttendance(req, res, next);
+      }
+    );
+
+    this._route.get(
+      ROUTES.MEMBER.GET_ATTENDANCE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedAttendanceController.getAttendance(req, res, next);
+      }
+    );
+
+    this._route.get(
+      ROUTES.MEMBER.GET_ALL_ATTENDANCE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedAttendanceController.getAttendanceList(req, res, next);
+      }
+    );
+
+    this._route.get(
+      ROUTES.MEMBER.GET_CURRENT_MONTH_ATTENDANCE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedAttendanceController.getCurrentMonthAttendance(req, res, next);
       }
     );
   }

@@ -1,21 +1,105 @@
-import { Sidebar } from "@/components/member/memberSidebar"
-import { Topbar } from "@/components/member/topbar"
-import { AttendanceCalendar } from "@/components/shared/attendanceCalendar"
-import { BMIGraph } from "@/components/shared/bmiGraph"
-import { TodaysWorkout } from "@/components/shared/todaysWorkout"
-import { Card, CardContent } from "@/components/ui/card"
-import { TrendingDown, Activity, Target } from "lucide-react"
+import { Sidebar } from "@/components/member/memberSidebar";
+import { Topbar } from "@/components/member/topbar";
+import { AttendanceCalendar } from "@/components/shared/attendanceCalendar";
+import { AttendanceCard } from "@/components/trainer/dashboard/attendanceCardComponent";
+import { BMIGraph } from "@/components/shared/bmiGraph";
+import { TodaysWorkout } from "@/components/shared/todaysWorkout";
+import { Card, CardContent } from "@/components/ui/card";
+import { rootstate } from "@/store/store";
+import { TrendingDown, Activity, Target } from "lucide-react";
+import { useSelector } from "react-redux";
+import {
+  useCurrentMonthAttendance,
+  useMarkAttendance,
+  useTodayAttendance,
+  useUpdateAttendance,
+} from "@/hook/member/attendanceHooks";
+import { toast } from "sonner";
+import {
+  mapAttendanceToCalendar,
+  UIStatus,
+} from "@/utils/mapAttendanceToCalendar";
+import { GetAttendanceType } from "@/types/attendanceType";
 
 export default function MemberDashboard() {
-  // Sample data
-  const attendanceData = {
-    Su: ["present", "present", "absent", "present"],
-    Mo: ["present", "present", "present", "present"],
-    Tu: ["absent", "present", "present", "present"],
-    We: ["present", "present", "absent", "absent"],
-    Th: ["present", "present", "present", "present"],
-    Fr: ["present", "absent", "present", "present"],
-    Sa: ["present", "present", "present", "present"],
+  const name = useSelector((state: rootstate) => state.authData.name);
+
+  const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const {
+    data: todayAttendanceRes,
+    isLoading: isTodayAttendanceLoading,
+    refetch,
+  } = useTodayAttendance();
+
+  const { mutate: markAttendance, isPending: isCheckInPending } =
+    useMarkAttendance();
+  const { mutate: updateAttendance, isPending: isCheckOutPending } =
+    useUpdateAttendance();
+
+  const {
+    data: currentMonthAttendance,
+    isLoading: isCurrentMonthLoading,
+    refetch: refetchCurrentMonathAttendance,
+  } = useCurrentMonthAttendance();
+
+  const attendance: GetAttendanceType | undefined =
+    todayAttendanceRes?.data ?? todayAttendanceRes;
+
+  const isCheckedIn = !!attendance?.checkInTime;
+  const isCheckedOut = !!attendance?.checkOutTime;
+
+  const attendanceStatusText = isTodayAttendanceLoading
+    ? "Loading..."
+    : isCheckedOut
+      ? "Checked Out"
+      : isCheckedIn
+        ? "Checked In"
+        : "Not Checked In";
+
+  const handleCheckIn = () => {
+    markAttendance(undefined, {
+      onSuccess: (res) => {
+        toast.success(res?.data?.message || "Attendance Checked In");
+        refetch();
+      },
+      onError: (err) => {
+        toast.error(err.message || "Error while checking in!");
+      },
+    });
+  };
+
+  const handleCheckOut = () => {
+    if (!attendance?._id) return;
+    updateAttendance(attendance._id, {
+      onSuccess: (res) => {
+        toast.success(res?.data?.message || "Attendance Checked Out");
+        refetch();
+        refetchCurrentMonathAttendance();
+      },
+      onError: (err) => {
+        toast.error(err.message || "Error while checking out!");
+      },
+    });
+  };
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  const monthName = now.toLocaleString("default", { month: "long" });
+
+  let calendarData: UIStatus[][] = [];
+  if (currentMonthAttendance?.data) {
+    calendarData = mapAttendanceToCalendar(
+      currentMonthAttendance.data,
+      currentYear,
+      currentMonth
+    );
   }
 
   const bmiData = [
@@ -29,7 +113,7 @@ export default function MemberDashboard() {
     { week: "Week 8", normalweight: 22.8 },
     { week: "Week 9", normalweight: 22.5 },
     { week: "Week 10", normalweight: 22.2 },
-  ]
+  ];
 
   const workoutSections = [
     {
@@ -49,84 +133,114 @@ export default function MemberDashboard() {
         { name: "Straight Bar Pushdowns", sets: 3, reps: 12 },
       ],
     },
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-black text-white">
       <Sidebar />
+
       <div className="md:ml-56">
-        <Topbar avatar="JD" title="Welcome Back, John!" subtitle="Ready to crush your fitness goals today." />
+        <Topbar
+          avatar={avatarText}
+          title={`Welcome Back, ${name || "Member"}!`}
+          subtitle="Ready to crush your fitness goals today."
+        />
 
         <main className="p-4 lg:p-8 space-y-6">
-          {/* Quick Stats Cards */}
+          {/* ================= QUICK STATS ================= */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Days Trained</p>
-                    <p className="text-3xl font-bold text-slate-900 dark:text-white">18</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">This month</p>
+                <div className="flex justify-between">
+                  <div>
+                    <p className="text-sm text-gray-400">Days Trained</p>
+                    <p className="text-3xl font-bold text-orange-600">18</p>
+                    <p className="text-xs text-gray-500">This month</p>
                   </div>
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <Activity className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  <div className="p-3 bg-green-700 rounded-lg">
+                    <Activity className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Current Weight</p>
-                    <p className="text-3xl font-bold text-slate-900 dark:text-white">75.2 kg</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Last measured 4 days ago</p>
+                <div className="flex justify-between">
+                  <div>
+                    <p className="text-sm text-gray-400">Current Weight</p>
+                    <p className="text-3xl font-bold text-orange-600">
+                      75.2 kg
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Last measured 4 days ago
+                    </p>
                   </div>
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <TrendingDown className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  <div className="p-3 bg-purple-700 rounded-lg">
+                    <TrendingDown className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Next Session</p>
-                    <p className="text-3xl font-bold text-slate-900 dark:text-white">Legs</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Tomorrow, 10:30 AM</p>
+                <div className="flex justify-between">
+                  <div>
+                    <p className="text-sm text-gray-400">Today Workout</p>
+                    <p className="text-3xl font-bold text-orange-600">Legs</p>
+                    <p className="text-xs text-gray-500">Tomorrow</p>
                   </div>
-                  <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                    <Target className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  <div className="p-3 bg-indigo-700 rounded-lg">
+                    <Target className="w-6 h-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* BMI Graph */}
-          <BMIGraph data={bmiData} lineColor="#6366f1" gridColor="#e2e8f0" title="BMI Trend (10 Weeks)" />
-
-          {/* Attendance Calendar */}
-          <AttendanceCalendar
-            month="October"
-            year={2024}
-            data={attendanceData}
-            primaryColor="bg-emerald-500"
-            secondaryColor="bg-red-500"
+          <BMIGraph
+            data={bmiData}
+            lineColor="#f97316"
+            gridColor="#374151"
+            title="BMI Trend (10 Weeks)"
           />
 
-          {/* Today's Workout */}
-          <TodaysWorkout
-            sections={workoutSections}
-            borderColor="border-indigo-200 dark:border-indigo-700"
-            textColor="text-indigo-600 dark:text-indigo-400"
-            bgColor="bg-white dark:bg-slate-800"
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            <AttendanceCard
+              status={attendanceStatusText}
+              checkInTime={
+                attendance?.checkInTime
+                  ? new Date(attendance.checkInTime).toLocaleTimeString()
+                  : undefined
+              }
+              checkOutTime={
+                attendance?.checkOutTime
+                  ? new Date(attendance.checkOutTime).toLocaleTimeString()
+                  : undefined
+              }
+              onCheckIn={handleCheckIn}
+              onCheckOut={handleCheckOut}
+              isCheckInLoading={isCheckInPending}
+              isCheckOutLoading={isCheckOutPending}
+              disabledCheckIn={isCheckedIn}
+              disabledCheckOut={!isCheckedIn || isCheckedOut}
+              titleColor="text-orange-600"
+              backgroundColor="bg-[#0a0a0a]"
+              innerBackgroundColor="bg-zinc-900"
+            />
+
+            <AttendanceCalendar
+              month={monthName}
+              attendanceData={isCurrentMonthLoading ? [] : calendarData}
+              cardBgColor="bg-[#0a0a0a]"
+              titleColor="text-orange-600"
+            />
+          </div>
+
+          <TodaysWorkout sections={workoutSections} />
         </main>
       </div>
     </div>
-  )
+  );
 }

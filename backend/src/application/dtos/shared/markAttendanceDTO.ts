@@ -30,3 +30,10 @@ export interface AttendanceListResponseDTO {
   data: AttendanceListItemResponseDTO[];
   total: number;
 }
+
+export interface CurrentMonthAttendanceListResponseDto {
+  date: Date;
+  status: AttendanceStatus;
+  checkInTime?: Date;
+  checkOutTime?: Date;
+}

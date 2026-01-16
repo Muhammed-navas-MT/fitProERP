@@ -1,4 +1,4 @@
-import { getAttendanceListService, getCurrentMonthAttendanceService, getTodayAttendanceService, MarkAttendanceService, updateAttendanceService } from "@/services/trainer/attendanceService";
+import { MarkAttendanceService, updateAttendanceService, getTodayAttendanceService,getAttendanceListService,getCurrentMonthAttendanceService } from "@/services/member/attendanceServices";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useMarkAttendance = ()=>{

@@ -82,6 +82,7 @@ export const API_ROUTES = {
     CHECK_OUT_ATTENDANCE:"/ckeckout_attendance",
     GET_ATTENDANCE:"/get_attendance",
     GET_ALL_ATTENDANCE:"/get_all_attendance",
+    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance"
   },
   MEMBER:{
     BASE:"/member",
@@ -92,5 +93,10 @@ export const API_ROUTES = {
     CHANGE_PASSWORD:"/member_password_change",
     UPLOAD_PROFILE_PICTURE:"/member_profile_picture_upload",
     DELETE_PROFILE_PICTURE:"/member_profile_picture_delete",
+    MARK_ATTENDANCE:"/mark_attendance",
+    CHECK_OUT_ATTENDANCE:"/ckeckout_attendance",
+    GET_ATTENDANCE:"/get_attendance",
+    GET_ALL_ATTENDANCE:"/get_all_attendance",
+    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance"
   }
 };
