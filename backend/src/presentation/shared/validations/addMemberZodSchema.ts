@@ -1,6 +1,6 @@
-import { z } from "zod"
-import { MemberError } from "../constants/errorMessage/memberMessage"
-import { Gender } from "../../../domain/enums/gender"
+import { z } from "zod";
+import { MemberError } from "../constants/errorMessage/memberMessage";
+import { Gender } from "../../../domain/enums/gender";
 
 export const memberSignupSchema = z
   .object({
@@ -11,13 +11,12 @@ export const memberSignupSchema = z
       })
       .transform((val) => val.trim()),
 
-      branchId: z
-      .string({ error: MemberError.BRANCH_ID_INVALID }),
+    branchId: z.string({ error: MemberError.BRANCH_ID_INVALID }),
 
     name: z
       .string({ error: MemberError.FIRST_NAME_INVALID_TYPE })
       .min(2, { error: MemberError.FIRST_NAME_TOO_SHORT })
-      .regex(/^[a-zA-Z\s.'-]+$/, {
+      .regex(/^[A-Za-z]+$/, {
         error: MemberError.FIRST_NAME_INVALID_CHARACTERS,
       })
       .transform((val) => val.trim()),
@@ -32,7 +31,7 @@ export const memberSignupSchema = z
       .string({ error: MemberError.PHONE_INVALID_TYPE })
       .regex(
         /^[\+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
-        { error: MemberError.PHONE_INVALID_FORMAT }
+        { error: MemberError.PHONE_INVALID_FORMAT },
       )
       .min(10, { error: MemberError.PHONE_TOO_SHORT })
       .transform((val) => val.trim()),
@@ -46,16 +45,15 @@ export const memberSignupSchema = z
       .string({ error: MemberError.EMERGENCY_NUMBER_INVALID_TYPE })
       .regex(
         /^[\+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/,
-        { error: MemberError.EMERGENCY_NUMBER_INVALID_FORMAT }
+        { error: MemberError.EMERGENCY_NUMBER_INVALID_FORMAT },
       )
       .min(10, { error: MemberError.EMERGENCY_NUMBER_TOO_SHORT })
       .transform((val) => val.trim()),
 
     healthDetails: z.object({
-      gender: z.enum(
-        [Gender.MALE, Gender.FEMALE, Gender.OTHER],
-        { error: MemberError.GENDER_INVALID }
-      ),
+      gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER], {
+        error: MemberError.GENDER_INVALID,
+      }),
 
       dateOfBirth: z
         .string({ error: MemberError.DATE_OF_BIRTH_INVALID_TYPE })
@@ -100,4 +98,4 @@ export const memberSignupSchema = z
   .refine((data) => data.phone !== data.emergencyNumber, {
     error: MemberError.EMERGENCY_NUMBER_SAME_AS_PHONE,
     path: ["emergencyNumber"],
-  })
+  });

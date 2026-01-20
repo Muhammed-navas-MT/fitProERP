@@ -9,7 +9,6 @@ export class subscriptionlistController {
     async listAllActiveSubscription(req:Request,res:Response,next:NextFunction){
         try {
             const subscriptions = await this._listAllSubscriptionUseCase.listAllSubscription()
-            console.log(subscriptions,"from list subscription controller....")
             ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,
                 res,

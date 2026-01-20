@@ -8,4 +8,5 @@ export interface IPackageRespository extends IBaseRepository<PackageEntity>{
     listAllPackage(params:IListPackageRequestDTO,gymId:string):Promise<{packages:IPackageWithBranch[],total:number}>;
     listAllActivePackage():Promise<PackageEntity[]|null>;
     findByIdAndBranch(id:string,branchId?:string):Promise<IPackageWithBranch|null>;
+    findActivePackageByBranchIdAndGymId(branchId:string,gymId:string):Promise<PackageEntity[]>;
 }

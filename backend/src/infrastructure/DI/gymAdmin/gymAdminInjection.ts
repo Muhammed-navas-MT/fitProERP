@@ -27,7 +27,6 @@ import { PasswordGenerator } from "../../services/passwordGenerater";
 import { subscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
 import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
 import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
-import { PurchaseSubscriptionUseCase } from "../../../application/useCases/gymAdmin/purchaseSubscriptionUseCase";
 import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
 import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 import { CreateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/createBranchUseCase";
@@ -67,6 +66,10 @@ import { ListPackageUseCase } from "../../../application/useCases/gymAdmin/packa
 import { PackageController } from "../../../presentation/controller/gymAdmin/packageManagementController";
 import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
+import { CreateCheckoutSessionUseCase } from "../../../application/useCases/gymAdmin/createCheckoutSessionUseCase";
+import { StripeWebhookController } from "../../../presentation/controller/shared/stripeWebhookHandler";
+import { ProcessStripeWebhookUseCase } from "../../../application/useCases/gymAdmin/ProcessStripeWebhookUseCase";
+import { CheckGymAdminSubscriptionMiddleware } from "../../../presentation/middlewares/checkGymAdminSubscriptionMiddleware";
 
 
 const otpService =new OtpService()
@@ -109,8 +112,8 @@ const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
 export const injectedListSubscriptionController = new subscriptionlistController(listAllActiveSubscription);
 
 const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
-const purchaseSubscriptionUseCase = new PurchaseSubscriptionUseCase(paymentRepository,subsriptionRepository,gymAdminRepository)
-export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(purchaseSubscriptionUseCase)
+const createCheckoutSessionUseCase = new CreateCheckoutSessionUseCase(subsriptionRepository,gymAdminRepository)
+export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(createCheckoutSessionUseCase)
 
 // branch controller
 const branchRepository = new BranchRepository(branchModel);
@@ -154,3 +157,5 @@ const blockPackage = new BlockPackageUseCase(packageRepository);
 const unBlockPackage = new UnBlockPackageUseCase(packageRepository);
 const listPackages = new ListPackageUseCase(packageRepository);
 export const injectedPackageController = new PackageController(blockPackage,createPackage,viewPackage,listPackages,unBlockPackage,updatePackage);
+
+export const injectedCheckGymAdminSubscriptionMiddleware = new CheckGymAdminSubscriptionMiddleware(gymAdminRepository);

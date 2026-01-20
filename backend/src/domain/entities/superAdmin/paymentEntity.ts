@@ -5,9 +5,10 @@ export interface SuperAdminPaymentEntity {
   id?: string;
   gymId: string;
   packageId: string;
+  stripeSessionId: string;
   amount: number;
+  currency: string;
   paymentMethod: PaymentMethod;
-  transactionId?: string;
   status: PaymentStatus;
   createdAt?: Date;
 }

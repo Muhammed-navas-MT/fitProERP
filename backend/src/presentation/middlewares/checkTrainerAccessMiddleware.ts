@@ -17,8 +17,7 @@ export class CheckTrainerAccessMiddleWare {
 
     execute = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { id, role } = res.locals.data;
-            console.log("res local data...", id, role);
+            const { id } = res.locals.data;
 
             const trainer = await this._trainerRepository.findById(id);
             if (!trainer) {

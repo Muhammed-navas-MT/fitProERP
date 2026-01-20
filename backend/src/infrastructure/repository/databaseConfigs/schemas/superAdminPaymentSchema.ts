@@ -24,11 +24,12 @@ export const PaymentSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    transactionId: {
-      type: String,
-      trim: true,
-      default:"",
-    },
+     stripeSessionId: {
+      type:String
+     },
+      currency:{
+        type:String
+      },
     status: {
       type: String,
       enum: Object.values(PaymentStatus),

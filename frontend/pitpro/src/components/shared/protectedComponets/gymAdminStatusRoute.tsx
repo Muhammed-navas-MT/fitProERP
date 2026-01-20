@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { rootstate } from "@/store/store";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 const GymAdminStatusRoute = () => {
   const gymAdmin = useSelector((state: rootstate) => state.gymAdminData);

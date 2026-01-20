@@ -16,14 +16,14 @@ export class TrainerRoutes {
             injectedTrainerLoginController.login(req,res,next);
         })
 
+        this._route.post(TRAINER.AUTH.LOGOUT,(req:Request,res:Response,next:NextFunction)=>{
+            injectedTrainerLogoutController.trainerLogout(req,res,next);
+        })
+
         this._route.use([
             injectAuthMiddleware.verify,
             injectedCheckAccessTrainerMiddleware.execute
         ]);
-
-        this._route.post(TRAINER.AUTH.LOGOUT,(req:Request,res:Response,next:NextFunction)=>{
-            injectedTrainerLogoutController.trainerLogout(req,res,next);
-        })
 
         this._route.post(TRAINER.ADD_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
             injectedAddMemberController.addMember(req,res,next);

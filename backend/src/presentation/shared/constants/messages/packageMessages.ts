@@ -14,6 +14,7 @@ export const PackageErrorMessage = {
 
   ALREADY_EXISTS: "Package already exists for this branch",
   NOT_FOUND: "Package not found",
+  NOT_ACTIVE: "Package not active",
 
   ALREADY_BLOCKED: "Package is already blocked",
   ALREADY_ACTIVE: "Package is already active",

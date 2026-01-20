@@ -1,6 +1,7 @@
 import { PackageEntity } from "../../../domain/entities/gymAdmin/packageEntity";
 import { IPackageWithBranch } from "../../../infrastructure/repository/databaseConfigs/types/packagePersistenceTypes";
 import {
+  IListActivePackagesDTO,
   IListPackageRequestDTO,
   IListPackageResponseDTO,
   IViewPackageResponseDTO,
@@ -50,4 +51,19 @@ export class PackageMapper {
       isActive: pkg.isActive,
     }
   }
+
+  static toListActivePackageResponse(
+  packages: PackageEntity[],
+): IListActivePackagesDTO[] {
+
+  return packages.map((pkg) => ({
+    id: pkg.id?.toString() ?? "",
+    name: pkg.name,
+    price: pkg.price,
+    durationInDays: pkg.durationInDays,
+    features: pkg.features,
+    isDailySession: pkg.isDailySession,
+  }));
+}
+
 }

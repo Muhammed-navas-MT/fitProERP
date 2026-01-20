@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedBranchController, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPackageController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedCheckGymAdminSubscriptionMiddleware, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPackageController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -40,14 +40,19 @@ export class GymAdminRoutes {
         injectedGymAdminSingUpController.signup(req, res, next);
       }
     );
+
     this._route.use(this._middleware.verifySubdomain);
+
     this._route.post(
       GYMADMIN.AUTH.LOGIN,
       (req:Request,res:Response,next:NextFunction) => {
         injectedGymAdminLoginController.login(req,res,next);
       }
     );
+
     this._route.use(injectAuthMiddleware.verify);
+    this._route.use(injectedCheckGymAdminSubscriptionMiddleware.execute);
+
     this._route.post(
       GYMADMIN.AUTH.LOGOUT,
       this._middleware.verifySubdomain,
@@ -101,12 +106,6 @@ export class GymAdminRoutes {
       GYMADMIN.LISTSUBSCRIPTION,
       (req:Request,res:Response,next:NextFunction)=>{
         injectedListSubscriptionController.listAllActiveSubscription(req,res,next);
-      }
-    );
-    this._route.post(
-      GYMADMIN.PURCHASESUBSCRIPTION,
-      (req:Request,res:Response,next:NextFunction)=>{
-        injectedPurchaseSubscriptionController.handle(req,res,next);
       }
     );
     this._route.post(
@@ -247,7 +246,14 @@ export class GymAdminRoutes {
         injectedPackageController.listAllPackage(req,res,next);
       }
     )
+    this._route.post(
+      GYMADMIN.CHECKOUT,
+      (req:Request,res:Response,next:NextFunction)=> {
+        injectedPurchaseSubscriptionController.handleCheckout(req,res,next);
+      }
+    )
   }
+
 
   public get_routes(): Router {
     return this._route;

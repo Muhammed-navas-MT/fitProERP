@@ -1,11 +1,6 @@
 import { Check, Users, Dumbbell, Building2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setGymAdminData } from "@/store/slice/gymAdminSlice";
-import { rootstate } from "@/store/store";
-import { usePurchaseSubscription } from "@/hook/gymAdmin/purchaseSubscriptionHook";
-import { PaymentMethod } from "@/types/paymentMethod";
 import { toast } from "sonner";
+import { usePurchaseSubscriptionViaStripe } from "@/hook/gymAdmin/paymentHook";
 
 interface PricingCardProps {
   planName: string;
@@ -32,31 +27,24 @@ export function PricingCard({
   highlighted = false,
   isActive = false,
 }: PricingCardProps) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const gymAdmin = useSelector((state: rootstate) => state.gymAdminData);
-  const { mutate, isPending } = usePurchaseSubscription();
 
-  const handlePurchase = () => {
-    mutate(
-      {
-        packageId: id,
-        amount: price,
-        paymentMethod: PaymentMethod.CASH,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Payment completed successfully");
-          dispatch(setGymAdminData({ ...gymAdmin, status: "ACTIVE" }));
-          navigate("/gym-admin/dashboard"); // replace with FRONTEND_ROUTES if needed
-        },
-        onError: (error) => {
-          toast.error(error?.message || "Payment failed");
-        },
+  const { mutate, isPending } = usePurchaseSubscriptionViaStripe();
+
+ const handlePurchase = () => {
+  mutate(id, {
+    onSuccess: (res) => {
+      const checkoutUrl = res?.data?.data;
+      if (!checkoutUrl) {
+        toast.error("Checkout URL missing");
+        return;
       }
-    );
-  };
-
+      window.location.href = checkoutUrl;
+    },
+    onError: (error) => {
+      toast.error(error?.message || "Unable to start payment");
+    },
+  });
+};
   return (
     <div
       className={`group relative flex h-full flex-col rounded-2xl p-8 transition-all duration-300 ${
@@ -65,20 +53,17 @@ export function PricingCard({
           : "bg-gradient-to-b from-neutral-900 via-neutral-950 to-black border border-neutral-800 hover:border-orange-500/40 hover:shadow-[0_0_30px_-12px_rgba(249,115,22,0.4)]"
       }`}
     >
-      {/* Header */}
       <div className="mb-6">
         <h3 className="text-2xl font-extrabold tracking-tight text-white">{planName}</h3>
         <p className="mt-1 text-sm text-neutral-400">{duration}</p>
       </div>
 
-      {/* Price */}
       <div className="mb-8">
         <span className="text-5xl font-extrabold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
           ₹{price}
         </span>
       </div>
 
-      {/* Limits */}
       <div className="mb-8 rounded-xl border border-neutral-800 bg-neutral-900/70 p-5">
         <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-orange-400">
           Plan Limits
@@ -102,7 +87,6 @@ export function PricingCard({
         </div>
       </div>
 
-      {/* Features */}
       <ul className="mb-10 space-y-4 flex-1 overflow-y-auto max-h-52 scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-black scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
         {features.map((feature, index) => (
           <li key={index} className="flex gap-3">
@@ -112,14 +96,13 @@ export function PricingCard({
         ))}
       </ul>
 
-      {/* CTA Button */}
       <button
         onClick={ handlePurchase}
         disabled={isPending}
         className={`mt-auto w-full rounded-xl py-3 text-sm font-semibold tracking-wide transition-all duration-300 ${
           highlighted
             ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:shadow-[0_10px_40px_-10px_rgba(249,115,22,0.7)]"
-            : "bg-neutral-800 text-neutral-200 hover:bg-neutral-700 border border-neutral-700 hover:border-orange-500/50"
+            : "bg-orange-600 text-neutral-200 hover:bg-orange-900 border border-neutral-700 hover:border-orange-700"
         }`}
       >
         {isActive ? "Already Active" : isPending ? "Processing..." : "Get Started"}
