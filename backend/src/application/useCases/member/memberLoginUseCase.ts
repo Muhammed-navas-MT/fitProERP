@@ -46,7 +46,7 @@ export class MemberLoginUseCase implements IMemberLoginUseCase {
       throw new ForbiddenException(MemberError.INVALID_CREDENTIALS);
     }
 
-    if (member.status !== Status.ACTIVE) {
+    if (member.status === Status.BLOCKED) {
       throw new ForbiddenException(MemberError.MEMBER_BLOCKED);
     }
 

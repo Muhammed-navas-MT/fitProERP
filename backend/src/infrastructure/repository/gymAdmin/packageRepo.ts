@@ -18,32 +18,31 @@ export class PackageRepository
   }
 
   async findByNameAndBranch(
-  name: string,
-  branchId?: string
-): Promise<IPackageWithBranch | null> {
+    name: string,
+    branchId?: string,
+  ): Promise<IPackageWithBranch | null> {
+    const query: FilterQuery<IPackageModel> = {
+      name: { $regex: new RegExp(`^${name}$`, "i") },
+    };
 
-  const query: FilterQuery<IPackageModel> = {
-    name: { $regex: new RegExp(`^${name}$`, "i") },
+    if (branchId) {
+      query.branchId = branchId;
+    }
+
+    const doc = await this._model
+      .findOne(query)
+      .populate<{ branchId: IBranchPopulated }>({
+        path: "branchId",
+        select: "branchName",
+      })
+      .lean<IPackageWithBranch>();
+
+    return doc ?? null;
   }
-
-  if (branchId) {
-    query.branchId = branchId
-  }
-
-  const doc = await this._model
-    .findOne(query)
-    .populate<{ branchId: IBranchPopulated }>({
-      path: "branchId",
-      select: "branchName",
-    })
-    .lean<IPackageWithBranch>()
-
-  return doc ?? null
-}
 
   async listAllPackage(
     params: IListPackageRequestDTO,
-    gymId: string
+    gymId: string,
   ): Promise<{ packages: IPackageWithBranch[]; total: number }> {
     const { page, limit, search, branchId } = params;
 
@@ -85,26 +84,39 @@ export class PackageRepository
   }
 
   async findByIdAndBranch(
-  id: string,
-  branchId?: string
-): Promise<IPackageWithBranch | null> {
+    id: string,
+    branchId?: string,
+  ): Promise<IPackageWithBranch | null> {
+    const query: FilterQuery<IPackageModel> = {
+      _id: id,
+    };
 
-  const query: FilterQuery<IPackageModel> = {
-    _id:id,
+    if (branchId) {
+      query.branchId = branchId;
+    }
+
+    const doc = await this._model
+      .findOne(query)
+      .populate<{ branchId: IBranchPopulated }>({
+        path: "branchId",
+        select: "branchName",
+      })
+      .lean<IPackageWithBranch>();
+
+    return doc ?? null;
   }
+  async findActivePackageByBranchIdAndGymId(
+    branchId: string,
+    gymId: string,
+  ): Promise<PackageEntity[]> {
+    const packages = await this._model
+      .find({
+        branchId: branchId,
+        gymId: gymId,
+        isActive: true,
+      })
+      .sort({ createdAt: -1 });
 
-  if (branchId) {
-    query.branchId = branchId
+    return packages;
   }
-
-  const doc = await this._model
-    .findOne(query)
-    .populate<{ branchId: IBranchPopulated }>({
-      path: "branchId",
-      select: "branchName",
-    })
-    .lean<IPackageWithBranch>()
-
-  return doc ?? null
-}
 }

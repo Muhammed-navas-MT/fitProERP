@@ -61,6 +61,8 @@ export const API_ROUTES = {
     FIND_PACKAGE: "/package",
     UPDATE_PACKAGE: "/update_package",
     LIST_PACKAGE: "/list_package",
+    CHECKOUT:"/checkout",
+    STRIPE_WEBHOOK:"/webhook",
   },
 
   TRAINER: {
@@ -97,6 +99,8 @@ export const API_ROUTES = {
     CHECK_OUT_ATTENDANCE:"/ckeckout_attendance",
     GET_ATTENDANCE:"/get_attendance",
     GET_ALL_ATTENDANCE:"/get_all_attendance",
-    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance"
+    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance",
+    LIST_ACTIVE_PACKAGES:"/list_active_packages",
+    CHECKOUT:"/checkout",
   }
 };

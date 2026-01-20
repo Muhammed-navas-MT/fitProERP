@@ -8,8 +8,9 @@ export interface ISuperAdminPaymentModel extends Document {
   gymId: string;
   packageId: string;
   amount: number;
+  stripeSessionId: string;
   paymentMethod: PaymentMethod;
-  transactionId: string;
+  currency: string;
   status: PaymentStatus;
   createdAt: Date;
 }

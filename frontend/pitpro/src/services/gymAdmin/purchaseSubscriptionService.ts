@@ -3,7 +3,7 @@ import { API_ROUTES } from "@/constants/apiRoutes"
 import { PurchaseSubscriptionPayload } from "@/types/purchaseSubcription"
 import { AxiosError } from "axios"
 
-export const PurchaseSubscriptionService = async (data:PurchaseSubscriptionPayload)=>{
+export const PurchaseSubscriptionService2 = async (data:PurchaseSubscriptionPayload)=>{
     try {
         const response = await AxiosInstance.post(`${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.PURCHASESUBSCRIPTION}`,data);
         return response.data;

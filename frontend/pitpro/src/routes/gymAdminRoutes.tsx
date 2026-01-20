@@ -15,6 +15,8 @@ import MemeberListPage from "@/page/gymAdmin/memberListPage";
 import MemberDetailPage from "@/page/gymAdmin/memberDetailpage";
 import GymInfoPage from "@/page/gymAdmin/gymProfileInfoPage";
 import PackagePage from "@/page/gymAdmin/packageListPage";
+import Success from "@/components/shared/stripeSucess";
+import Cancel from "@/components/shared/stripeCalncel";
 
 const GymAdminRoutes = () => {
   return (
@@ -47,6 +49,9 @@ const GymAdminRoutes = () => {
           />
         }
       >
+        <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUCCESS} element={<Success/>}/>
+        <Route path={FRONTEND_ROUTES.GYM_ADMIN.CANCEL} element={<Cancel/>}/>
+        
         <Route element={<GymAdminStatusRoute />}>
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}

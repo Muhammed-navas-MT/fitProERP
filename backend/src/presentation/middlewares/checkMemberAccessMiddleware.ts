@@ -17,9 +17,7 @@ export class CheckMemberAccessMiddleWare {
 
     execute = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { id, role } = res.locals;
-            console.log("res local data...", id, role);
-
+            const { id } = res.locals.data;
             const member = await this._memberRepository.findById(id);
             if (!member) {
                 return ResponseHelper.error(

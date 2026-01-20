@@ -10,4 +10,7 @@ export class SuperAdminPaymentRepository
   constructor(model: Model<ISuperAdminPaymentModel>) {
     super(model);
   }
+  async existsBySessionId(sessionId: string): Promise<boolean> {
+    return !!(await this._model.findOne({ stripeSessionId: sessionId }));
+  }
 }

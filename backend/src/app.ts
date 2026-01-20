@@ -12,12 +12,16 @@ import { TrainerRoutes } from "./presentation/routes/trainerRoutes";
 import cookieParser from "cookie-parser";
 import { MemberRoutes } from "./presentation/routes/memberRoutes";
 import { AuthRoutes } from "./presentation/routes/authRoutes";
+import { injectedStripeWebhookHelper } from "./infrastructure/DI/shared/stripeWebhookInjection";
+import { accessAndErrorLoggerMiddleware } from "./presentation/middlewares/loggingMiddleware";
 
 class Express_app {
   private _app: Express;
   constructor() {
     this._app = express();
+    this._setLoggingMiddleware();
     MongodbConfig.connect();
+    this._setWebHookRoutes();
     this.setMiddleware();
     this._setAuthRoutes();
     this._setSuperAdminRoutes();
@@ -75,7 +79,13 @@ class Express_app {
     const auth = new AuthRoutes();
     this._app.use(ROUTES.REFRESH_BASE,auth.get_routes());
   }
-
+   private _setWebHookRoutes(){
+    this._app.post(ROUTES.GYMADMIN.STRIPE_WEBHOOK,express.raw({ type: "application/json" }),
+      injectedStripeWebhookHelper.handle);
+  }
+  private _setLoggingMiddleware() {
+    accessAndErrorLoggerMiddleware(this._app)
+  }
   private _setErrorHandleMiddleware() {
     this._app.use(errorHandleMiddleware);
   }

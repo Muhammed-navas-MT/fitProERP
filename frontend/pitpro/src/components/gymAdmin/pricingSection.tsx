@@ -1,6 +1,7 @@
 import { PricingCard } from "@/components/gymAdmin/pricingCard";
 import { useListActiveSubscription } from "@/hook/gymAdmin/listActiveSubscriptionHook";
 import { Durations } from "@/types/durationType";
+import { PricingPageSkeleton } from "./paricingPageSkeleton";
 
 
 interface DataType {
@@ -30,25 +31,7 @@ export function PricingSection() {
     return "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   };
 
-  if (isLoading) {
-    return (
-      <section className="min-h-screen flex items-center justify-center bg-neutral-950">
-        <div className="mb-6 md:mb-8 text-center">
-          <h1 className="mb-2 text-2xl font-bold text-neutral-50 md:text-3xl lg:text-4xl">
-            Choose Your Perfect
-          </h1>
-          <h2 className="mb-3 text-2xl font-bold md:text-3xl lg:text-4xl text-orange-500">
-            Gym Management Plan
-          </h2>
-          <p className="mx-auto max-w-3xl text-sm text-neutral-400 md:text-base">
-            Scale your fitness business with flexible pricing plans
-          </p>
-        </div>
-        <br />
-        <p className="text-neutral-400">Loading plans...</p>
-      </section>
-    );
-  }
+  if (isLoading) return <PricingPageSkeleton/>
 
   if (isError) {
     return (

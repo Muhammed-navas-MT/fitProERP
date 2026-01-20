@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ROUTES } from "../shared/constants/routes";
 import {
+  injectedCheckMemberAccessMiddleWare,
   injectedMemberLoginController,
   injectedMemberLogoutController,
   injectedMemberProfileController,
+  injectedPackageListAndCheckoutController,
 } from "../../infrastructure/DI/member/memberInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
@@ -29,7 +31,24 @@ export class MemberRoutes {
         injectedMemberLogoutController.logout(req, res, next);
       }
     );
+    
     this._route.use(injectAuthMiddleware.verify);
+
+    this._route.get(
+      ROUTES.MEMBER.LIST_ACTIVE_PACKAGES,
+      (req:Request,res:Response,next:NextFunction) =>{
+        injectedPackageListAndCheckoutController.listPackages(req,res,next);
+      }
+    );
+
+    this._route.post(
+      ROUTES.MEMBER.CHECKOUT,
+      (req:Request,res:Response,next:NextFunction)=>{
+        injectedPackageListAndCheckoutController.handleCheckout(req,res,next);
+      }
+    )
+    this._route.use(injectedCheckMemberAccessMiddleWare.execute);
+
     this._route.get(
       ROUTES.MEMBER.VIEW_PROFILE,
       (req: Request, res: Response, next: NextFunction) => {

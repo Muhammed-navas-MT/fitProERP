@@ -16,6 +16,7 @@ pids
 coverage/
 .vscode/
 .idea/
+logs/
 
 # TypeScript
 *.js

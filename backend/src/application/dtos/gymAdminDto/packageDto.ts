@@ -57,3 +57,12 @@ export interface IListPackageResponseDTO {
   search?: string
   data: IListPackageItemDTO[]
 }
+
+export interface IListActivePackagesDTO {
+  id:string;  
+  name: string;
+  durationInDays: number;
+  price: number;
+  features: string[];
+  isDailySession: boolean;
+}

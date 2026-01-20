@@ -44,8 +44,6 @@ AxiosInstance.interceptors.response.use(
             return Promise.reject(err);
         }
 
-        console.log("navbass......");
-
         if (
             err.response.status === 401 &&
             err.response.data?.message === "Access token has expired" &&
@@ -53,9 +51,7 @@ AxiosInstance.interceptors.response.use(
         ) {
             try {
                 originalRequest._retry = true;
-                console.log("creating new access token.....");
                 const response = await AxiosInstance.post(`${API_ROUTES.AUTH.BASE}${API_ROUTES.AUTH.REFRESH}`);
-                console.log("created new access token via refresh token.....",response);
                 store.dispatch(setToken(response.data.data));
                 originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
                 return AxiosInstance(originalRequest);

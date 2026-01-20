@@ -6,3 +6,8 @@ export interface PurchaseSubscriptionDTO {
   amount: number;
   paymentMethod: PaymentMethod;
 };
+
+export interface CreateCheckoutSessionRequestDto{
+  planId:string;
+  userId :string;
+}

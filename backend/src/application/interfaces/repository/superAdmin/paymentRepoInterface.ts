@@ -2,4 +2,5 @@ import { SuperAdminPaymentEntity } from "../../../../domain/entities/superAdmin/
 import { IBaseRepository } from "../base/baseRepo";
 
 export interface ISuperAdminPaymentRepository extends IBaseRepository<SuperAdminPaymentEntity>{
+    existsBySessionId(sessionId: string): Promise<boolean>;
 }
