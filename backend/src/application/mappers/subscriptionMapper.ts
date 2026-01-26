@@ -46,6 +46,7 @@ export class SubscriptionMapper {
 
     static toListAllActiveSubscriptionResponse(
   subscriptions: SubscriptionEntity[],
+  packageId?:string
 ): IListActiveSubscriptionResponseDTO {
   return subscriptions?.map(subscription => ({
     id: subscription._id?.toString(),
@@ -58,7 +59,8 @@ export class SubscriptionMapper {
       maxMembers:subscription.limits.maxMembers,
       maxTrainers:subscription.limits.maxTrainers,
     },
-    isActive: subscription.isActive
+    isActive: subscription.isActive,
+    isCurrentPlan:subscription._id?.toString() == packageId?.toString()
   })) ?? [];
 }
 

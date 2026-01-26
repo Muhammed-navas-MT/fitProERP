@@ -1,4 +1,7 @@
-import { ForbiddenException, NOtFoundException } from "../../../application/constants/exceptions";
+import {
+  ForbiddenException,
+  NOtFoundException,
+} from "../../../application/constants/exceptions";
 import { IMemberRepository } from "../../../application/interfaces/repository/member/addMemberRepoInterface";
 import { AttendanceRule } from "../../../application/interfaces/service/attendanceRule";
 import { AttendanceEntity } from "../../../domain/entities/shared/attendanceEntity";
@@ -15,12 +18,12 @@ export class MemberCheckOutAttendanceRule implements AttendanceRule {
       throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
 
-    const checkIn = attendance.checkInTime;
-    const checkOut = attendance.checkOutTime;
+    const checkIn = new Date(attendance.checkInTime!);
+    const checkOut = new Date(attendance.checkOutTime!);
 
     if (!checkIn || !checkOut) {
       throw new ForbiddenException(
-        attendanceMessage.MEMBER_LOGOUT_BEFORE_ONE_HOUR
+        attendanceMessage.MEMBER_LOGOUT_BEFORE_ONE_HOUR,
       );
     }
 
@@ -29,7 +32,7 @@ export class MemberCheckOutAttendanceRule implements AttendanceRule {
 
     if (diff < oneHourInMs) {
       throw new ForbiddenException(
-        attendanceMessage.MEMBER_LOGOUT_BEFORE_ONE_HOUR
+        attendanceMessage.MEMBER_LOGOUT_BEFORE_ONE_HOUR,
       );
     }
 

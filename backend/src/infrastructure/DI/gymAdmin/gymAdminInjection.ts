@@ -24,7 +24,7 @@ import { trainerModel } from "../../repository/databaseConfigs/models/trainerMod
 import { CreateTrainerUseCase } from "../../../application/useCases/gymAdmin/trainerManagement/createTrainerUseCase";
 import { SendPasswordEmailContentGenerator } from "../../services/IEmail/sendPasswordContentGenerator";
 import { PasswordGenerator } from "../../services/passwordGenerater";
-import { subscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
+import { SubscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
 import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
 import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
 import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
@@ -108,8 +108,8 @@ const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,pas
 export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers,blockTrainer,unBlockTrainer,findTrainer,updateTrainer,listAllActiveTrainers);
 
 //subscription list controller
-const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository)
-export const injectedListSubscriptionController = new subscriptionlistController(listAllActiveSubscription);
+const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository,gymAdminRepository)
+export const injectedListSubscriptionController = new SubscriptionlistController(listAllActiveSubscription);
 
 const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
 const createCheckoutSessionUseCase = new CreateCheckoutSessionUseCase(subsriptionRepository,gymAdminRepository)

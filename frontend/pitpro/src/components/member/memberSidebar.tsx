@@ -31,7 +31,7 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { icon: <LayoutDashboard size={20} />, label: "Dashboard", href: `${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.DASHBOARD}` },
   { icon: <User size={20} />, label: "Profile", href: `${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.PROFILE}` },
-  { icon: <Dumbbell size={20} />, label: "Membership", href: "/#" },
+  { icon: <Dumbbell size={20} />, label: "Membership", href: `${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.MEMBERSHIP}` },
   { icon: <Calendar size={20} />, label: "Workout Plans", href: "/##" },
   { icon: <Apple size={20} />, label: "Diet Plans", href: "/###" },
   { icon: <Calendar size={20} />, label: "Book Trainer", href: "/####" },

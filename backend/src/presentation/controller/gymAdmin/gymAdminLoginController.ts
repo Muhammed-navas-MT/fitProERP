@@ -25,9 +25,10 @@ export class GymAdminLoginController {
              const refreshToken = this._jwtService.createRefreshTken({id:response._id,role:response.role,subdomain:response.subdomain});
 
              setCookie(res,"refreshToken",refreshToken,{
-                maxAge:604800,
+                maxAge:7 * 24 * 60 * 60 * 1000,
                 httpOnly:true,
-                secure:true
+                sameSite: "lax",
+                secure:false
              })
              ResponseHelper.success(
                 HTTP_STATUS_CODE.OK,

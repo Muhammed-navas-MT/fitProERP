@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useGetAllActiveTrainers } from "@/hook/gymAdmin/trainerManagementHook";
 import { useEffect } from "react";
 import { AddMemberFormSkeleton } from "./addMemberFormSkeleton";
+import { FitnessGoal } from "@/constants/fitnessGoal";
 
 interface UpdateMemberModalProps {
   open: boolean;
@@ -36,9 +37,9 @@ interface FormData {
   height: string;
   weight: string;
   targetWeight: string;
-  medicalConditions: string;
-  fitnessGoal: string;
+  fitnessGoal: FitnessGoal | "";
   allergies: string;
+  medicalConditions: string;
   trainerId: string;
 }
 
@@ -53,6 +54,7 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
       email: "",
       phone: "",
       branchId: "",
+      trainerId: "",
       address: "",
       dateOfBirth: "",
       gender: "",
@@ -61,9 +63,8 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
       weight: "",
       targetWeight: "",
       fitnessGoal: "",
-      medicalConditions: "",
       allergies: "",
-      trainerId: "",
+      medicalConditions: "",
     },
   });
 
@@ -72,6 +73,7 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
   const trainers = trainersData?.data ?? [];
   const branches = branchesData?.data?.branches ?? [];
 
+  // Reset form with member data
   useEffect(() => {
     if (memberData?.data) {
       const m = memberData.data;
@@ -82,22 +84,25 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
         branchId: m.branchId,
         trainerId: m.trainerId,
         address: m.address,
-        dateOfBirth:  new Date(m.healthDetails.dateOfBirth).toISOString().split("T")[0],
+        dateOfBirth: new Date(m.healthDetails.dateOfBirth).toISOString().split("T")[0],
         gender: m.healthDetails.gender,
         emergencyContact: m.emergencyNumber,
         height: String(m.healthDetails.height.value),
         weight: String(m.healthDetails.weight.value),
         targetWeight: String(m.healthDetails.targetWeight.value),
-        fitnessGoal: m.healthDetails.fitnessGoal,
+        fitnessGoal: (Object.values(FitnessGoal).includes(m.healthDetails.fitnessGoal) ? m.healthDetails.fitnessGoal : "") as FitnessGoal,
         allergies: m.healthDetails.allergies,
         medicalConditions: m.healthDetails.medicalConditions,
       });
     }
   }, [memberData, reset]);
 
+  // Reset trainer if branch changes (only for new selection)
   useEffect(() => {
-    setValue("trainerId", "");
-  }, [selectedBranchId, setValue]);
+    if (!memberData) {
+      setValue("trainerId", "");
+    }
+  }, [selectedBranchId, setValue, memberData]);
 
   const onSubmit = (data: FormData) => {
     const payload = {
@@ -120,16 +125,13 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
       },
     };
 
-    updateMember(
-      payload,
-      {
-        onSuccess: () => {
-          toast.success("Member updated successfully");
-          onOpenChange(false);
-        },
-        onError: (err) => toast.error(err.message),
-      }
-    );
+    updateMember(payload, {
+      onSuccess: () => {
+        toast.success("Member updated successfully");
+        onOpenChange(false);
+      },
+      onError: (err) => toast.error(err.message),
+    });
   };
 
   if (loadingMember || loadingTrainers || loadingBranches) {
@@ -137,9 +139,7 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-400">
-              Update Member
-            </DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-orange-400">Update Member</DialogTitle>
           </DialogHeader>
           <AddMemberFormSkeleton />
         </DialogContent>
@@ -151,66 +151,98 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-400">
-            Update Member
-          </DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-orange-400">Update Member</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-4">
           {/* PERSONAL DETAILS */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-orange-400 flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-orange-400" />
-              Personal Details
+              <span className="h-1 w-1 rounded-full bg-orange-400" /> Personal Details
             </h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Input {...register("name", { required: true })} placeholder="Name" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("email", { required: true })} type="email" placeholder="Email" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("phone", { required: true })} type="tel" placeholder="Phone" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("dateOfBirth", { required: true })} type="date" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="space-y-1">
+                <Label>Name</Label>
+                <Input {...register("name", { required: true })} placeholder="Name" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
 
-              <Select value={watch("gender")} onValueChange={(val) => setValue("gender", val)}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Gender" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-1">
+                <Label>Email</Label>
+                <Input {...register("email", { required: true })} type="email" placeholder="Email" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
 
-              <Input {...register("emergencyContact", { required: true })} type="tel" placeholder="Emergency Contact" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="space-y-1">
+                <Label>Phone</Label>
+                <Input {...register("phone", { required: true })} type="tel" placeholder="Phone" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
+
+              <div className="space-y-1">
+                <Label>Date of Birth</Label>
+                <Input {...register("dateOfBirth", { required: true })} type="date" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
+
+              <div className="space-y-1">
+                <Label>Gender</Label>
+                <Select value={watch("gender")} onValueChange={(val) => setValue("gender", val)}>
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    <SelectValue placeholder="Gender" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    <SelectItem value="MALE">Male</SelectItem>
+                    <SelectItem value="FEMALE">Female</SelectItem>
+                    <SelectItem value="OTHER">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label>Emergency Contact</Label>
+                <Input {...register("emergencyContact", { required: true })} type="tel" placeholder="Emergency Contact" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
+
+              <div className="space-y-1 md:col-span-2">
+                <Label>Address</Label>
+                <Textarea {...register("address", { required: true })} placeholder="Address" className="bg-[#1a1a1a] border-[#2a2a2a] text-white min-h-[80px]" />
+              </div>
             </div>
-
-            <Textarea {...register("address", { required: true })} placeholder="Address" className="bg-[#1a1a1a] border-[#2a2a2a] text-white min-h-[80px]" />
           </div>
 
           {/* HEALTH DETAILS */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-orange-400 flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-orange-400" />
-              Health Details
+              <span className="h-1 w-1 rounded-full bg-orange-400" /> Health Details
             </h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Input {...register("height", { required: true })} type="number" placeholder="Height (cm)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("weight", { required: true })} type="number" placeholder="Weight (kg)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("targetWeight", { required: true })} type="number" placeholder="Target Weight" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="space-y-1">
+                <Label>Height (cm)</Label>
+                <Input {...register("height", { required: true })} type="number" placeholder="Height (cm)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
 
-              <Select value={watch("fitnessGoal")} onValueChange={(val) => setValue("fitnessGoal", val)}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Fitness Goal" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectItem value="weight-loss">Weight Loss</SelectItem>
-                  <SelectItem value="muscle-gain">Muscle Gain</SelectItem>
-                  <SelectItem value="general-fitness">General Fitness</SelectItem>
-                  <SelectItem value="endurance">Endurance</SelectItem>
-                  <SelectItem value="flexibility">Flexibility</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-1">
+                <Label>Weight (kg)</Label>
+                <Input {...register("weight", { required: true })} type="number" placeholder="Weight (kg)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
+
+              <div className="space-y-1">
+                <Label>Target Weight</Label>
+                <Input {...register("targetWeight", { required: true })} type="number" placeholder="Target Weight" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              </div>
+
+              <div className="space-y-1">
+                <Label>Fitness Goal</Label>
+                <Select value={watch("fitnessGoal")} onValueChange={(val) => setValue("fitnessGoal", val as FitnessGoal)}>
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    <SelectValue placeholder="Fitness Goal" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    {Object.values(FitnessGoal).map((goal) => (
+                      <SelectItem key={goal} value={goal}>{goal}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 

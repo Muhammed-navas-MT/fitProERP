@@ -12,6 +12,7 @@ import {
   Info,
   DollarSign,
   LogOut,
+  Rocket,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { clearAuthContext } from "@/store/slice/authContextState"
@@ -28,11 +29,12 @@ const navItems = [
   { name: "Trainers", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}`, icon: UserCog },
   { name: "Packages", href:  `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}`, icon: Package },
   { name: "Branches", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`, icon: Building2 },
+  { name: "Plan upgrade", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}`, icon: Rocket   },
   { name: "Expenses", href: "/expenses", icon: TrendingDown },
   { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
   { name: "Payments", href: "/payments", icon: CreditCard },
   { name: "Problems", href: "/problems", icon: AlertCircle },
-  { name: "Gym Info", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: Info },
+  { name: "Profile", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: Info },
   { name: "Salary", href: "/salary", icon: DollarSign },
 ]
 

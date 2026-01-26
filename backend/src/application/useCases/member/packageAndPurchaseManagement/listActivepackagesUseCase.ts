@@ -1,3 +1,4 @@
+import { Status } from "../../../../domain/enums/status";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import { NOtFoundException } from "../../../constants/exceptions";
 import { IListActivePackagesDTO } from "../../../dtos/gymAdminDto/packageDto";
@@ -19,6 +20,6 @@ export class ListActivePackagesUseCase implements IListActivePackagesUseCase{
         };
 
         const packages = await this._packageRepository.findActivePackageByBranchIdAndGymId(member.branchId as string,member.gymId);
-        return PackageMapper.toListActivePackageResponse(packages);
+        return PackageMapper.toListActivePackageResponse(packages,member?.package?.planId);
     }
 }

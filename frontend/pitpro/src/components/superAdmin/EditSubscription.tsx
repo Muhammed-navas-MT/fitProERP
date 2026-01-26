@@ -62,15 +62,22 @@ export function EditSubscriptionForm() {
   useEffect(() => {
     if (!data?.data) return;
 
+    const normalizedFeatures = data.data.features
+      .map((f: string) =>
+        Object.values(GymOwnerFeature).find(
+          (enumVal) => enumVal === f || enumVal.toLowerCase() === f.toLowerCase()
+        )
+      )
+      .filter(Boolean)
+      .map((f) => ({ description: f as GymOwnerFeature }));
+
     reset({
       planName: data.data.planName,
       price: data.data.price,
       duration: data.data.duration,
       isActive: data.data.isActive,
       limits: data.data.limits,
-      features: data.data.features.map((f: GymOwnerFeature) => ({
-        description: f,
-      })),
+      features: normalizedFeatures,
     });
   }, [data, reset]);
 
@@ -78,12 +85,21 @@ export function EditSubscriptionForm() {
     const trimmed = featureInput.trim();
     if (!trimmed) return;
 
-    if (fields.some((f) => f.description === trimmed)) {
+    const selectedFeature = Object.values(GymOwnerFeature).find(
+      (f) => f === trimmed
+    );
+
+    if (!selectedFeature) {
+      toast.error("Please select a valid feature");
+      return;
+    }
+
+    if (fields.some((f) => f.description === selectedFeature)) {
       toast("Feature already added");
       return;
     }
 
-    append({ description: trimmed as GymOwnerFeature });
+    append({ description: selectedFeature }); 
     setFeatureInput("");
   };
 
@@ -112,7 +128,19 @@ export function EditSubscriptionForm() {
   if (isLoading) return <p className="text-white">Loading...</p>;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4 sm:p-6">
+    <form
+      onSubmit={handleSubmit(
+        (data) => {
+          console.log("Form data is valid:", data);
+          onSubmit(data);
+        },
+        (errors) => {
+          console.log("Form errors:", errors);
+          toast.error("Please fix the errors before submitting");
+        }
+      )}
+      className="p-4 sm:p-6"
+    >
       <div className="bg-[#111418] border border-gray-800 rounded-xl p-6 max-w-4xl mx-auto space-y-6">
         <h2 className="text-xl font-bold text-white">Edit Subscription</h2>
 
@@ -165,10 +193,8 @@ export function EditSubscriptionForm() {
           )}
         </div>
 
-        {/* FEATURES */}
         <div>
           <h3 className="text-white text-sm font-bold mb-2">Features</h3>
-
           <div className="flex gap-2 mb-2">
             <select
               value={featureInput}
@@ -211,13 +237,12 @@ export function EditSubscriptionForm() {
           </div>
         </div>
 
-        {/* LIMITS */}
         <div className="grid sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-400">Max Members</label>
-            <Input
-              {...register("limits.maxMembers", { valueAsNumber: true })}
-            />
+            <label className="block text-sm font-semibold mb-2 text-gray-400">
+              Max Members
+            </label>
+            <Input {...register("limits.maxMembers", { valueAsNumber: true })} />
             {errors.limits?.maxMembers && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.limits.maxMembers.message}
@@ -226,10 +251,10 @@ export function EditSubscriptionForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-400">Max Trainers</label>
-            <Input
-              {...register("limits.maxTrainers", { valueAsNumber: true })}
-            />
+            <label className="block text-sm font-semibold mb-2 text-gray-400">
+              Max Trainers
+            </label>
+            <Input {...register("limits.maxTrainers", { valueAsNumber: true })} />
             {errors.limits?.maxTrainers && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.limits.maxTrainers.message}
@@ -238,10 +263,10 @@ export function EditSubscriptionForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2 text-gray-400">Max Branches</label>
-            <Input
-              {...register("limits.maxBranches", { valueAsNumber: true })}
-            />
+            <label className="block text-sm font-semibold mb-2 text-gray-400">
+              Max Branches
+            </label>
+            <Input {...register("limits.maxBranches", { valueAsNumber: true })} />
             {errors.limits?.maxBranches && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.limits.maxBranches.message}
@@ -250,14 +275,11 @@ export function EditSubscriptionForm() {
           </div>
         </div>
 
-        {/* ACTIONS */}
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
           <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             Cancel
           </Button>
-          <Button type="submit">
-            {isPending ? "Updating..." : "Update Plan"}
-          </Button>
+          <Button type="submit">{isPending ? "Updating..." : "Update Plan"}</Button>
         </div>
       </div>
     </form>

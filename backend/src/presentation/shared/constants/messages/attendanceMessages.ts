@@ -21,6 +21,7 @@ export const attendanceMessage = {
   CHECK_OUT_AFTER_DUTY_TIME: "Check-out outside trainer working hours",
   MEMBER_LOGOUT_BEFORE_ONE_HOUR:"Member can logout only after completing one hour",
   ALREADY_CHECKED_OUT: "Attendance already checked out",
+  CHECK_OUT_BEFORE_DUTY_END:"Checkout before the duty time",
 
   INTERNAL_ERROR: "Something went wrong while processing attendance",
 } as const;

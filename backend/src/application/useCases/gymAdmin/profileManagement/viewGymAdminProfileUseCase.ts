@@ -16,6 +16,8 @@ export class ViewGymAdminProfileUseCase implements IViewGymAdminProfileUseCase {
   if (gymAdmin.status !== "ACTIVE") {
     throw new ForbiddenException(GymAdminAuthError.GYM_NOT_ACTIVE);
   }
+
+  console.log(gymAdmin);
   return gymAdmin;
 }
 

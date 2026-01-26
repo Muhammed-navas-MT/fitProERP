@@ -1,3 +1,4 @@
+import MemberSuccess from "@/components/member/dashboard/successPage";
 import PackageAccessRoute from "@/components/shared/protectedComponets/memberPackageAccessRoute";
 import MemberStatusRoute from "@/components/shared/protectedComponets/memberStatusRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
@@ -6,6 +7,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import MemberDashboard from "@/page/member/dashboardPage";
 import MemberLoginPage from "@/page/member/memberLoginPage";
 import MemberProfilePage from "@/page/member/memberProfilePage";
+import MemberShipPage from "@/page/member/memberShipPage";
 import MemberPackages from "@/page/member/packagesListPage";
 import { Route, Routes } from "react-router-dom";
 
@@ -32,7 +34,7 @@ const MemberRoutes = () => {
           />
         }
       >
-        
+        <Route path={FRONTEND_ROUTES.MEMBER.SUCCESS} element={<MemberSuccess/>}/>
          <Route element={<PackageAccessRoute />}>
         <Route
           path={FRONTEND_ROUTES.MEMBER.PACKAGELIST}
@@ -47,6 +49,10 @@ const MemberRoutes = () => {
           <Route
             path={FRONTEND_ROUTES.MEMBER.DASHBOARD}
             element={<MemberDashboard />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.MEMBER.MEMBERSHIP}
+            element={<MemberShipPage/>}
           />
         </Route>
       </Route>

@@ -12,6 +12,7 @@ export class RefreshTokenController {
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
       const refreshToken = req.cookies.refreshToken;
+      console.log("Refresh Token:", req.cookies.refreshToken);
       const accessToken = await this._refreshTokenUseCase.refresh(refreshToken);
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,

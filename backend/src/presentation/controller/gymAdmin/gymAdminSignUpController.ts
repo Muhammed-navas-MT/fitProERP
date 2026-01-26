@@ -53,6 +53,7 @@ export class SignUpController {
   ): Promise<void> {
     try {
       const otp: IVerifyOtpRequestDTO = req.body;
+      console.log(otp,"otp is this")
       await this._VerifyEmailAndOtpUseCase.verify(otp);
       ResponseHelper.success(
         200,

@@ -17,7 +17,9 @@ export const FRONTEND_ROUTES = {
         GYM_INFO:"gym-info",
         LIST_PACKAGE:"packages",
         SUCCESS:"success",
-        CANCEL:"cancel"    },
+        CANCEL:"cancel",
+        SUBSCRIPTION:"subscriptions",
+    },
     SUPER_ADMIN:{
         BASE:"/super-admin",
         LOGIN:"login",
@@ -41,5 +43,7 @@ export const FRONTEND_ROUTES = {
         DASHBOARD:"dashboard",
         PROFILE:"profile",
         PACKAGELIST:"package_list",
+        MEMBERSHIP:"packages",
+        SUCCESS:"success"
     }
 }
