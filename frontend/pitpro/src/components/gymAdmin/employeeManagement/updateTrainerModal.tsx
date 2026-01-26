@@ -42,9 +42,6 @@ export function EditEmployeeDialog({
 
   const [newSpec, setNewSpec] = useState("")
 
-  const inputClass =
-    "bg-black text-white border border-orange-500 focus:border-orange-400 focus:ring-orange-500"
-
   const {
     register,
     handleSubmit,
@@ -111,166 +108,284 @@ export function EditEmployeeDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(e) => {
-  console.log(e)
-  onOpenChange(e)
-}}>
-      <DialogContent className="bg-black text-white border-zinc-800 max-w-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-orange-500 text-xl">
-            Edit Trainer
-          </DialogTitle>
-        </DialogHeader>
+  <Dialog
+    open={open}
+    onOpenChange={(e) => {
+      console.log(e);
+      onOpenChange(e);
+    }}
+  >
+    <DialogContent className="max-h-[90vh] max-w-3xl border-zinc-800 bg-zinc-900 text-white">
+      <DialogHeader>
+        <DialogTitle className="text-2xl text-orange-500">
+          Edit Trainer
+        </DialogTitle>
+      </DialogHeader>
 
-        {loading ? (
-          <p className="text-center text-zinc-400 py-10">
-            Loading trainer details...
-          </p>
-        ) : (
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5 max-h-[70vh] overflow-y-auto pr-2"
-          >
-            {/* READ ONLY */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Email</Label>
-                <Input disabled value={trainer.email} className={inputClass} />
-              </div>
-
-              <div>
-                <Label>Gym ID</Label>
-                <Input disabled value={trainer.gymId} className={inputClass} />
-              </div>
-            </div>
-
-            {/* BASIC INFO */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>Name</Label>
-                <Input {...register("name")} className={inputClass} />
-                {errors.name && (
-                  <p className="text-red-500 text-xs">
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label>Phone</Label>
-                <Input {...register("phone")} className={inputClass} />
-              </div>
+      {loading ? (
+        <p className="text-center text-zinc-400 py-10">
+          Loading trainer details...
+        </p>
+      ) : (
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2"
+        >
+          {/* READ ONLY */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Email</Label>
+              <Input
+                disabled
+                value={trainer.email}
+                placeholder="Trainer email"
+                className="mt-1 border-zinc-800 bg-black text-white"
+              />
             </div>
 
             <div>
-              <Label>Address</Label>
-              <Textarea {...register("address")} className={inputClass} />
+              <Label>Gym ID</Label>
+              <Input
+                disabled
+                value={trainer.gymId}
+                placeholder="Gym ID"
+                className="mt-1 border-zinc-800 bg-black text-white"
+              />
+              {errors.gymId && (
+                <p className="text-red-500 text-xs">
+                  {errors.gymId.message}
+                </p>
+              )}
             </div>
+          </div>
 
-            {/* SPECIALIZATION */}
+          {/* BASIC INFO */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Specializations</Label>
-              <div className="flex gap-2">
-                <Input
-                  value={newSpec}
-                  onChange={(e) => setNewSpec(e.target.value)}
-                  className={inputClass}
-                />
-                <Button type="button" onClick={addSpecialization}>
-                  Add
-                </Button>
-              </div>
-
-              <div className="flex flex-wrap gap-2 mt-2">
-                {specializations.map((spec) => (
-                  <span
-                    key={spec}
-                    className="bg-zinc-900 px-3 py-1 rounded flex items-center gap-2"
-                  >
-                    {spec}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setValue(
-                          "specialization",
-                          specializations.filter((s) => s !== spec)
-                        )
-                      }
-                    />
-                  </span>
-                ))}
-              </div>
+              <Label>Name *</Label>
+              <Input
+                placeholder="Enter full name"
+                {...register("name")}
+                className="mt-1 border-zinc-800 bg-black text-white"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-xs">
+                  {errors.name.message}
+                </p>
+              )}
             </div>
 
-            {/* FINANCE */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label>Phone *</Label>
+              <Input
+                placeholder="Enter phone number"
+                {...register("phone")}
+                className="mt-1 border-zinc-800 bg-black text-white"
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-xs">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <Label>Address</Label>
+            <Textarea
+              placeholder="Enter address"
+              {...register("address")}
+              className="mt-1 border-zinc-800 bg-black text-white"
+            />
+            {errors.address && (
+              <p className="text-red-500 text-xs">
+                {errors.address.message}
+              </p>
+            )}
+          </div>
+
+          {/* SPECIALIZATION */}
+          <div>
+            <Label>Specializations</Label>
+            <div className="mt-1 flex gap-2">
+              <Input
+                placeholder="Enter specialization"
+                value={newSpec}
+                onChange={(e) => setNewSpec(e.target.value)}
+                className="border-zinc-800 bg-black text-white"
+              />
+              <Button
+                type="button"
+                onClick={addSpecialization}
+                className="bg-orange-500 hover:bg-orange-600"
+              >
+                Add
+              </Button>
+            </div>
+
+            {errors.specialization && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.specialization.message}
+              </p>
+            )}
+
+            <div className="mt-2 flex flex-wrap gap-2">
+              {specializations.map((spec) => (
+                <span
+                  key={spec}
+                  className="flex items-center gap-2 rounded-md border border-zinc-800 bg-black px-3 py-1 text-sm text-white"
+                >
+                  {spec}
+                  <X
+                    className="h-3 w-3 cursor-pointer text-zinc-400 hover:text-red-500"
+                    onClick={() =>
+                      setValue(
+                        "specialization",
+                        specializations.filter((s) => s !== spec)
+                      )
+                    }
+                  />
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* FINANCE */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label>Experience (Years)</Label>
               <Input
                 type="number"
-                placeholder="Experience"
+                placeholder="Enter experience"
                 {...register("experience", { valueAsNumber: true })}
-                className={inputClass}
+                className="border-zinc-800 bg-black text-white"
               />
-              <Input
-                type="number"
-                placeholder="Base Salary"
-                {...register("baseSalary", { valueAsNumber: true })}
-                className={inputClass}
-              />
-              <Input
-                type="number"
-                placeholder="Commission %"
-                {...register("commisionRate", { valueAsNumber: true })}
-                className={inputClass}
-              />
+              {errors.experience && (
+                <p className="text-red-500 text-xs">
+                  {errors.experience.message}
+                </p>
+              )}
             </div>
 
-            {/* DUTY */}
-            <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Base Salary</Label>
+              <Input
+                type="number"
+                placeholder="Enter base salary"
+                {...register("baseSalary", { valueAsNumber: true })}
+                className="border-zinc-800 bg-black text-white"
+              />
+              {errors.baseSalary && (
+                <p className="text-red-500 text-xs">
+                  {errors.baseSalary.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label>Commission (%)</Label>
+              <Input
+                type="number"
+                placeholder="Enter commission percentage"
+                {...register("commisionRate", { valueAsNumber: true })}
+                className="border-zinc-800 bg-black text-white"
+              />
+              {errors.commisionRate && (
+                <p className="text-red-500 text-xs">
+                  {errors.commisionRate.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* DUTY */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Duty Start Time</Label>
               <Input
                 type="time"
                 {...register("dutyTime.startTime")}
-                className={inputClass}
+                className="border-zinc-800 bg-black text-white"
               />
+            </div>
+
+            <div>
+              <Label>Duty End Time</Label>
               <Input
                 type="time"
                 {...register("dutyTime.endTime")}
-                className={inputClass}
+                className="border-zinc-800 bg-black text-white"
               />
+              {errors.dutyTime?.endTime && (
+                <p className="text-red-500 text-xs">
+                  {errors.dutyTime.endTime.message}
+                </p>
+              )}
             </div>
+          </div>
 
-            {/* STATUS & BRANCH */}
-            <div className="grid grid-cols-2 gap-4">
-              <select {...register("status")} className={`${inputClass} p-2 rounded`}>
+          {/* STATUS & BRANCH */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Status *</Label>
+              <select
+                {...register("status")}
+                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
+              >
                 <option value="ACTIVE">Active</option>
                 <option value="IN_ACTIVE">Inactive</option>
               </select>
-
-              <select {...register("branchId")} className={`${inputClass} p-2 rounded`}>
-                <option value="">Select Branch</option>
-                {branchData.map((b:{id:string,branchName:string,address:string}) => (
-                  <option key={b.id} value={b.id}>
-                    {b.branchName} - {b.address}
-                  </option>
-                ))}
-              </select>
+              {errors.status && (
+                <p className="text-red-500 text-xs">
+                  {errors.status.message}
+                </p>
+              )}
             </div>
 
-            {/* ACTIONS */}
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => onOpenChange(false)}
+            <div>
+              <Label>Branch *</Label>
+              <select
+                {...register("branchId")}
+                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
               >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Updating..." : "Update Trainer"}
-              </Button>
+                <option value="">Select branch</option>
+                {branchData.map(
+                  (b: { id: string; branchName: string; address: string }) => (
+                    <option key={b.id} value={b.id}>
+                      {b.branchName} - {b.address}
+                    </option>
+                  )
+                )}
+              </select>
+              {errors.branchId && (
+                <p className="text-red-500 text-xs">
+                  {errors.branchId.message}
+                </p>
+              )}
             </div>
-          </form>
-        )}
-      </DialogContent>
-    </Dialog>
-  )
+          </div>
+
+          {/* ACTIONS */}
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-zinc-800 text-white hover:bg-zinc-600 bg-black"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="bg-orange-500 text-white hover:bg-orange-600"
+            >
+              {isPending ? "Updating..." : "Update Trainer"}
+            </Button>
+          </div>
+        </form>
+      )}
+    </DialogContent>
+  </Dialog>
+);
 }

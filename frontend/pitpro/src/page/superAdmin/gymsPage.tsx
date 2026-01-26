@@ -231,7 +231,7 @@ export default function GymsPage() {
                                   Reject
                                 </button>
                               </>
-                            ) : gym.status === "ACTIVE" ? (
+                            ) : gym.status === "IN_ACTIVE" ||gym.status ==="ACTIVE" ? (
                               <button
                                 onClick={() => handleBlockGym(gym.id)}
                                 disabled={isBlocking}

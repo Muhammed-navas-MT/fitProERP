@@ -22,22 +22,33 @@ export class TrainerCheckOutAttendanceRule implements AttendanceRule {
       throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
     }
 
-    const checkOut = attendance.checkOutTime!;
-    const checkIn = attendance.checkInTime!;
+    if (!attendance.checkInTime || !attendance.checkOutTime) {
+      throw new ForbiddenException(attendanceMessage.CHECK_OUT_BEFORE_CHECK_IN);
+    }
+
+    const checkIn = new Date(attendance.checkInTime);
+    const checkOut = new Date(attendance.checkOutTime);
 
     if (checkOut <= checkIn) {
       throw new ForbiddenException(attendanceMessage.CHECK_OUT_BEFORE_CHECK_IN);
     }
 
-    const [eh, em] = trainer.dutyTime.endTime.split(":").map(Number);
+    // Parse duty end time (assume trainer.dutyTime.endTime is in "HH:mm" local time)
+    const [endHour, endMinute] = trainer.dutyTime.endTime.split(":").map(Number);
 
+    // Create a Date object for duty end on the same day as checkOut
     const dutyEnd = new Date(checkOut);
-    dutyEnd.setHours(eh, em, 0);
+    dutyEnd.setHours(endHour, endMinute, 0, 0); // Local gym time
 
-    if (checkOut > dutyEnd) {
-      throw new ForbiddenException(attendanceMessage.CHECK_OUT_AFTER_DUTY_TIME);
+    console.log("Duty end:", dutyEnd.toString());
+    console.log("Check out:", checkOut.toString());
+
+    // Prevent checkout before duty end
+    if (checkOut < dutyEnd) {
+      throw new ForbiddenException(attendanceMessage.CHECK_OUT_BEFORE_DUTY_END);
     }
 
+    // If passed all checks, return branchId
     return trainer.branchId as string;
   }
 }

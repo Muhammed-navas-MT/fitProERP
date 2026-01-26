@@ -1,5 +1,5 @@
 import { IListActiveSubscriptionResponseDTO } from "../../../dtos/gymAdminDto/subscriptionDto";
 
 export interface IListAllActiveSubscriptionUseCase{
-    listAllSubscription():Promise<IListActiveSubscriptionResponseDTO|null>
+    listAllSubscription(gymId:string):Promise<IListActiveSubscriptionResponseDTO|null>
 }

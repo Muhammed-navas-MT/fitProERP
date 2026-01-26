@@ -1,5 +1,11 @@
 import { useForm } from "react-hook-form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,35 +24,31 @@ import { toast } from "sonner";
 import { useGetAllActiveTrainers } from "@/hook/gymAdmin/trainerManagementHook";
 import { useEffect } from "react";
 import { AddMemberFormSkeleton } from "./addMemberFormSkeleton";
+import {
+  memberSignupSchema,
+  MemberSignupFormData,
+} from "@/validation/addMemberValidation";
+import { FitnessGoal } from "@/constants/fitnessGoal";
 
 interface AddMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-interface FormData {
-  name: string;
-  branchId: string;
-  email: string;
-  phone: string;
-  address: string;
-  dateOfBirth: string;
-  gender: string;
-  emergencyContact: string;
-  height: string;
-  weight: string;
-  targetWeight: string;
-  medicalConditions: string;
-  fitnessGoal: string;
-  allergies: string;
-  trainerId: string;
-}
-
 export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
   const { mutate: addMember, isPending: isAdding } = useCreateMember();
-  const { data: branchesData, isLoading: loadingBranches } = useListActiveBranch();
+  const { data: branchesData, isLoading: loadingBranches } =
+    useListActiveBranch();
 
-  const { register, handleSubmit, setValue, watch, reset } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<MemberSignupFormData>({
+    resolver: zodResolver(memberSignupSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -54,20 +56,17 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
       branchId: "",
       address: "",
       dateOfBirth: "",
-      gender: "",
+      gender: "MALE",
       emergencyContact: "",
-      height: "",
-      weight: "",
-      targetWeight: "",
+      height: 0,
+      weight: 0,
+      targetWeight: 0,
       fitnessGoal: "",
-      medicalConditions: "",
-      allergies: "",
       trainerId: "",
     },
   });
 
   const selectedBranchId = watch("branchId");
-
   const { data: trainersData, isLoading: loadingTrainers } =
     useGetAllActiveTrainers(selectedBranchId);
 
@@ -78,7 +77,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
     setValue("trainerId", "");
   }, [selectedBranchId, setValue]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: MemberSignupFormData) => {
     const payload: MemberAddPayload = {
       trainerId: data.trainerId,
       name: data.name,
@@ -90,12 +89,10 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
       healthDetails: {
         dateOfBirth: data.dateOfBirth,
         gender: data.gender,
-        height: Number(data.height),
-        weight: Number(data.weight),
-        targetWeight: Number(data.targetWeight),
+        height: data.height,
+        weight: data.weight,
+        targetWeight: data.targetWeight,
         fitnessGoal: data.fitnessGoal,
-        allergies: data.allergies,
-        medicalConditions: data.medicalConditions,
       },
     };
 
@@ -110,20 +107,20 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
   };
 
   if (loadingTrainers || loadingBranches) {
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-400">
-            Add New Member
-          </DialogTitle>
-        </DialogHeader>
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-400">
+              Add New Member
+            </DialogTitle>
+          </DialogHeader>
 
-        <AddMemberFormSkeleton />
-      </DialogContent>
-    </Dialog>
-  );
-}
+          <AddMemberFormSkeleton />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -143,26 +140,118 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
             </h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Input {...register("name", { required: true })} placeholder="Name" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("email", { required: true })} type="email" placeholder="Email" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("phone", { required: true })} type="tel" placeholder="Phone" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("dateOfBirth", { required: true })} type="date" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="flex flex-col space-y-1">
+                <Label>Name</Label>
+                <Input
+                  {...register("name")}
+                  placeholder="Enter name"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm">
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
 
-              <Select value={watch("gender")} onValueChange={(val) => setValue("gender", val)}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Gender" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectItem value="MALE">Male</SelectItem>
-                  <SelectItem value="FEMALE">Female</SelectItem>
-                  <SelectItem value="OTHER">Other</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col space-y-1">
+                <Label>Email</Label>
+                <Input
+                  {...register("email")}
+                  type="email"
+                  placeholder="Enter email"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-sm">
+                    {errors.email.message}
+                  </span>
+                )}
+              </div>
 
-              <Input {...register("emergencyContact", { required: true })} type="tel" placeholder="Emergency Contact" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="flex flex-col space-y-1">
+                <Label>Phone</Label>
+                <Input
+                  {...register("phone")}
+                  type="tel"
+                  placeholder="Enter phone number"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.phone && (
+                  <span className="text-red-500 text-sm">
+                    {errors.phone.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <Label>Date of Birth</Label>
+                <Input
+                  {...register("dateOfBirth")}
+                  type="date"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.dateOfBirth && (
+                  <span className="text-red-500 text-sm">
+                    {errors.dateOfBirth.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <Label>Gender</Label>
+                <Select
+                  value={watch("gender")}
+                  onValueChange={(val) => setValue("gender", val)}
+                >
+                  {" "}
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    {" "}
+                    <SelectValue placeholder="Gender" />{" "}
+                  </SelectTrigger>{" "}
+                  <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    {" "}
+                    <SelectItem value="MALE">Male</SelectItem>{" "}
+                    <SelectItem value="FEMALE">Female</SelectItem>{" "}
+                    <SelectItem value="OTHER">Other</SelectItem>{" "}
+                  </SelectContent>{" "}
+                </Select>
+                {errors.gender && (
+                  <span className="text-red-500 text-sm">
+                    {errors.gender.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <Label>Emergency Contact</Label>
+                <Input
+                  {...register("emergencyContact")}
+                  type="tel"
+                  placeholder="Emergency phone number"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.emergencyContact && (
+                  <span className="text-red-500 text-sm">
+                    {errors.emergencyContact.message}
+                  </span>
+                )}
+              </div>
             </div>
 
-            <Textarea {...register("address", { required: true })} placeholder="Address" className="bg-[#1a1a1a] border-[#2a2a2a] text-white min-h-[80px]" />
+            <div className="flex flex-col space-y-1">
+              <Label>Address</Label>
+              <Textarea
+                {...register("address")}
+                placeholder="Enter address"
+                className="bg-[#1a1a1a] border-[#2a2a2a] min-h-[80px]"
+              />
+              {errors.address && (
+                <span className="text-red-500 text-sm">
+                  {errors.address.message}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* HEALTH DETAILS */}
@@ -173,73 +262,162 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
             </h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Input {...register("height", { required: true })} type="number" placeholder="Height (cm)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("weight", { required: true })} type="number" placeholder="Weight (kg)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("targetWeight", { required: true })} type="number" placeholder="Target Weight" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+              <div className="flex flex-col space-y-1">
+                <Label>Height (cm)</Label>
+                <Input
+                  {...register("height", { valueAsNumber: true })}
+                  type="number"
+                  placeholder="Height (cm)"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.height && (
+                  <span className="text-red-500 text-sm">
+                    {errors.height.message}
+                  </span>
+                )}
+              </div>
 
-              <Select value={watch("fitnessGoal")} onValueChange={(val) => setValue("fitnessGoal", val)}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Fitness Goal" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectItem value="weight-loss">Weight Loss</SelectItem>
-                  <SelectItem value="muscle-gain">Muscle Gain</SelectItem>
-                  <SelectItem value="general-fitness">General Fitness</SelectItem>
-                  <SelectItem value="endurance">Endurance</SelectItem>
-                  <SelectItem value="flexibility">Flexibility</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col space-y-1">
+                <Label>Weight (kg)</Label>
+                <Input
+                  {...register("weight", { valueAsNumber: true })}
+                  type="number"
+                  placeholder="Weight (kg)"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.weight && (
+                  <span className="text-red-500 text-sm">
+                    {errors.weight.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <Label>Target Weight</Label>
+                <Input
+                  {...register("targetWeight", { valueAsNumber: true })}
+                  type="number"
+                  placeholder="Target Weight"
+                  className="bg-[#1a1a1a] border-[#2a2a2a]"
+                />
+                {errors.targetWeight && (
+                  <span className="text-red-500 text-sm">
+                    {errors.targetWeight.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <Label>Fitness Goal</Label>
+                <Select
+                  value={watch("fitnessGoal")}
+                  onValueChange={(val) =>
+                    setValue("fitnessGoal", val as FitnessGoal)
+                  }
+                >
+                  <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a]">
+                    <SelectValue placeholder="Select fitness goal" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                    {Object.values(FitnessGoal).map((goal) => (
+                      <SelectItem key={goal} value={goal}>
+                        {goal.charAt(0).toUpperCase() + goal.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.fitnessGoal && (
+                  <span className="text-red-500 text-sm">
+                    {errors.fitnessGoal.message}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
           {/* TRAINER & BRANCH */}
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label>Assigned Trainer</Label>
               <Select
                 value={watch("trainerId")}
                 onValueChange={(val) => setValue("trainerId", val)}
                 disabled={!selectedBranchId}
               >
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder={selectedBranchId ? "Select Trainer" : "Select branch first"} />
+                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a]">
+                  <SelectValue
+                    placeholder={
+                      selectedBranchId
+                        ? "Select trainer"
+                        : "Select branch first"
+                    }
+                  />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
                   {trainers.length === 0 ? (
-                    <SelectItem value="no-trainer" disabled>No trainers found</SelectItem>
+                    <SelectItem value="none" disabled>
+                      No trainers found
+                    </SelectItem>
                   ) : (
                     trainers.map((t: { id: string; name: string }) => (
-                      <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.name}
+                      </SelectItem>
                     ))
                   )}
                 </SelectContent>
               </Select>
+              {errors.trainerId && (
+                <span className="text-red-500 text-sm">
+                  {errors.trainerId.message}
+                </span>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label>Select Branch</Label>
-              <Select value={watch("branchId")} onValueChange={(val) => setValue("branchId", val)}>
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Select Branch" />
+            <div className="space-y-1">
+              <Label>Branch</Label>
+              <Select
+                value={watch("branchId")}
+                onValueChange={(val) => setValue("branchId", val)}
+              >
+                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a]">
+                  <SelectValue placeholder="Select branch" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  {branches.map((b: { id: string; branchName: string; address: string }) => (
-                    <SelectItem key={b.id} value={b.id}>
-                      {b.branchName} - {b.address}
-                    </SelectItem>
-                  ))}
+                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+                  {branches.map(
+                    (b: {
+                      id: string;
+                      branchName: string;
+                      address: string;
+                    }) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.branchName} - {b.address}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
+              {errors.branchId && (
+                <span className="text-red-500 text-sm">
+                  {errors.branchId.message}
+                </span>
+              )}
             </div>
           </div>
 
+          {/* ACTIONS */}
           <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1 bg-transparent border-[#2a2a2a] text-gray-300">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="flex-1 border-[#2a2a2a] bg-gray-400"
+            >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 bg-gradient-to-r from-orange-600 to-orange-600 text-white"
+              className="flex-1 bg-orange-600"
               disabled={!watch("trainerId") || !watch("branchId")}
             >
               {isAdding ? "Creating..." : "Add Member"}

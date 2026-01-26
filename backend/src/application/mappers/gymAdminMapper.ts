@@ -27,7 +27,7 @@ export class GymAdminMapper {
       paymentStatus: PaymentStatus.PENDING,
       logo: data.logo as string,
       status: Status.PENDING,
-      packageId:"",
+      // packageId:"",
       subscriptionEnd: new Date(new Date().setDate(new Date().getDate() - 1)),
       subscriptionStart:new Date(new Date().setDate(new Date().getDate() - 1)),
       limits:{

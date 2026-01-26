@@ -54,6 +54,23 @@ export class PackageMapper {
 
   static toListActivePackageResponse(
   packages: PackageEntity[],
+  currentPlanId?:string
+): IListActivePackagesDTO[] {
+
+  return packages.map((pkg) => ({
+    id: pkg.id?.toString() ?? "",
+    name: pkg.name,
+    price: pkg.price,
+    durationInDays: pkg.durationInDays,
+    features: pkg.features,
+    isDailySession: pkg.isDailySession,
+    isActive:pkg.id?.toString() === currentPlanId?.toString()
+  }));
+}
+
+static toListActivePackageAndCurrentPackageResponse(
+  packages: PackageEntity[],
+  currentPlanId:string
 ): IListActivePackagesDTO[] {
 
   return packages.map((pkg) => ({

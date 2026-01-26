@@ -12,4 +12,5 @@ export type IListActiveSubscriptionResponseDTO = Array<{
     maxBranches?: number,
   },
   isActive?: boolean;
+  isCurrentPlan?:boolean
 }>;

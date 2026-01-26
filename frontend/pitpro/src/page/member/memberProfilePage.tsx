@@ -10,11 +10,20 @@ import { toast } from "sonner";
 
 import { UpdateProfileModal } from "@/components/member/profileManagement/updateProfileModal";
 import { UpdatePasswordModal } from "@/components/member/profileManagement/updatePasswordModal";
+import { useSelector } from "react-redux";
+import { rootstate } from "@/store/store";
 
 export default function MemberProfilePage() {
   const { data, isLoading, isError, error } = useViewMemberProfile();
   const [open, setOpen] = useState(false);
    const [openPassword, setOpenPassword] = useState(false);
+   const name = useSelector((state:rootstate)=>state.authData.name);
+    const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   useEffect(() => {
     if (isError) {
@@ -34,7 +43,7 @@ export default function MemberProfilePage() {
         <Topbar
           title="Profile Settings"
           subtitle="Manage your personal information"
-          avatar={member?.name ? member.name[0] : "M"}
+          avatar={avatarText}
         />
 
         <main className="p-4 md:p-8">

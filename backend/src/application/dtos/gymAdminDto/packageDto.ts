@@ -65,4 +65,5 @@ export interface IListActivePackagesDTO {
   price: number;
   features: string[];
   isDailySession: boolean;
+  isActive?:boolean;
 }

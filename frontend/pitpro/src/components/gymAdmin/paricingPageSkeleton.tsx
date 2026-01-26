@@ -1,4 +1,4 @@
-import { PricingCardSkeleton } from "./PricingCardSkeleton";
+import { PricingCardSkeleton } from "./pricingCardSckeleton";
 
 export function PricingPageSkeleton() {
   return (

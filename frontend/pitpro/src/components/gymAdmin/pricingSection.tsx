@@ -16,6 +16,7 @@ interface DataType {
     maxTrainers:number
   }
   isActive: boolean;
+  isCurrentPlan:boolean;
 }
 
 export function PricingSection() {
@@ -76,6 +77,7 @@ export function PricingSection() {
                 duration={plan.duration}
                 limits={plan.limits}
                 features={plan.features}
+                isCurrentPlan={plan.isCurrentPlan}
               />
             ))}
           </div>

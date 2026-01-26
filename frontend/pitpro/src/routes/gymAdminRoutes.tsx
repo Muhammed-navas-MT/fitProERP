@@ -17,6 +17,7 @@ import GymInfoPage from "@/page/gymAdmin/gymProfileInfoPage";
 import PackagePage from "@/page/gymAdmin/packageListPage";
 import Success from "@/components/shared/stripeSucess";
 import Cancel from "@/components/shared/stripeCalncel";
+import SubscriptionPage from "@/page/gymAdmin/subscriptionPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -80,6 +81,9 @@ const GymAdminRoutes = () => {
            />
            <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}
            element={<PackagePage/>}
+           />
+           <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}
+           element={<SubscriptionPage/>}
            />
         </Route>
       </Route>

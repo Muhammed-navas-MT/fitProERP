@@ -28,8 +28,8 @@ export const mapGymAdminToProfileResponse = (
 
     paymentStatus: gymAdmin.paymentStatus ?? PaymentStatus.PENDING,
 
-    subscriptionStart: gymAdmin.subscriptionStart ?? null,
-    subscriptionEnd: gymAdmin.subscriptionEnd ?? null,
+    subscriptionStart: gymAdmin.packageStart ?? null,
+    subscriptionEnd: gymAdmin.packageEnd ?? null,
 
     limits: {
       maxMembers: gymAdmin.limits?.maxMembers ?? 0,

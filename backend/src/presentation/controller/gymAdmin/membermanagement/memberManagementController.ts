@@ -11,17 +11,16 @@ import { MemberSuccess } from "../../../shared/constants/errorMessage/memberMess
 
 export class MemberManagementController {
   constructor(
-    private readonly _createMemberUseCase: ICreateMemberUseCase,
-    private readonly _listAllMemberUseCase: IListAllMemberUseCase,
-    private readonly _findMemberUseCase: IFindMemberUseCase,
-    private readonly _updateMemberUseCase: IUpdateMemberUseCase,
-    private readonly _blockMemberUseCase: IBlockMemberUseCase,
-    private readonly _unBlockMemberUseCase: IUnBlockMemberUseCase
+    private _createMemberUseCase: ICreateMemberUseCase,
+    private _listAllMemberUseCase: IListAllMemberUseCase,
+    private _findMemberUseCase: IFindMemberUseCase,
+    private _updateMemberUseCase: IUpdateMemberUseCase,
+    private _blockMemberUseCase: IBlockMemberUseCase,
+    private _unBlockMemberUseCase: IUnBlockMemberUseCase
   ) {}
 
   createMember = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body,"gym admin add a member>. request....")
       await this._createMemberUseCase.createMember(req.body);
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,
@@ -40,7 +39,6 @@ export class MemberManagementController {
         gymId:res.locals.data.id
       } as any);
 
-      console.log(members,"asdkfjasdjfasdkjf")
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,

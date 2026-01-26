@@ -42,6 +42,7 @@ export const findMemberService = async (memberId: string) => {
     const response = await AxiosInstance.get(
       `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.FIND_MEMBER}/${memberId}`
     );
+    console.log(response.data,"find member service...")
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

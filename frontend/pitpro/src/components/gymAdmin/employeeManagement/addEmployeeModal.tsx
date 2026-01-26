@@ -121,249 +121,273 @@ export function AddEmployeeDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-2xl border-zinc-800 bg-zinc-900 text-white">
-        <DialogHeader>
-          <DialogTitle className="text-2xl text-orange-500">
-            Add New Employee
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            Add new trainer details
-          </DialogDescription>
-        </DialogHeader>
+  <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="max-h-[90vh] max-w-2xl border-zinc-800 bg-zinc-900 text-white">
+      <DialogHeader>
+        <DialogTitle className="text-2xl text-orange-500">
+          Add New Employee
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          Add new trainer details
+        </DialogDescription>
+      </DialogHeader>
 
-        <form
-          onSubmit={handleSubmit(onSubmit, (err) => console.log(err))}
-          className="mt-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2"
-        >
-          {/* Name & Email */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label className="text-white">Name *</Label>
-              <Input
-                {...register("name")}
-                className="mt-1 border-zinc-800 bg-black text-white"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
-            </div>
-
-            <div>
-              <Label className="text-white">Email *</Label>
-              <Input
-                type="email"
-                {...register("email")}
-                className="mt-1 border-zinc-800 bg-black text-white"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Phone */}
+      <form
+        onSubmit={handleSubmit(onSubmit, (err) => console.log(err))}
+        className="mt-4 space-y-4 overflow-y-auto max-h-[70vh] pr-2"
+      >
+        {/* Name & Email */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label className="text-white">Phone *</Label>
+            <Label className="text-white">Name *</Label>
             <Input
-              {...register("phone")}
+              placeholder="Enter full name"
+              {...register("name")}
               className="mt-1 border-zinc-800 bg-black text-white"
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
           </div>
 
-          {/* Address */}
           <div>
-            <Label className="text-white">Address</Label>
-            <Textarea
-              {...register("address")}
-              className="mt-1 min-h-[80px] border-zinc-800 bg-black text-white"
+            <Label className="text-white">Email *</Label>
+            <Input
+              type="email"
+              placeholder="Enter email address"
+              {...register("email")}
+              className="mt-1 border-zinc-800 bg-black text-white"
             />
-            {errors.address && (
-              <p className="text-red-500 text-sm">{errors.address.message}</p>
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
+        </div>
 
-          {/* Specializations */}
-          <div>
-            <Label className="text-white">Specializations</Label>
-            <div className="mt-1 flex gap-2">
-              <Input
-                value={newSpec}
-                onChange={(e) => setNewSpec(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addSpecialization();
-                  }
-                }}
-                className="border-zinc-800 bg-black text-white"
-              />
-              <Button
-                type="button"
-                onClick={addSpecialization}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                Add
-              </Button>
-            </div>
+        {/* Phone */}
+        <div>
+          <Label className="text-white">Phone *</Label>
+          <Input
+            placeholder="Enter phone number"
+            {...register("phone")}
+            className="mt-1 border-zinc-800 bg-black text-white"
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-sm">{errors.phone.message}</p>
+          )}
+        </div>
 
-            {errors.specialization && (
-              <p className="text-red-500 text-sm">
-                {errors.specialization.message}
-              </p>
-            )}
+        {/* Address */}
+        <div>
+          <Label className="text-white">Address</Label>
+          <Textarea
+            placeholder="Enter full address"
+            {...register("address")}
+            className="mt-1 min-h-[80px] border-zinc-800 bg-black text-white"
+          />
+          {errors.address && (
+            <p className="text-red-500 text-sm">{errors.address.message}</p>
+          )}
+        </div>
 
-            <div className="mt-2 flex flex-wrap gap-2">
-              {specializations.map((spec) => (
-                <span
-                  key={spec}
-                  className="flex items-center gap-2 rounded-md border border-zinc-800 bg-black px-3 py-1 text-sm text-white"
-                >
-                  {spec}
-                  <button
-                    type="button"
-                    onClick={() => removeSpecialization(spec)}
-                    className="text-zinc-400 hover:text-red-500"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Experience, Salary, Commission */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Input
-                type="number"
-                placeholder="Experience"
-                {...register("experience", { valueAsNumber: true })}
-                className="border-zinc-800 bg-black text-white"
-              />
-              {errors.experience && (
-                <p className="text-red-500 text-sm">{errors.experience.message}</p>
-              )}
-            </div>
-
-            <div>
-              <Input
-                type="number"
-                placeholder="Base Salary"
-                {...register("baseSalary", { valueAsNumber: true })}
-                className="border-zinc-800 bg-black text-white"
-              />
-              {errors.baseSalary && (
-                <p className="text-red-500 text-sm">{errors.baseSalary.message}</p>
-              )}
-            </div>
-
-            <div>
-              <Input
-                type="number"
-                placeholder="Commission %"
-                {...register("commisionRate", { valueAsNumber: true })}
-                className="border-zinc-800 bg-black text-white"
-              />
-              {errors.commisionRate && (
-                <p className="text-red-500 text-sm">{errors.commisionRate.message}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Duty Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Input
-                type="time"
-                {...register("dutyTime.startTime")}
-                className="border-zinc-800 bg-black text-white"
-              />
-              {startTime && (
-                <p className="text-xs text-zinc-400">{formatTime(startTime)}</p>
-              )}
-            </div>
-
-            <div>
-              <Input
-                type="time"
-                {...register("dutyTime.endTime")}
-                className="border-zinc-800 bg-black text-white"
-              />
-              {endTime && (
-                <p className="text-xs text-zinc-400">{formatTime(endTime)}</p>
-              )}
-              {errors.dutyTime?.endTime && (
-                <p className="text-red-500 text-sm">
-                  {errors.dutyTime.endTime.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Status & Branch in one row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Status */}
-            <div>
-              <Label className="text-white">Status *</Label>
-              <select
-                {...register("status")}
-                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
-              >
-                <option value="ACTIVE">Active</option>
-                <option value="IN_ACTIVE">Inactive</option>
-              </select>
-              {errors.status && (
-                <p className="text-red-500 text-sm">{errors.status.message}</p>
-              )}
-            </div>
-
-            {/* Branch */}
-            <div>
-              <Label className="text-white">Branch *</Label>
-              <select
-                {...register("branchId")}
-                className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
-              >
-                <option value="">Select branch</option>
-                {branchData?.map((branch:{id:string,branchName:string,address:string}) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.branchName} - 
-                    {branch.address}
-                  </option>
-                ))}
-              </select>
-              {errors.branchId && (
-                <p className="text-red-500 text-sm">{errors.branchId.message}</p>
-              )}
-              {isError && (
-                <p className="text-red-500 text-sm">Failed to load branches</p>
-              )}
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex justify-end gap-3 pt-4">
+        {/* Specializations */}
+        <div>
+          <Label className="text-white">Specializations</Label>
+          <div className="mt-1 flex gap-2">
+            <Input
+              placeholder="Enter specialization"
+              value={newSpec}
+              onChange={(e) => setNewSpec(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addSpecialization();
+                }
+              }}
+              className="border-zinc-800 bg-black text-white"
+            />
             <Button
               type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="border-zinc-800 text-white hover:bg-zinc-600 bg-black"
+              onClick={addSpecialization}
+              className="bg-orange-500 hover:bg-orange-600"
             >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="bg-orange-500 text-white hover:bg-orange-600"
-            >
-              {isPending ? "Creating..." : "Add Employee"}
+              Add
             </Button>
           </div>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
+
+          {errors.specialization && (
+            <p className="text-red-500 text-sm">
+              {errors.specialization.message}
+            </p>
+          )}
+
+          <div className="mt-2 flex flex-wrap gap-2">
+            {specializations.map((spec) => (
+              <span
+                key={spec}
+                className="flex items-center gap-2 rounded-md border border-zinc-800 bg-black px-3 py-1 text-sm text-white"
+              >
+                {spec}
+                <button
+                  type="button"
+                  onClick={() => removeSpecialization(spec)}
+                  className="text-zinc-400 hover:text-red-500"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Experience, Salary, Commission */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label className="text-white">Experience (Years)</Label>
+            <Input
+              type="number"
+              placeholder="Enter experience"
+              {...register("experience", { valueAsNumber: true })}
+              className="border-zinc-800 bg-black text-white"
+            />
+            {errors.experience && (
+              <p className="text-red-500 text-sm">
+                {errors.experience.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-white">Base Salary</Label>
+            <Input
+              type="number"
+              placeholder="Enter base salary"
+              {...register("baseSalary", { valueAsNumber: true })}
+              className="border-zinc-800 bg-black text-white"
+            />
+            {errors.baseSalary && (
+              <p className="text-red-500 text-sm">
+                {errors.baseSalary.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-white">Commission (%)</Label>
+            <Input
+              type="number"
+              placeholder="Enter commission percentage"
+              {...register("commisionRate", { valueAsNumber: true })}
+              className="border-zinc-800 bg-black text-white"
+            />
+            {errors.commisionRate && (
+              <p className="text-red-500 text-sm">
+                {errors.commisionRate.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Duty Time */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-white">Duty Start Time</Label>
+            <Input
+              type="time"
+              placeholder="Start time"
+              {...register("dutyTime.startTime")}
+              className="border-zinc-800 bg-black text-white"
+            />
+            {startTime && (
+              <p className="text-xs text-zinc-400">{formatTime(startTime)}</p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-white">Duty End Time</Label>
+            <Input
+              type="time"
+              placeholder="End time"
+              {...register("dutyTime.endTime")}
+              className="border-zinc-800 bg-black text-white"
+            />
+            {endTime && (
+              <p className="text-xs text-zinc-400">{formatTime(endTime)}</p>
+            )}
+            {errors.dutyTime?.endTime && (
+              <p className="text-red-500 text-sm">
+                {errors.dutyTime.endTime.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Status & Branch */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-white">Status *</Label>
+            <select
+              {...register("status")}
+              className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
+            >
+              <option value="ACTIVE">Active</option>
+              <option value="IN_ACTIVE">Inactive</option>
+            </select>
+            {errors.status && (
+              <p className="text-red-500 text-sm">{errors.status.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Label className="text-white">Branch *</Label>
+            <select
+              {...register("branchId")}
+              className="mt-1 w-full rounded-md border border-zinc-800 bg-black px-3 py-2 text-white"
+            >
+              <option value="">Select branch</option>
+              {branchData?.map(
+                (branch: {
+                  id: string;
+                  branchName: string;
+                  address: string;
+                }) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.branchName} - {branch.address}
+                  </option>
+                )
+              )}
+            </select>
+            {errors.branchId && (
+              <p className="text-red-500 text-sm">
+                {errors.branchId.message}
+              </p>
+            )}
+            {isError && (
+              <p className="text-red-500 text-sm">Failed to load branches</p>
+            )}
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-3 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-zinc-800 text-white hover:bg-zinc-600 bg-black"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            className="bg-orange-500 text-white hover:bg-orange-600"
+          >
+            {isPending ? "Creating..." : "Add Employee"}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+  </Dialog>
+);
+
 }
