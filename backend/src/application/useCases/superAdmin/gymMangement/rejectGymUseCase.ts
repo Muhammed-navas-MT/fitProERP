@@ -1,6 +1,8 @@
+import { configEnv } from "../../../../config/envConfig";
 import { Status } from "../../../../domain/enums/status";
 import { EmailPayloadType } from "../../../../domain/type/emailPayload";
 import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
+import { ROUTES } from "../../../../presentation/shared/constants/routes";
 import { NOtFoundException } from "../../../constants/exceptions";
 import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
@@ -20,13 +22,14 @@ export class RejectGymUseCase implements IRejectGymUseCase {
         throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
       }
       await this._gymRepository.update(
-        { status: Status.BLOCKED },
+        { status: Status.REGECTED },
         id
       );
       const htmlContent = this._rejectGymEmailContentGenerator.generateHtml({
         reason,
         gymName: gymAdmin.gymName,
         supportEmail: "support.fitpro@gmail.com",
+        gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}:${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
       });
       const payload: EmailPayloadType = {
         recieverMailId: gymAdmin.email,

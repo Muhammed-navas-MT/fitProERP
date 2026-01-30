@@ -19,6 +19,8 @@ import { toast } from "sonner"
 interface AddMemberModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  search:string
+  page:number
 }
 
 interface FormData {
@@ -39,8 +41,8 @@ interface FormData {
   trainerId: string
 }
 
-export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
-  const { mutate: addMember, isPending } = useAddMember()
+export function AddMemberModal({ open, onOpenChange,search,page }: AddMemberModalProps) {
+  const { mutate: addMember, isPending } = useAddMember(page,search)
   const { data, isLoading } = useGetAllActiveTrainers()
   const trainers = data?.data ??[]
 

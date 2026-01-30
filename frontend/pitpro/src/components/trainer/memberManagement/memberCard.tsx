@@ -14,24 +14,40 @@ interface MemberCardProps {
     profileImg: string;
     status: string;
     avatar: string;
+    createdAt: Date | string;
   };
   onView: (id: string) => void;
   onEdit: (id: string) => void;
-  onToggleBlock: (id: string, status: string) => void;
+  onBlock: (id: string) => void;
+  onUnBlock: (id: string) => void;
 }
 
 const isValidImageUrl = (url: string) =>
   typeof url === "string" &&
   (url.startsWith("http://") || url.startsWith("https://"));
 
-export function MemberCard({ member, onView, onEdit, onToggleBlock }: MemberCardProps) {
-  const isBlocked = member.status === "BLOCK";
+export function MemberCard({
+  member,
+  onView,
+  onEdit,
+  onBlock,
+  onUnBlock,
+}: MemberCardProps) {
+  const isBlocked = member.status === "BLOCKED";
   const isInactive = member.status === "IN_ACTIVE";
 
   const getBadgeColor = () => {
     if (isBlocked) return "bg-red-500/20 text-red-400 hover:bg-red-500/30";
     if (isInactive) return "bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30";
-    return "bg-green-500/20 text-green-400 hover:bg-green-500/30"; // active
+    return "bg-green-500/20 text-green-400 hover:bg-green-500/30";
+  };
+
+  const handleBlockToggle = () => {
+    if (isBlocked) {
+      onUnBlock(member.id);
+    } else {
+      onBlock(member.id);
+    }
   };
 
   return (
@@ -47,11 +63,12 @@ export function MemberCard({ member, onView, onEdit, onToggleBlock }: MemberCard
         )}
       </Avatar>
 
-      {/* Member Info */}
       <div className="flex-1 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-white font-semibold text-sm mb-1">{member.name}</h3>
+            <h3 className="text-white font-semibold text-sm mb-1">
+              {member.name}
+            </h3>
             <p className="text-gray-400 text-xs truncate flex items-center gap-1">
               <span className="hidden sm:inline">✉</span>
               {member.email}
@@ -66,17 +83,18 @@ export function MemberCard({ member, onView, onEdit, onToggleBlock }: MemberCard
 
             <div className="flex items-center gap-1 text-gray-400">
               <Calendar className="h-3 w-3" />
-              <span>{member.role}</span>
+              <span>
+                {member.createdAt
+                  ? new Date(member.createdAt).toLocaleDateString()
+                  : "N/A"}
+              </span>
             </div>
 
-            {/* Status Badge */}
             <Badge className={cn("text-xs font-medium", getBadgeColor())}>
               {member.status}
             </Badge>
 
-            {/* Actions */}
             <div className="flex items-center gap-1">
-              {/* View */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -86,7 +104,6 @@ export function MemberCard({ member, onView, onEdit, onToggleBlock }: MemberCard
                 <Eye className="h-4 w-4" />
               </Button>
 
-              {/* Edit */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -104,9 +121,13 @@ export function MemberCard({ member, onView, onEdit, onToggleBlock }: MemberCard
                   "h-8 w-8 hover:bg-[#2a2a2a]",
                   isBlocked ? "text-green-400" : "text-red-400"
                 )}
-                onClick={() => onToggleBlock(member.id, member.status)}
+                onClick={handleBlockToggle}
               >
-                {isBlocked ? <CheckCircle className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
+                {isBlocked ? (
+                  <CheckCircle className="h-4 w-4" />
+                ) : (
+                  <Ban className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </div>

@@ -8,11 +8,13 @@ export class RejectGymEmailContentGenerator
   generateHtml(data: {
     gymName: string;
     reason: string;
+    gymUrl: string;
     supportEmail?: string;
   }): string {
     const gymName = data.gymName || "Your Gym";
     const reason = data.reason || "Incomplete or invalid information provided.";
     const supportEmail = data.supportEmail || "support@yourapp.com";
+    const gymUrl = data.gymUrl;
 
     const body = `
       <div style="text-align: center; color: #1e293b; max-width: 520px; margin: 0 auto;">
@@ -46,6 +48,27 @@ export class RejectGymEmailContentGenerator
             ${reason}
           </p>
         </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+  <a
+    href="${gymUrl}"
+    target="_blank"
+    style="
+      display: inline-block;
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(185, 28, 28, 0.4);
+    "
+  >
+    🔁 Reapply
+  </a>
+</div>
+
 
         <!-- Help Box -->
         <div style="background-color: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin: 40px 0;">

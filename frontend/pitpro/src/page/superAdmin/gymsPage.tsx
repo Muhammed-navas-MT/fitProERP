@@ -239,7 +239,7 @@ export default function GymsPage() {
                               >
                                 Block
                               </button>
-                            ) : (
+                            ) : gym.status === "BLOCKED" ?(
                               <button
                                 onClick={() => handleUnblockGym(gym.id)}
                                 disabled={isUnBlocking}
@@ -247,7 +247,14 @@ export default function GymsPage() {
                               >
                                 Unblock
                               </button>
-                            )}
+                            ):
+                            <button
+                                disabled={true}
+                                className=" px-3 py-1.5 rounded-lg disabled:opacity-50"
+                              >
+                              No Action
+                              </button>
+                            }
                           </div>
                         </td>
                       </tr>

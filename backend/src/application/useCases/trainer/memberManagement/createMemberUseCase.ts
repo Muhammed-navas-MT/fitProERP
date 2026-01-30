@@ -12,21 +12,17 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { IHashService } from "../../../interfaces/service/hashServiceInterface";
 import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
 import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
-import { IAddMemberUseCase } from "../../../interfaces/useCase/trainer/addMemberUseCaseInterface";
 import { EmailPayloadType } from "../../../../domain/type/emailPayload";
 import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
 import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
 import { Status } from "../../../../domain/enums/status";
-import {
-  IListMemberRequestDTO,
-  IListMemberResponseDTO,
-} from "../../../dtos/memberDto/listAllMembersDto";
-import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
 import { MemberMapper } from "../../../mappers/memeberMapper";
+import { ICreateMemberUseCase } from "../../../interfaces/useCase/trainer/memberManagement/createMemberUseCaseInterface";
+import { Member } from "../../../dtos/memberDto/listAllMembersDto";
 
-export class AddMemberUseCase implements IAddMemberUseCase {
+export class CreateMemberUseCase implements ICreateMemberUseCase {
   private _hashService: IHashService;
   private _memberRepository: IMemberRepository;
   private _emailService: IEmailService;
@@ -53,7 +49,7 @@ export class AddMemberUseCase implements IAddMemberUseCase {
     this._trainerRepository = trainerRepository;
   }
 
-  async signUp(data: IAddMemberDTO): Promise<void> {
+  async createMember(data: IAddMemberDTO): Promise<Member> {
     try {
       const findMember = await this._memberRepository.findByEmail(data.email);
       if (findMember) {
@@ -99,39 +95,7 @@ export class AddMemberUseCase implements IAddMemberUseCase {
         content: htmlContent,
       };
       await this._emailService.sendEmail(payload);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async listAllTrainers(
-    params: IListMemberRequestDTO
-  ): Promise<IListMemberResponseDTO | null> {
-    try {
-      const findTrainer = await this._trainerRepository.findById( params.trainerId );
-      if (!findTrainer) {
-        throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
-      }
-      if (findTrainer.status === Status.IN_ACTIVE) {
-        throw new ForbiddenException(GymAdminAuthError.GYM_NOT_ACTIVE);
-      }
-      const findGym = await this._gymAdminRepository.findById(
-        findTrainer.gymId
-      );
-      if (!findGym) {
-        throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
-      }
-      if (findGym.status !== Status.ACTIVE) {
-        throw new ForbiddenException(GymAdminAuthError.GYM_NOT_ACTIVE);
-      }
-      if (!findGym._id) {
-        throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
-      }
-
-      const { members, total } = await this._memberRepository.listAllMembers( params,findGym._id );
-
-      const response = MemberMapper.toListMemebersResponse(members,total,params);
-      return response;
+      return MemberMapper.toMember(newMember);
     } catch (error) {
       throw error;
     }

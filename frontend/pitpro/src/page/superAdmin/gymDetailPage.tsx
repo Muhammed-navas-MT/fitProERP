@@ -57,9 +57,9 @@ export default function GymDetailPage() {
 
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard title="Total Members" value={gymAdminData.totalMembers} />
-              <StatCard title="Total Branches" value={gymAdminData.totalBranches} />
-              <StatCard title="Total Trainers" value={gymAdminData.totalTrainers} />
+              <StatCard title="Total Members" value={gymAdminData.totalMembers} maxValue={gymAdminData.subscription.limits.maxMembers} />
+              <StatCard title="Total Branches" value={gymAdminData.totalBranches} maxValue={gymAdminData.subscription.limits.maxBranches} />
+              <StatCard title="Total Trainers" value={gymAdminData.totalTrainers} maxValue={gymAdminData.subscription.limits.maxTrainers} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -69,6 +69,7 @@ export default function GymDetailPage() {
                   currentPlan={gymAdminData.subscription.currentPlan}
                   price={gymAdminData.subscription.price}
                   memberSince={gymAdminData.subscription.memberSince}
+                  duration = {gymAdminData.subscription.duration}
                 />
               )}
             </div>

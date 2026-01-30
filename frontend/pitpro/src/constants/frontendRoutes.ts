@@ -19,6 +19,7 @@ export const FRONTEND_ROUTES = {
         SUCCESS:"success",
         CANCEL:"cancel",
         SUBSCRIPTION:"subscriptions",
+        REAPPLY:"reapply"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",

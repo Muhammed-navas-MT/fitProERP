@@ -63,6 +63,7 @@ export const API_ROUTES = {
     LIST_PACKAGE: "/list_package",
     CHECKOUT:"/checkout",
     STRIPE_WEBHOOK:"/webhook",
+    REAPPLY:"/re_apply",
   },
 
   TRAINER: {
@@ -76,6 +77,10 @@ export const API_ROUTES = {
     },
     ADD_MEMBER: "/add_member",
     LIST_MEMBER: "/list_members",
+    UPDATE_MEMBER:"/update_member",
+    FIND_MEMBER:"/find_member",
+    UNBLOCK_MEMBER:"/unblock_member",
+    BLOCK_MEMBER:"/block_member",
     LIST_ACTIVE_TRAINER:"/active_trainers",
     VIEW_PROFILE:"/trainer_profile",
     UPDATE_PROFILE:"/trainer_profile_update",

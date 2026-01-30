@@ -3,19 +3,10 @@ import { Navigate, Outlet } from "react-router-dom";
 import { rootstate } from "@/store/store";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
-const SubscriptionAccessRoute = () => {
+const ReapplyAccessRoute = () => {
   const gymAdmin = useSelector((state: rootstate) => state.gymAdminData);
-  const token = useSelector((state:rootstate)=>state.token.token);
 
   if (!gymAdmin) return null;
-  if (!token) {
-    return (
-      <Navigate
-        to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`}
-        replace
-      />
-    );
-  }
   if (gymAdmin.status === "ACTIVE") {
     return (
       <Navigate
@@ -28,4 +19,4 @@ const SubscriptionAccessRoute = () => {
   return <Outlet />;
 };
 
-export default SubscriptionAccessRoute;
+export default ReapplyAccessRoute;

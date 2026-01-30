@@ -9,11 +9,21 @@ const GymAdminStatusRoute = () => {
 
   if (!gymAdmin) return null;
 
-  if (gymAdmin.status === "BLOCKED" || gymAdmin.status === "REJECTED") {
-    toast.error("Your account is blocked or rejected. Please contact support.");
+  if (gymAdmin.status === "BLOCKED") {
+    toast.error("Your account is blocked. Please contact support.");
     return (
       <Navigate
         to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`}
+        replace
+      />
+    );
+  }
+
+  if (gymAdmin.status === "REGECTED") {
+    toast.error("Your account is rejected. Please upload your correct documents.");
+    return (
+      <Navigate
+        to={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.REAPPLY}`}
         replace
       />
     );

@@ -14,5 +14,8 @@ export const configEnv = {
     STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     CLIENT_URL :process.env.CLIENT_URL,
+    CLIENT_DOMAIN:process.env.CLIENT_DOMAIN,
+    CLIENT_PORT:process.env.CLIENT_PORT,
+    CLIENT_PROTOCOL:process.env.CLIENT_PROTOCOL,
     NODE_ENV:process.env.NODE_ENV,
 }

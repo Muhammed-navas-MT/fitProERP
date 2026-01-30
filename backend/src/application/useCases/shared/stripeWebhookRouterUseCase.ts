@@ -14,14 +14,10 @@ export class StripeWebhookRouterUseCase
   ) {}
 
   async execute(event: Stripe.Event): Promise<void> {
-    console.log("aldksfjlakdjsfaskjdfakjdsf")
-    console.log(event.type,"in webhook envet type")
     if (event.type !== "checkout.session.completed") return;
-    console.log("aldkfjksadjf")
 
     const session = event.data.object as Stripe.Checkout.Session;
     const role = session.metadata?.role;
-    console.log(role,"asdlkfasdjkfklsjdf")
 
     if (!role) {
       throw new ForbiddenException("Stripe metadata role missing");
