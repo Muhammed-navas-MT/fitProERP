@@ -1,11 +1,11 @@
 import AxiosInstance from "@/axios/axios";
 import { API_ROUTES } from "@/constants/apiRoutes";
-import { MemberAddPayload } from "@/types/authPayload";
+import { MemberAddPayload, MemberUpdatePayload } from "@/types/authPayload";
 import { AxiosError } from "axios";
 
-export const getMembersService = async (page: number, search: string,trainerId:string) => {
+export const getMembersService = async (page: number, search: string) => {
   const response = await AxiosInstance.get(
-    `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_MEMBER}?page=${page}&limit=5&search=${search}&trainerId=${trainerId}`
+    `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_MEMBER}?page=${page}&limit=5&search=${search}`
   );
   return response.data;
 };
@@ -29,7 +29,6 @@ export const addMemberService = async (data:MemberAddPayload)=>{
 export const getAllActiveTrainers = async ()=>{
     try {
         const response = await AxiosInstance.get(`${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_ACTIVE_TRAINER}`);
-        console.log(response)
         return response.data;
     } catch (error) {
         if(error instanceof AxiosError){
@@ -37,4 +36,64 @@ export const getAllActiveTrainers = async ()=>{
         };
         throw error;
     }
+}
+
+export const findMemberService = async (memberId: string) => {
+  try {
+    const response = await AxiosInstance.get(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.FIND_MEMBER}/${memberId}`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};
+
+export const updateMemberService = async (
+  data:MemberUpdatePayload,
+  memberId: string
+) => {
+  try {
+    const response = await AxiosInstance.post(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UPDATE_MEMBER}/${memberId}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};
+
+export const blockMemberService = async (memberId: string) => {
+  try {
+    const response = await AxiosInstance.put(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.BLOCK_MEMBER}/${memberId}`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};
+
+export const unBlockMemberService = async (memberId: string) => {
+  try {
+    const response = await AxiosInstance.put(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UNBLOCK_MEMBER}/${memberId}`
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
 }

@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
-import { injectAuthMiddleware, injectedBranchController, injectedCheckGymAdminSubscriptionMiddleware, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPackageController, injectedPurchaseSubscriptionController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
+import { injectAuthMiddleware, injectedBranchController, injectedCheckGymAdminSubscriptionMiddleware, injectedGymAdminLoginController, injectedGymAdminLogoutController, injectedGymAdminProfileControler, injectedGymAdminSingUpController, injectedListSubscriptionController, injectedMemberManagementController, injectedPackageController, injectedPurchaseSubscriptionController, injectedReApplyController, injectTrainerManagementController } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
@@ -38,6 +38,16 @@ export class GymAdminRoutes {
       ]),
       (req: Request, res: Response, next: NextFunction) => {
         injectedGymAdminSingUpController.signup(req, res, next);
+      }
+    );
+    this._route.post(
+      GYMADMIN.REAPPLY,
+      upload.fields([
+        { name: "businessLicense", maxCount: 1 },
+        { name: "insuranceCertificate", maxCount: 1 },
+      ]),
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedReApplyController.handle(req, res, next);
       }
     );
 

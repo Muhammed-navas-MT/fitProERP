@@ -1,8 +1,3 @@
-import { Status } from "../../../domain/enums/status";
-import { Roles } from "../../../domain/enums/roles";
-import { PaymentStatus } from "../../../domain/enums/paymentStatus";
-import { BloodGroups } from "../../../domain/enums/bloocGroup";
-
 export interface IAddMemberDTO {
   trainerId: string;
   branchId:string;
@@ -22,36 +17,6 @@ export interface IAddMemberDTO {
     fitnessGoal: string;
   };
 }
-
-// export interface IUpdateMemberDTO {
-//   name?: string;
-//   email?: string;
-//   phone?: string;
-//   profileImg?: string;
-//   address?: string;
-//   emergencyNumber?: string;
-//   healthDetails?: {
-//     gender?: string;
-//     dateOfBirth?: Date;
-//     weight?: {
-//       value?: number;
-//       unit?: string;
-//     };
-//     height?: {
-//       value?: number;
-//       unit?: string;
-//     };
-//     targetWeight?: {
-//       value?: number;
-//       unit?: string;
-//     };
-//     bloodGroup?: string;
-//     medicalConditions?: string;
-//     allergies?: string;
-//     fitnessGoal?: string;
-//   };
-//   status?: Status;
-// };
 
 export interface UpdateMemberDTO {
   trainerId?: string;

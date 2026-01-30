@@ -8,11 +8,13 @@ import {
   TrendingDown,
   TrendingUp,
   CreditCard,
-  AlertCircle,
-  Info,
+  // AlertCircle,
+  // Info,
   DollarSign,
   LogOut,
   Rocket,
+  FileText,
+  User,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { clearAuthContext } from "@/store/slice/authContextState"
@@ -33,8 +35,9 @@ const navItems = [
   { name: "Expenses", href: "/expenses", icon: TrendingDown },
   { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
   { name: "Payments", href: "/payments", icon: CreditCard },
-  { name: "Problems", href: "/problems", icon: AlertCircle },
-  { name: "Profile", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: Info },
+  { name: "Trainers Leaves",href:"/leaves",icon: FileText,},
+  // { name: "Problems", href: "/problems", icon: AlertCircle },
+  { name: "Profile", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: User },
   { name: "Salary", href: "/salary", icon: DollarSign },
 ]
 

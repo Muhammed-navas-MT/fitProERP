@@ -17,7 +17,7 @@ export const gymAdminSchema = new mongoose.Schema({
     tagline: { type: String, required: true },
     businessLicense: { type: String, required: true },
     insuranceCertificate: { type: String, required: true },
-    subscriptionId: { type: Schema.Types.ObjectId, ref: "Subscription"},
+    packageId: { type: Schema.Types.ObjectId, ref: "Subscription"},
     paymentStatus: { type: String,enum:Object.values(PaymentStatus), default: PaymentStatus.PENDING },
     subscriptionStart: { type: Date },
     subscriptionEnd: { type: Date },

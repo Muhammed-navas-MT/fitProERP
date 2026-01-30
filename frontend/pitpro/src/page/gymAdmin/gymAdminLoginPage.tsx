@@ -19,7 +19,7 @@ export default function GymAdminLoginPage() {
     onSuccess: (res) => {
       const gymAdmin = res.data.data;
 
-      toast.success(res.data.message || "Login successful");
+      toast.success(res.data.message || "Login successfully");
 
       dispatch(setGymAdminData(gymAdmin));
       dispatch(
@@ -57,7 +57,7 @@ export default function GymAdminLoginPage() {
             buttonColor="bg-orange-600 hover:bg-orange-700"
             isLoading={isPending}
             onSubmit={handleLogin}
-            signUpLink={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.SIGNUP}`}
+            signUpLink={`${FRONTEND_ROUTES.LANDING}/${FRONTEND_ROUTES.GYM_ADMIN.SIGNUP}`}
           />
         </div>
       </div>

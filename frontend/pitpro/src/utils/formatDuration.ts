@@ -5,11 +5,11 @@ export const formatDuration = (duration?: Durations): string => {
 
   switch (duration) {
     case Durations.ONE_MONTH:
-      return "/monthly";
+      return "Monthly";
     case Durations.TREE_MONTHS:
-      return "/quarterly";
+      return "Quarterly";
     case Durations.ONE_YEAR:
-      return "/yearly";
+      return "Yearly";
     default:
       return "";
   }

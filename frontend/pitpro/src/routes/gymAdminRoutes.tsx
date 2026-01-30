@@ -3,8 +3,6 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import GymAdminLoginPage from "@/page/gymAdmin/gymAdminLoginPage";
 import GymAdminDashboard from "@/page/gymAdmin/GymAdminDashboard";
 import EmployeesPage from "@/page/gymAdmin/gymAdminEmpoyeesPage";
-import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
-import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import SubscriptionListPage from "@/page/gymAdmin/SubscriptionListPag";
 import GymAdminStatusRoute from "@/components/shared/protectedComponets/gymAdminStatusRoute";
 import SubscriptionAccessRoute from "@/components/shared/protectedComponets/subscriptionAccessRoute";
@@ -18,13 +16,16 @@ import PackagePage from "@/page/gymAdmin/packageListPage";
 import Success from "@/components/shared/stripeSucess";
 import Cancel from "@/components/shared/stripeCalncel";
 import SubscriptionPage from "@/page/gymAdmin/subscriptionPage";
+import ReUploadDocuments from "@/page/gymAdmin/reapplyPage";
+import GymAdminPublicRoute from "@/components/shared/protectedComponets/gymAdminPublicRoute";
+import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 
 const GymAdminRoutes = () => {
   return (
     <Routes>
       <Route
         element={
-          <PublicRoute
+          <GymAdminPublicRoute
             redirectTo={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}`}
           />
         }
@@ -43,6 +44,13 @@ const GymAdminRoutes = () => {
         />
       </Route>
 
+       <Route element={<SubscriptionAccessRoute />}>
+        <Route path={FRONTEND_ROUTES.GYM_ADMIN.REAPPLY} element={<ReUploadDocuments/>}/>
+      </Route>
+
+      <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUCCESS} element={<Success/>}/>
+      <Route path={FRONTEND_ROUTES.GYM_ADMIN.CANCEL} element={<Cancel/>}/>
+
       <Route
         element={
           <ProtectedRoute
@@ -50,8 +58,6 @@ const GymAdminRoutes = () => {
           />
         }
       >
-        <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUCCESS} element={<Success/>}/>
-        <Route path={FRONTEND_ROUTES.GYM_ADMIN.CANCEL} element={<Cancel/>}/>
         
         <Route element={<GymAdminStatusRoute />}>
           <Route

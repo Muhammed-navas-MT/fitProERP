@@ -15,3 +15,9 @@ export interface ISignupRequsetDTO {
     insuranceCertificate: Express.Multer.File | string;
     logo: Express.Multer.File | string;
 }
+
+export interface IReApplyDTO {
+    email:string;
+    businessLicense: Express.Multer.File | string;
+    insuranceCertificate: Express.Multer.File | string;
+}

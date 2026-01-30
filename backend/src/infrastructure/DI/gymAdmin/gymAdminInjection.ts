@@ -70,6 +70,8 @@ import { CreateCheckoutSessionUseCase } from "../../../application/useCases/gymA
 import { StripeWebhookController } from "../../../presentation/controller/shared/stripeWebhookHandler";
 import { ProcessStripeWebhookUseCase } from "../../../application/useCases/gymAdmin/ProcessStripeWebhookUseCase";
 import { CheckGymAdminSubscriptionMiddleware } from "../../../presentation/middlewares/checkGymAdminSubscriptionMiddleware";
+import { ReApplyController } from "../../../presentation/controller/gymAdmin/reApplyController";
+import { ReApplyUseCase } from "../../../application/useCases/gymAdmin/reApplyUseCase";
 
 
 const otpService =new OtpService()
@@ -159,3 +161,5 @@ const listPackages = new ListPackageUseCase(packageRepository);
 export const injectedPackageController = new PackageController(blockPackage,createPackage,viewPackage,listPackages,unBlockPackage,updatePackage);
 
 export const injectedCheckGymAdminSubscriptionMiddleware = new CheckGymAdminSubscriptionMiddleware(gymAdminRepository);
+const reApplyUseCase = new ReApplyUseCase(gymAdminRepository,cloudinaryService)
+export const injectedReApplyController = new ReApplyController(reApplyUseCase);

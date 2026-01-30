@@ -83,6 +83,12 @@ export class GymAdminMapper {
           currentPlan: subscription.planName || "",
           price: subscription.price || 0,
           memberSince: gymAdmin.createdAt?.toISOString() || "",
+          limits:{
+            maxBranches:subscription.limits.maxBranches,
+            maxMembers:subscription.limits.maxMembers,
+            maxTrainers:subscription.limits.maxTrainers
+          },
+          duration:subscription.duration
         }
       : null,
   };

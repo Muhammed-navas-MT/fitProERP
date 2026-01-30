@@ -37,8 +37,6 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
             if(gymAdmin.status === Status.PENDING){
                 throw new ForbiddenException(GymAdminAuthError.GYM_IS_PENDING);
 
-            }else if (gymAdmin.status === Status.REGECTED){
-                throw new ForbiddenException(GymAdminAuthError.GYM_IS_REGECTED)
             }else{
                 const response = LoginMapper.gymAdminloginMapper(gymAdmin);
                 return response;

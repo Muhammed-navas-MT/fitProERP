@@ -17,7 +17,7 @@ export interface IGymAdminModel extends Document {
     tagline:string;
     businessLicense:string;
     insuranceCertificate:string;
-    subscriptionId?:string;
+    packageId?:string;
     paymentStatus?:PaymentStatus;
     subscriptionStart?:Date;
     subscriptionEnd?:Date;

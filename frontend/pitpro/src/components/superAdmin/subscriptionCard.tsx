@@ -1,12 +1,15 @@
+import { Durations } from "@/types/durationType"
+import { formatDuration } from "@/utils/formatDuration"
 import { Calendar } from "lucide-react"
 
 interface SubscriptionCardProps {
   currentPlan: string
   price: string | number
   memberSince: string
+  duration:Durations
 }
 
-export default function SubscriptionCard({ currentPlan, price, memberSince }: SubscriptionCardProps) {
+export default function SubscriptionCard({ currentPlan, price, memberSince, duration }: SubscriptionCardProps) {
   return (
     <div className="bg-[#0a0b0d] border border-gray-800 rounded-lg p-6">
       <h2 className="text-xl font-bold text-white mb-6">Subscription Details</h2>
@@ -16,7 +19,7 @@ export default function SubscriptionCard({ currentPlan, price, memberSince }: Su
           <span className="text-lg font-semibold text-white">{currentPlan}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-400">Monthly Cost</span>
+          <span className="text-sm text-gray-400">{formatDuration(duration)}</span>
           <span className="text-lg font-semibold text-white">{price}</span>
         </div>
         <div className="flex items-center gap-3 text-gray-400">

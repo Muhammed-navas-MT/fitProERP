@@ -1,3 +1,4 @@
+import { Durations } from "../../../domain/enums/duration";
 import { Status } from "../../../domain/enums/status";
 
 export interface IGymListItemDTO {
@@ -49,6 +50,12 @@ export interface SubscriptionDTO {
   currentPlan: string
   price: number
   memberSince: string
+  limits:{
+    maxBranches:number
+    maxMembers:number;
+    maxTrainers:number
+  }
+  duration:Durations
 }
 
 

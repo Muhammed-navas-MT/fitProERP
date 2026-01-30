@@ -1,6 +1,6 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Request,Response,NextFunction,Router } from "express";
-import { injectedAddMemberController, injectedCheckAccessTrainerMiddleware, injectedProfileController, injectedTrainerLoginController, injectedTrainerLogoutController } from "../../infrastructure/DI/trainer/trainerInjection";
+import { injectedCheckAccessTrainerMiddleware, injectedMemberController, injectedProfileController, injectedTrainerLoginController, injectedTrainerLogoutController } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 export class TrainerRoutes {
@@ -26,15 +26,31 @@ export class TrainerRoutes {
         ]);
 
         this._route.post(TRAINER.ADD_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
-            injectedAddMemberController.addMember(req,res,next);
+            injectedMemberController.createMember(req,res,next);
         })
 
         this._route.get(TRAINER.LIST_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
-            injectedAddMemberController.listAllMembers(req,res,next);
+            injectedMemberController.listAllMembers(req,res,next);
+        })
+
+        this._route.get(TRAINER.FIND_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.findMember(req,res,next);
+        })
+
+        this._route.put(TRAINER.UNBLOCK_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.unBlockMember(req,res,next);
+        })
+
+        this._route.put(TRAINER.BLOCK_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.blockMember(req,res,next);
+        })
+
+        this._route.post(TRAINER.UPDATE_MEMBER,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.updateMember(req,res,next);
         })
         
         this._route.get(TRAINER.LIST_ACTIVE_TRAINER,(req:Request,res:Response,next:NextFunction)=>{
-            injectedAddMemberController.listAllActiveTrainers(req,res,next);
+            injectedMemberController.listAllActiveTrainers(req,res,next);
         })
 
         this._route.get(TRAINER.VIEW_PROFILE,(req:Request,res:Response,next:NextFunction)=>{

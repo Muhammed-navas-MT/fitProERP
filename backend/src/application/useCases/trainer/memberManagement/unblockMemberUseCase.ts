@@ -2,7 +2,7 @@ import { Status } from "../../../../domain/enums/status";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import { NOtFoundException } from "../../../constants/exceptions";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
-import { IUnBlockMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/unBlockMemberUseCaseInterface";
+import { IUnBlockMemberUseCase } from "../../../interfaces/useCase/trainer/memberManagement/unblockMemberUseCaseInteface";
 
 export class UnBlockMemberUseCase implements IUnBlockMemberUseCase {
   constructor(private readonly _memberRepository: IMemberRepository) {}

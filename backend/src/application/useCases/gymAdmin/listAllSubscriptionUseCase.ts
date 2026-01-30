@@ -17,12 +17,9 @@ export class ListAllSubscription implements IListAllActiveSubscriptionUseCase {
         if(!gymAdmin){
             throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
         };
-        console.log(gymAdmin,"gym admin data in list subscription")
-
         const subscriptions = await this._subscriptionRepository.listAllActiveSubscription();
 
-        const response = SubscriptionMapper.toListAllActiveSubscriptionResponse(subscriptions,gymAdmin.subscriptionId);
-        console.log(response,"navasss.....")
+        const response = SubscriptionMapper.toListAllActiveSubscriptionResponse(subscriptions,gymAdmin.packageId);
         return response;
     }
 };

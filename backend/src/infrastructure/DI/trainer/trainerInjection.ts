@@ -2,8 +2,6 @@ import { EmailService } from "../../services/IEmail/emailService";
 import { TrainerRepository } from "../../repository/trainer/trainerRepo";
 import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
 import { HashPassword } from "../../services/hashService";
-import { AddMemberController } from "../../../presentation/controller/trainer/addMemberController";
-import { AddMemberUseCase } from "../../../application/useCases/trainer/memberManagement/addMemberUseCase";
 import { MemberRepository } from "../../repository/member/memberRepo";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { PasswordGenerator } from "../../services/passwordGenerater";
@@ -24,6 +22,13 @@ import { ViewProfileUseCase } from "../../../application/useCases/trainer/profil
 import { TrainerLogoutController } from "../../../presentation/controller/trainer/trainerLogoutController";
 import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
 import { CacheService } from "../../services/cacheService";
+import { CreateMemberUseCase } from "../../../application/useCases/trainer/memberManagement/createMemberUseCase";
+import { FindMemberUseCase } from "../../../application/useCases/trainer/memberManagement/findMemberUseCase";
+import { UpdateMemberUseCase } from "../../../application/useCases/trainer/memberManagement/updateMemberUseCase";
+import { ListAllMembers } from "../../../application/useCases/trainer/memberManagement/listMemberUseCase";
+import { BlockMemberUseCase } from "../../../application/useCases/trainer/memberManagement/blockMemberUseCase";
+import { UnBlockMemberUseCase } from "../../../application/useCases/trainer/memberManagement/unblockMemberUseCase";
+import { MemberController } from "../../../presentation/controller/trainer/memberMenageMentController";
 
 const emailService = new EmailService()
 const hashService = new HashPassword();
@@ -37,14 +42,20 @@ const tokenInValidation = new TokenValidationUseCase(jwtService,cacheService)
 export const injectedTrainerLoginController = new TrainerLoginController(loginUseCase,jwtService);
 export const injectedTrainerLogoutController = new TrainerLogoutController(tokenInValidation)
 
-// add member
+const branchRepository = new BranchRepository(branchModel)
+export const injectedCheckAccessTrainerMiddleware = new CheckTrainerAccessMiddleWare(gymAdminRepository,branchRepository,trainerRepository);
+
+//member management
 const memberRepository = new MemberRepository(memberModel)
 const generatePassword = new PasswordGenerator();
-const branchRepository = new BranchRepository(branchModel)
-const addMemberUseCase = new AddMemberUseCase(memberRepository,hashService,emailService,generatePassword,sendPasswordEmailContentGenerator,gymAdminRepository,trainerRepository);
+const createMember = new CreateMemberUseCase(memberRepository,hashService,emailService,generatePassword,sendPasswordEmailContentGenerator,gymAdminRepository,trainerRepository);
+const findMember = new FindMemberUseCase(memberRepository);
+const updateMember = new UpdateMemberUseCase(memberRepository);
+const listAllMembers = new ListAllMembers(memberRepository,gymAdminRepository,trainerRepository);
+const blockMember = new BlockMemberUseCase(memberRepository);
+const unBlockMember = new UnBlockMemberUseCase(memberRepository);
 const listActiveTrainers = new ListActiveTrainers(trainerRepository,gymAdminRepository);
-export const injectedAddMemberController = new AddMemberController(addMemberUseCase,listActiveTrainers);
-export const injectedCheckAccessTrainerMiddleware = new CheckTrainerAccessMiddleWare(gymAdminRepository,branchRepository,trainerRepository);
+export const injectedMemberController = new MemberController(createMember,findMember,updateMember,unBlockMember,blockMember,listAllMembers,listActiveTrainers);
 
 //profile management
 const changePassword = new ChangePasswordUseCase(trainerRepository,hashService);
