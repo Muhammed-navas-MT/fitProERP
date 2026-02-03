@@ -29,6 +29,8 @@ import { ListAllMembers } from "../../../application/useCases/trainer/memberMana
 import { BlockMemberUseCase } from "../../../application/useCases/trainer/memberManagement/blockMemberUseCase";
 import { UnBlockMemberUseCase } from "../../../application/useCases/trainer/memberManagement/unblockMemberUseCase";
 import { MemberController } from "../../../presentation/controller/trainer/memberMenageMentController";
+import { ListActiveBranchUseCase } from "../../../application/useCases/trainer/listActiveBranchUseCase";
+import { ListAllActiveTrainersByBranch } from "../../../application/useCases/trainer/memberManagement/listAllActiveTrainersByBranchIdUseCase";
 
 const emailService = new EmailService()
 const hashService = new HashPassword();
@@ -55,7 +57,9 @@ const listAllMembers = new ListAllMembers(memberRepository,gymAdminRepository,tr
 const blockMember = new BlockMemberUseCase(memberRepository);
 const unBlockMember = new UnBlockMemberUseCase(memberRepository);
 const listActiveTrainers = new ListActiveTrainers(trainerRepository,gymAdminRepository);
-export const injectedMemberController = new MemberController(createMember,findMember,updateMember,unBlockMember,blockMember,listAllMembers,listActiveTrainers);
+const listActiveBranch = new ListActiveBranchUseCase(branchRepository,trainerRepository);
+const listActiveTrainersByBranchId = new ListAllActiveTrainersByBranch(trainerRepository);
+export const injectedMemberController = new MemberController(createMember,findMember,updateMember,unBlockMember,blockMember,listAllMembers,listActiveTrainers,listActiveBranch,listActiveTrainersByBranchId);
 
 //profile management
 const changePassword = new ChangePasswordUseCase(trainerRepository,hashService);

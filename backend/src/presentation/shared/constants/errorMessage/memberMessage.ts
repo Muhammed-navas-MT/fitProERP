@@ -147,6 +147,8 @@ export enum MemberSuccess {
 
   PASSWORD_SENT = "Password sent Successfully",
   PASSWORD_SENT_MESSAGE = "Please log in and change your password immediately for security.",
+
+  UPDATE_STATUS = "Status updated successfully",
   
   REGISTRATION_SUCCESS = "Account created successfully! You can now log in",
   LOGIN_SUCCESS = "Account login successfully",

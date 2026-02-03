@@ -36,7 +36,9 @@ export const FRONTEND_ROUTES = {
         LOGIN:"login",
         DASHBOARD:"dashboard",
         LIST_MEMBERS:"members",
+        DETAIL_MEMBER:"detail-member",
         PROFILE:"profile"
+
     },
     MEMBER:{
         BASE:"/member",

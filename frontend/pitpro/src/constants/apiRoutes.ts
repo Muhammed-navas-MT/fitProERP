@@ -82,6 +82,8 @@ export const API_ROUTES = {
     UNBLOCK_MEMBER:"/unblock_member",
     BLOCK_MEMBER:"/block_member",
     LIST_ACTIVE_TRAINER:"/active_trainers",
+    LIST_ACTIVE_BRANCH:"/active_branches",
+    LIST_ACTIVE_TRAINER_BRANCH:"/active_trainers_bybranch",
     VIEW_PROFILE:"/trainer_profile",
     UPDATE_PROFILE:"/trainer_profile_update",
     CHANGE_PASSWORD:"/trainer_password_change",

@@ -1,3 +1,3 @@
 export interface IUnBlockMemberUseCase {
-    unBlockMember(memberId:string):Promise<void>
+    unBlockMember(memberId:string):Promise<string>
 }

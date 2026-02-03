@@ -53,6 +53,14 @@ export class TrainerRoutes {
             injectedMemberController.listAllActiveTrainers(req,res,next);
         })
 
+        this._route.get(TRAINER.LIST_ACTIVE_BRANCH,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.listAllActiveBranches(req,res,next);
+        })
+
+        this._route.get(TRAINER.LIST_ACTIVE_TRAINER_BRANCH,(req:Request,res:Response,next:NextFunction)=>{
+            injectedMemberController.listActiveTrainersByBranchId(req,res,next);
+        })
+
         this._route.get(TRAINER.VIEW_PROFILE,(req:Request,res:Response,next:NextFunction)=>{
             injectedProfileController.viewProfile(req,res,next)
         })

@@ -5,6 +5,7 @@ import { Model, Types } from "mongoose";
 import { MemberEntity } from "../../../domain/entities/member/memberEntity";
 import { IListMemberInGymRequestDTO, IListMemberRequestDTO } from "../../../application/dtos/memberDto/listAllMembersDto";
 import { IPopulatedBranch, IPopulatedMember } from "../databaseConfigs/types/populatedMemberType";
+import { Status } from "../../../domain/enums/status";
 
 export class MemberRepository
   extends BaseRepository<IMemberModel>
@@ -113,6 +114,32 @@ async listAllMembersByGymId(
   const total = await this._model.countDocuments(filter);
 
   return { members, total };
+}
+
+async listAllMembersByBranchId(params: IListMemberRequestDTO, branchId: string,trainerId: string): Promise<{ members: IPopulatedMember[]; total: number; assignMemberCount: number; activeMembersCount: number; }> {
+  const skip = (params.page - 1) * params.limit;
+  const search = params.search?.trim();
+
+  const filter = search
+    ? { branchId, name: { $regex: search, $options: "i" } }
+    : { branchId };
+
+  const members = await this._model
+    .find(filter)
+    .populate<{ branchId: IPopulatedBranch }>({
+      path: "branchId",
+      select: "branchName",
+    })
+    .skip(skip)
+    .limit(params.limit)
+    .sort({ createdAt: -1 })
+    .lean<IPopulatedMember[]>();
+
+  const total = await this._model.countDocuments(filter);
+  const activeMembersCount = await this._model.countDocuments({branchId,status:Status.ACTIVE,trainerId});
+  const assignMemberCount = await this._model.countDocuments({trainerId,branchId});
+
+  return { members, total,assignMemberCount,activeMembersCount };
 }
 
 }

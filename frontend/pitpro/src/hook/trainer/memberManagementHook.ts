@@ -2,12 +2,14 @@ import {
   addMemberService,
   blockMemberService,
   findMemberService,
+  getAllActiveBranches,
   getAllActiveTrainers,
+  getAllActiveTrainersByBranch,
   getMembersService,
   unBlockMemberService,
   updateMemberService,
 } from "@/services/trainer/memberService";
-import { MemberAddPayload, MemberUpdatePayload } from "@/types/authPayload";
+import { MemberAddPayload } from "@/types/authPayload";
 import { Member } from "@/types/trainer/memberType";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -16,6 +18,7 @@ export const QUERY_KEYS = {
   MEMBERS: "members",
   MEMBER: "member",
   ACTIVE_TRAINERS: "active-trainers",
+  ACTIVE_BRANCH: "active-branches",
 };
 
 
@@ -58,26 +61,46 @@ export const useFindMember = (memberId: string) => {
   });
 };
 
-export const useUpdateMember = (memberId: string) => {
-  const queryClient = useQueryClient();
+export const useUpdateMember = (
+  memberId: string,
+  page: number,
+  search: string
+) => {
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: MemberUpdatePayload) =>
+    mutationFn: (data: {trainerId:string,branchId:string}) =>
       updateMemberService(data, memberId),
-    onSuccess: (updatedMember) => {
-      queryClient.setQueryData<{ data: { data: Member[] } } | undefined>([QUERY_KEYS.MEMBERS], (oldData) => {
-        if (!oldData) return oldData;
-        const updatedData = { ...oldData };
-        updatedData.data.data = oldData.data.data.map((m:Member) =>
-          m.id === memberId ? updatedMember.data : m
-        );
-        return updatedData;
-      });
 
-      queryClient.setQueryData([QUERY_KEYS.MEMBER, memberId], updatedMember.data);
+    onSuccess: (res: { success: boolean; data:{remove: boolean}; message:string }) => {
+      if (res?.data?.remove) {
+        queryClient.setQueryData<
+          { data: { data: Member[] } } | undefined
+        >(
+          [QUERY_KEYS.MEMBERS, page, search],
+          (oldData) => {
+            if (!oldData) return oldData
+
+            return {
+              ...oldData,
+              data: {
+                ...oldData.data,
+                data: oldData.data.data.filter(
+                  (m: Member) => m.id !== memberId
+                ),
+              },
+            }
+          }
+        )
+
+        queryClient.removeQueries({
+          queryKey: [QUERY_KEYS.MEMBER, memberId],
+        })
+      }
     },
-  });
-};
+  })
+}
+
 
 export const useBlockMember = (page: number, search: string) => {
   const queryClient = useQueryClient();
@@ -94,7 +117,7 @@ export const useBlockMember = (page: number, search: string) => {
             data: {
               ...oldData.data,
               data: oldData.data.data.map((m) =>
-                m.id === memberId ? { ...m, status: _res.data.status} : m
+                m.id === memberId ? { ...m, status:"BLOCKED"} : m
               ),
             },
           };
@@ -110,23 +133,28 @@ export const useUnblockMember = (page: number, search: string) => {
 
   return useMutation({
     mutationFn: (memberId: string) => unBlockMemberService(memberId),
-    onSuccess: (_res, memberId) => {
-      queryClient.setQueryData<{ data: { data: Member[] } } | undefined>(
-        [QUERY_KEYS.MEMBERS, page, search],
-        (oldData) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            data: {
-              ...oldData.data,
-              data: oldData.data.data.map((m) =>
-                m.id === memberId ? { ...m, status: _res.data.status } : m
-              ),
-            },
-          };
-        }
-      );
-    },
+    onSuccess: (res, memberId) => {
+  queryClient.setQueryData<{ data: { data: Member[] } } | undefined>(
+    [QUERY_KEYS.MEMBERS, page, search],
+    (oldData) => {
+      if (!oldData) return oldData;
+
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          data: oldData.data.data.map((m) =>
+            m.id === memberId
+              ? { ...m, status: res.data.status }
+              : m
+          ),
+        },
+      };
+    }
+  );
+
+  toast.success("Updated successfully");
+},
   });
 };
 
@@ -134,5 +162,20 @@ export const useGetAllActiveTrainers = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.ACTIVE_TRAINERS], 
     queryFn: getAllActiveTrainers,
+  });
+};
+
+export const useGetAllActiveBranches = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ACTIVE_BRANCH], 
+    queryFn: getAllActiveBranches,
+  });
+};
+
+
+export const useGetAllActiveTrainersByBranch = (branchId:string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.ACTIVE_TRAINERS,branchId], 
+    queryFn: ()=>getAllActiveTrainersByBranch(branchId),
   });
 };

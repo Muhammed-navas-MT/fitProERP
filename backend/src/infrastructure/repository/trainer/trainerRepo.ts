@@ -86,6 +86,15 @@ export class TrainerRepository
     });
   }
 
+  async findActiveTrainersByBranch(
+    branchId: string,
+  ): Promise<TrainerEntity[]> {
+    return this._model.find({
+      branchId,
+      status: Status.ACTIVE,
+    });
+  }
+
   async countActiveTrainersByBranch(branchId: string): Promise<number> {
     return this._model.countDocuments({
       branchId,

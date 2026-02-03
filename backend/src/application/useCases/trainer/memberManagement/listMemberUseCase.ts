@@ -54,9 +54,9 @@ export class ListAllMembers implements IListMemberUseCase {
         throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
       }
 
-      const { members, total } = await this._memberRepository.listAllMembers( params,findGym._id );
+      const { members, total,assignMemberCount,activeMembersCount } = await this._memberRepository.listAllMembersByBranchId( params,findTrainer.branchId as string,params.trainerId );
 
-      const response = MemberMapper.toListMemebersResponse(members,total,params);
+      const response = MemberMapper.toListMemebersResponse(members,total,params,activeMembersCount,assignMemberCount);
       return response;
     } catch (error) {
       throw error;

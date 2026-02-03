@@ -17,6 +17,8 @@ export class MemberMapper {
     members: IPopulatedMember[],
     total: number,
     params: IListMemberRequestDTO,
+    activeMembersCount?:number,
+    assignMemberCount?:number
   ): IListMemberResponseDTO {
     return {
       total: total,
@@ -24,6 +26,8 @@ export class MemberMapper {
       limit: params.limit,
       totalPages: Math.ceil(total / params.limit),
       search: params.search,
+      activeMembersCount,
+      assignMemberCount,
       data: members?.map((member) => ({
         id: member._id?.toString(),
         name: member.name,

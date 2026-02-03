@@ -1,12 +1,18 @@
 import { Card } from "@/components/ui/card"
 
-const stats = [
-  { label: "Total Members", value: "675", color: "from-purple-500/20 to-blue-500/20" },
-  { label: "Assigned Members", value: "22", color: "from-blue-500/20 to-purple-500/20" },
-  { label: "Active Members", value: "17", color: "from-purple-500/20 to-pink-500/20" },
-]
+interface StatItem {
+  label: string;
+  value: string;
+  color: string;
+}
 
-export function StatsCards() {
+interface StatsCardsProps {
+  stats: StatItem[];
+}
+
+
+
+export function StatsCards({stats}:StatsCardsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3 mb-8">
       {stats.map((stat) => (
