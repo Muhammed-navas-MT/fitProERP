@@ -7,7 +7,7 @@ import { IUnBlockMemberUseCase } from "../../../interfaces/useCase/trainer/membe
 export class UnBlockMemberUseCase implements IUnBlockMemberUseCase {
   constructor(private readonly _memberRepository: IMemberRepository) {}
 
-  async unBlockMember(memberId: string): Promise<void> {
+  async unBlockMember(memberId: string): Promise<string> {
     const member = await this._memberRepository.findById(memberId);
 
     if (!member) {
@@ -31,5 +31,6 @@ export class UnBlockMemberUseCase implements IUnBlockMemberUseCase {
       { status },
       memberId
     );
+    return status
   }
 }

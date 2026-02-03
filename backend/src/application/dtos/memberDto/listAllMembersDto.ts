@@ -8,6 +8,8 @@ export interface IListMemberResponseDTO {
     limit:number;
     totalPages:number;
     search:string;
+    assignMemberCount?:number;
+    activeMembersCount?:number;
     data:Array<
         {
             id?:string,

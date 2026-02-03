@@ -9,6 +9,10 @@ import { toast } from "sonner";
 import { MembersListSkeleton } from "./memberListSkeleton";
 import { AddMemberModal } from "./addMemberModal";
 import { useDebounce } from "@/hook/useDebounce";
+import { useNavigate } from "react-router-dom";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { StatsCards } from "./statsCard";
+import { UpdateMemberModal } from "./updateMemberModal";
 
 export interface IMember {
   id: string;
@@ -22,43 +26,37 @@ export interface IMember {
   createdAt: Date;
 }
 
-export function MembersList() {
+export default function MembersList() {
   const [searchInput, setSearchInput] = useState("");
   const [page, setPage] = useState(1);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [updateModalOpen,setUpdateModalOpen] = useState(false);
+  const [selectedMemberId,setSelectedMemberId] = useState("");
   const debouncedSearch = useDebounce(searchInput, 500);
+  const navigate = useNavigate()
 
-  const { mutate: blockMember, isPending: isBlocking } = useBlockMember(page,debouncedSearch);
-  const { mutate: unblockMember, isPending: isUnblocking } = useUnblockMember(page,debouncedSearch);
+  const { mutate: blockMember } = useBlockMember(page,debouncedSearch);
+  const { mutate: unblockMember} = useUnblockMember(page,debouncedSearch);
 
   const { data, isPending, error } = useGetAllMembers(page, debouncedSearch);
 
   const handleBlock = (memberId: string) => {
-    blockMember(memberId, { 
-      onSuccess:()=>{
-        toast.success("Blocked successfully")
-    },
-    onError:()=>{
-      toast.error("Error while blocking member. Please try again")
-    }
-  });
+    blockMember(memberId);
   };
 
   const handleUnblock = (memberId: string) => {
-    unblockMember(memberId, { 
-      onSuccess: () =>{
-        toast.success("Unblocked successfully")
-      },
-      onError:()=>{
-      toast.error("Error while unblocking member. Please try again")
-    }
-    });
+    unblockMember(memberId);
   };
 
-  // const handleEdit = (member) => {
-  //   setSelectedMemberId(member.id);
-  //   setUpdateModalOpen(true); 
-  // };
+  const handleEdit = (memberId:string) => {
+    setSelectedMemberId(memberId);
+    setUpdateModalOpen(true);
+  };
+  const handleView = (memberId: string) => {
+      navigate(
+        `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DETAIL_MEMBER}/${memberId}`
+      );
+    };
 
   useEffect(() => {
     if (error) {
@@ -71,9 +69,17 @@ export function MembersList() {
 
   const members: IMember[] = data?.data?.data ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
+  const totalMember = data?.data?.total;
+  const activeMember = data?.data?.activeMembersCount;
+  const assignedMember = data?.data?.assignMemberCount
 
   return (
     <>
+    <StatsCards stats={[
+  { label: "Total Members", value: `${totalMember}`, color: "from-purple-500/20 to-blue-500/20" },
+  { label: "Assigned Members", value: `${assignedMember}`, color: "from-blue-500/20 to-purple-500/20" },
+  { label: "Active Members", value: `${activeMember}`, color: "from-purple-500/20 to-pink-500/20" },
+]}/>
       <Card className="bg-[#0f0f0f] border-[#2a2a2a] p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <h2 className="text-xl font-semibold text-white">Members</h2>
@@ -117,8 +123,8 @@ export function MembersList() {
               <MemberCard
                 key={member.id}
                 member={member}
-                onView={(id) => console.log("View", id)}
-                onEdit={(id) => console.log("Edit", id)}
+                onView={handleView}
+                onEdit={handleEdit}
                 onBlock={handleBlock}
                 onUnBlock={handleUnblock}
               />
@@ -175,6 +181,14 @@ export function MembersList() {
         onOpenChange={setIsAddMemberOpen}
         search={debouncedSearch}
         page={page}
+      />
+
+      <UpdateMemberModal 
+      open={updateModalOpen}
+      onOpenChange={setUpdateModalOpen}
+      search={debouncedSearch}
+      page={page}
+      memberId={selectedMemberId}
       />
     </>
   );

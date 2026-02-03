@@ -1,9 +1,8 @@
 import { Sidebar } from "@/components/trainer/trainerSidebar";
-import { StatsCards } from "@/components/trainer/memberManagement/statsCard";
-import { MembersList } from "@/components/trainer/memberManagement/memberList";
 import { Header } from "@/components/trainer/trainerHeader";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
+import  MembersList from "@/components/trainer/memberManagement/memberList";
 
 export function MembersPage() {
   const name = useSelector((state: rootstate) => state.authData.name);
@@ -26,7 +25,6 @@ export function MembersPage() {
         />
 
         <main className="p-4 md:p-8">
-          <StatsCards />
           <MembersList />
         </main>
       </div>

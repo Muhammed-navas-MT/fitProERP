@@ -9,6 +9,7 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
     countByBranchId(branchId: string): Promise<number>;
     listAllActiveTrainers(gymId:string):Promise<TrainerEntity[]>
     findActiveTrainersByBranchAndGym(branchId: string, gymId: string): Promise<TrainerEntity[]>;
+    findActiveTrainersByBranch(branchId: string): Promise<TrainerEntity[]>;
     countActiveTrainersByBranch(branchId: string): Promise<number>;
     findActiveTrainersByBranchExcludingTrainer(branchId: string,trainerId: string): Promise<{ id: string }[]>;
 }

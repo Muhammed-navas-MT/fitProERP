@@ -195,35 +195,68 @@ export function AddMemberModal({ open, onOpenChange,search,page }: AddMemberModa
           </div>
 
           {/* Health Details */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-blue-400 flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-blue-400" />
-              Health Details
-            </h3>
+<div className="space-y-4">
+  <h3 className="text-lg font-semibold text-blue-400 flex items-center gap-2">
+    <span className="h-1 w-1 rounded-full bg-blue-400" />
+    Health Details
+  </h3>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <Input {...register("height", { required: true })} type="number" placeholder="Height (cm)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-              <Input {...register("weight", { required: true })} type="number" placeholder="Weight (kg)" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
+  <div className="grid gap-4 md:grid-cols-2">
+    {/* Height */}
+    <div className="space-y-2">
+      <Label>Height (cm)</Label>
+      <Input
+        {...register("height", { required: true })}
+        type="number"
+        placeholder="Height"
+        className="bg-[#1a1a1a] border-[#2a2a2a] text-white"
+      />
+    </div>
 
-              <Select
-                value={watch("fitnessGoal")}
-                onValueChange={(value) => setValue("fitnessGoal", value)}
-              >
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectValue placeholder="Select fitness goal" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
-                  <SelectItem value="weight-loss">Weight Loss</SelectItem>
-                  <SelectItem value="muscle-gain">Muscle Gain</SelectItem>
-                  <SelectItem value="general-fitness">General Fitness</SelectItem>
-                  <SelectItem value="endurance">Endurance</SelectItem>
-                  <SelectItem value="flexibility">Flexibility</SelectItem>
-                </SelectContent>
-              </Select>
+    {/* Weight */}
+    <div className="space-y-2">
+      <Label>Weight (kg)</Label>
+      <Input
+        {...register("weight", { required: true })}
+        type="number"
+        placeholder="Weight"
+        className="bg-[#1a1a1a] border-[#2a2a2a] text-white"
+      />
+    </div>
 
-              <Input {...register("targetWeight", { required: true })} type="number" placeholder="Target Weight" className="bg-[#1a1a1a] border-[#2a2a2a] text-white" />
-            </div>
-          </div>
+    {/* Fitness Goal */}
+    <div className="space-y-2">
+      <Label>Fitness Goal</Label>
+      <Select
+        value={watch("fitnessGoal")}
+        onValueChange={(value) => setValue("fitnessGoal", value)}
+      >
+        <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+          <SelectValue placeholder="Select fitness goal" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] text-white">
+          <SelectItem value="weight-loss">Weight Loss</SelectItem>
+          <SelectItem value="muscle-gain">Muscle Gain</SelectItem>
+          <SelectItem value="general-fitness">General Fitness</SelectItem>
+          <SelectItem value="endurance">Endurance</SelectItem>
+          <SelectItem value="flexibility">Flexibility</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Target Weight */}
+    <div className="space-y-2">
+      <Label>Target Weight (kg)</Label>
+      <Input
+        {...register("targetWeight", { required: true })}
+        type="number"
+        placeholder="Target Weight"
+        className="bg-[#1a1a1a] border-[#2a2a2a] text-white"
+      />
+    </div>
+  </div>
+</div>
+
 
           {/* Assigned Trainer */}
           <div className="space-y-2">

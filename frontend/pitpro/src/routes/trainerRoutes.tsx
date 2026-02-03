@@ -2,6 +2,7 @@ import ProtectedRoute from "@/components/shared/protectedComponets/protectedRout
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import DashboardPage from "@/page/trainer/dashboardPage";
+import MemberDetailPage from "@/page/trainer/memberDetailPage";
 import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
 import ProfilePage from "@/page/trainer/trainerProfilePage";
@@ -42,6 +43,8 @@ const TrainerRoutes = () => {
         path={FRONTEND_ROUTES.TRAINER.PROFILE}
         element={<ProfilePage/>}
         />
+
+        <Route path={`${FRONTEND_ROUTES.TRAINER.DETAIL_MEMBER}/:memberId`} element={<MemberDetailPage/>}/>
 
       </Route>
     </Routes>

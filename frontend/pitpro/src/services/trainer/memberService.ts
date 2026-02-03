@@ -1,6 +1,6 @@
 import AxiosInstance from "@/axios/axios";
 import { API_ROUTES } from "@/constants/apiRoutes";
-import { MemberAddPayload, MemberUpdatePayload } from "@/types/authPayload";
+import { MemberAddPayload } from "@/types/authPayload";
 import { AxiosError } from "axios";
 
 export const getMembersService = async (page: number, search: string) => {
@@ -38,6 +38,18 @@ export const getAllActiveTrainers = async ()=>{
     }
 }
 
+export const getAllActiveBranches = async ()=>{
+    try {
+        const response = await AxiosInstance.get(`${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_ACTIVE_BRANCH}`);
+        return response.data;
+    } catch (error) {
+        if(error instanceof AxiosError){
+            throw new Error(error.response?.data.message);
+        };
+        throw error;
+    }
+}
+
 export const findMemberService = async (memberId: string) => {
   try {
     const response = await AxiosInstance.get(
@@ -53,14 +65,15 @@ export const findMemberService = async (memberId: string) => {
 };
 
 export const updateMemberService = async (
-  data:MemberUpdatePayload,
-  memberId: string
+  data:{trainerId:string,branchId:string},
+  memberId:string
 ) => {
   try {
     const response = await AxiosInstance.post(
       `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UPDATE_MEMBER}/${memberId}`,
       data
     );
+    console.log(response.data,"update member response")
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -96,4 +109,17 @@ export const unBlockMemberService = async (memberId: string) => {
     }
     throw error;
   }
+}
+
+
+export const getAllActiveTrainersByBranch = async (branchId:string)=>{
+    try {
+        const response = await AxiosInstance.get(`${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_ACTIVE_TRAINER_BRANCH}?branchId=${branchId}`);
+        return response.data;
+    } catch (error) {
+        if(error instanceof AxiosError){
+            throw new Error(error.response?.data.message);
+        };
+        throw error;
+    }
 }

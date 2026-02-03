@@ -11,5 +11,7 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
     findByTrainerId(trainerId:string):Promise<MemberEntity[]>;
     findMembersByTrainer(trainerId: string): Promise<{ id: string }[]>;
     reassignMembers(assignments: { memberId: string; trainerId: string }[]): Promise<void>;
+    listAllMembers(params:IListMemberRequestDTO,gymId:string):Promise<{members:IPopulatedMember[],total:number}>
     listAllMembersByGymId(params:IListMemberInGymRequestDTO):Promise<{members:IPopulatedMember[],total:number}>
+    listAllMembersByBranchId(params:IListMemberRequestDTO,branchId:string,trainerId: string):Promise<{members:IPopulatedMember[],total:number,assignMemberCount:number,activeMembersCount:number}>
 }

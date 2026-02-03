@@ -1,5 +1,3 @@
-import { UpdateMemberDTO } from "../../../../dtos/auth/memberDto";
-
 export interface IUpdateMemberUseCase {
-    updateMember(memeber:UpdateMemberDTO,memberId:string):Promise<void>
+    updateMember(memeber:{trainerId:string,branchId:string},memberId:string):Promise<boolean>
 }

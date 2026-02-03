@@ -14,6 +14,9 @@ import { IUpdateMemberUseCase } from "../../../application/interfaces/useCase/tr
 import { IUnBlockMemberUseCase } from "../../../application/interfaces/useCase/trainer/memberManagement/unblockMemberUseCaseInteface";
 import { IBlockMemberUseCase } from "../../../application/interfaces/useCase/trainer/memberManagement/blockMemberUseCaseInterface";
 import { IListMemberUseCase } from "../../../application/interfaces/useCase/trainer/memberManagement/listMemberUseCaseInterface";
+import { IListActiveBranchUseCase } from "../../../application/interfaces/useCase/trainer/listActiveBranchUseCaseIterface";
+import { BranchSuccess } from "../../shared/constants/messages/branchMessages";
+import { IListActiveTrainersByBranchIdUseCase } from "../../../application/interfaces/useCase/trainer/memberManagement/listActiveTrainersByBranchIdUseCaseInterface";
 
 export class MemberController {
     constructor(
@@ -23,7 +26,9 @@ export class MemberController {
         private _unBlockMember:IUnBlockMemberUseCase,
         private _blockMember:IBlockMemberUseCase,
         private _listMember:IListMemberUseCase,
-        private _listAllActiveTrainers:IListActiveTrainersUseCase
+        private _listAllActiveTrainers:IListActiveTrainersUseCase,
+        private _listActiveBranches:IListActiveBranchUseCase,
+        private _listActiveTrainersByBranchId:IListActiveTrainersByBranchIdUseCase
     ){};
 
     async createMember(req:Request,res:Response,next:NextFunction):Promise<void> {
@@ -97,12 +102,14 @@ export class MemberController {
 
   updateMember = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this._updateMember.updateMember(req.body,req.params.memberId);
+      const {trainerId,branchId} = req.body;
+      const remove = await this._updateMember.updateMember({trainerId,branchId},req.params.memberId);
 
       ResponseHelper.success(
-        HTTP_STATUS_CODE.CREATE,
+        HTTP_STATUS_CODE.OK,
         res,
-        MemberSuccess.MEMBER_UPDATED
+        MemberSuccess.MEMBER_UPDATED,
+        {remove}
       )
     } catch (error) {
       next(error);
@@ -113,9 +120,9 @@ export class MemberController {
     try {
       await this._blockMember.blockMember(req.params.memberId);
       ResponseHelper.success(
-        HTTP_STATUS_CODE.CREATE,
+        HTTP_STATUS_CODE.OK,
         res,
-        MemberSuccess.MEMBER_UPDATED
+        MemberSuccess.UPDATE_STATUS 
       )
     } catch (error) {
       next(error);
@@ -124,14 +131,44 @@ export class MemberController {
   
   unBlockMember = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this._unBlockMember.unBlockMember(req.params.memberId);
+      const status = await this._unBlockMember.unBlockMember(req.params.memberId);
       ResponseHelper.success(
-        HTTP_STATUS_CODE.CREATE,
+        HTTP_STATUS_CODE.OK,
         res,
-        MemberSuccess.MEMBER_CREATED
+        MemberSuccess.UPDATE_STATUS,
+        {status}
       )
     } catch (error) {
       next(error);
     }
   };
+
+  async listAllActiveBranches(req:Request,res:Response,next:NextFunction):Promise<void>{
+        try {
+            const trainers = await this._listActiveBranches.listActiveBranch(res.locals.data.id);
+            ResponseHelper.success(
+                HTTP_STATUS_CODE.OK,
+                res,
+                BranchSuccess.LISTED,
+                trainers
+            )
+        } catch (error) {
+            next(error)
+        }
+    }
+
+  async listActiveTrainersByBranchId(req:Request,res:Response,next:NextFunction):Promise<void>{
+    try {
+            const branchId = req.query.branchId as string || ""
+            const trainers = await this._listActiveTrainersByBranchId.listTrainers(branchId);
+            ResponseHelper.success(
+                HTTP_STATUS_CODE.OK,
+                res,
+                TrainerSuccess.TRAINERS_LISTED,
+                trainers
+            )
+        } catch (error) {
+            next(error);
+        }
+  }
 }
