@@ -3,7 +3,7 @@ dotenv.config();
 import cors from "cors";
 import { configEnv } from "./config/envConfig";
 import { MongodbConfig } from "./config/mongoConfig";
-import express, { Express, Router } from "express";
+import express, { Express } from "express";
 import { SuperAdminRoutes } from "./presentation/routes/superAdminRoutes";
 import { ROUTES } from "./presentation/shared/constants/routes";
 import { errorHandleMiddleware } from "./presentation/middlewares/errorHandlingMiddleware";
@@ -48,7 +48,7 @@ class Express_app {
           return callback(new Error("CORS Not Allowed"));
         },
         credentials: true,
-      })
+      }),
     );
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
@@ -70,21 +70,24 @@ class Express_app {
     this._app.use(ROUTES.TRAINER.BASE, trainerRoutes.get_routes());
   }
 
-  private _setMemberRoutes(){
+  private _setMemberRoutes() {
     const memberRoutes = new MemberRoutes();
-    this._app.use(ROUTES.MEMBER.BASE,memberRoutes.get_routes());
+    this._app.use(ROUTES.MEMBER.BASE, memberRoutes.get_routes());
   }
 
-  private _setAuthRoutes(){
+  private _setAuthRoutes() {
     const auth = new AuthRoutes();
-    this._app.use(ROUTES.REFRESH_BASE,auth.get_routes());
+    this._app.use(ROUTES.REFRESH_BASE, auth.get_routes());
   }
-   private _setWebHookRoutes(){
-    this._app.post(ROUTES.GYMADMIN.STRIPE_WEBHOOK,express.raw({ type: "application/json" }),
-      injectedStripeWebhookHelper.handle);
+  private _setWebHookRoutes() {
+    this._app.post(
+      ROUTES.GYMADMIN.STRIPE_WEBHOOK,
+      express.raw({ type: "application/json" }),
+      injectedStripeWebhookHelper.handle,
+    );
   }
   private _setLoggingMiddleware() {
-    accessAndErrorLoggerMiddleware(this._app)
+    accessAndErrorLoggerMiddleware(this._app);
   }
   private _setErrorHandleMiddleware() {
     this._app.use(errorHandleMiddleware);
@@ -92,7 +95,7 @@ class Express_app {
 
   listen() {
     this._app.listen(Number(configEnv.PORT), () =>
-      console.log("server is Running....")
+      console.log("server is Running...."),
     );
   }
 }

@@ -11,6 +11,8 @@ import GymsPage from "@/page/superAdmin/gymsPage";
 import GymDetailPage from "@/page/superAdmin/gymDetailPage";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
+import PaymentsPage from "@/page/superAdmin/paymentsPage";
+import PaymentDetailPage from "@/page/superAdmin/paymentDetailPage";
 
 const SuperAdminRoutes = () => {
     return (
@@ -25,6 +27,8 @@ const SuperAdminRoutes = () => {
                 <Route path={FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION} element={<EditSubscriptionPage/>}/>
                 <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS} element={<GymsPage/>}/>
                 <Route path={FRONTEND_ROUTES.SUPER_ADMIN.GYM_DETAIL} element={<GymDetailPage/>}/>
+                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_PAYMENTS} element={<PaymentsPage/>}/>
+                <Route path={`${FRONTEND_ROUTES.SUPER_ADMIN.PAYMENT_DETAIL}/:paymentId`} element={<PaymentDetailPage/>}/>
             </Route>
             <Route path={FRONTEND_ROUTES.LANDING} element={<Home/>}/>
             <Route path={FRONTEND_ROUTES.SUBSCRPIPTION} element={<PricingPage/>}/>

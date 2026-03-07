@@ -19,6 +19,8 @@ export const API_ROUTES = {
     DETAIL_GYM: "/gym_detail",
     APPROVE_GYM: "/gym_approve",
     REJECT_GYM: "/gym_reject",
+    LIST_PAYMENTS:"/payments",
+    PAYMENT_DETAIL:"/payment_detail",
   },
 
   GYMADMIN: {
@@ -64,6 +66,13 @@ export const API_ROUTES = {
     CHECKOUT:"/checkout",
     STRIPE_WEBHOOK:"/webhook",
     REAPPLY:"/re_apply",
+    REVENUE_DETAIL: "/revenue_detail",
+    LIST_REVENUES: "/revenues",
+    LIST_EXPENSE: "/list_expense",
+    CREATE_EXPENSE: "/create_expense",
+    UPDATE_EXPENSE: "/update_expense",
+    FIND_EXPENSE: "/find_expense",
+    FIND_EXPENSE_DETAIL: "/find_expense_detail",    
   },
 
   TRAINER: {

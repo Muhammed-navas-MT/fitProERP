@@ -13,32 +13,25 @@ export class RejectGymUseCase implements IRejectGymUseCase {
   constructor(
     private _gymRepository: IGymAdminRepository,
     private _emailService: IEmailService,
-    private _rejectGymEmailContentGenerator: IRejectGymEmailContentGenerator
+    private _rejectGymEmailContentGenerator: IRejectGymEmailContentGenerator,
   ) {}
-  async reject(id: string,reason:string): Promise<void> {
-    try {
-      const gymAdmin = await this._gymRepository.findById(id);
-      if (!gymAdmin) {
-        throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
-      }
-      await this._gymRepository.update(
-        { status: Status.REGECTED },
-        id
-      );
-      const htmlContent = this._rejectGymEmailContentGenerator.generateHtml({
-        reason,
-        gymName: gymAdmin.gymName,
-        supportEmail: "support.fitpro@gmail.com",
-        gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}:${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
-      });
-      const payload: EmailPayloadType = {
-        recieverMailId: gymAdmin.email,
-        subject: "Gym Application Rejected",
-        content: htmlContent,
-      };
-      await this._emailService.sendEmail(payload);
-    } catch (error) {
-      throw error;
+  async reject(id: string, reason: string): Promise<void> {
+    const gymAdmin = await this._gymRepository.findById(id);
+    if (!gymAdmin) {
+      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
     }
+    await this._gymRepository.update({ status: Status.REGECTED }, id);
+    const htmlContent = this._rejectGymEmailContentGenerator.generateHtml({
+      reason,
+      gymName: gymAdmin.gymName,
+      supportEmail: "support.fitpro@gmail.com",
+      gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}:${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
+    });
+    const payload: EmailPayloadType = {
+      recieverMailId: gymAdmin.email,
+      subject: "Gym Application Rejected",
+      content: htmlContent,
+    };
+    await this._emailService.sendEmail(payload);
   }
 }

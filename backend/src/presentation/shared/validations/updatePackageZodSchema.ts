@@ -1,10 +1,7 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const updatePackageSchema = z.object({
-  branchId: z
-    .string()
-    .min(1, "Branch ID is required")
-    .optional(),
+  branchId: z.string().min(1, "Branch ID is required").optional(),
 
   name: z
     .string()
@@ -12,10 +9,7 @@ export const updatePackageSchema = z.object({
     .max(100, "Package name must not exceed 100 characters")
     .optional(),
 
-  price: z
-    .number()
-    .positive("Price must be greater than 0")
-    .optional(),
+  price: z.number().positive("Price must be greater than 0").optional(),
 
   durationInDays: z
     .number()
@@ -24,13 +18,9 @@ export const updatePackageSchema = z.object({
     .optional(),
 
   features: z
-    .array(
-      z.string().min(1, "Feature cannot be empty")
-    )
+    .array(z.string().min(1, "Feature cannot be empty"))
     .min(1, "At least one feature is required")
     .optional(),
 
-  isDailySession: z
-    .boolean()
-    .optional(),
-})
+  isDailySession: z.boolean().optional(),
+});

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { useForm } from "react-hook-form";
+import { TableSkeletonCell } from "@/components/superAdmin/tableSkeletonCell";
 
 interface GymListItemDTO {
   id: string;
@@ -65,9 +66,7 @@ export default function GymsPage() {
   };
 
   const handleViewDetail = (gymId: string) => {
-    navigate(
-      `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/gym-detail/${gymId}`
-    );
+    navigate(`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/gym-detail/${gymId}`);
   };
 
   const handleBlockGym = (gymId: string) => {
@@ -144,13 +143,21 @@ export default function GymsPage() {
                 </thead>
 
                 <tbody>
-                  {isLoading && (
-                    <tr>
-                      <td colSpan={7} className="text-center py-6">
-                        Loading...
-                      </td>
-                    </tr>
-                  )}
+                  {isLoading &&
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-gray-800"
+                      >
+                        <TableSkeletonCell align="left" />
+                        <TableSkeletonCell align="left" />
+                        <TableSkeletonCell align="center" />
+                        <TableSkeletonCell align="center" />
+                        <TableSkeletonCell align="center" />
+                        <TableSkeletonCell align="center" />
+                        <TableSkeletonCell align="center" />
+                      </tr>
+                    ))}
 
                   {!isLoading && gyms.length === 0 && (
                     <tr>
@@ -196,8 +203,8 @@ export default function GymsPage() {
                               gym.status === "PENDING"
                                 ? "bg-yellow-600"
                                 : gym.status === "ACTIVE"
-                                ? "bg-green-600"
-                                : "bg-red-600"
+                                  ? "bg-green-600"
+                                  : "bg-red-600"
                             }`}
                           >
                             {gym.status}
@@ -231,7 +238,8 @@ export default function GymsPage() {
                                   Reject
                                 </button>
                               </>
-                            ) : gym.status === "IN_ACTIVE" ||gym.status ==="ACTIVE" ? (
+                            ) : gym.status === "IN_ACTIVE" ||
+                              gym.status === "ACTIVE" ? (
                               <button
                                 onClick={() => handleBlockGym(gym.id)}
                                 disabled={isBlocking}
@@ -239,7 +247,7 @@ export default function GymsPage() {
                               >
                                 Block
                               </button>
-                            ) : gym.status === "BLOCKED" ?(
+                            ) : gym.status === "BLOCKED" ? (
                               <button
                                 onClick={() => handleUnblockGym(gym.id)}
                                 disabled={isUnBlocking}
@@ -247,14 +255,14 @@ export default function GymsPage() {
                               >
                                 Unblock
                               </button>
-                            ):
-                            <button
+                            ) : (
+                              <button
                                 disabled={true}
                                 className=" px-3 py-1.5 rounded-lg disabled:opacity-50"
                               >
-                              No Action
+                                No Action
                               </button>
-                            }
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -346,7 +354,7 @@ export default function GymsPage() {
                       reset();
                       setRejectGymId(null);
                     },
-                  }
+                  },
                 );
               })}
             >
@@ -358,9 +366,7 @@ export default function GymsPage() {
               />
 
               {errors.reason && (
-                <p className="text-red-500 text-xs mb-3">
-                  Reason is required
-                </p>
+                <p className="text-red-500 text-xs mb-3">Reason is required</p>
               )}
 
               <div className="flex justify-end gap-3">

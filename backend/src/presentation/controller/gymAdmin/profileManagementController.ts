@@ -9,20 +9,19 @@ import { UpdateGymAdminProfileRequestDTO } from "../../../application/dtos/gymAd
 import { updateGymAdminProfileSchema } from "../../shared/validations/updateGymAdminProfileSchema";
 import { BadRequestException } from "../../../application/constants/exceptions";
 import { changePasswordSchema } from "../../shared/validations/passwordZodSchema";
-import { GymAdminAuthError } from "../../shared/constants/errorMessage/gymAdminAuthError";
 import cloudinary from "../../../config/cloudinary";
 
 export class GymAdminProfileController {
   constructor(
     private _viewProfileUseCase: IViewGymAdminProfileUseCase,
     private _updateProfileUseCase: IUpdateGymAdminProfileUseCase,
-    private _changePasswordUseCase: IChangeGymAdminPasswordUseCase
+    private _changePasswordUseCase: IChangeGymAdminPasswordUseCase,
   ) {}
 
   async viewProfile(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const gymAdminId = res.locals.data.id;
@@ -31,14 +30,18 @@ export class GymAdminProfileController {
         HTTP_STATUS_CODE.OK,
         res,
         GymAdminAuthSuccess.GYM_DETAIL,
-        profile
+        profile,
       );
     } catch (error) {
       next(error);
     }
   }
 
-  async updateProfile( req: Request,res: Response, next: NextFunction ): Promise<void> {
+  async updateProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const gymAdminId = res.locals.data.id;
 
@@ -70,14 +73,14 @@ export class GymAdminProfileController {
           ...data,
           ...(logoUrl && { logo: logoUrl }),
         },
-        gymAdminId
+        gymAdminId,
       );
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
         GymAdminAuthSuccess.GYM_UPDATED,
-        profile
+        profile,
       );
     } catch (error) {
       next(error);
@@ -87,7 +90,7 @@ export class GymAdminProfileController {
   async changePassword(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const gymAdminId = res.locals.data.id;
@@ -102,7 +105,7 @@ export class GymAdminProfileController {
       ResponseHelper.success(
         HTTP_STATUS_CODE.NO_CONTENT,
         res,
-        GymAdminAuthSuccess.PASSWORD_CHANGED
+        GymAdminAuthSuccess.PASSWORD_CHANGED,
       );
     } catch (error) {
       next(error);
