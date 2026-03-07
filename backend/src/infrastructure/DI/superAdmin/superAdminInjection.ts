@@ -5,6 +5,9 @@ import { FindGymUseCase } from "../../../application/useCases/superAdmin/gymMang
 import { ListGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/listGymUseCase";
 import { RejectGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/rejectGymUseCase";
 import { UnBlockGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/unBlockGymUseCase";
+import { ListAllSubscription } from "../../../application/useCases/superAdmin/listAllActiveSubscriptionUseCase";
+import { FindPaymentUseCase } from "../../../application/useCases/superAdmin/paymentManagement/findPaymentUseCase";
+import { ListPaymentUseCase } from "../../../application/useCases/superAdmin/paymentManagement/listPaymentUseCase";
 import { BlockSubscriptionUseCase } from "../../../application/useCases/superAdmin/subscription/blockSubscriptionUseCase";
 import { CreateSubscriptionUseCase } from "../../../application/useCases/superAdmin/subscription/createSubscriptionUseCase";
 import { FindSubscripitionUseCase } from "../../../application/useCases/superAdmin/subscription/findSubscripitionUseCase";
@@ -13,15 +16,18 @@ import { UnBlockSubscriptionUseCase } from "../../../application/useCases/superA
 import { UpdateSubscriptionUseCase } from "../../../application/useCases/superAdmin/subscription/updateSubscriptionUseCase";
 import { SuperAdminUseCase } from "../../../application/useCases/superAdmin/superAdminLoginUseCase";
 import { GymAdminManagementController } from "../../../presentation/controller/superAdmin/gymAdminManagementController";
+import { PaymentController } from "../../../presentation/controller/superAdmin/paymentController";
 import { SubscriptionController } from "../../../presentation/controller/superAdmin/subscriptionController";
 import { SuperAdminController } from "../../../presentation/controller/superAdmin/superAdminLoginController";
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { subscriptionModel } from "../../repository/databaseConfigs/models/subscriptionModel";
 import { superAdminModel } from "../../repository/databaseConfigs/models/superAdminModel";
+import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
 import { GymAdminRepository } from "../../repository/gymAdmin/gymAdminRepo";
 import { MemberRepository } from "../../repository/member/memberRepo";
+import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
 import { SubscriptionRepository } from "../../repository/superAdmin/subscriptionRepo";
 import { SuperAdminRepository } from "../../repository/superAdmin/superAdminRepo";
 import { TrainerRepository } from "../../repository/trainer/trainerRepo";
@@ -33,6 +39,7 @@ import { JwtService } from "../../services/jwtService";
 
 
 const superAdminRepo = new SuperAdminRepository(superAdminModel)
+const paymentRepository = new SuperAdminPaymentRepository(paymentModel);
 const injectedSuperAdminUseCase = new SuperAdminUseCase(superAdminRepo)
 const jwtservice = new JwtService()
 const cacheService = new CacheService();
@@ -46,13 +53,15 @@ const findSubscripition = new FindSubscripitionUseCase(subscriptionRepo);
 const listSubscription = new ListSubscriptionsUseCase(subscriptionRepo);
 const unBlockSubscription = new UnBlockSubscriptionUseCase(subscriptionRepo);
 const updateSubscription = new UpdateSubscriptionUseCase(subscriptionRepo);
+const listAllActiveSubscription = new ListAllSubscription(subscriptionRepo)
 export const injectedSubscriptionController= new SubscriptionController(
     blockSubscription,
     createSubscription,
     findSubscripition,
     listSubscription,
     unBlockSubscription,
-    updateSubscription
+    updateSubscription,
+    listAllActiveSubscription
 );
 
 //gym admin controller
@@ -69,4 +78,8 @@ const findgym = new FindGymUseCase(memberRepository,gymAdminRepository,trainerRe
 const approveGym = new ApproveGymUseCase(gymAdminRepository,emailService,approveGymEmailContentGenerator);
 const rejectGym = new RejectGymUseCase(gymAdminRepository,emailService,rejectGymEmailContentGenerator)
 export const injectedGymManagementController = new GymAdminManagementController(listGyms,blockGym,unBlockGym,findgym,approveGym,rejectGym)
+
+const findPayment = new FindPaymentUseCase(paymentRepository,gymAdminRepository,subscriptionRepo);
+const listAllPayments = new ListPaymentUseCase(paymentRepository)
+export const injectedPaymentController = new PaymentController(listAllPayments,findPayment);
 

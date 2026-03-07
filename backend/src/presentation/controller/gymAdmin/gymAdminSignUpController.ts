@@ -16,23 +16,21 @@ import {
 import { GymAdminAuthError } from "../../shared/constants/errorMessage/gymAdminAuthError";
 import { ISingupUseCase } from "../../../application/interfaces/useCase/gymAdmin/gymAdminSignUpUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
-import { MulterFiles } from "../../types/multerFileType";
 import cloudinary from "../../../config/cloudinary";
 
 export class SignUpController {
   constructor(
     private _VerifyEmailAndOtpUseCase: IVerifyEmailAndOtpUseCase,
-    private _singupUseCase: ISingupUseCase
+    private _singupUseCase: ISingupUseCase,
   ) {}
 
   async verifyEmail(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const data: IVerifyEmailRequestDTO = req.body;
-      console.log(req.body);
 
       const validationError = emailVerificationShema.safeParse(data);
       if (validationError.error) {
@@ -49,16 +47,16 @@ export class SignUpController {
   async verifyOtp(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const otp: IVerifyOtpRequestDTO = req.body;
-      console.log(otp,"otp is this")
+      console.log(otp, "otp is this");
       await this._VerifyEmailAndOtpUseCase.verify(otp);
       ResponseHelper.success(
         200,
         res,
-        GymAdminAuthSuccess.OTP_VERIFIED_SUCCESSFULL
+        GymAdminAuthSuccess.OTP_VERIFIED_SUCCESSFULL,
       );
     } catch (error) {
       next(error);
@@ -88,7 +86,7 @@ export class SignUpController {
           files.businessLicense[0].path,
           {
             folder: "gym_documents",
-          }
+          },
         );
         gymAdminData.businessLicense = result.secure_url;
       }
@@ -98,7 +96,7 @@ export class SignUpController {
           files.insuranceCertificate[0].path,
           {
             folder: "gym_documents",
-          }
+          },
         );
         gymAdminData.insuranceCertificate = result.secure_url;
       }
@@ -112,7 +110,7 @@ export class SignUpController {
         signupWithConfirmPasswordSchema.safeParse(gymAdminData);
       if (confirmPassword.error) {
         throw new InvalidDataException(
-          GymAdminAuthError.PASSWORDS_DO_NOT_MATCH
+          GymAdminAuthError.PASSWORDS_DO_NOT_MATCH,
         );
       }
       await this._singupUseCase.signUp(gymAdminData);
@@ -120,7 +118,7 @@ export class SignUpController {
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,
         res,
-        GymAdminAuthSuccess.REGISTRATION_SUCCESS
+        GymAdminAuthSuccess.REGISTRATION_SUCCESS,
       );
     } catch (error) {
       next(error);

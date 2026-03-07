@@ -15,6 +15,7 @@ import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { PackageSuccessMessage } from "../../shared/constants/messages/packageMessages";
 import { createPackageSchema } from "../../shared/validations/addPackageZodSchema";
 import { updatePackageSchema } from "../../shared/validations/updatePackageZodSchema";
+import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 
 export class PackageController {
   constructor(
@@ -23,13 +24,13 @@ export class PackageController {
     private _viewPackageUseCase: IViewPackageUseCase,
     private _listPackageUseCase: IListPackageUseCase,
     private _unBlockPackageUseCase: IUnBlockPackageUseCase,
-    private _updatePackageUseCase: IUpdatePakcageUseCase
+    private _updatePackageUseCase: IUpdatePakcageUseCase,
   ) {}
 
   async createPackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const pkg: ICreatePackageRequestDTO = req.body;
@@ -37,11 +38,12 @@ export class PackageController {
       if (validationError.error) {
         throw new InvalidDataException(validationError.error.issues[0].message);
       }
-      const id = await this._createPackageUseCase.execute(
-        pkg,
-        res.locals.data.id
+      await this._createPackageUseCase.execute(pkg, res.locals.data.id);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.CREATE,
+        res,
+        PackageSuccessMessage.CREATED,
       );
-      ResponseHelper.success(201, res, PackageSuccessMessage.CREATED);
     } catch (error) {
       next(error);
     }
@@ -50,12 +52,16 @@ export class PackageController {
   async blockPackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { packageId } = req.params;
       await this._blockPackageUseCase.execute(packageId);
-      ResponseHelper.success(200, res, PackageSuccessMessage.BLOCKED);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        PackageSuccessMessage.BLOCKED,
+      );
     } catch (error) {
       next(error);
     }
@@ -64,12 +70,16 @@ export class PackageController {
   async unBlockPackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { packageId } = req.params;
       await this._unBlockPackageUseCase.execute(packageId);
-      ResponseHelper.success(200, res, PackageSuccessMessage.UNBLOCKED);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        PackageSuccessMessage.UNBLOCKED,
+      );
     } catch (error) {
       next(error);
     }
@@ -78,12 +88,17 @@ export class PackageController {
   async viewPackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { packageId } = req.params;
       const pkg = await this._viewPackageUseCase.execute(packageId);
-      ResponseHelper.success(200, res, PackageSuccessMessage.FETCHED, pkg);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        PackageSuccessMessage.FETCHED,
+        pkg,
+      );
     } catch (error) {
       next(error);
     }
@@ -92,7 +107,7 @@ export class PackageController {
   async updatePackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const pkg: IUpdatePackageRequestDTO = req.body;
@@ -104,7 +119,11 @@ export class PackageController {
 
       const { packageId } = req.params;
       await this._updatePackageUseCase.execute(pkg, packageId);
-      ResponseHelper.success(200, res, PackageSuccessMessage.UPDATED);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        PackageSuccessMessage.UPDATED,
+      );
     } catch (error) {
       next(error);
     }
@@ -113,7 +132,7 @@ export class PackageController {
   async listAllPackage(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const params: IListPackageRequestDTO = {
@@ -128,9 +147,14 @@ export class PackageController {
 
       const data = await this._listPackageUseCase.execute(
         params,
-        res.locals.data.id
+        res.locals.data.id,
       );
-      ResponseHelper.success(200, res, PackageSuccessMessage.LISTED, data);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        PackageSuccessMessage.LISTED,
+        data,
+      );
     } catch (error) {
       next(error);
     }

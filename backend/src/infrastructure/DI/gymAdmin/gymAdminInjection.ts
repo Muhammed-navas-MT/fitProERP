@@ -27,8 +27,6 @@ import { PasswordGenerator } from "../../services/passwordGenerater";
 import { SubscriptionlistController } from "../../../presentation/controller/gymAdmin/subscriptionListController";
 import { ListAllSubscription } from "../../../application/useCases/gymAdmin/listAllSubscriptionUseCase";
 import { PurchaseSubscriptionController } from "../../../presentation/controller/gymAdmin/purchaseSubscriptionController";
-import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
-import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 import { CreateBranchUseCase } from "../../../application/useCases/gymAdmin/branch/createBranchUseCase";
 import { ListBranchUseCase } from "../../../application/useCases/gymAdmin/branch/listBranchUseCase";
 import { BlockBranchUseCase } from "../../../application/useCases/gymAdmin/branch/blockBranchUseCase";
@@ -67,89 +65,194 @@ import { PackageController } from "../../../presentation/controller/gymAdmin/pac
 import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
 import { CreateCheckoutSessionUseCase } from "../../../application/useCases/gymAdmin/createCheckoutSessionUseCase";
-import { StripeWebhookController } from "../../../presentation/controller/shared/stripeWebhookHandler";
-import { ProcessStripeWebhookUseCase } from "../../../application/useCases/gymAdmin/ProcessStripeWebhookUseCase";
 import { CheckGymAdminSubscriptionMiddleware } from "../../../presentation/middlewares/checkGymAdminSubscriptionMiddleware";
 import { ReApplyController } from "../../../presentation/controller/gymAdmin/reApplyController";
 import { ReApplyUseCase } from "../../../application/useCases/gymAdmin/reApplyUseCase";
+import { FindRevenueDetailUseCase } from "../../../application/useCases/gymAdmin/revenueManagement/findRevenueUseCase";
+import { GymAdminRevenueRepository } from "../../repository/gymAdmin/revenueRepo";
+import { gymAdminRevenueModel } from "../../repository/databaseConfigs/models/revenueModel";
+import { ListRevenueUseCase } from "../../../application/useCases/gymAdmin/revenueManagement/listRevenueUseCase";
+import { GymAdminRevenueController } from "../../../presentation/controller/gymAdmin/revenueManagementController";
+import { GymAdminExpenseRepository } from "../../repository/gymAdmin/expenseRepo";
+import { gymAdminExpenseModel } from "../../repository/databaseConfigs/models/expenseModel";
+import { CreateExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/createExpenseUseCase";
+import { FindExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/findExpenseUseCase";
+import { FindExpenseDetailUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/findExpenseDetailUseCase";
+import { ListAllExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/listAllExpenseUseCase";
+import { UpdateExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/updateExpenseUseCase";
+import { GymAdminExpenseController } from "../../../presentation/controller/gymAdmin/expenseManagementController";
 
-
-const otpService =new OtpService()
-const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator()
-const emailService = new EmailService()
-const gymAdminRepository = new GymAdminRepository(gymAdminModel)
+const otpService = new OtpService();
+const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
+const emailService = new EmailService();
+const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const packageRepository = new PackageRepository(PackageModel);
-const subsriptionRepository = new SubscriptionRepository(subscriptionModel)
-const jwtService = new JwtService()
-const cacheService = new CacheService()
-const hashService = new HashPassword()
-const cloudinaryService = new CloudinaryService()
-const signUpUseCase = new SignUpUseCase(gymAdminRepository,hashService,cloudinaryService)
-const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository,hashService)
-const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(otpService,signUpOtpEmailContentGenerator,emailService,gymAdminRepository,cacheService)
-export const injectedGymAdminSingUpController = new SignUpController(verifyEmailAndOtpUseCase,signUpUseCase)
-export const injectedGymAdminLoginController = new GymAdminLoginController(loginUseCase,jwtService);
+const subsriptionRepository = new SubscriptionRepository(subscriptionModel);
+const revenueRepository = new GymAdminRevenueRepository(gymAdminRevenueModel);
+const expenseRepository = new GymAdminExpenseRepository(gymAdminExpenseModel);
+const jwtService = new JwtService();
+const cacheService = new CacheService();
+const hashService = new HashPassword();
+const cloudinaryService = new CloudinaryService();
+const signUpUseCase = new SignUpUseCase(
+  gymAdminRepository,
+  hashService,
+  cloudinaryService,
+);
+const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository, hashService);
+const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(
+  otpService,
+  signUpOtpEmailContentGenerator,
+  emailService,
+  gymAdminRepository,
+  cacheService,
+);
+export const injectedGymAdminSingUpController = new SignUpController(
+  verifyEmailAndOtpUseCase,
+  signUpUseCase,
+);
+export const injectedGymAdminLoginController = new GymAdminLoginController(
+  loginUseCase,
+  jwtService,
+);
 
-export const injectAuthMiddleware = new AuthMiddleware(jwtService,cacheService);
+export const injectAuthMiddleware = new AuthMiddleware(
+  jwtService,
+  cacheService,
+);
 
-const tokenValidtionUseCase = new TokenValidationUseCase(jwtService,cacheService);
-export const injectedGymAdminLogoutController = new GymAdminLogoutController(tokenValidtionUseCase);
+const tokenValidtionUseCase = new TokenValidationUseCase(
+  jwtService,
+  cacheService,
+);
+export const injectedGymAdminLogoutController = new GymAdminLogoutController(
+  tokenValidtionUseCase,
+);
 
 // trainer management
-const memberRepository = new MemberRepository(memberModel)
+const memberRepository = new MemberRepository(memberModel);
 const trainerRepository = new TrainerRepository(trainerModel);
-const passwordGenerator = new PasswordGenerator()
-const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
-const listAllTrainers = new listAllTrainersUseCase(trainerRepository,gymAdminRepository);
-const blockTrainer = new BlockTrainerUseCase(trainerRepository,memberRepository);
+const passwordGenerator = new PasswordGenerator();
+const sendPasswordEmailContentGenerator =
+  new SendPasswordEmailContentGenerator();
+const listAllTrainers = new listAllTrainersUseCase(
+  trainerRepository,
+  gymAdminRepository,
+);
+const blockTrainer = new BlockTrainerUseCase(
+  trainerRepository,
+  memberRepository,
+);
 const unBlockTrainer = new UnBlockTrainerUseCase(trainerRepository);
 const findTrainer = new FindTrainerUseCase(trainerRepository);
-const updateTrainer = new UpdateTrainerUseCase(trainerRepository,memberRepository);
-const listAllActiveTrainers = new ListAllActiveTrainersByBranch(trainerRepository)
-const createTrainer = new CreateTrainerUseCase(trainerRepository,hashService,passwordGenerator,emailService,gymAdminRepository,sendPasswordEmailContentGenerator,)
-export const injectTrainerManagementController = new TrainerManagementController(createTrainer,listAllTrainers,blockTrainer,unBlockTrainer,findTrainer,updateTrainer,listAllActiveTrainers);
+const updateTrainer = new UpdateTrainerUseCase(
+  trainerRepository,
+  memberRepository,
+);
+const listAllActiveTrainers = new ListAllActiveTrainersByBranch(
+  trainerRepository,
+);
+const createTrainer = new CreateTrainerUseCase(
+  trainerRepository,
+  hashService,
+  passwordGenerator,
+  emailService,
+  gymAdminRepository,
+  sendPasswordEmailContentGenerator,
+);
+export const injectTrainerManagementController =
+  new TrainerManagementController(
+    createTrainer,
+    listAllTrainers,
+    blockTrainer,
+    unBlockTrainer,
+    findTrainer,
+    updateTrainer,
+    listAllActiveTrainers,
+  );
 
 //subscription list controller
-const listAllActiveSubscription = new ListAllSubscription(subsriptionRepository,gymAdminRepository)
-export const injectedListSubscriptionController = new SubscriptionlistController(listAllActiveSubscription);
+const listAllActiveSubscription = new ListAllSubscription(
+  subsriptionRepository,
+  gymAdminRepository,
+);
+export const injectedListSubscriptionController =
+  new SubscriptionlistController(listAllActiveSubscription);
 
-const paymentRepository = new SuperAdminPaymentRepository(paymentModel)
-const createCheckoutSessionUseCase = new CreateCheckoutSessionUseCase(subsriptionRepository,gymAdminRepository)
-export const injectedPurchaseSubscriptionController = new PurchaseSubscriptionController(createCheckoutSessionUseCase)
+const createCheckoutSessionUseCase = new CreateCheckoutSessionUseCase(
+  subsriptionRepository,
+  gymAdminRepository,
+);
+export const injectedPurchaseSubscriptionController =
+  new PurchaseSubscriptionController(createCheckoutSessionUseCase);
 
 // branch controller
 const branchRepository = new BranchRepository(branchModel);
-const createBranch = new CreateBranchUseCase(branchRepository,gymAdminRepository);
-const updateBranch = new UpdateBranchUseCase(branchRepository)
-const listBranch = new ListBranchUseCase(branchRepository,memberRepository,trainerRepository);
+const createBranch = new CreateBranchUseCase(
+  branchRepository,
+  gymAdminRepository,
+);
+const updateBranch = new UpdateBranchUseCase(branchRepository);
+const listBranch = new ListBranchUseCase(
+  branchRepository,
+  memberRepository,
+  trainerRepository,
+);
 const blockBranch = new BlockBranchUseCase(branchRepository);
 const unBlockBranch = new UnBlockBranchUseCase(branchRepository);
 const findBranch = new FindBranchUseCase(branchRepository);
 const listActiveBranch = new ListActveBranchUseCase(branchRepository);
-export const injectedBranchController = new BranchController(createBranch,listBranch,findBranch,unBlockBranch,blockBranch,updateBranch,listActiveBranch);
+export const injectedBranchController = new BranchController(
+  createBranch,
+  listBranch,
+  findBranch,
+  unBlockBranch,
+  blockBranch,
+  updateBranch,
+  listActiveBranch,
+);
 
 // member management controller
 const createMember = new CreateMemberUseCase(
-    memberRepository,
-    hashService,
-    emailService,
-    passwordGenerator,
-    sendPasswordEmailContentGenerator,
-    gymAdminRepository,trainerRepository,
-    branchRepository
+  memberRepository,
+  hashService,
+  emailService,
+  passwordGenerator,
+  sendPasswordEmailContentGenerator,
+  gymAdminRepository,
+  trainerRepository,
+  branchRepository,
 );
 const updateMember = new UpdateMemberUseCase(memberRepository);
 const findMember = new FindMemberUseCase(memberRepository);
 const blockMember = new BlockMemberUseCase(memberRepository);
 const unBlockMember = new UnBlockMemberUseCase(memberRepository);
-const listMembers = new ListAllMemberUseCase(memberRepository,gymAdminRepository);
-export const injectedMemberManagementController = new MemberManagementController(createMember,listMembers,findMember,updateMember,blockMember,unBlockMember);
+const listMembers = new ListAllMemberUseCase(
+  memberRepository,
+  gymAdminRepository,
+);
+export const injectedMemberManagementController =
+  new MemberManagementController(
+    createMember,
+    listMembers,
+    findMember,
+    updateMember,
+    blockMember,
+    unBlockMember,
+  );
 
 //profile management
 const updateProfile = new UpdateGymAdminProfileUseCase(gymAdminRepository);
 const viewProfile = new ViewGymAdminProfileUseCase(gymAdminRepository);
-const changePassword = new ChangeGymAdminPasswordUseCase(gymAdminRepository,hashService);
-export const injectedGymAdminProfileControler = new GymAdminProfileController(viewProfile,updateProfile,changePassword);
+const changePassword = new ChangeGymAdminPasswordUseCase(
+  gymAdminRepository,
+  hashService,
+);
+export const injectedGymAdminProfileControler = new GymAdminProfileController(
+  viewProfile,
+  updateProfile,
+  changePassword,
+);
 
 //package management
 const viewPackage = new ViewPackageUseCase(packageRepository);
@@ -158,8 +261,40 @@ const updatePackage = new UpdatePackageUseCase(packageRepository);
 const blockPackage = new BlockPackageUseCase(packageRepository);
 const unBlockPackage = new UnBlockPackageUseCase(packageRepository);
 const listPackages = new ListPackageUseCase(packageRepository);
-export const injectedPackageController = new PackageController(blockPackage,createPackage,viewPackage,listPackages,unBlockPackage,updatePackage);
+export const injectedPackageController = new PackageController(
+  blockPackage,
+  createPackage,
+  viewPackage,
+  listPackages,
+  unBlockPackage,
+  updatePackage,
+);
 
-export const injectedCheckGymAdminSubscriptionMiddleware = new CheckGymAdminSubscriptionMiddleware(gymAdminRepository);
-const reApplyUseCase = new ReApplyUseCase(gymAdminRepository,cloudinaryService)
+export const injectedCheckGymAdminSubscriptionMiddleware =
+  new CheckGymAdminSubscriptionMiddleware(gymAdminRepository);
+const reApplyUseCase = new ReApplyUseCase(
+  gymAdminRepository,
+  cloudinaryService,
+);
 export const injectedReApplyController = new ReApplyController(reApplyUseCase);
+
+const findRevenue = new FindRevenueDetailUseCase(revenueRepository);
+const listAllRevenues = new ListRevenueUseCase(revenueRepository);
+export const injectedRevenueController = new GymAdminRevenueController(
+  listAllRevenues,
+  findRevenue,
+);
+
+//expense management
+const createExpense = new CreateExpenseUseCase(expenseRepository);
+const findExpense = new FindExpenseUseCase(expenseRepository);
+const findExpenseDetail = new FindExpenseDetailUseCase(expenseRepository);
+const listAllExpense = new ListAllExpenseUseCase(expenseRepository);
+const updateExpense = new UpdateExpenseUseCase(expenseRepository);
+export const injectedExpenseController = new GymAdminExpenseController(
+  createExpense,
+  findExpense,
+  findExpenseDetail,
+  listAllExpense,
+  updateExpense,
+);

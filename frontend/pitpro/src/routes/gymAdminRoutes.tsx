@@ -19,6 +19,8 @@ import SubscriptionPage from "@/page/gymAdmin/subscriptionPage";
 import ReUploadDocuments from "@/page/gymAdmin/reapplyPage";
 import GymAdminPublicRoute from "@/components/shared/protectedComponets/gymAdminPublicRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
+import RevenuePage from "@/page/gymAdmin/revenuePage";
+import ExpensePage from "@/page/gymAdmin/expensePage";
 
 const GymAdminRoutes = () => {
   return (
@@ -91,6 +93,10 @@ const GymAdminRoutes = () => {
            <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}
            element={<SubscriptionPage/>}
            />
+           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_REVENUE}
+           element={<RevenuePage/>}/>
+           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}
+           element={<ExpensePage/>}/>
         </Route>
       </Route>
     </Routes>

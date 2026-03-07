@@ -5,9 +5,7 @@ import { BaseRepository } from "../base/baseRepo";
 import { GymAdminEntity } from "../../../domain/entities/gymAdmin/gymAdminEntity";
 import { IListGymsRequestDTO } from "../../../application/dtos/superAdminDto/gymManagementDtos";
 import { Status } from "../../../domain/enums/status";
-import {
-  GymAdminProfileResponseDTO,
-} from "../../../application/dtos/gymAdminDto/gymAdminProfileDtos";
+import { GymAdminProfileResponseDTO } from "../../../application/dtos/gymAdminDto/gymAdminProfileDtos";
 import { mapGymAdminToProfileResponse } from "../../../application/mappers/gymAdmin/profileMappers";
 
 export class GymAdminRepository
@@ -67,7 +65,7 @@ export class GymAdminRepository
   async unBlockById(id: string): Promise<boolean> {
     const result = await this._model.updateOne(
       { _id: id },
-      { $set: { status: Status.ACTIVE } }
+      { $set: { status: Status.ACTIVE } },
     );
     return result.modifiedCount > 0;
   }
@@ -75,12 +73,14 @@ export class GymAdminRepository
   async blockById(id: string): Promise<boolean> {
     const result = await this._model.updateOne(
       { _id: id },
-      { $set: { status: Status.BLOCKED } }
+      { $set: { status: Status.BLOCKED } },
     );
     return result.modifiedCount > 0;
   }
 
-  async findGymAdminWithBranches( gymAdminId: string): Promise<GymAdminProfileResponseDTO | null> {
+  async findGymAdminWithBranches(
+    gymAdminId: string,
+  ): Promise<GymAdminProfileResponseDTO | null> {
     const gymAdmin = await this._model
       .findOne({ _id: gymAdminId })
       .populate({
@@ -92,8 +92,8 @@ export class GymAdminRepository
     if (!gymAdmin) return null;
 
     const branches: string[] = Array.isArray(gymAdmin.branches)
-  ? gymAdmin.branches.map((branch: any) => branch?.branchName ?? "")
-  : [];
+      ? gymAdmin.branches.map((branch: any) => branch?.branchName ?? "")
+      : [];
 
     return mapGymAdminToProfileResponse(gymAdmin, branches);
   }

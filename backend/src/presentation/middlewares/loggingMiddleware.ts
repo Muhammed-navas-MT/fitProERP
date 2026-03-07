@@ -11,12 +11,12 @@ export function accessAndErrorLoggerMiddleware(app: Express) {
     const accessLogStream = createRotatingFileStream(
       "1d",
       7,
-      path.join(process.cwd(), "logs", "accessLogs")
+      path.join(process.cwd(), "logs", "accessLogs"),
     );
     const errorLogStream = createRotatingFileStream(
       "1d",
       7,
-      path.join(process.cwd(), "logs", "errorLogs")
+      path.join(process.cwd(), "logs", "errorLogs"),
     );
 
     app.use(morgan("combined", { stream: accessLogStream }));
@@ -25,7 +25,7 @@ export function accessAndErrorLoggerMiddleware(app: Express) {
       morgan("combined", {
         stream: errorLogStream,
         skip: (req: Request, res: Response) => res.statusCode < 400,
-      })
+      }),
     );
   }
 }

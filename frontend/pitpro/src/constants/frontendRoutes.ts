@@ -19,7 +19,10 @@ export const FRONTEND_ROUTES = {
         SUCCESS:"success",
         CANCEL:"cancel",
         SUBSCRIPTION:"subscriptions",
-        REAPPLY:"reapply"
+        REAPPLY:"reapply",
+        LIST_REVENUE:"revenues",
+        REVENUE_DETAIL:"revenue_detail",
+        LIST_EXPENSE: "expenses",
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",
@@ -30,6 +33,8 @@ export const FRONTEND_ROUTES = {
         EDIT_SUBSCRIPTION:"edit-subscription/:id",
         LIST_GYMS:"gyms",
         GYM_DETAIL:"gym-detail/:gymId",
+        LIST_PAYMENTS:"payments",
+        PAYMENT_DETAIL:"payment_detail",
     },
     TRAINER:{
         BASE:"/trainer",

@@ -89,7 +89,7 @@ export class MemberMapper {
       phone: member.phone,
       address: member.address,
       password: password,
-      status: Status.ACTIVE,
+      status: Status.IN_ACTIVE,
       emergencyNumber: member.emergencyNumber,
       healthDetails: {
         gender: member.healthDetails.gender,

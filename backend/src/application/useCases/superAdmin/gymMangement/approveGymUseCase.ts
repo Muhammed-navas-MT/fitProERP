@@ -12,7 +12,7 @@ export class ApproveGymUseCase implements IApproveGymUseCase {
   constructor(
     private _gymRepository: IGymAdminRepository,
     private _emailService: IEmailService,
-    private _approveGymEmailContentGenerator: IApproveGymEmailContentGenerator
+    private _approveGymEmailContentGenerator: IApproveGymEmailContentGenerator,
   ) {}
 
   async approve(id: string): Promise<void> {
@@ -22,10 +22,7 @@ export class ApproveGymUseCase implements IApproveGymUseCase {
         throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
       }
 
-      await this._gymRepository.update(
-        {status: Status.IN_ACTIVE},
-        id
-      );
+      await this._gymRepository.update({ status: Status.IN_ACTIVE }, id);
       const htmlContent = this._approveGymEmailContentGenerator.generateHtml({
         gymUrl: `http://${gymAdmin.subdomain}.localhost:5173/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
         gymName: gymAdmin.gymName,

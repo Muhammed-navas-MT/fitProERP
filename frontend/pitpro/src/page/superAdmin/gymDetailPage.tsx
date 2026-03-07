@@ -57,9 +57,9 @@ export default function GymDetailPage() {
 
           <div className="p-6 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <StatCard title="Total Members" value={gymAdminData.totalMembers} maxValue={gymAdminData.subscription.limits.maxMembers} />
-              <StatCard title="Total Branches" value={gymAdminData.totalBranches} maxValue={gymAdminData.subscription.limits.maxBranches} />
-              <StatCard title="Total Trainers" value={gymAdminData.totalTrainers} maxValue={gymAdminData.subscription.limits.maxTrainers} />
+              <StatCard title="Total Members" value={gymAdminData.totalMembers} maxValue={gymAdminData?.subscription?.limits?.maxMembers||0} />
+              <StatCard title="Total Branches" value={gymAdminData.totalBranches} maxValue={gymAdminData?.subscription?.limits?.maxBranches||0} />
+              <StatCard title="Total Trainers" value={gymAdminData.totalTrainers} maxValue={gymAdminData?.subscription?.limits?.maxTrainers||0} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
