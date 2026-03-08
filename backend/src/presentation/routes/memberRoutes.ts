@@ -115,6 +115,17 @@ export class MemberRoutes {
         injectedAttendanceController.getCurrentMonthAttendance(req, res, next);
       },
     );
+
+    this._route.get(
+      ROUTES.MEMBER.LIST_PAYMENTS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedPackageListAndCheckoutController.listAllPayments(
+          req,
+          res,
+          next,
+        );
+      },
+    );
   }
   public get_routes(): Router {
     return this._route;

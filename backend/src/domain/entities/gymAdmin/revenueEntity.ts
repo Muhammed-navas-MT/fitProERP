@@ -5,11 +5,11 @@ import { PaymentStatus } from "../../enums/paymentStatus";
 export interface IGymAdminRevenueEntity {
   id?: string;
   gymId: string;
-  branchId:string;
-  userId:string;
-  sourceType:RevenueSourceType;
+  branchId: string;
+  userId: string;
+  sourceType: RevenueSourceType;
   sourceId: string;
-  source:string;
+  source: string;
   stripeSessionId: string;
   amount: number;
   currency: string;

@@ -4,9 +4,11 @@ import { IGymAdminRevenueModel } from "../databaseConfigs/models/revenueModel";
 import { IGymAdminRevenueRepository } from "../../../application/interfaces/repository/gymAdmin/revenueRepoInterface";
 import { IListRevenueRequestDTO } from "../../../application/dtos/gymAdminDto/revenueDto";
 import {
+  IPopulatedPayment,
   IPopulatedRevenue,
   SummaryType,
 } from "../databaseConfigs/types/populatedRevenueType";
+import { IListPaymentsRequestDto } from "../../../application/dtos/memberDto/purchasePackageDto";
 
 export class GymAdminRevenueRepository
   extends BaseRepository<IGymAdminRevenueModel>
@@ -224,5 +226,191 @@ export class GymAdminRevenueRepository
 
     const result = await this._model.aggregate<IPopulatedRevenue>(pipeline);
     return result[0] ?? null;
+  }
+
+  async findAllPaymentsByMemberId(params: IListPaymentsRequestDto): Promise<{
+    payments: IPopulatedPayment[];
+    total: number;
+    grandTotalAmount: number;
+    summary: SummaryType[];
+  }> {
+    const page = params.page;
+    const limit = params.limit;
+    const skip = (page - 1) * limit;
+
+    const search = params.search;
+
+    const match: FilterQuery<IGymAdminRevenueModel> = {
+      userId: new Types.ObjectId(params.memberId),
+    };
+
+    if (params.sourceType) {
+      match.sourceType = params.sourceType;
+    }
+
+    if (search) {
+      match.source = { $regex: search, $options: "i" };
+    }
+
+    const pipeline: PipelineStage[] = [
+      { $match: match },
+
+      {
+        $lookup: {
+          from: "packages",
+          localField: "sourceId",
+          foreignField: "_id",
+          as: "plan",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "bookings",
+          localField: "sourceId",
+          foreignField: "_id",
+          as: "booking",
+        },
+      },
+
+      { $unwind: { path: "$plan", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$booking", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          from: "trainers",
+          localField: "booking.trainerId",
+          foreignField: "_id",
+          as: "trainer",
+        },
+      },
+
+      { $unwind: { path: "$trainer", preserveNullAndEmptyArrays: true } },
+
+      {
+        $addFields: {
+          sourceDetails: {
+            $cond: [
+              { $eq: ["$sourceType", "Plan"] },
+              {
+                planName: "$plan.name",
+                duration: "$plan.durationInDays",
+              },
+              {
+                trainerName: "$trainer.name",
+                sessionDate: "$booking.sessionDate",
+              },
+            ],
+          },
+        },
+      },
+
+      {
+        $facet: {
+          payments: [
+            { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
+
+            {
+              $project: {
+                _id: 1,
+                source: 1,
+                sourceType: 1,
+                sourceDetails: 1,
+                amount: 1,
+                paymentMethod: 1,
+                status: 1,
+                createdAt: 1,
+              },
+            },
+          ],
+          totalCount: [{ $count: "count" }],
+          grandTotal: [
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$amount" },
+              },
+            },
+          ],
+
+          summary: [
+            {
+              $group: {
+                _id: "$sourceType",
+                totalAmount: { $sum: "$amount" },
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                sourceType: "$_id",
+                totalAmount: 1,
+                count: 1,
+              },
+            },
+          ],
+        },
+      },
+    ];
+
+    const result = await this._model.aggregate(pipeline);
+
+    const payments: IPopulatedPayment[] = result[0]?.payments || [];
+    const total = result[0]?.totalCount?.[0]?.count || 0;
+    const grandTotalAmount = result[0]?.grandTotal?.[0]?.total || 0;
+    const summary: SummaryType[] = result[0]?.summary || [];
+
+    return {
+      payments,
+      total,
+      grandTotalAmount,
+      summary,
+    };
+  }
+
+  async calculateTotalByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId,
+          branchId,
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalRevenue : 0;
+  }
+
+  async countByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const count = await this._model.countDocuments({
+      gymId,
+      branchId,
+      createdAt: { $gte: startDate, $lte: endDate },
+    });
+
+    return count;
   }
 }

@@ -17,8 +17,8 @@ export interface IListRevenueResponseDTO {
   search: string;
   limit: number;
   sourceType: string;
-  summary:SummaryType[],
-  grandTotalAmount:number,
+  summary: SummaryType[];
+  grandTotalAmount: number;
 }
 
 export interface RevenueResponseDto {

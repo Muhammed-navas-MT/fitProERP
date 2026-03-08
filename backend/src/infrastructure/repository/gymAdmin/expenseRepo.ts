@@ -71,8 +71,6 @@ export class GymAdminExpenseRepository
 
       {
         $facet: {
-          /* ---------------- EXPENSE LIST ---------------- */
-
           data: [
             {
               $project: {
@@ -101,11 +99,7 @@ export class GymAdminExpenseRepository
             { $limit: limit },
           ],
 
-          /* ---------------- TOTAL COUNT ---------------- */
-
           totalCount: [{ $count: "count" }],
-
-          /* ---------------- 12 MONTH SUMMARY ---------------- */
 
           summary: [
             {
@@ -213,8 +207,6 @@ export class GymAdminExpenseRepository
             { $sort: { month: 1 } },
           ],
 
-          /* ---------------- THIS MONTH TOTAL ---------------- */
-
           thisMonthTotal: [
             {
               $match: {
@@ -228,8 +220,6 @@ export class GymAdminExpenseRepository
               },
             },
           ],
-
-          /* ---------------- GRAND TOTAL ---------------- */
 
           grandTotal: [
             {
@@ -323,5 +313,45 @@ export class GymAdminExpenseRepository
     const result = await this._model.aggregate<IPopulatedExpense>(pipeline);
 
     return result.length ? result[0] : null;
+  }
+
+  async calculateTotalByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId,
+          branchId,
+          paymentDate: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalExpense: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    return result.length ? result[0].totalExpense : 0;
+  }
+
+  async countByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const count = await this._model.countDocuments({
+      gymId,
+      branchId,
+      paymentDate: { $gte: startDate, $lte: endDate },
+    });
+
+    return count;
   }
 }

@@ -37,7 +37,7 @@ const sidebarItems: SidebarItem[] = [
   { icon: <Calendar size={20} />, label: "Book Trainer", href: "/####" },
   { icon: <BarChart3 size={20} />, label: "Progress", href: "/#####" },
   { icon: <Bell size={20} />, label: "Notifications", href: "/######" },
-  { icon: <CreditCard size={20} />, label: "Payments", href: "/#######" },
+  { icon: <CreditCard size={20} />, label: "Payments", href: `${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.LIST_PAYMENTS}` },
   { icon: <AlertCircle size={20} />, label: "Complaints", href: "/########" },
 ];
 

@@ -52,6 +52,7 @@ export const FRONTEND_ROUTES = {
         PROFILE:"profile",
         PACKAGELIST:"package_list",
         MEMBERSHIP:"packages",
-        SUCCESS:"success"
+        SUCCESS:"success",
+        LIST_PAYMENTS:"payments"
     }
 }

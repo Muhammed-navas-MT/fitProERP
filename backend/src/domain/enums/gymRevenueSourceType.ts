@@ -1,4 +1,4 @@
 export enum RevenueSourceType {
   PLAN = "Plan",
-  BOOK = "Booking"
+  BOOK = "Booking",
 }

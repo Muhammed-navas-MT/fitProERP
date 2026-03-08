@@ -18,7 +18,7 @@ export class BranchRepository
   }
 
   async findByNameAndLocation(
-    params: IFindByNameAndLocationDTO
+    params: IFindByNameAndLocationDTO,
   ): Promise<IBranchEntity | null> {
     const { gymId, branchName, city, pincode } = params;
 
@@ -33,7 +33,7 @@ export class BranchRepository
   }
 
   async listAllBranch(
-    params: IListBranchRequestDTO
+    params: IListBranchRequestDTO,
   ): Promise<{ branch: IBranchEntity[]; total: number }> {
     const { gymId, page = 1, limit = 5, search } = params;
 
@@ -71,15 +71,16 @@ export class BranchRepository
     };
   }
   async listAllActiveBranch(gymId: string): Promise<IBranchEntity[]> {
-  try {
     const branches = await this._model
       .find({ gymId, status: Status.ACTIVE })
       .lean();
 
     return branches;
-  } catch (error) {
-    throw error;
   }
-}
 
+  async findAllBranchIds(gymId: string): Promise<string[]> {
+    const branches = await this._model.find({ gymId }, { _id: 1 }).lean();
+
+    return branches.map((branch) => branch._id.toString());
+  }
 }
