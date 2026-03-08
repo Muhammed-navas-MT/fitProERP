@@ -18,7 +18,6 @@ export class ListAllExpenseUseCase implements IListAllExpenseUseCase {
       thisMonthTotalExpense,
       grandTotal,
     } = await this._expenseRepository.findAllExpense(params);
-    console.log(expense, total, expenseSummary);
     const response = mapExpenseListResponse(
       expense,
       params,

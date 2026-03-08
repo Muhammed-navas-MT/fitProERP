@@ -9,6 +9,7 @@ import MemberLoginPage from "@/page/member/memberLoginPage";
 import MemberProfilePage from "@/page/member/memberProfilePage";
 import MemberShipPage from "@/page/member/memberShipPage";
 import MemberPackages from "@/page/member/packagesListPage";
+import PaymentsPage from "@/page/member/paymentPage";
 import { Route, Routes } from "react-router-dom";
 
 const MemberRoutes = () => {
@@ -54,6 +55,7 @@ const MemberRoutes = () => {
             path={FRONTEND_ROUTES.MEMBER.MEMBERSHIP}
             element={<MemberShipPage/>}
           />
+          <Route path={FRONTEND_ROUTES.MEMBER.LIST_PAYMENTS} element={<PaymentsPage/>}/>
         </Route>
       </Route>
     </Routes>

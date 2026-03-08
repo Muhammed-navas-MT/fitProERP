@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { PaymentMethod } from "../../../../domain/enums/paymentMethod";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
+import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType";
 
 export interface IPopulatedMember {
   name: string;
@@ -30,4 +31,21 @@ export interface SummaryType {
   sourceType: string;
   totalAmount: number;
   count: number;
+}
+
+export interface IPopulatedPayment {
+  _id: string;
+  source: string;
+  sourceType: RevenueSourceType;
+  sourceDetails: {
+    planName?: string;
+    duration?: string;
+    trainerName?: string;
+    sessionDate?: Date;
+  };
+
+  amount: number;
+  paymentMethod: PaymentMethod;
+  status: PaymentStatus;
+  createdAt: Date;
 }

@@ -15,4 +15,17 @@ export interface IGymAdminExpenseRepository extends IBaseRepository<IGymAdminExp
     grandTotal: number;
   }>;
   findExpenseDetailById(id: string): Promise<IPopulatedExpense | null>;
+  calculateTotalByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number>;
+
+  countByDate(
+    gymId: string,
+    branchId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number>;
 }

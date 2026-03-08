@@ -2,6 +2,7 @@ import { TokenValidationUseCase } from "../../../application/useCases/auth/token
 import { MemberLoginUseCase } from "../../../application/useCases/member/memberLoginUseCase";
 import { CreateMemberCheckoutSessionUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/createMemberCheckoutUseCase";
 import { ListActivePackagesUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/listActivepackagesUseCase";
+import { ListAllPaymentsUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/listAllPaymentsUseCase";
 import { ChangePasswordUseCase } from "../../../application/useCases/member/profileManagement/changePasswordUseCase";
 import { DeleteProfilePictureUseCase } from "../../../application/useCases/member/profileManagement/deleteProfilePictureUseCase";
 import { UpdateProfileUseCase } from "../../../application/useCases/member/profileManagement/updateProfileUseCase";
@@ -16,32 +17,71 @@ import { branchModel } from "../../repository/databaseConfigs/models/branchModel
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
+import { gymAdminRevenueModel } from "../../repository/databaseConfigs/models/revenueModel";
 import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
 import { GymAdminRepository } from "../../repository/gymAdmin/gymAdminRepo";
 import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
+import { GymAdminRevenueRepository } from "../../repository/gymAdmin/revenueRepo";
 import { MemberRepository } from "../../repository/member/memberRepo";
 import { CacheService } from "../../services/cacheService";
 import { HashPassword } from "../../services/hashService";
 import { JwtService } from "../../services/jwtService";
 
-const memberRepository = new MemberRepository(memberModel)
-const gymAdminRepository = new GymAdminRepository(gymAdminModel)
+const memberRepository = new MemberRepository(memberModel);
+const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const packageRepository = new PackageRepository(PackageModel);
-const hashService = new  HashPassword()
-const jwtService = new JwtService()
+const revenueRepository = new GymAdminRevenueRepository(gymAdminRevenueModel);
+const hashService = new HashPassword();
+const jwtService = new JwtService();
 const cacheService = new CacheService();
 const branchRepository = new BranchRepository(branchModel);
-const loginUseCase = new MemberLoginUseCase(memberRepository,hashService,gymAdminRepository)
-export const injectedMemberLoginController = new MemberLoginController(loginUseCase,jwtService);
-export const injectedCheckMemberAccessMiddleWare = new CheckMemberAccessMiddleWare(gymAdminRepository,branchRepository,memberRepository);
+const loginUseCase = new MemberLoginUseCase(
+  memberRepository,
+  hashService,
+  gymAdminRepository,
+);
+export const injectedMemberLoginController = new MemberLoginController(
+  loginUseCase,
+  jwtService,
+);
+export const injectedCheckMemberAccessMiddleWare =
+  new CheckMemberAccessMiddleWare(
+    gymAdminRepository,
+    branchRepository,
+    memberRepository,
+  );
 const updateProfile = new UpdateProfileUseCase(memberRepository);
 const uploadProfilePicture = new UploadProfilePictureUseCase(memberRepository);
-const changePassword = new ChangePasswordUseCase(memberRepository,hashService);
+const changePassword = new ChangePasswordUseCase(memberRepository, hashService);
 const deleteProfilePicture = new DeleteProfilePictureUseCase(memberRepository);
 const viewMemberProfile = new ViewMemberProfileUseCase(memberRepository);
-const tokenInvalidatUseCase = new TokenValidationUseCase(jwtService,cacheService);
-const listActivePackages = new ListActivePackagesUseCase(memberRepository,packageRepository)
-const createCheckoutUseCase = new CreateMemberCheckoutSessionUseCase(packageRepository,memberRepository);
-export const injectedMemberProfileController = new ProfileController(viewMemberProfile,updateProfile,uploadProfilePicture,deleteProfilePicture,changePassword);
-export const injectedMemberLogoutController = new MemberLogoutController(tokenInvalidatUseCase);
-export const injectedPackageListAndCheckoutController = new PackageListAndCheckoutController(listActivePackages,createCheckoutUseCase)
+const tokenInvalidatUseCase = new TokenValidationUseCase(
+  jwtService,
+  cacheService,
+);
+const listActivePackages = new ListActivePackagesUseCase(
+  memberRepository,
+  packageRepository,
+);
+const createCheckoutUseCase = new CreateMemberCheckoutSessionUseCase(
+  packageRepository,
+  memberRepository,
+);
+export const injectedMemberProfileController = new ProfileController(
+  viewMemberProfile,
+  updateProfile,
+  uploadProfilePicture,
+  deleteProfilePicture,
+  changePassword,
+);
+export const injectedMemberLogoutController = new MemberLogoutController(
+  tokenInvalidatUseCase,
+);
+const listAllPayments = new ListAllPaymentsUseCase(revenueRepository);
+
+export const injectedPackageListAndCheckoutController =
+  new PackageListAndCheckoutController(
+    listActivePackages,
+    createCheckoutUseCase,
+    listAllPayments,
+  );

@@ -3,7 +3,7 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 export const mapPackageToMemberUpdate = (
   planId: string,
   price: number,
-  durationInDays: number
+  durationInDays: number,
 ) => {
   const startDate = new Date();
   const endDate = new Date(startDate);

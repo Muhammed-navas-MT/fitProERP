@@ -97,4 +97,10 @@ export class GymAdminRepository
 
     return mapGymAdminToProfileResponse(gymAdmin, branches);
   }
+
+  async findAllGymIds(): Promise<string[]> {
+    const gyms = await this._model.find({}, { _id: 1 }).lean();
+
+    return gyms.map((gym) => gym._id.toString());
+  }
 }

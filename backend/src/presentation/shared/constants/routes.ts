@@ -119,5 +119,6 @@ export const ROUTES = {
     GET_CURRENT_MONTH_ATTENDANCE: "/get_current_month_attendance",
     LIST_ACTIVE_PACKAGES: "/list_active_packages",
     CHECKOUT: "/checkout",
+    LIST_PAYMENTS: "/payments",
   },
 };
