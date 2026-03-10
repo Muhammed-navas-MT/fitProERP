@@ -36,4 +36,10 @@ export interface IGymAdminRevenueRepository extends IBaseRepository<IGymAdminRev
     startDate: Date,
     endDate: Date,
   ): Promise<number>;
+
+  totalRevenueByMonth(
+    gymId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number>;
 }

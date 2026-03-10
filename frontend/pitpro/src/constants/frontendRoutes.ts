@@ -23,6 +23,7 @@ export const FRONTEND_ROUTES = {
         LIST_REVENUE:"revenues",
         REVENUE_DETAIL:"revenue_detail",
         LIST_EXPENSE: "expenses",
+        PROFIT:"profit_analytics"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",

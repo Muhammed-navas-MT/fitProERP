@@ -73,6 +73,7 @@ export const ROUTES = {
     UPDATE_EXPENSE: "/update_expense/:expenseId",
     FIND_EXPENSE: "/find_expense/:expenseId",
     FIND_EXPENSE_DETAIL: "/find_expense_detail/:expenseId",
+    PROFIT: "/profit_analytics",
   },
 
   TRAINER: {

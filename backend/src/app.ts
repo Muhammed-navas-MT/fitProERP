@@ -14,6 +14,8 @@ import { MemberRoutes } from "./presentation/routes/memberRoutes";
 import { AuthRoutes } from "./presentation/routes/authRoutes";
 import { injectedStripeWebhookHelper } from "./infrastructure/DI/shared/stripeWebhookInjection";
 import { accessAndErrorLoggerMiddleware } from "./presentation/middlewares/loggingMiddleware";
+import cron from "node-cron";
+import { injectedIGenerateMonthlyProfitJob } from "./infrastructure/DI/jobs/generateMonthlyProfitJob";
 
 class Express_app {
   private _app: Express;
@@ -21,6 +23,7 @@ class Express_app {
     this._app = express();
     this._setLoggingMiddleware();
     MongodbConfig.connect();
+    this._startCronJobs();
     this._setWebHookRoutes();
     this.setMiddleware();
     this._setAuthRoutes();
@@ -85,6 +88,19 @@ class Express_app {
       express.raw({ type: "application/json" }),
       injectedStripeWebhookHelper.handle,
     );
+  }
+  private _startCronJobs() {
+    cron.schedule("0 0 1 * *", async () => {
+      try {
+        console.log("Running Monthly Profit Cron Job...");
+
+        await injectedIGenerateMonthlyProfitJob.generateMonthlyProfit();
+
+        console.log("Monthly Profit Generated");
+      } catch (error) {
+        console.error("Cron Error:", error);
+      }
+    });
   }
   private _setLoggingMiddleware() {
     accessAndErrorLoggerMiddleware(this._app);

@@ -354,4 +354,30 @@ export class GymAdminExpenseRepository
 
     return count;
   }
+
+  async totalExpenseByMonth(
+    gymId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId: new Types.ObjectId(gymId),
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalExpense: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    return result[0]?.totalExpense || 0;
+  }
 }

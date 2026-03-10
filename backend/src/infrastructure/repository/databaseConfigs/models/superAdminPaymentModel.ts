@@ -17,5 +17,5 @@ export interface ISuperAdminPaymentModel extends Document {
 
 export const paymentModel = model<ISuperAdminPaymentModel>(
   "SuperAdminPayment",
-  PaymentSchema
+  PaymentSchema,
 );

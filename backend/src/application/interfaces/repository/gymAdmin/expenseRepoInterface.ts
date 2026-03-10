@@ -28,4 +28,10 @@ export interface IGymAdminExpenseRepository extends IBaseRepository<IGymAdminExp
     startDate: Date,
     endDate: Date,
   ): Promise<number>;
+
+  totalExpenseByMonth(
+    gymId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number>;
 }

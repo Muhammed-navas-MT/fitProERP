@@ -12,6 +12,7 @@ import {
   injectedListSubscriptionController,
   injectedMemberManagementController,
   injectedPackageController,
+  injectedProfitCotroller,
   injectedPurchaseSubscriptionController,
   injectedReApplyController,
   injectedRevenueController,
@@ -324,6 +325,12 @@ export class GymAdminRoutes {
       GYMADMIN.UPDATE_EXPENSE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedExpenseController.updateExpense(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.PROFIT,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProfitCotroller.getProfitAnalytics(req, res, next);
       },
     );
   }

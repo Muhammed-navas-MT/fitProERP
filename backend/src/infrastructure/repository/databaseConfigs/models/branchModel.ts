@@ -6,7 +6,7 @@ export interface IBranchModel extends Document {
   _id: string;
   gymId: string;
   branchName: string;
-  phone:string;
+  phone: string;
   address: {
     street: string;
     city: string;
@@ -21,7 +21,4 @@ export interface IBranchModel extends Document {
   updatedAt?: Date;
 }
 
-export const branchModel = model<IBranchModel>(
-  "Branch",
-  branchSchema
-);
+export const branchModel = model<IBranchModel>("Branch", branchSchema);

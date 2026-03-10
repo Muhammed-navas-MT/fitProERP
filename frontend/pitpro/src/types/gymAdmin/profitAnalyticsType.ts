@@ -1,18 +1,11 @@
-export interface IFindProfitRequestDto {
-  gymId: string;
-  branchId: string;
-  start: Date;
-  end: Date;
-}
-
-export interface ProfitTrendDTO {
+export interface ProfitTrend {
   month: string;
   revenue: number;
   expense: number;
   profit: number;
 }
 
-export interface BranchProfitabilityDTO {
+export interface BranchProfitability {
   branchId: string;
   branchName: string;
   totalRevenue: number;
@@ -21,13 +14,13 @@ export interface BranchProfitabilityDTO {
   profitMargin: number;
 }
 
-export interface InsightDTO {
+export interface Insight {
   type: "growth" | "best_performer" | "warning";
   title: string;
   message: string;
 }
 
-export interface GymProfitAnalyticsDTO {
+export interface GymProfitAnalytics {
   summary: {
     netProfit: number;
     totalRevenue: number;
@@ -35,10 +28,7 @@ export interface GymProfitAnalyticsDTO {
     profitMargin: number;
     profitGrowth: number;
   };
-
-  profitTrend: ProfitTrendDTO[];
-
-  branchProfitability: BranchProfitabilityDTO[];
-
-  insights: InsightDTO[];
+  profitTrend: ProfitTrend[];
+  branchProfitability: BranchProfitability[];
+  insights: Insight[];
 }
