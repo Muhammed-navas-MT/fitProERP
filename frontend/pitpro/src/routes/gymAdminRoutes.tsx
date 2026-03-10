@@ -21,6 +21,7 @@ import GymAdminPublicRoute from "@/components/shared/protectedComponets/gymAdmin
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import RevenuePage from "@/page/gymAdmin/revenuePage";
 import ExpensePage from "@/page/gymAdmin/expensePage";
+import ProfitAnalytics from "@/page/gymAdmin/ProfitAnalyticsPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -97,6 +98,8 @@ const GymAdminRoutes = () => {
            element={<RevenuePage/>}/>
            <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}
            element={<ExpensePage/>}/>
+           <Route path={FRONTEND_ROUTES.GYM_ADMIN.PROFIT}
+           element={<ProfitAnalytics/>}/>
         </Route>
       </Route>
     </Routes>

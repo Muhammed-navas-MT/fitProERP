@@ -33,7 +33,7 @@ const navItems = [
   { name: "Branches", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`, icon: Building2 },
   { name: "Plan upgrade", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}`, icon: Rocket   },
   { name: "Expenses", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}`, icon: TrendingDown },
-  { name: "Profit Analytics", href: "/analytics", icon: TrendingUp },
+  { name: "Profit Analytics", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.PROFIT}` , icon: TrendingUp },
   { name: "Revenues", href:  `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_REVENUE}`, icon: CreditCard },
   { name: "Trainers Leaves",href:"/leaves",icon: FileText,},
   // { name: "Problems", href: "/problems", icon: AlertCircle },

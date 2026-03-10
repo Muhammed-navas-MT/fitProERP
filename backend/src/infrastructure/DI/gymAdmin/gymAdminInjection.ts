@@ -81,6 +81,10 @@ import { FindExpenseDetailUseCase } from "../../../application/useCases/gymAdmin
 import { ListAllExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/listAllExpenseUseCase";
 import { UpdateExpenseUseCase } from "../../../application/useCases/gymAdmin/expenseManagement/updateExpenseUseCase";
 import { GymAdminExpenseController } from "../../../presentation/controller/gymAdmin/expenseManagementController";
+import { ProfitRepository } from "../../repository/gymAdmin/profitRepo";
+import { gymAdminProfitModel } from "../../repository/databaseConfigs/models/gymAdminProfitModel";
+import { GetProfitAnalyticsUseCase } from "../../../application/useCases/gymAdmin/profitManagement/getProfitAnalyticsUseCase";
+import { ProfitController } from "../../../presentation/controller/gymAdmin/profitManagementController";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -90,6 +94,7 @@ const packageRepository = new PackageRepository(PackageModel);
 const subsriptionRepository = new SubscriptionRepository(subscriptionModel);
 const revenueRepository = new GymAdminRevenueRepository(gymAdminRevenueModel);
 const expenseRepository = new GymAdminExpenseRepository(gymAdminExpenseModel);
+const profitRepository = new ProfitRepository(gymAdminProfitModel);
 const jwtService = new JwtService();
 const cacheService = new CacheService();
 const hashService = new HashPassword();
@@ -298,3 +303,11 @@ export const injectedExpenseController = new GymAdminExpenseController(
   listAllExpense,
   updateExpense,
 );
+
+//profit management
+const getProfitAnalytics = new GetProfitAnalyticsUseCase(
+  profitRepository,
+  revenueRepository,
+  expenseRepository,
+);
+export const injectedProfitCotroller = new ProfitController(getProfitAnalytics);

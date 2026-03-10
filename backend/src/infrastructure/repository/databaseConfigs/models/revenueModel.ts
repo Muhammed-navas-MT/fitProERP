@@ -7,11 +7,11 @@ import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType
 export interface IGymAdminRevenueModel extends Document {
   _id: string;
   gymId: string;
-  branchId:string;
-  userId:string;
-  sourceType:RevenueSourceType;
+  branchId: string;
+  userId: string;
+  sourceType: RevenueSourceType;
   sourceId: string;
-  source:string;
+  source: string;
   amount: number;
   stripeSessionId: string;
   paymentMethod: PaymentMethod;
@@ -22,5 +22,5 @@ export interface IGymAdminRevenueModel extends Document {
 
 export const gymAdminRevenueModel = model<IGymAdminRevenueModel>(
   "GymAdminRevenue",
-  RevenueSchema
+  RevenueSchema,
 );

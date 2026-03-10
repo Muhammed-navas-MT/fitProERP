@@ -413,4 +413,30 @@ export class GymAdminRevenueRepository
 
     return count;
   }
+
+  async totalRevenueByMonth(
+    gymId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId: new Types.ObjectId(gymId),
+          createdAt: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    return result[0]?.totalRevenue || 0;
+  }
 }

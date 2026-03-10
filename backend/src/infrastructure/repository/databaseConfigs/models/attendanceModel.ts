@@ -16,6 +16,5 @@ export interface IAttendanceModel extends Document {
 
 export const AttendanceModel = model<IAttendanceModel>(
   "Attendance",
-  attendanceSchema
+  attendanceSchema,
 );
-

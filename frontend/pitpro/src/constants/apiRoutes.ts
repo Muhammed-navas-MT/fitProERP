@@ -72,7 +72,8 @@ export const API_ROUTES = {
     CREATE_EXPENSE: "/create_expense",
     UPDATE_EXPENSE: "/update_expense",
     FIND_EXPENSE: "/find_expense",
-    FIND_EXPENSE_DETAIL: "/find_expense_detail",    
+    FIND_EXPENSE_DETAIL: "/find_expense_detail",
+    PROFIT: "/profit_analytics",    
   },
 
   TRAINER: {
