@@ -1,4 +1,4 @@
 export enum CacheFormat {
-    BLACK_LIST = "",
-    WHITE_LIST = ""
+  BLACK_LIST = "",
+  WHITE_LIST = "",
 }

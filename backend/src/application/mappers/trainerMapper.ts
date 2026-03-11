@@ -10,7 +10,7 @@ export class TrainerMapper {
   static toListTrainersResponse(
     trainers: (TrainerEntity & { branchName: string })[],
     total: number,
-    params: IListTrainerRequestDTO
+    params: IListTrainerRequestDTO,
   ): IListTrainerResponseDTO {
     return {
       total: total,
@@ -36,7 +36,7 @@ export class TrainerMapper {
   }
 
   static toActiveTrainersResponse(
-    trainers: TrainerEntity[]
+    trainers: TrainerEntity[],
   ): IListActiveTrainers[] {
     return trainers.map((trainer) => ({
       id: trainer._id?.toString() || "",

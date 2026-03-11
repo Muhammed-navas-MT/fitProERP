@@ -95,7 +95,7 @@ export function mapExpenseListResponse(
         Maintenance: 0,
         Equipment: 0,
         Marketing: 0,
-        TrainerCommission: 0,
+        TrainerSalary: 0,
         Other: 0,
       },
     );

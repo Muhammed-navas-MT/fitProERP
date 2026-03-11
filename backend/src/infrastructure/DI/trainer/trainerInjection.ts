@@ -31,38 +31,113 @@ import { UnBlockMemberUseCase } from "../../../application/useCases/trainer/memb
 import { MemberController } from "../../../presentation/controller/trainer/memberMenageMentController";
 import { ListActiveBranchUseCase } from "../../../application/useCases/trainer/listActiveBranchUseCase";
 import { ListAllActiveTrainersByBranch } from "../../../application/useCases/trainer/memberManagement/listAllActiveTrainersByBranchIdUseCase";
+import { LeaveRepository } from "../../repository/shared/leaveRepo";
+import { trainerLeaveModel } from "../../repository/databaseConfigs/models/trainerLeaveModel";
+import { CreateLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/createLeaveUseCase";
+import { FindLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/findLeaveUseCase";
+import { UpdateLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/updateLeaveUseCase";
+import { ListAllLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/listAllLeavesUseCase";
+import { LeaveController } from "../../../presentation/controller/trainer/leaveManagementComtroller";
 
-const emailService = new EmailService()
+const emailService = new EmailService();
 const hashService = new HashPassword();
-const sendPasswordEmailContentGenerator = new SendPasswordEmailContentGenerator();
-const trainerRepository = new TrainerRepository(trainerModel)
+const sendPasswordEmailContentGenerator =
+  new SendPasswordEmailContentGenerator();
+const trainerRepository = new TrainerRepository(trainerModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
-const loginUseCase = new TrainerLoginUseCase(trainerRepository,hashService,gymAdminRepository);
+const leaveRepository = new LeaveRepository(trainerLeaveModel);
+const loginUseCase = new TrainerLoginUseCase(
+  trainerRepository,
+  hashService,
+  gymAdminRepository,
+);
 const jwtService = new JwtService();
-const cacheService = new CacheService()
-const tokenInValidation = new TokenValidationUseCase(jwtService,cacheService)
-export const injectedTrainerLoginController = new TrainerLoginController(loginUseCase,jwtService);
-export const injectedTrainerLogoutController = new TrainerLogoutController(tokenInValidation)
+const cacheService = new CacheService();
+const tokenInValidation = new TokenValidationUseCase(jwtService, cacheService);
+export const injectedTrainerLoginController = new TrainerLoginController(
+  loginUseCase,
+  jwtService,
+);
+export const injectedTrainerLogoutController = new TrainerLogoutController(
+  tokenInValidation,
+);
 
-const branchRepository = new BranchRepository(branchModel)
-export const injectedCheckAccessTrainerMiddleware = new CheckTrainerAccessMiddleWare(gymAdminRepository,branchRepository,trainerRepository);
+const branchRepository = new BranchRepository(branchModel);
+export const injectedCheckAccessTrainerMiddleware =
+  new CheckTrainerAccessMiddleWare(
+    gymAdminRepository,
+    branchRepository,
+    trainerRepository,
+  );
 
 //member management
-const memberRepository = new MemberRepository(memberModel)
+const memberRepository = new MemberRepository(memberModel);
 const generatePassword = new PasswordGenerator();
-const createMember = new CreateMemberUseCase(memberRepository,hashService,emailService,generatePassword,sendPasswordEmailContentGenerator,gymAdminRepository,trainerRepository);
+const createMember = new CreateMemberUseCase(
+  memberRepository,
+  hashService,
+  emailService,
+  generatePassword,
+  sendPasswordEmailContentGenerator,
+  gymAdminRepository,
+  trainerRepository,
+);
 const findMember = new FindMemberUseCase(memberRepository);
 const updateMember = new UpdateMemberUseCase(memberRepository);
-const listAllMembers = new ListAllMembers(memberRepository,gymAdminRepository,trainerRepository);
+const listAllMembers = new ListAllMembers(
+  memberRepository,
+  gymAdminRepository,
+  trainerRepository,
+);
 const blockMember = new BlockMemberUseCase(memberRepository);
 const unBlockMember = new UnBlockMemberUseCase(memberRepository);
-const listActiveTrainers = new ListActiveTrainers(trainerRepository,gymAdminRepository);
-const listActiveBranch = new ListActiveBranchUseCase(branchRepository,trainerRepository);
-const listActiveTrainersByBranchId = new ListAllActiveTrainersByBranch(trainerRepository);
-export const injectedMemberController = new MemberController(createMember,findMember,updateMember,unBlockMember,blockMember,listAllMembers,listActiveTrainers,listActiveBranch,listActiveTrainersByBranchId);
+const listActiveTrainers = new ListActiveTrainers(
+  trainerRepository,
+  gymAdminRepository,
+);
+const listActiveBranch = new ListActiveBranchUseCase(
+  branchRepository,
+  trainerRepository,
+);
+const listActiveTrainersByBranchId = new ListAllActiveTrainersByBranch(
+  trainerRepository,
+);
+export const injectedMemberController = new MemberController(
+  createMember,
+  findMember,
+  updateMember,
+  unBlockMember,
+  blockMember,
+  listAllMembers,
+  listActiveTrainers,
+  listActiveBranch,
+  listActiveTrainersByBranchId,
+);
 
 //profile management
-const changePassword = new ChangePasswordUseCase(trainerRepository,hashService);
+const changePassword = new ChangePasswordUseCase(
+  trainerRepository,
+  hashService,
+);
 const updateProfile = new UpdateProfileUseCase(trainerRepository);
-const viewProfile = new ViewProfileUseCase(trainerRepository)
-export const injectedProfileController = new ProfileManagementController(changePassword,updateProfile,viewProfile);
+const viewProfile = new ViewProfileUseCase(trainerRepository);
+export const injectedProfileController = new ProfileManagementController(
+  changePassword,
+  updateProfile,
+  viewProfile,
+);
+
+//leave management
+const createLeaveuseCase = new CreateLeaveUseCase(
+  leaveRepository,
+  trainerRepository,
+);
+const findLeaveUseCase = new FindLeaveUseCase(leaveRepository);
+const updateLeaveUseCase = new UpdateLeaveUseCase(leaveRepository);
+const listLeaveUseCase = new ListAllLeaveUseCase(leaveRepository);
+export const injectedLeaveController = new LeaveController(
+  createLeaveuseCase,
+  findLeaveUseCase,
+  listLeaveUseCase,
+  updateLeaveUseCase,
+);

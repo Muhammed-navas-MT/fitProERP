@@ -161,10 +161,10 @@ export class GymAdminExpenseRepository
                   },
                 },
 
-                TrainerCommission: {
+                TrainerSalary: {
                   $sum: {
                     $cond: [
-                      { $eq: ["$expenseType", "TrainerCommission"] },
+                      { $eq: ["$expenseType", "TrainerSalary"] },
                       "$amount",
                       0,
                     ],
@@ -199,7 +199,7 @@ export class GymAdminExpenseRepository
                 Maintenance: 1,
                 Equipment: 1,
                 Marketing: 1,
-                TrainerCommission: 1,
+                TrainerSalary: 1,
                 Other: 1,
               },
             },

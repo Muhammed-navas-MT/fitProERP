@@ -2,6 +2,7 @@ import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
 import {
   injectedCheckAccessTrainerMiddleware,
+  injectedLeaveController,
   injectedMemberController,
   injectedProfileController,
   injectedTrainerLoginController,
@@ -153,6 +154,34 @@ export class TrainerRoutes {
       TRAINER.GET_CURRENT_MONTH_ATTENDANCE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedAttendanceController.getCurrentMonthAttendance(req, res, next);
+      },
+    );
+
+    this._route.post(
+      TRAINER.CREATE_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedLeaveController.handleCreateLeave(req, res, next);
+      },
+    );
+
+    this._route.get(
+      TRAINER.FIND_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedLeaveController.handleFindLeave(req, res, next);
+      },
+    );
+
+    this._route.post(
+      TRAINER.UPDATE_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedLeaveController.handleUpdateLeave(req, res, next);
+      },
+    );
+
+    this._route.get(
+      TRAINER.LIST_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedLeaveController.handleListLeave(req, res, next);
       },
     );
   }

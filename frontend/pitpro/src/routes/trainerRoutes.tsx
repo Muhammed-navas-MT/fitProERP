@@ -2,6 +2,7 @@ import ProtectedRoute from "@/components/shared/protectedComponets/protectedRout
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import DashboardPage from "@/page/trainer/dashboardPage";
+import LeavesPage from "@/page/trainer/leavePage";
 import MemberDetailPage from "@/page/trainer/memberDetailPage";
 import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
@@ -45,6 +46,8 @@ const TrainerRoutes = () => {
         />
 
         <Route path={`${FRONTEND_ROUTES.TRAINER.DETAIL_MEMBER}/:memberId`} element={<MemberDetailPage/>}/>
+
+        <Route path={FRONTEND_ROUTES.TRAINER.LEAVE} element={<LeavesPage/>}/>
 
       </Route>
     </Routes>
