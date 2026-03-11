@@ -13,9 +13,9 @@ export const branchSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    phone:{
-      type:String,
-      required:true
+    phone: {
+      type: String,
+      required: true,
     },
     address: {
       street: { type: String, required: true },
@@ -40,5 +40,5 @@ export const branchSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );

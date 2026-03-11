@@ -13,7 +13,7 @@ interface ExpenseSummary {
   Marketing: number;
   Other: number;
   Rent: number;
-  TrainerCommission: number;
+  TrainerSalary: number;
   Utilities: number;
   month: string;
 }
@@ -49,7 +49,7 @@ export function ExpenseStackedBarChart({ data }: Props) {
           <Bar dataKey="Maintenance" stackId="a" fill="#facc15" />
           <Bar dataKey="Equipment" stackId="a" fill="#34d399" />
           <Bar dataKey="Marketing" stackId="a" fill="#a78bfa" />
-          <Bar dataKey="TrainerCommission" stackId="a" fill="#fb923c" />
+          <Bar dataKey="TrainerSalary" stackId="a" fill="#fb923c" />
           <Bar dataKey="Other" stackId="a" fill="#94a3b8" />
         </BarChart>
       </ResponsiveContainer>

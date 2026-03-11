@@ -102,6 +102,10 @@ export const ROUTES = {
     GET_ATTENDANCE: "/get_attendance",
     GET_ALL_ATTENDANCE: "/get_all_attendance",
     GET_CURRENT_MONTH_ATTENDANCE: "/get_current_month_attendance",
+    LIST_LEAVE: "/list_leave",
+    CREATE_LEAVE: "/create_leave",
+    UPDATE_LEAVE: "/update_leave/:leaveId",
+    FIND_LEAVE: "/find_leave/:leaveId",
   },
 
   MEMBER: {

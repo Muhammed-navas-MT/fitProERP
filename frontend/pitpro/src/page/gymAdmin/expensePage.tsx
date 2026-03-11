@@ -7,6 +7,7 @@ import { AddExpenseModal } from "@/components/gymAdmin/expenseComponents/addExpe
 import { ExpenseStackedBarChart } from "@/components/gymAdmin/expenseComponents/expenseStackedBarChart";
 import { ReusableTable } from "@/components/shared/reusableTable";
 import UpdateExpenseModal from "@/components/gymAdmin/expenseComponents/updateExpenseModal";
+import ExpensePageSkeleton from "@/components/gymAdmin/expenseComponents/ExpensePageSkeleton";
 
 import { useDebounce } from "@/hook/useDebounce";
 import { useListExpenses } from "@/hook/gymAdmin/expenseHooks";
@@ -35,6 +36,7 @@ export interface IExpenseItem {
 }
 
 export default function ExpensePage() {
+
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -49,13 +51,16 @@ export default function ExpensePage() {
     setPage(1);
   }, [debouncedSearch]);
 
-  const { data } = useListExpenses(page, debouncedSearch);
+  const { data, isLoading, isError } =
+    useListExpenses(page, debouncedSearch);
 
   const expenseData = data?.data?.expense ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
   const expenseSummary = data?.data?.expenseSummary ?? [];
   const thisMonthTotalExpense = data?.data?.thisMonthTotalExpense ?? 0;
   const grandTotal = data?.data?.grandTotal ?? 0;
+
+  console.log(expenseSummary);
 
   const handleEdit = (id: string) => {
     setSelectedExpenseId(id);
@@ -128,11 +133,37 @@ export default function ExpensePage() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen bg-zinc-950 text-white">
+        <Sidebar />
+        <TopBar title="Expenses" subtitle="Track gym expenses">
+          <ExpensePageSkeleton />
+        </TopBar>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex min-h-screen bg-zinc-950 text-white">
+        <Sidebar />
+        <TopBar title="Expenses" subtitle="Track gym expenses">
+          <div className="p-10 text-red-400">
+            Failed to load expenses. Please refresh the page.
+          </div>
+        </TopBar>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen bg-zinc-950 text-white">
+
       <Sidebar />
 
       <TopBar title="Expenses" subtitle="Track gym expenses">
+
         <SearchFilter
           searchValue={searchQuery}
           onSearchChange={setSearchQuery}
@@ -142,6 +173,7 @@ export default function ExpensePage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+
           <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
             <p className="text-sm text-zinc-400">Total Expenses</p>
             <h2 className="text-2xl font-bold mt-2 text-red-400">
@@ -160,23 +192,26 @@ export default function ExpensePage() {
             <p className="text-sm text-zinc-400">Categories</p>
             <h2 className="text-2xl font-bold mt-2 text-blue-400">7</h2>
           </div>
+
         </div>
 
         {/* Table */}
         <div className="mt-8">
+
           <ReusableTable
             title="Expense List"
             columns={columns}
             data={expenseData}
           />
 
-          {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
+
             <p className="text-sm text-zinc-400">
               Page {page} of {totalPages}
             </p>
 
             <div className="flex gap-2">
+
               <button
                 disabled={page === 1}
                 onClick={() => setPage((p) => p - 1)}
@@ -192,17 +227,20 @@ export default function ExpensePage() {
               >
                 Next
               </button>
+
             </div>
+
           </div>
+
         </div>
 
         {/* Chart */}
+
         <div className="grid gap-6 mt-8">
           <ExpenseStackedBarChart data={expenseSummary} />
         </div>
-      </TopBar>
 
-      {/* Modals */}
+      </TopBar>
 
       <ViewExpenseModal
         open={viewOpen}
@@ -210,7 +248,10 @@ export default function ExpensePage() {
         expenseId={selectedExpenseId}
       />
 
-      <AddExpenseModal open={addOpen} onClose={() => setAddOpen(false)} />
+      <AddExpenseModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+      />
 
       <UpdateExpenseModal
         open={updateOpen}
@@ -220,6 +261,7 @@ export default function ExpensePage() {
           setSelectedExpenseId("");
         }}
       />
+
     </div>
   );
 }

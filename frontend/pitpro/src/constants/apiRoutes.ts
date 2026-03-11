@@ -101,7 +101,11 @@ export const API_ROUTES = {
     CHECK_OUT_ATTENDANCE:"/ckeckout_attendance",
     GET_ATTENDANCE:"/get_attendance",
     GET_ALL_ATTENDANCE:"/get_all_attendance",
-    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance"
+    GET_CURRENT_MONTH_ATTENDANCE:"/get_current_month_attendance",
+    LIST_LEAVE: "/list_leave",
+    CREATE_LEAVE: "/create_leave",
+    UPDATE_LEAVE: "/update_leave",
+    FIND_LEAVE: "/find_leave",
   },
   MEMBER:{
     BASE:"/member",

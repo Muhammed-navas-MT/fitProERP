@@ -20,22 +20,22 @@ export class BranchController {
     private readonly _unBlockBranchUseCase: IUnBlockBranchUseCase,
     private readonly _blockBranchUseCase: IBlockBranchUseCase,
     private readonly _updateBranchUseCase: IUpdateBranchUseCase,
-    private readonly _listActiveBranchUseCase:IListActiveBranchUseCase
+    private readonly _listActiveBranchUseCase: IListActiveBranchUseCase,
   ) {}
 
-  createBranch = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  createBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const zodValidation = BranchSchema.safeParse({...req.body,gymId:res.locals.data.id});
+      const zodValidation = BranchSchema.safeParse({
+        ...req.body,
+        gymId: res.locals.data.id,
+      });
       if (!zodValidation.success) {
-        throw new InvalidDataException(
-          zodValidation.error.issues[0].message
-        );
-      };
-      await this._createBranchUseCase.createBranch({...req.body,gymId:res.locals.data.id});
+        throw new InvalidDataException(zodValidation.error.issues[0].message);
+      }
+      await this._createBranchUseCase.createBranch({
+        ...req.body,
+        gymId: res.locals.data.id,
+      });
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,
@@ -47,14 +47,10 @@ export class BranchController {
     }
   };
 
-  listBranches = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  listBranches = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await this._listBranchUseCase.listBranch({
-        gymId:res.locals.data.id,
+        gymId: res.locals.data.id,
         page: Number(req.query.page) || 1,
         limit: Number(req.query.limit) || 10,
         search: req.query.search as string,
@@ -64,51 +60,39 @@ export class BranchController {
         HTTP_STATUS_CODE.CREATE,
         res,
         BranchSuccess.LISTED,
-        result
+        result,
       );
-
     } catch (error) {
       next(error);
     }
   };
 
-  findBranch = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  findBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const branch = await this._findBranchUseCase.findBranch(
-        req.params.branchId
+        req.params.branchId,
       );
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,
         res,
         BranchSuccess.FOUND,
-        branch
+        branch,
       );
     } catch (error) {
       next(error);
     }
   };
 
-  updateBranch = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  updateBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       const zodValidation = BranchSchema.safeParse(req.body);
       if (!zodValidation.success) {
-        throw new InvalidDataException(
-          zodValidation.error.issues[0].message
-        );
-      };
+        throw new InvalidDataException(zodValidation.error.issues[0].message);
+      }
       await this._updateBranchUseCase.updateBranch(
         req.body,
-        req.params.branchId
+        req.params.branchId,
       );
 
       ResponseHelper.success(
@@ -121,11 +105,7 @@ export class BranchController {
     }
   };
 
-  blockBranch = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  blockBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await this._blockBranchUseCase.blockBranch(req.params.branchId);
 
@@ -139,11 +119,7 @@ export class BranchController {
     }
   };
 
-  unBlockBranch = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  unBlockBranch = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await this._unBlockBranchUseCase.unBlockBranch(req.params.branchId);
 
@@ -157,17 +133,23 @@ export class BranchController {
     }
   };
 
-  listActiveBranch = async (req:Request,res:Response,next:NextFunction)=>{
+  listActiveBranch = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const branches = await this._listActiveBranchUseCase.listActiveBranch(res.locals.data.id);
+      const branches = await this._listActiveBranchUseCase.listActiveBranch(
+        res.locals.data.id,
+      );
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
         BranchSuccess.LISTED,
-        branches
-      )
+        branches,
+      );
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

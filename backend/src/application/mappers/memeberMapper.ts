@@ -17,8 +17,8 @@ export class MemberMapper {
     members: IPopulatedMember[],
     total: number,
     params: IListMemberRequestDTO,
-    activeMembersCount?:number,
-    assignMemberCount?:number
+    activeMembersCount?: number,
+    assignMemberCount?: number,
   ): IListMemberResponseDTO {
     return {
       total: total,
@@ -40,7 +40,7 @@ export class MemberMapper {
           .split(" ")
           .map((val) => val[0].toUpperCase())
           .join(""),
-          createdAt:member.createdAt
+        createdAt: member.createdAt,
       })),
     };
   }
@@ -239,19 +239,19 @@ export class MemberMapper {
     return update;
   }
 
-  static toMember(data:MemberEntity):Member {
+  static toMember(data: MemberEntity): Member {
     return {
-    id: data._id?.toString() as string,
-    name: data.name,
-    email: data.email,
-    phone: data.phone,
-    profileImg: data.profileImg || "",
-    avatar:data.name
-          .split(" ")
-          .map((val) => val[0].toUpperCase())
-          .join(""),
-    status: data.status as Status,
-    createdAt: data.createdAt || new Date(),
-  };
+      id: data._id?.toString() as string,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      profileImg: data.profileImg || "",
+      avatar: data.name
+        .split(" ")
+        .map((val) => val[0].toUpperCase())
+        .join(""),
+      status: data.status as Status,
+      createdAt: data.createdAt || new Date(),
+    };
   }
 }

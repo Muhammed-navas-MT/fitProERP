@@ -33,6 +33,6 @@ export interface MonthlyExpenseSummary {
   Maintenance: number;
   Equipment: number;
   Marketing: number;
-  TrainerCommission: number;
+  TrainerSalary: number;
   Other: number;
 }
