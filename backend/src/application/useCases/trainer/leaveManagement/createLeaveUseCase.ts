@@ -18,6 +18,7 @@ export class CreateLeaveUseCase implements ICreateLeaveUseCase {
 
   async execute(data: CreateLeaveRequestDto): Promise<void> {
     const trainer = await this._trainerRepository.findById(data.trainerId);
+
     if (!trainer) {
       throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
     }
@@ -26,28 +27,42 @@ export class CreateLeaveUseCase implements ICreateLeaveUseCase {
       throw new BadRequestException(LeaveError.REASON_REQUIRED);
     }
 
-    if (data.startDate > data.endDate) {
-      throw new BadRequestException(LeaveError.INVALID_DATE_RANGE);
-    }
+    const startDate = new Date(data.startDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(data.endDate);
+    endDate.setHours(0, 0, 0, 0);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (data.startDate < today) {
+    if (startDate > endDate) {
+      throw new BadRequestException(LeaveError.INVALID_DATE_RANGE);
+    }
+
+    if (startDate < today) {
       throw new BadRequestException(LeaveError.PAST_DATE_NOT_ALLOWED);
     }
 
     const existingLeave = await this._leaveRepository.findOverlappingLeave(
       data.trainerId,
-      data.startDate,
-      data.endDate,
+      startDate,
+      endDate,
     );
 
-    if (existingLeave) {
-      throw new BadRequestException(LeaveError.PAST_DATE_NOT_ALLOWED);
+    console.log(existingLeave);
+    if (existingLeave.length !== 0) {
+      throw new BadRequestException(LeaveError.LEAVE_ALREADY_EXISTS);
     }
 
-    const leaveDate = LeaveMapper.toLeaveEntity(data, trainer.gymId);
+    const leaveDate = LeaveMapper.toLeaveEntity(
+      {
+        ...data,
+        startDate,
+        endDate,
+      },
+      trainer.gymId,
+    );
 
     await this._leaveRepository.create(leaveDate);
   }

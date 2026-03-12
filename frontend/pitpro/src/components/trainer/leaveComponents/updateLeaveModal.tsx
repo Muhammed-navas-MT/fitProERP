@@ -1,7 +1,26 @@
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { BaseModal } from "@/components/shared/baseModal";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useUpdateLeave } from "@/hook/trainer/leaveHook";
+
+/* ---------------- Zod Schema ---------------- */
+
+const leaveSchema = z
+  .object({
+    startDate: z.string().min(1, "Start date is required"),
+    endDate: z.string().min(1, "End date is required"),
+    reason: z.string().min(3, "Reason must be at least 3 characters"),
+  })
+  .refine((data) => new Date(data.endDate) >= new Date(data.startDate), {
+    message: "End date must be after start date",
+    path: ["endDate"],
+  });
+
+type LeaveFormData = z.infer<typeof leaveSchema>;
 
 interface LeaveData {
   id: string;
@@ -14,86 +33,149 @@ interface UpdateLeaveModalProps {
   open: boolean;
   onClose: () => void;
   leave: LeaveData | null;
-  onUpdate: (id: string, data: { startDate: string; endDate: string; reason: string }) => void;
 }
 
-export function UpdateLeaveModal({ open, onClose, leave, onUpdate }: UpdateLeaveModalProps) {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [reason, setReason] = useState("");
+ function UpdateLeaveModal({
+  open,
+  onClose,
+  leave,
+}: UpdateLeaveModalProps) {
+
+  const { mutateAsync: updateLeave, isPending } = useUpdateLeave(leave?.id as string);
+  console.log(leave,"udpate modal")
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LeaveFormData>({
+    resolver: zodResolver(leaveSchema),
+  });
+
+  /* ---------------- Prefill form ---------------- */
 
   useEffect(() => {
     if (leave) {
-      setStartDate(format(leave.startDate, "yyyy-MM-dd"));
-      setEndDate(format(leave.endDate, "yyyy-MM-dd"));
-      setReason(leave.reason);
+      reset({
+        startDate: format(new Date(leave.startDate), "yyyy-MM-dd"),
+        endDate: format(new Date(leave.endDate), "yyyy-MM-dd"),
+        reason: leave.reason,
+      });
     }
-  }, [leave]);
+  }, [leave, reset]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  /* ---------------- Submit ---------------- */
+
+  const onSubmit = async (data: LeaveFormData) => {
     if (!leave) return;
-    if (!startDate || !endDate || !reason.trim()) {
-      toast.error("Please fill all fields");
-      return;
+
+    try {
+      await updateLeave({
+          startDate: new Date(data.startDate),
+          endDate: new Date(data.endDate),
+          reason: data.reason
+      });
+
+      toast.success("Leave updated successfully");
+      onClose();
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to update leave");
     }
-    if (new Date(endDate) < new Date(startDate)) {
-      toast.error("End date must be after start date");
-      return;
-    }
-    onUpdate(leave.id, { startDate, endDate, reason });
-    onClose();
-    toast.success("Leave updated successfully");
   };
 
   if (!leave) return null;
 
   return (
     <BaseModal isOpen={open} onClose={onClose} title="Update Leave">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+        {/* Start Date */}
+
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1">Start Date</label>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Start Date
+          </label>
+
           <input
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            {...register("startDate")}
             className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white outline-none focus:border-purple-500 transition"
           />
+
+          {errors.startDate && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.startDate.message}
+            </p>
+          )}
         </div>
+
+        {/* End Date */}
+
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1">End Date</label>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            End Date
+          </label>
+
           <input
             type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            {...register("endDate")}
             className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white outline-none focus:border-purple-500 transition"
           />
+
+          {errors.endDate && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.endDate.message}
+            </p>
+          )}
         </div>
+
+        {/* Reason */}
+
         <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1">Reason</label>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
+            Reason
+          </label>
+
           <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
             rows={3}
+            {...register("reason")}
             className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition resize-none"
           />
+
+          {errors.reason && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.reason.message}
+            </p>
+          )}
         </div>
+
+        {/* Buttons */}
+
         <div className="flex justify-end gap-3 pt-2">
+
           <button
             type="button"
             onClick={onClose}
+            disabled={isPending}
             className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition"
           >
             Cancel
           </button>
+
           <button
             type="submit"
-            className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 transition"
+            disabled={isPending}
+            className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 transition disabled:opacity-60"
           >
-            Update
+            {isPending ? "Updating..." : "Update"}
           </button>
+
         </div>
+
       </form>
     </BaseModal>
   );
 }
+
+export default React.memo(UpdateLeaveModal)

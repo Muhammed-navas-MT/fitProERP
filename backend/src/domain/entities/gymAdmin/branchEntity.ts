@@ -4,7 +4,7 @@ export interface IBranchEntity {
   _id?: string;
   gymId: string;
   branchName: string;
-  phone:string;
+  phone: string;
   address: {
     street: string;
     city: string;
@@ -14,7 +14,7 @@ export interface IBranchEntity {
   };
   openTime: string;
   closeTime: string;
-  status:BranchStatus;
+  status: BranchStatus;
   createdAt?: Date;
   updatedAt?: Date;
 }

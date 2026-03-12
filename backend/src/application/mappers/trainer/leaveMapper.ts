@@ -24,7 +24,7 @@ export class LeaveMapper {
   }
   static toLeaveReponseDto(data: ITrainerLeaveEntity): FindLeaveResponseDto {
     return {
-      id: data.id?.toString() as string,
+      id: data._id?.toString() as string,
       startDate: data.startDate,
       endDate: data.endDate,
       appliedDate: data.appliedDate,
@@ -47,7 +47,7 @@ export class LeaveMapper {
       totalPages: Math.ceil(total / params.limit),
       leaves: leaves.map((leave) => {
         return {
-          id: leave.id?.toString() as string,
+          id: leave._id?.toString() as string,
           startDate: leave.startDate,
           endDate: leave.endDate,
           appliedDate: leave.appliedDate,

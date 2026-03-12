@@ -28,7 +28,7 @@ export class LeaveController {
   ): Promise<void> {
     try {
       const leave: CreateLeaveRequestDto = req.body;
-      console.log(leave)
+
       const validationResult = CreateLeaveSchema.safeParse(leave);
       if (!validationResult.success) {
         throw new InvalidDataException(

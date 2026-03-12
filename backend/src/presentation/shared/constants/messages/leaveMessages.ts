@@ -18,6 +18,7 @@ export enum LeaveError {
 
   ALREADY_APPROVED = "Leave is already approved",
   ALREADY_REJECTED = "Leave is already rejected",
+  LEAVE_ALREADY_EXISTS = "Leave already existed",
 
   REJECTION_REASON_REQUIRED = "Rejection reason is required",
 

@@ -32,10 +32,10 @@ export const findLeaveService = async (leaveId: string) => {
   }
 };
 
-export const updateLeaveService = async (data: CreateLeaveItem) => {
+export const updateLeaveService = async (data: CreateLeaveItem,leaveId:string) => {
   try {
     const response = await AxiosInstance.post(
-      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UPDATE_LEAVE}`,
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UPDATE_LEAVE}/${leaveId}`,
       data,
     );
     return response.data;

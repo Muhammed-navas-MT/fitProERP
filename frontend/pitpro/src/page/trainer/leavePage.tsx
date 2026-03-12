@@ -6,7 +6,7 @@ import { SearchInput } from "@/components/trainer/searchInput";
 import { LeaveStatusBadge } from "@/components/trainer/leaveComponents/leaveStatusBadge";
 import { AddLeaveModal } from "@/components/trainer/leaveComponents/addLeaveModal";
 import { ViewLeaveModal } from "@/components/trainer/leaveComponents/veiwLeaveModal";
-import { UpdateLeaveModal } from "@/components/trainer/leaveComponents/updateLeaveModal";
+import UpdateLeaveModal from "@/components/trainer/leaveComponents/updateLeaveModal";
 import { Header } from "@/components/trainer/trainerHeader";
 import { Sidebar } from "@/components/trainer/trainerSidebar";
 
@@ -15,11 +15,8 @@ import {
   TableColumn,
 } from "@/components/trainer/trainerReudableTable";
 
-import {
-  useCreateLeave,
-  useLeaves,
-  useUpdateLeave,
-} from "@/hook/trainer/leaveHook";
+import { useLeaves } from "@/hook/trainer/leaveHook";
+import { useDebounce } from "@/hook/useDebounce";
 
 enum LeaveStatus {
   PENDING = "PENDING",
@@ -29,15 +26,16 @@ enum LeaveStatus {
 
 interface LeaveItem {
   id: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
-  appliedDate: string;
+  appliedDate: Date;
 }
 
 export default function LeavesPage() {
+
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
 
@@ -49,31 +47,20 @@ export default function LeavesPage() {
 
   const limit = 5;
 
-  /* ---------------- API Hooks ---------------- */
 
-  const { data, isLoading, isFetching } = useLeaves(page, search, status);
+  const debouncedSearch = useDebounce(search, 500);
 
 
-  const { mutateAsync: updateLeave, isPending: updateLoading } =
-    useUpdateLeave();
+  const { data, isLoading, isFetching } = useLeaves(
+    page,
+    debouncedSearch,
+    status
+  );
 
   const leaves: LeaveItem[] = data?.data?.leaves ?? [];
   const total = data?.data?.total ?? 0;
   const totalPages = data?.data?.totalPages ?? 1;
 
-  const handleUpdate = async (
-    id: string,
-    data: { startDate: string; endDate: string; reason: string }
-  ) => {
-    await updateLeave({
-      id,
-      ...data,
-    });
-
-    setEditLeave(null);
-  };
-
-  /* ---------------- Table Columns ---------------- */
 
   const columns: TableColumn<LeaveItem>[] = [
     {
@@ -109,6 +96,7 @@ export default function LeavesPage() {
       header: "Actions",
       render: (row) => (
         <div className="flex items-center gap-2">
+
           <button
             onClick={() => setViewLeave(row)}
             className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -124,12 +112,13 @@ export default function LeavesPage() {
               <Pencil className="h-4 w-4" />
             </button>
           )}
+
         </div>
       ),
     },
   ];
 
-  /* ---------------- Page Loading ---------------- */
+  /* ---------------- Loading ---------------- */
 
   if (isLoading) {
     return (
@@ -141,9 +130,11 @@ export default function LeavesPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950">
+
       <Sidebar />
 
       <div className="lg:pl-[220px]">
+
         <Header
           title="Leave Management"
           subtitle="Manage your leave requests"
@@ -151,11 +142,13 @@ export default function LeavesPage() {
         />
 
         <div className="p-4 lg:p-8">
+
           <div className="max-w-7xl mx-auto space-y-6">
 
-            {/* Search + Filter + Button */}
+            {/* Filters */}
 
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+
               <div className="flex-1 flex gap-3">
 
                 <SearchInput
@@ -184,11 +177,13 @@ export default function LeavesPage() {
                 <Plus className="h-4 w-4" />
                 Apply Leave
               </button>
+
             </div>
 
             {/* Table */}
 
             <div className="relative">
+
               {isFetching && (
                 <div className="absolute right-2 top-2">
                   <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
@@ -200,15 +195,20 @@ export default function LeavesPage() {
                 columns={columns}
                 emptyText="No leaves found"
               />
+
             </div>
 
+            {/* Pagination */}
+
             <div className="flex items-center justify-between text-sm text-zinc-400">
+
               <p>
                 Showing {(page - 1) * limit + 1} -{" "}
                 {Math.min(page * limit, total)} of {total}
               </p>
 
               <div className="flex items-center gap-2">
+
                 <button
                   disabled={page === 1}
                   onClick={() => setPage((p) => p - 1)}
@@ -228,10 +228,10 @@ export default function LeavesPage() {
                 >
                   Next
                 </button>
-              </div>
-            </div>
 
-            {/* Modals */}
+              </div>
+
+            </div>
 
             <AddLeaveModal
               open={addOpen}
@@ -248,12 +248,14 @@ export default function LeavesPage() {
               open={!!editLeave}
               onClose={() => setEditLeave(null)}
               leave={editLeave}
-              onUpdate={handleUpdate}
-              loading={updateLoading}
             />
+
           </div>
+
         </div>
+
       </div>
+
     </div>
   );
 }

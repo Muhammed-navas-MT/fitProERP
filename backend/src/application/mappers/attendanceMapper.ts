@@ -1,9 +1,12 @@
 import { AttendanceEntity } from "../../domain/entities/shared/attendanceEntity";
 import { AttendanceStatus } from "../../domain/enums/attendanceStatus";
-import { AttendanceListItemResponseDTO, CurrentMonthAttendanceListResponseDto } from "../dtos/shared/markAttendanceDTO";
+import {
+  AttendanceListItemResponseDTO,
+  CurrentMonthAttendanceListResponseDto,
+} from "../dtos/shared/markAttendanceDTO";
 
 export const mapAttendanceToListResponse = (
-  attendance: AttendanceEntity
+  attendance: AttendanceEntity,
 ): AttendanceListItemResponseDTO => ({
   id: attendance.id as string,
   date: attendance.date,
@@ -12,20 +15,21 @@ export const mapAttendanceToListResponse = (
   status: attendance.status,
 });
 
-
 export function mapToMonthlyAttendanceWithSundayLeave(
   year: number,
   month: number,
-  attendanceRecords: AttendanceEntity[]
+  attendanceRecords: AttendanceEntity[],
 ): CurrentMonthAttendanceListResponseDto[] {
   const now = new Date();
   const isCurrentMonth = now.getFullYear() === year && now.getMonth() === month;
-  const lastDay = isCurrentMonth ? now.getDate() : new Date(year, month + 1, 0).getDate();
+  const lastDay = isCurrentMonth
+    ? now.getDate()
+    : new Date(year, month + 1, 0).getDate();
 
   const attendanceMap = new Map<string, AttendanceEntity[]>();
-  attendanceRecords.forEach(record => {
+  attendanceRecords.forEach((record) => {
     const localDate = new Date(record.date);
-    const key = localDate.toISOString().split("T")[0]; 
+    const key = localDate.toISOString().split("T")[0];
     if (!attendanceMap.has(key)) attendanceMap.set(key, []);
     attendanceMap.get(key)!.push(record);
   });
