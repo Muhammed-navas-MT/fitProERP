@@ -18,27 +18,42 @@ export class UpdateLeaveUseCase implements IUpdateLeaveUseCase {
       throw new BadRequestException(LeaveError.REASON_REQUIRED);
     }
 
-    if (data.endDate && data.startDate && data.startDate > data.endDate) {
-      throw new BadRequestException(LeaveError.INVALID_DATE_RANGE);
-    }
+    const startDate = new Date(data.startDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(data.endDate);
+    endDate.setHours(0, 0, 0, 0);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (data.startDate && data.startDate < today) {
+    if (startDate > endDate) {
+      throw new BadRequestException(LeaveError.INVALID_DATE_RANGE);
+    }
+
+    if (startDate < today) {
       throw new BadRequestException(LeaveError.PAST_DATE_NOT_ALLOWED);
     }
 
     const existingLeave = await this._leaveRepository.findOverlappingLeave(
       data.trainerId,
-      data.startDate,
-      data.endDate,
+      startDate,
+      endDate,
     );
 
     if (existingLeave) {
-      throw new BadRequestException(LeaveError.PAST_DATE_NOT_ALLOWED);
+      throw new BadRequestException(
+        LeaveError.LEAVE_ALREADY_EXISTS +
+          " from " +
+          startDate.toDateString() +
+          " to " +
+          endDate.toDateString(),
+      );
     }
 
-    await this._leaveRepository.update(data, leaveId);
+    await this._leaveRepository.update(
+      { ...data, startDate, endDate },
+      leaveId,
+    );
   }
 }

@@ -25,12 +25,12 @@ export const useFindLeave = (leaveId: string) => {
 };
 
 
-export const useUpdateLeave = () => {
+export const useUpdateLeave = (leaveId:string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateLeaveItem & { id: string }) =>
-      updateLeaveService(data),
+    mutationFn: (data: CreateLeaveItem) =>
+      updateLeaveService(data,leaveId),
 
     onSuccess: (updatedLeave) => {
       queryClient.setQueriesData<ListLeaveResponse>(

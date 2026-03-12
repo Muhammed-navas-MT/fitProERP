@@ -1,7 +1,7 @@
 import { LeaveStatus } from "../../enums/leaveStatus";
 
 export interface ITrainerLeaveEntity {
-  id?: string;
+  _id?: string;
   gymId: string;
   trainerId: string;
   startDate: Date;
