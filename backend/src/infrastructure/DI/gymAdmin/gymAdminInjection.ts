@@ -85,6 +85,13 @@ import { ProfitRepository } from "../../repository/gymAdmin/profitRepo";
 import { gymAdminProfitModel } from "../../repository/databaseConfigs/models/gymAdminProfitModel";
 import { GetProfitAnalyticsUseCase } from "../../../application/useCases/gymAdmin/profitManagement/getProfitAnalyticsUseCase";
 import { ProfitController } from "../../../presentation/controller/gymAdmin/profitManagementController";
+import { LeaveRepository } from "../../repository/shared/leaveRepo";
+import { trainerLeaveModel } from "../../repository/databaseConfigs/models/trainerLeaveModel";
+import { RejectTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/rejectTrainerLeaveUseCase";
+import { ApproveTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/approveTrainerLeaveUseCase";
+import { FindTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/findLeaveDetailUseCase";
+import { ListAllTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/listAllTRainerLeaveUseCase";
+import { TrainerLeaveController } from "../../../presentation/controller/gymAdmin/trainerLeaveManagementController";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -95,6 +102,7 @@ const subsriptionRepository = new SubscriptionRepository(subscriptionModel);
 const revenueRepository = new GymAdminRevenueRepository(gymAdminRevenueModel);
 const expenseRepository = new GymAdminExpenseRepository(gymAdminExpenseModel);
 const profitRepository = new ProfitRepository(gymAdminProfitModel);
+const leaveRepository = new LeaveRepository(trainerLeaveModel);
 const jwtService = new JwtService();
 const cacheService = new CacheService();
 const hashService = new HashPassword();
@@ -311,3 +319,16 @@ const getProfitAnalytics = new GetProfitAnalyticsUseCase(
   expenseRepository,
 );
 export const injectedProfitCotroller = new ProfitController(getProfitAnalytics);
+
+//Trainer leave management
+const rejectLeave = new RejectTrainerLeaveUseCase(leaveRepository);
+const approveLeave = new ApproveTrainerLeaveUseCase(leaveRepository);
+const findTrainerLeave = new FindTrainerLeaveUseCase(leaveRepository);
+const listAllTrainerLeave = new ListAllTrainerLeaveUseCase(leaveRepository);
+
+export const injectedTrainerLeaveController = new TrainerLeaveController(
+  approveLeave,
+  findTrainerLeave,
+  listAllTrainerLeave,
+  rejectLeave,
+);

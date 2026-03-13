@@ -16,6 +16,7 @@ import {
   injectedPurchaseSubscriptionController,
   injectedReApplyController,
   injectedRevenueController,
+  injectedTrainerLeaveController,
   injectTrainerManagementController,
 } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
@@ -331,6 +332,30 @@ export class GymAdminRoutes {
       GYMADMIN.PROFIT,
       (req: Request, res: Response, next: NextFunction) => {
         injectedProfitCotroller.getProfitAnalytics(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.LIST_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerLeaveController.handleListTrainerLeave(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.FIND_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerLeaveController.handleFindTrainerLeave(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.REJECT_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerLeaveController.handleRejectLeave(req, res, next);
+      },
+    );
+    this._route.put(
+      GYMADMIN.APPROVE_LEAVE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerLeaveController.handleApproveLeave(req, res, next);
       },
     );
   }

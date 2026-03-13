@@ -47,3 +47,55 @@ export interface UpdateLeaveRequestDto {
   endDate: Date;
   reason: string;
 }
+
+export interface FindTrainerLeaveResponseDto {
+  id: string;
+  startDate: Date;
+  endDate: Date;
+  status: LeaveStatus;
+  reason: string;
+  rejectionReason?: string;
+  appliedDate: Date;
+  branchDetail: {
+    branchName: string;
+    city: string;
+    pincode: string;
+  };
+  trainerDetail: {
+    name: string;
+    email: string;
+  };
+}
+
+export interface ListTrainersLeavesRequestDto {
+  search: string;
+  limit: number;
+  page: number;
+  status?: string;
+  branchId?: string;
+}
+
+export interface ListTrainerLeavesResponseDto {
+  search: string;
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+  leaves: {
+    id: string;
+    startDate: Date;
+    endDate: Date;
+    status: LeaveStatus;
+    reason: string;
+    appliedDate: Date;
+    branchDetail: {
+      branchName: string;
+      city: string;
+      pincode: string;
+    };
+    trainerDetail: {
+      name: string;
+      email: string;
+    };
+  }[];
+}

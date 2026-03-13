@@ -23,7 +23,8 @@ export const FRONTEND_ROUTES = {
         LIST_REVENUE:"revenues",
         REVENUE_DETAIL:"revenue_detail",
         LIST_EXPENSE: "expenses",
-        PROFIT:"profit_analytics"
+        PROFIT:"profit_analytics",
+        LEAVE:"leaves"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",
@@ -44,7 +45,7 @@ export const FRONTEND_ROUTES = {
         LIST_MEMBERS:"members",
         DETAIL_MEMBER:"detail-member",
         PROFILE:"profile",
-        LEAVE:"leaves"
+        LEAVE:"leaves",
 
     },
     MEMBER:{
