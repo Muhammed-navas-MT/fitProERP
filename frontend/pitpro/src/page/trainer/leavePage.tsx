@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Eye, Pencil, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -17,6 +17,9 @@ import {
 
 import { useLeaves } from "@/hook/trainer/leaveHook";
 import { useDebounce } from "@/hook/useDebounce";
+import TrainerLeavePageSkeleton from "@/components/trainer/leaveComponents/trainerLeavePageSkeleton";
+import { useSelector } from "react-redux";
+import { rootstate } from "@/store/store";
 
 enum LeaveStatus {
   PENDING = "PENDING",
@@ -35,7 +38,6 @@ interface LeaveItem {
 }
 
 export default function LeavesPage() {
-
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
 
@@ -44,23 +46,32 @@ export default function LeavesPage() {
   const [editLeave, setEditLeave] = useState<LeaveItem | null>(null);
 
   const [page, setPage] = useState(1);
-
   const limit = 5;
-
-
   const debouncedSearch = useDebounce(search, 500);
 
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, status]);
+
+  const name = useSelector((state: rootstate) => state.authData.name);
+
+  const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   const { data, isLoading, isFetching } = useLeaves(
     page,
     debouncedSearch,
-    status
+    status,
   );
 
   const leaves: LeaveItem[] = data?.data?.leaves ?? [];
   const total = data?.data?.total ?? 0;
   const totalPages = data?.data?.totalPages ?? 1;
-
+  console.log(leaves)
 
   const columns: TableColumn<LeaveItem>[] = [
     {
@@ -96,7 +107,6 @@ export default function LeavesPage() {
       header: "Actions",
       render: (row) => (
         <div className="flex items-center gap-2">
-
           <button
             onClick={() => setViewLeave(row)}
             className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white"
@@ -112,7 +122,6 @@ export default function LeavesPage() {
               <Pencil className="h-4 w-4" />
             </button>
           )}
-
         </div>
       ),
     },
@@ -120,37 +129,27 @@ export default function LeavesPage() {
 
   /* ---------------- Loading ---------------- */
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="h-10 w-10 text-purple-500 animate-spin" />
-      </div>
-    );
+  if (isLoading  && !data) {
+    return <TrainerLeavePageSkeleton />;
   }
 
   return (
     <div className="min-h-screen bg-zinc-950">
-
       <Sidebar />
 
       <div className="lg:pl-[220px]">
-
         <Header
           title="Leave Management"
           subtitle="Manage your leave requests"
-          avatar={"TR"}
+          avatar={avatarText}
         />
 
         <div className="p-4 lg:p-8">
-
           <div className="max-w-7xl mx-auto space-y-6">
-
             {/* Filters */}
 
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-
               <div className="flex-1 flex gap-3">
-
                 <SearchInput
                   value={search}
                   onChange={setSearch}
@@ -167,7 +166,6 @@ export default function LeavesPage() {
                   <option value="APPROVED">Approved</option>
                   <option value="REJECTED">Rejected</option>
                 </select>
-
               </div>
 
               <button
@@ -177,13 +175,11 @@ export default function LeavesPage() {
                 <Plus className="h-4 w-4" />
                 Apply Leave
               </button>
-
             </div>
 
             {/* Table */}
 
             <div className="relative">
-
               {isFetching && (
                 <div className="absolute right-2 top-2">
                   <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
@@ -195,20 +191,17 @@ export default function LeavesPage() {
                 columns={columns}
                 emptyText="No leaves found"
               />
-
             </div>
 
             {/* Pagination */}
 
             <div className="flex items-center justify-between text-sm text-zinc-400">
-
               <p>
                 Showing {(page - 1) * limit + 1} -{" "}
                 {Math.min(page * limit, total)} of {total}
               </p>
 
               <div className="flex items-center gap-2">
-
                 <button
                   disabled={page === 1}
                   onClick={() => setPage((p) => p - 1)}
@@ -228,15 +221,10 @@ export default function LeavesPage() {
                 >
                   Next
                 </button>
-
               </div>
-
             </div>
 
-            <AddLeaveModal
-              open={addOpen}
-              onClose={() => setAddOpen(false)}
-            />
+            <AddLeaveModal open={addOpen} onClose={() => setAddOpen(false)} />
 
             <ViewLeaveModal
               open={!!viewLeave}
@@ -249,13 +237,9 @@ export default function LeavesPage() {
               onClose={() => setEditLeave(null)}
               leave={editLeave}
             />
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -1,10 +1,17 @@
 import { ITrainerLeaveEntity } from "../../../domain/entities/gymAdmin/TrainerLeaveEntity";
 import { LeaveStatus } from "../../../domain/enums/leaveStatus";
 import {
+  PopulateListTrainerLeaves,
+  PopulateTrainerLeave,
+} from "../../../infrastructure/repository/databaseConfigs/types/populateLeaveType";
+import {
   CreateLeaveRequestDto,
   FindLeaveResponseDto,
+  FindTrainerLeaveResponseDto,
   ListLeavesRequestDto,
   ListLeavesResponseDto,
+  ListTrainerLeavesResponseDto,
+  ListTrainersLeavesRequestDto,
 } from "../../dtos/shared/leaveDto";
 
 export class LeaveMapper {
@@ -53,6 +60,62 @@ export class LeaveMapper {
           appliedDate: leave.appliedDate,
           reason: leave.reason,
           status: leave.status,
+        };
+      }),
+    };
+  }
+
+  static toTrainerLeaveDetailDto(
+    leave: PopulateTrainerLeave,
+  ): FindTrainerLeaveResponseDto {
+    return {
+      id: leave._id.toString(),
+      appliedDate: leave.appliedDate,
+      branchDetail: {
+        branchName: leave.branchDetail.branchName,
+        city: leave.branchDetail.address.city,
+        pincode: leave.branchDetail.address.pincode,
+      },
+      endDate: leave.endDate,
+      reason: leave.reason,
+      startDate: leave.startDate,
+      status: leave.status,
+      trainerDetail: {
+        email: leave.trainerDetail.email,
+        name: leave.trainerDetail.name,
+      },
+      rejectionReason: leave.rejectionReason,
+    };
+  }
+
+  static toListTrainerLeaves(
+    params: ListTrainersLeavesRequestDto,
+    leaves: PopulateListTrainerLeaves[],
+    total: number,
+  ): ListTrainerLeavesResponseDto {
+    return {
+      limit: params.limit,
+      page: params.page,
+      search: params.search,
+      total,
+      totalPages: Math.ceil(total / params.limit),
+      leaves: leaves.map((leave) => {
+        return {
+          id: leave._id.toString(),
+          appliedDate: leave.appliedDate,
+          branchDetail: {
+            branchName: leave.branchDetail.branchName,
+            city: leave.branchDetail.address.city,
+            pincode: leave.branchDetail.address.pincode,
+          },
+          endDate: leave.endDate,
+          reason: leave.reason,
+          startDate: leave.startDate,
+          status: leave.status,
+          trainerDetail: {
+            email: leave.trainerDetail.email,
+            name: leave.trainerDetail.name,
+          },
         };
       }),
     };

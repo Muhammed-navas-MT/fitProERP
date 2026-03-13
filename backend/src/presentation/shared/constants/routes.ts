@@ -74,6 +74,10 @@ export const ROUTES = {
     FIND_EXPENSE: "/find_expense/:expenseId",
     FIND_EXPENSE_DETAIL: "/find_expense_detail/:expenseId",
     PROFIT: "/profit_analytics",
+    LIST_LEAVE: "/list_leave",
+    APPROVE_LEAVE: "/approve_leave/:leaveId",
+    REJECT_LEAVE: "/reject_leave/:leaveId",
+    FIND_LEAVE: "/find_leave/:leaveId",
   },
 
   TRAINER: {

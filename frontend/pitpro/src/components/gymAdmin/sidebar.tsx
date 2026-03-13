@@ -35,7 +35,7 @@ const navItems = [
   { name: "Expenses", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}`, icon: TrendingDown },
   { name: "Profit Analytics", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.PROFIT}` , icon: TrendingUp },
   { name: "Revenues", href:  `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_REVENUE}`, icon: CreditCard },
-  { name: "Trainers Leaves",href:"/leaves",icon: FileText,},
+  { name: "Trainers Leaves",href:`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LEAVE}`,icon: FileText,},
   // { name: "Problems", href: "/problems", icon: AlertCircle },
   { name: "Profile", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: User },
   { name: "Salary", href: "/salary", icon: DollarSign },
