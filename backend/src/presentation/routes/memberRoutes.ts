@@ -2,10 +2,12 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ROUTES } from "../shared/constants/routes";
 import {
   injectedCheckMemberAccessMiddleWare,
+  injectedDietPlanController,
   injectedMemberLoginController,
   injectedMemberLogoutController,
   injectedMemberProfileController,
   injectedPackageListAndCheckoutController,
+  injectedWorkoutPlanController,
 } from "../../infrastructure/DI/member/memberInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
@@ -124,6 +126,30 @@ export class MemberRoutes {
           res,
           next,
         );
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.CREATE_WORKOUT,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedWorkoutPlanController.handleCreateWorkoutPlan(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.LIST_WORKOUT,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedWorkoutPlanController.handleListWorkoutPlan(req, res, next);
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.CREATE_DIET,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedDietPlanController.handleCreateDietPlan(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.LIST_DIET,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedDietPlanController.handleListDietPlan(req, res, next);
       },
     );
   }

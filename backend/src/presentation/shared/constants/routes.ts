@@ -129,5 +129,9 @@ export const ROUTES = {
     LIST_ACTIVE_PACKAGES: "/list_active_packages",
     CHECKOUT: "/checkout",
     LIST_PAYMENTS: "/payments",
+    CREATE_WORKOUT: "/create_workout",
+    LIST_WORKOUT: "/list_workout",
+    CREATE_DIET: "/create_diet",
+    LIST_DIET: "/list_diet",
   },
 };
