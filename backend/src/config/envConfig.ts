@@ -19,4 +19,6 @@ export const configEnv = {
   CLIENT_PROTOCOL: process.env.CLIENT_PROTOCOL,
   NODE_ENV: process.env.NODE_ENV,
   MAX_AGE: process.env.MAX_AGE,
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  GROQ_API_KEY: process.env.GROQ_API_KEY,
 };

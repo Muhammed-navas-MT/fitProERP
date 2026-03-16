@@ -5,11 +5,13 @@ import ProtectedRoute from "@/components/shared/protectedComponets/protectedRout
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import MemberDashboard from "@/page/member/dashboardPage";
+import DietPlanPage from "@/page/member/dietPlanPage";
 import MemberLoginPage from "@/page/member/memberLoginPage";
 import MemberProfilePage from "@/page/member/memberProfilePage";
 import MemberShipPage from "@/page/member/memberShipPage";
 import MemberPackages from "@/page/member/packagesListPage";
 import PaymentsPage from "@/page/member/paymentPage";
+import WorkoutPlanPage from "@/page/member/wokoutPlanPage";
 import { Route, Routes } from "react-router-dom";
 
 const MemberRoutes = () => {
@@ -56,6 +58,8 @@ const MemberRoutes = () => {
             element={<MemberShipPage/>}
           />
           <Route path={FRONTEND_ROUTES.MEMBER.LIST_PAYMENTS} element={<PaymentsPage/>}/>
+          <Route path={FRONTEND_ROUTES.MEMBER.WORKOUT_PLAN} element={<WorkoutPlanPage/>}/>
+          <Route path={FRONTEND_ROUTES.MEMBER.DIET_PLAN} element={<DietPlanPage/>}/>
         </Route>
       </Route>
     </Routes>

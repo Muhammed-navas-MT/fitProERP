@@ -56,6 +56,8 @@ export const FRONTEND_ROUTES = {
         PACKAGELIST:"package_list",
         MEMBERSHIP:"packages",
         SUCCESS:"success",
-        LIST_PAYMENTS:"payments"
+        LIST_PAYMENTS:"payments",
+        WORKOUT_PLAN:"workout_plans",
+        DIET_PLAN:"diet_plans"
     }
 }
