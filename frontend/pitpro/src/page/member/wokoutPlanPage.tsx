@@ -5,7 +5,12 @@ import { DaySelectorCard } from "@/components/member/workoutPlanCompoents/daySel
 import { WorkoutDetail } from "@/components/member/workoutPlanCompoents/workoutDetail";
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
-import { useCreateWorkoutPlan, useListWorkout } from "@/hook/member/workoutPlanHooks";
+import {
+  useCreateWorkoutPlan,
+  useListWorkout,
+} from "@/hook/member/workoutPlanHooks";
+import { WorkoutPageSkeleton } from "@/components/member/workoutPlanCompoents/workoutPageSkeleton";
+import { EmptyWorkoutState } from "@/components/member/workoutPlanCompoents/emptyWorkoutState";
 
 interface Exercise {
   name: string;
@@ -21,26 +26,14 @@ interface WorkoutDay {
   exercises: Exercise[];
 }
 
-const WorkoutSkeleton = () => {
-  return (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-6 w-40 bg-zinc-800 rounded"></div>
-      <div className="h-24 bg-zinc-800 rounded"></div>
-      <div className="h-24 bg-zinc-800 rounded"></div>
-      <div className="h-24 bg-zinc-800 rounded"></div>
-    </div>
-  );
-};
-
 export default function WorkoutPage() {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
   const [selectedDay, setSelectedDay] = useState<string>(today);
 
-
-  const {mutate:createWorkout} = useCreateWorkoutPlan();
+  const { mutate: createWorkout } = useCreateWorkoutPlan();
   const { data, isLoading, isError } = useListWorkout();
-  const workout = data?.data ?? {};
-  console.log(workout)
+  const workout = data?.data;
+  console.log(workout);
 
   if (isLoading) {
     return (
@@ -55,7 +48,7 @@ export default function WorkoutPage() {
           />
 
           <main className="p-6">
-            <WorkoutSkeleton />
+            <WorkoutPageSkeleton />
           </main>
         </div>
       </div>
@@ -63,14 +56,10 @@ export default function WorkoutPage() {
   }
 
   if (isError) {
-    return (
-      <div className="p-6 text-red-500">
-        Failed to load workout plan
-      </div>
-    );
+    return <div className="p-6 text-red-500">Failed to load workout plan</div>;
   }
 
-  if (!workout) {
+  if ((!workout || !workout.days || workout.days.length === 0) ) {
     return (
       <div className="flex min-h-screen bg-zinc-950 text-zinc-50">
         <Sidebar />
@@ -82,14 +71,8 @@ export default function WorkoutPage() {
             subtitle="Ready to crush your fitness goals today."
           />
 
-          <main className="flex items-center justify-center flex-1">
-            <div className="text-center space-y-4">
-              <p className="text-zinc-400 text-lg">
-                No Workout Plan Found
-              </p>
-
-              <CreateWorkoutButton />
-            </div>
+          <main className="flex-1 flex items-center justify-center">
+            <EmptyWorkoutState onCreate={createWorkout} />
           </main>
         </div>
       </div>
