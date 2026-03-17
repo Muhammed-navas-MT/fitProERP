@@ -1,0 +1,6 @@
+export enum SessionStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}

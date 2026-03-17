@@ -46,6 +46,7 @@ export const FRONTEND_ROUTES = {
         DETAIL_MEMBER:"detail-member",
         PROFILE:"profile",
         LEAVE:"leaves",
+        SESSION:"sessions"
 
     },
     MEMBER:{

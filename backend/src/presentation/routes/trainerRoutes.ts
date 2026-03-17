@@ -5,6 +5,7 @@ import {
   injectedLeaveController,
   injectedMemberController,
   injectedProfileController,
+  injectedSlotRuleController,
   injectedTrainerLoginController,
   injectedTrainerLogoutController,
 } from "../../infrastructure/DI/trainer/trainerInjection";
@@ -182,6 +183,13 @@ export class TrainerRoutes {
       TRAINER.LIST_LEAVE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedLeaveController.handleListLeave(req, res, next);
+      },
+    );
+
+    this._route.post(
+      TRAINER.CREATE_SLOT_RULE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSlotRuleController.handleCreateslotRule(req, res, next);
       },
     );
   }

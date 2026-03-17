@@ -110,6 +110,7 @@ export const API_ROUTES = {
     CREATE_LEAVE: "/create_leave",
     UPDATE_LEAVE: "/update_leave",
     FIND_LEAVE: "/find_leave",
+    CREATE_SLOT_RULE: "/create_slot_rule",
   },
   MEMBER:{
     BASE:"/member",

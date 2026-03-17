@@ -28,6 +28,7 @@
     "nodemailer": "^7.0.10",
     "redis": "^5.9.0",
     "rotating-file-stream": "^3.2.7",
+    "rrule": "^2.8.1",
     "stripe": "^20.2.0",
     "zod": "^4.1.12"
   },

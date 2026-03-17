@@ -23,9 +23,21 @@ export default function MemberShipPage() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-neutral-950 px-4 py-10">
-        <MembershipSkeleton />
-      </main>
+      <div className="min-h-screen bg-black text-white">
+        <Sidebar />
+
+        <div className="md:ml-56">
+          <Topbar
+            title="Membership Management"
+            subtitle="Manage your Membership package"
+            avatar={avatarText}
+          />
+
+          <main className="min-h-screen bg-neutral-950 px-4 py-10">
+            <MembershipSkeleton />
+          </main>
+        </div>
+      </div>
     );
   }
   if (!isLoading && plans.length === 0) {
