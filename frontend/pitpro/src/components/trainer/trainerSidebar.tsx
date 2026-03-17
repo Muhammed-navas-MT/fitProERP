@@ -29,7 +29,7 @@ const mainMenuItems = [
     path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`,
   },
   { icon: User, label: "Profile", path: "/trainer/profile" },
-  { icon: Calendar, label: "My Schedule", path: "/trainer/schedule" },
+  { icon: Calendar, label: "My Schedule", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.SESSION}` },
   { icon: DollarSign, label: "Salary", path: "/trainer/salary" },
   { icon: FileText, label: "Leave Request", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LEAVE}` },
   { icon: Wallet, label: "Wallet", path: "/trainer/wallet" },

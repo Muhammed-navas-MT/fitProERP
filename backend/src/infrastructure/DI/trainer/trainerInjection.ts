@@ -38,6 +38,11 @@ import { FindLeaveUseCase } from "../../../application/useCases/trainer/leaveMan
 import { UpdateLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/updateLeaveUseCase";
 import { ListAllLeaveUseCase } from "../../../application/useCases/trainer/leaveManagement/listAllLeavesUseCase";
 import { LeaveController } from "../../../presentation/controller/trainer/leaveManagementComtroller";
+import { SlotRuleRepository } from "../../repository/trainer/slotRuleRepo";
+import { slotRuleModel } from "../../repository/databaseConfigs/models/slotRuleModel";
+import { CreateSlotRuleUseCase } from "../../../application/useCases/trainer/slotRuleManagement/createSlotRuleUseCase";
+import { SlotRuleController } from "../../../presentation/controller/trainer/slotRuleController";
+import { RRuleService } from "../../services/RRuleService";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -46,6 +51,7 @@ const sendPasswordEmailContentGenerator =
 const trainerRepository = new TrainerRepository(trainerModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const leaveRepository = new LeaveRepository(trainerLeaveModel);
+const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
 const loginUseCase = new TrainerLoginUseCase(
   trainerRepository,
   hashService,
@@ -140,4 +146,14 @@ export const injectedLeaveController = new LeaveController(
   findLeaveUseCase,
   listLeaveUseCase,
   updateLeaveUseCase,
+);
+
+//slot rul management
+const rRuleService = new RRuleService();
+const createSlotRuleUseCase = new CreateSlotRuleUseCase(
+  slotRuleRepository,
+  rRuleService,
+);
+export const injectedSlotRuleController = new SlotRuleController(
+  createSlotRuleUseCase,
 );

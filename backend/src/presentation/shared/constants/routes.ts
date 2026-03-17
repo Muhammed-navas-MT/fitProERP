@@ -110,6 +110,7 @@ export const ROUTES = {
     CREATE_LEAVE: "/create_leave",
     UPDATE_LEAVE: "/update_leave/:leaveId",
     FIND_LEAVE: "/find_leave/:leaveId",
+    CREATE_SLOT_RULE: "/create_slot_rule",
   },
 
   MEMBER: {

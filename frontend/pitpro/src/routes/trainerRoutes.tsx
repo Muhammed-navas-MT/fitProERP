@@ -7,6 +7,7 @@ import MemberDetailPage from "@/page/trainer/memberDetailPage";
 import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
 import ProfilePage from "@/page/trainer/trainerProfilePage";
+import TrainerSchedulePage from "@/page/trainer/trainerSchedulePage";
 import { Route, Routes } from "react-router-dom";
 
 const TrainerRoutes = () => {
@@ -48,6 +49,8 @@ const TrainerRoutes = () => {
         <Route path={`${FRONTEND_ROUTES.TRAINER.DETAIL_MEMBER}/:memberId`} element={<MemberDetailPage/>}/>
 
         <Route path={FRONTEND_ROUTES.TRAINER.LEAVE} element={<LeavesPage/>}/>
+
+        <Route path={FRONTEND_ROUTES.TRAINER.SESSION} element={<TrainerSchedulePage/>}/>
 
       </Route>
     </Routes>
