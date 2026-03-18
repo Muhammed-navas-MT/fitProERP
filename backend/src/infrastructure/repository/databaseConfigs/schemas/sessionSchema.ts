@@ -13,11 +13,23 @@ export const SessionSchema = new mongoose.Schema(
       ref: "Trainer",
       required: true,
     },
-    sessionDate: {
-      type: Date,
+    slotId: {
+      type: Schema.Types.ObjectId,
       required: true,
     },
-    duration: {
+    date: {
+      type: String,
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+    amount: {
       type: Number,
       required: true,
     },
@@ -31,6 +43,6 @@ export const SessionSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   },
 );

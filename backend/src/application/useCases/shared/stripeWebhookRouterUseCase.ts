@@ -4,13 +4,14 @@ import { IProcessStripeWebhookUseCase } from "../../interfaces/useCase/gymAdmin/
 import { IMemberProcessStripeWebhookUseCase } from "../../interfaces/useCase/member/packageAndPurchaseManagement/processStripeWebhookUseCaseInterface";
 import { IStripeWebhookRouterUseCase } from "../../interfaces/useCase/shared/stripeWebhookRouterUseCaseInterface";
 import { Roles } from "../../../domain/enums/roles";
+import { IMemberProcessSessionStripeWebhookUseCase } from "../../interfaces/useCase/member/slotAndBookingManagement/memberProcessSessionStripeWebhookUseCaseInterface";
+import { StripeError } from "../../../presentation/shared/constants/messages/stripeMessages";
 
-export class StripeWebhookRouterUseCase
-  implements IStripeWebhookRouterUseCase {
-
+export class StripeWebhookRouterUseCase implements IStripeWebhookRouterUseCase {
   constructor(
     private _gymAdminWebhookUC: IProcessStripeWebhookUseCase,
     private _memberWebhookUC: IMemberProcessStripeWebhookUseCase,
+    private _memberSessionWebhookUC: IMemberProcessSessionStripeWebhookUseCase,
   ) {}
 
   async execute(event: Stripe.Event): Promise<void> {
@@ -18,13 +19,19 @@ export class StripeWebhookRouterUseCase
 
     const session = event.data.object as Stripe.Checkout.Session;
     const role = session.metadata?.role;
+    const type = session.metadata?.type;
 
     if (!role) {
-      throw new ForbiddenException("Stripe metadata role missing");
+      throw new ForbiddenException(StripeError.METADATA_MISSING);
     }
 
     if (role === Roles.GYMADMIN) {
       await this._gymAdminWebhookUC.execute(event);
+      return;
+    }
+
+    if (role === Roles.MEMBER && type === "session_booking") {
+      await this._memberSessionWebhookUC.execute(event);
       return;
     }
 

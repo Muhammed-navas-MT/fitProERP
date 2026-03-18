@@ -16,7 +16,6 @@ export class CreateMemberCheckoutSessionUseCase implements ICreateMemberCheckout
     private _memberRepository: IMemberRepository,
   ) {}
   async execute(data: CreateMemberCheckoutSessionRequestDto): Promise<string> {
-
     const pkg = await this._packageRespository.findById(data.planId);
     if (!pkg) {
       throw new NOtFoundException(PackageErrorMessage.NOT_FOUND);

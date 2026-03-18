@@ -11,6 +11,7 @@ import MemberProfilePage from "@/page/member/memberProfilePage";
 import MemberShipPage from "@/page/member/memberShipPage";
 import MemberPackages from "@/page/member/packagesListPage";
 import PaymentsPage from "@/page/member/paymentPage";
+import TrainerBookingPage from "@/page/member/TrainerBookingPage";
 import WorkoutPlanPage from "@/page/member/wokoutPlanPage";
 import { Route, Routes } from "react-router-dom";
 
@@ -60,6 +61,7 @@ const MemberRoutes = () => {
           <Route path={FRONTEND_ROUTES.MEMBER.LIST_PAYMENTS} element={<PaymentsPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.WORKOUT_PLAN} element={<WorkoutPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.DIET_PLAN} element={<DietPlanPage/>}/>
+          <Route path={FRONTEND_ROUTES.MEMBER.BOOK_TRAINER} element={<TrainerBookingPage/>}/>
         </Route>
       </Route>
     </Routes>

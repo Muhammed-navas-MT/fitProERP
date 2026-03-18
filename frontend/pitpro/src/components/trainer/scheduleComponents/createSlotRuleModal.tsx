@@ -37,7 +37,7 @@ export function CreateSlotRuleModal({
   } = useForm<FormData>({
     resolver: zodResolver(createSlotRuleSchema),
     defaultValues: {
-      slots: [{ startTime: "", endTime: "" }],
+      slots: [{ startTime: "", endTime: "", amount: 0 }],
     },
   });
 
@@ -52,17 +52,22 @@ export function CreateSlotRuleModal({
         startDate: new Date(data.startDate),
         endDate: data.endDate ? new Date(data.endDate) : undefined,
         slots: data.slots.map((s) => ({
-          startTime: s.startTime!,
-          endTime: s.endTime!,
+          startTime: s.startTime,
+          endTime: s.endTime,
+          amount: s.amount,
         })),
       },
       {
         onSuccess: () => {
           toast.success("Slot rule created successfully");
-          reset();
+          reset({
+            startDate: "",
+            endDate: "",
+            slots: [{ startTime: "", endTime: "", amount: 0 }],
+          });
           onClose();
         },
-        onError: (err) => {
+        onError: (err: Error) => {
           toast.error(err.message || "Error creating slot");
         },
       },
@@ -82,7 +87,6 @@ export function CreateSlotRuleModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
-          {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-gray-400 mb-1 block">
@@ -91,8 +95,7 @@ export function CreateSlotRuleModal({
               <Input
                 type="date"
                 {...register("startDate")}
-                className="bg-[#0f0f0f] border-[#2a2a2a] text-white 
-             [color-scheme:dark]"
+                className="bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
               />
               {errors.startDate && (
                 <p className="text-xs text-red-400 mt-1">
@@ -108,32 +111,35 @@ export function CreateSlotRuleModal({
               <Input
                 type="date"
                 {...register("endDate")}
-                className="bg-[#0f0f0f] border-[#2a2a2a] text-white 
-             [color-scheme:dark]"
+                className="bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
               />
             </div>
           </div>
 
-          {/* Slots */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="text-xs text-gray-400">Time Slots</label>
               <button
                 type="button"
-                onClick={() => append({ startTime: "", endTime: "" })}
+                onClick={() =>
+                  append({ startTime: "", endTime: "", amount: 0 })
+                }
                 className="text-xs flex items-center gap-1 text-purple-400 hover:opacity-80"
               >
                 <Plus className="w-3 h-3" /> Add
               </button>
             </div>
 
-            <div className="space-y-3 max-h-[220px] overflow-y-auto">
+            <div className="space-y-3 max-h-[260px] overflow-y-auto">
               {fields.map((field, index) => (
-                <div key={field.id} className="space-y-1">
-                  {/* Labels */}
-                  <div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
+                <div
+                  key={field.id}
+                  className="space-y-2 border border-[#2a2a2a] rounded-md p-3"
+                >
+                  <div className="grid grid-cols-3 gap-2 text-[10px] text-gray-400">
                     <span>Start Time</span>
                     <span>End Time</span>
+                    <span>Amount</span>
                   </div>
 
                   <div className="flex gap-2 items-center">
@@ -153,38 +159,58 @@ export function CreateSlotRuleModal({
                       className="bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
                     />
 
+                    <Input
+                      type="number"
+                      min="1"
+                      step="1"
+                      placeholder="Amount"
+                      {...register(`slots.${index}.amount`,{ valueAsNumber: true })}
+                      className="bg-[#0f0f0f] border-[#2a2a2a] text-white"
+                    />
+
                     {fields.length > 1 && (
                       <Button
                         type="button"
                         size="icon"
                         variant="ghost"
                         onClick={() => remove(index)}
-                        className="text-gray-400 hover:text-red-400"
+                        className="text-gray-400 hover:text-red-400 shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     )}
                   </div>
 
-                  {/* Errors */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {errors.slots?.[index]?.startTime && (
-                      <p className="text-[10px] text-red-400">
-                        {errors.slots[index]?.startTime?.message}
-                      </p>
-                    )}
-                    {errors.slots?.[index]?.endTime && (
-                      <p className="text-[10px] text-red-400">
-                        {errors.slots[index]?.endTime?.message}
-                      </p>
-                    )}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      {errors.slots?.[index]?.startTime && (
+                        <p className="text-[10px] text-red-400">
+                          {errors.slots[index]?.startTime?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      {errors.slots?.[index]?.endTime && (
+                        <p className="text-[10px] text-red-400">
+                          {errors.slots[index]?.endTime?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      {errors.slots?.[index]?.amount && (
+                        <p className="text-[10px] text-red-400">
+                          {errors.slots[index]?.amount?.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-2">
             <Button
               type="button"

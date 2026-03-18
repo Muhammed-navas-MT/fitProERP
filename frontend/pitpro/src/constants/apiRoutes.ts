@@ -133,5 +133,8 @@ export const API_ROUTES = {
     LIST_WORKOUT: "/list_workout",
     CREATE_DIET: "/create_diet",
     LIST_DIET: "/list_diet",
+    LIST_AVAILABLE_SLOT: "/list_availabe_slot",
+    CHECKOUT_SESSION: "/checkout_session",
+    LIST_SESSIONS: "/list_sessions",
   }
 };

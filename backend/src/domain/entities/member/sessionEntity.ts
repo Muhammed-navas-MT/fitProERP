@@ -4,9 +4,13 @@ export interface SessionEntity {
   _id?: string;
   memberId: string;
   trainerId: string;
-  sessionDate: Date;
-  duration: number;
+  slotId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  amount: number;
   feedback?: string;
   status: SessionStatus;
   createdAt?: Date;
+  updatedAt?: Date;
 }

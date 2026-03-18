@@ -3,39 +3,38 @@ import { Roles } from "../../../domain/enums/roles";
 import { Status } from "../../../domain/enums/status";
 
 export interface IListMemberResponseDTO {
-    total:number;
-    page:number;
-    limit:number;
-    totalPages:number;
-    search:string;
-    assignMemberCount?:number;
-    activeMembersCount?:number;
-    data:Array<
-        {
-            id?:string,
-            name?:string,
-            email?:string,
-            phone?:string,
-            profileImg?:string,
-            status?:Status,
-            avatar?:string,
-            branchName?:string
-            createdAt?:Date
-        }>
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  search: string;
+  assignMemberCount?: number;
+  activeMembersCount?: number;
+  data: Array<{
+    id?: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+    profileImg?: string;
+    status?: Status;
+    avatar?: string;
+    branchName?: string;
+    createdAt?: Date;
+  }>;
 }
 
 export interface IListMemberRequestDTO {
-    search:string;
-    page:number;
-    limit:number;
-    trainerId:string;
+  search: string;
+  page: number;
+  limit: number;
+  trainerId: string;
 }
 
 export interface IListMemberInGymRequestDTO {
-    search:string;
-    page:number;
-    limit:number;
-    gymId:string;
+  search: string;
+  page: number;
+  limit: number;
+  gymId: string;
 }
 
 export interface MemberDTO {
