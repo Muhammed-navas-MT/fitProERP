@@ -1,9 +1,10 @@
-import { X, Calendar, Clock } from "lucide-react";
+import { X, Calendar, Clock, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Slot {
   startTime: string;
   endTime: string;
+  amount: number;
 }
 
 interface RuleData {
@@ -29,25 +30,27 @@ export const ViewRuleModal = ({
   if (!isOpen || !rule) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-
-      <div className="w-full max-w-md bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl">
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+      <div className="w-full max-w-md rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl">
+        
         {/* Header */}
-        <div className="flex justify-between items-center p-5 border-b border-[#2a2a2a]">
-          <h2 className="text-white font-semibold">Rule Details</h2>
+        <div className="flex items-center justify-between border-b border-[#2a2a2a] p-5">
+          <h2 className="text-lg font-semibold text-white">Rule Details</h2>
 
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            <X className="w-5 h-5" />
+          <button
+            onClick={onClose}
+            className="text-gray-400 transition hover:text-white"
+          >
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-5 space-y-4">
+        <div className="space-y-5 p-5">
 
           {/* Dates */}
           <div className="flex items-center gap-2 text-sm text-gray-400">
-            <Calendar className="w-4 h-4" />
+            <Calendar className="h-4 w-4" />
             <span>
               {rule.startDate} → {rule.endDate}
             </span>
@@ -56,10 +59,10 @@ export const ViewRuleModal = ({
           {/* Status */}
           <div>
             <span
-              className={`text-xs px-2 py-1 rounded-full border ${
+              className={`rounded-full border px-2 py-1 text-xs ${
                 rule.isActive
-                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                  : "bg-red-500/10 border-red-500/30 text-red-400"
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                  : "border-red-500/30 bg-red-500/10 text-red-400"
               }`}
             >
               {rule.isActive ? "Active" : "Inactive"}
@@ -68,30 +71,35 @@ export const ViewRuleModal = ({
 
           {/* Slots */}
           <div className="space-y-2">
-            <h3 className="text-xs text-gray-400 uppercase">Slots</h3>
+            <h3 className="text-xs uppercase text-gray-400">Slots</h3>
 
             {rule.slots.map((slot, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg"
+                className="flex items-center justify-between rounded-lg border border-[#2a2a2a] bg-[#0f0f0f] p-3"
               >
-                <span className="text-sm text-white flex items-center gap-2">
-                  <Clock className="w-3 h-3" />
+                {/* Time */}
+                <div className="flex items-center gap-2 text-sm text-white">
+                  <Clock className="h-3 w-3" />
                   {slot.startTime} - {slot.endTime}
-                </span>
+                </div>
+
+                {/* Amount */}
+                <div className="flex items-center gap-1 text-sm text-purple-400 font-medium">
+                  <Wallet className="h-3 w-3" />
+                  ₹{slot.amount}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-[#2a2a2a] flex justify-between">
-          
-          {/* Close */}
+        <div className="flex justify-between border-t border-[#2a2a2a] p-5">
           <Button
             variant="outline"
             onClick={onClose}
-            className="border-[#2a2a2a] bg-[#1a1a1a] text-gray-300"
+            className="border-[#2a2a2a] bg-[#1a1a1a] text-gray-300 hover:bg-[#252525] hover:text-white"
           >
             Close
           </Button>
@@ -102,7 +110,6 @@ export const ViewRuleModal = ({
           >
             Update Rule
           </Button>
-
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 export interface CreateSlotRuleRequestDTO {
   trainerId: string;
-  slots: { startTime: string; endTime: string }[];
+  slots: { startTime: string; endTime: string; amount: number }[];
   startDate: Date;
   endDate?: Date;
 }
@@ -8,6 +8,7 @@ export interface CreateSlotRuleRequestDTO {
 interface Slot {
   startTime: string;
   endTime: string;
+  amount: number;
 }
 
 export interface FindSlotRuleResponseDto {

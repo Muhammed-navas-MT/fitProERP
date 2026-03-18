@@ -2,35 +2,34 @@ import { Roles } from "../../../domain/enums/roles";
 import { Status } from "../../../domain/enums/status";
 
 export interface IListTrainerResponseDTO {
-    total:number;
-    page:number;
-    limit:number;
-    totalPages:number;
-    search:string;
-    data:Array<
-        {
-            id?:string,
-            name?:string,
-            role?:Roles,
-            email?:string,
-            phone?:string,
-            joinDate?:string,
-            specializations?:string[],
-            status?:Status,
-            avatar?:string,
-        }>
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  search: string;
+  data: Array<{
+    id?: string;
+    name?: string;
+    role?: Roles;
+    email?: string;
+    phone?: string;
+    joinDate?: string;
+    specializations?: string[];
+    status?: Status;
+    avatar?: string;
+  }>;
 }
 
 export interface IListTrainerRequestDTO {
-    search:string;
-    page:number;
-    limit:number;
-    gymId:string;
-};
+  search: string;
+  page: number;
+  limit: number;
+  gymId: string;
+}
 
 export interface IListActiveTrainers {
-    id:string,
-    name:string
+  id: string;
+  name: string;
 }
 
 export interface TrainerDTO {

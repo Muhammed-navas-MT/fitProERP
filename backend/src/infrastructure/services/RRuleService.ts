@@ -1,4 +1,4 @@
-import { RRule } from "rrule";
+import { RRule, rrulestr } from "rrule";
 import { IRRuleService } from "../../application/interfaces/service/RRuleserviceInterface";
 
 export class RRuleService implements IRRuleService {
@@ -11,5 +11,15 @@ export class RRuleService implements IRRuleService {
     });
 
     return rule.toString();
+  }
+
+  getDatesFromRRule(rruleString: string): string[] {
+    const rule = rrulestr(rruleString);
+
+    const dates = rule.all();
+
+    return dates.map((date) => {
+      return date.toISOString().split("T")[0];
+    });
   }
 }

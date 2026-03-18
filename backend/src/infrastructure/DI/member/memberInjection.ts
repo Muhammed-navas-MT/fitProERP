@@ -10,6 +10,9 @@ import { DeleteProfilePictureUseCase } from "../../../application/useCases/membe
 import { UpdateProfileUseCase } from "../../../application/useCases/member/profileManagement/updateProfileUseCase";
 import { UploadProfilePictureUseCase } from "../../../application/useCases/member/profileManagement/uploadProfilePictureUseCase";
 import { ViewMemberProfileUseCase } from "../../../application/useCases/member/profileManagement/viewProfileUseCase";
+import { CreateMemberSessionCheckoutSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCase";
+import { ListAllAvailableSlotUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllAvailableSlotUseCase";
+import { ListAllSessionsUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllSessionUseCase";
 import { CreateWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/createWorkoutPlanUseCase";
 import { ListWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/listWorkoutPlnaUseCase";
 import { DietPlanController } from "../../../presentation/controller/member/dietPlanController";
@@ -17,6 +20,7 @@ import { MemberLoginController } from "../../../presentation/controller/member/m
 import { MemberLogoutController } from "../../../presentation/controller/member/memberLogoutController";
 import { PackageListAndCheckoutController } from "../../../presentation/controller/member/packageListAndPurchaseController";
 import { ProfileController } from "../../../presentation/controller/member/profileManagementController";
+import { SlotAndBookingController } from "../../../presentation/controller/member/slotAndBookingController";
 import { WorkoutPlanController } from "../../../presentation/controller/member/workoutPlanController";
 import { CheckMemberAccessMiddleWare } from "../../../presentation/middlewares/checkMemberAccessMiddleware";
 import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
@@ -25,6 +29,8 @@ import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminM
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
 import { gymAdminRevenueModel } from "../../repository/databaseConfigs/models/revenueModel";
+import { sessionModel } from "../../repository/databaseConfigs/models/sessionModel";
+import { slotRuleModel } from "../../repository/databaseConfigs/models/slotRuleModel";
 import { workoutPlanModel } from "../../repository/databaseConfigs/models/workoutPlanModel";
 import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
 import { GymAdminRepository } from "../../repository/gymAdmin/gymAdminRepo";
@@ -32,10 +38,13 @@ import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
 import { GymAdminRevenueRepository } from "../../repository/gymAdmin/revenueRepo";
 import { DietPlanRepository } from "../../repository/member/dietPlanRepo";
 import { MemberRepository } from "../../repository/member/memberRepo";
+import { SessionRepository } from "../../repository/member/sessionRepo";
 import { WorkoutPlanRepository } from "../../repository/member/workoutPlanRepo";
+import { SlotRuleRepository } from "../../repository/trainer/slotRuleRepo";
 import { CacheService } from "../../services/cacheService";
 import { HashPassword } from "../../services/hashService";
 import { JwtService } from "../../services/jwtService";
+import { RRuleService } from "../../services/RRuleService";
 
 const memberRepository = new MemberRepository(memberModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
@@ -43,6 +52,8 @@ const packageRepository = new PackageRepository(PackageModel);
 const revenueRepository = new GymAdminRevenueRepository(gymAdminRevenueModel);
 const workoutPlanRepository = new WorkoutPlanRepository(workoutPlanModel);
 const dietPlanRepository = new DietPlanRepository(dietPlanModel);
+const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
+const sessionRepository = new SessionRepository(sessionModel);
 const hashService = new HashPassword();
 const jwtService = new JwtService();
 const cacheService = new CacheService();
@@ -119,4 +130,24 @@ const listDietPlnaUseCase = new ListDietPlanUseCase(dietPlanRepository);
 export const injectedDietPlanController = new DietPlanController(
   createDietPlanUseCase,
   listDietPlnaUseCase,
+);
+
+// slot and session booking management
+const rRuleService = new RRuleService();
+const listAvailableSlotUseCase = new ListAllAvailableSlotUseCase(
+  memberRepository,
+  slotRuleRepository,
+  rRuleService,
+  sessionRepository,
+);
+
+const createMemberSessionCheckoutUseCase =
+  new CreateMemberSessionCheckoutSessionUseCase(memberRepository);
+
+const listAllSessionUseCase = new ListAllSessionsUseCase(sessionRepository);
+
+export const injectedSlotAndBookingController = new SlotAndBookingController(
+  listAvailableSlotUseCase,
+  createMemberSessionCheckoutUseCase,
+  listAllSessionUseCase,
 );

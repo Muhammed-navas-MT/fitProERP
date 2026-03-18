@@ -57,8 +57,8 @@ const AVAILABLE_SLOTS = [
 
 const ruleData = {
   slots: [
-    { startTime: "06:00", endTime: "07:00" },
-    { startTime: "07:00", endTime: "08:00" },
+    { startTime: "06:00", endTime: "07:00",amount:1000 },
+    { startTime: "07:00", endTime: "08:00",amount :800 },
   ],
   startDate: "2026-03-17",
   endDate: "2026-03-19",

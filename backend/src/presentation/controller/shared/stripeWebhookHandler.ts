@@ -10,18 +10,14 @@ export class StripeWebhookController {
     private _stripeWebhookRouteUseCase: IStripeWebhookRouterUseCase,
   ) {}
 
-  public handle = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public handle = async (req: Request, res: Response, next: NextFunction) => {
     const sig = req.headers["stripe-signature"] as string;
     let event: Stripe.Event;
     try {
       event = stripe.webhooks.constructEvent(
         req.body,
         sig,
-        process.env.STRIPE_WEBHOOK_SECRET!
+        process.env.STRIPE_WEBHOOK_SECRET!,
       );
     } catch (err) {
       return next(err);
@@ -33,7 +29,7 @@ export class StripeWebhookController {
         HTTP_STATUS_CODE.OK,
         res,
         "Webhook received successfully",
-        { received: true }
+        { received: true },
       );
     } catch (err) {
       return next(err);

@@ -1,6 +1,8 @@
 export interface TimeSlot {
+  _id?: string;
   startTime: string; // "07:00"
   endTime: string;
+  amount: number;
 }
 
 export interface SlotRuleEntity {

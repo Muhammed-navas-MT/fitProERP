@@ -111,8 +111,8 @@ export enum MemberError {
   PACKAGE_EXPIRED = "Member's package has expired",
 
   INVALID_OTP = "OTP is invalid",
-  MEMBER_BLOCKED = "Your account is Blocked"
-
+  MEMBER_BLOCKED = "Your account is Blocked",
+  DATA_MISSING = "Member missing branch or gym assignment",
 }
 
 export enum MemberSuccess {
@@ -149,7 +149,7 @@ export enum MemberSuccess {
   PASSWORD_SENT_MESSAGE = "Please log in and change your password immediately for security.",
 
   UPDATE_STATUS = "Status updated successfully",
-  
+
   REGISTRATION_SUCCESS = "Account created successfully! You can now log in",
   LOGIN_SUCCESS = "Account login successfully",
   LOGOUT_SUCCESS = "Account logout successfully",

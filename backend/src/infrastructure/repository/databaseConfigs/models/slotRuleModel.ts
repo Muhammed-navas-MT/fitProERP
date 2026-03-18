@@ -2,8 +2,10 @@ import { model } from "mongoose";
 import { SlotRuleSchema } from "../schemas/slotRuleSchema";
 
 interface TimeSlot {
+  _id: string;
   startTime: string; // "07:00"
   endTime: string; // "08:00"
+  amount: number;
 }
 
 export interface ISlotRuleModel extends Document {

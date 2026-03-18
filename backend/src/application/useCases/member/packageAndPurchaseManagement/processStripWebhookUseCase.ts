@@ -4,16 +4,17 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { IPackageRespository } from "../../../interfaces/repository/gymAdmin/packageRepoInterface";
 import { IGymAdminRevenueRepository } from "../../../interfaces/repository/gymAdmin/revenueRepoInterface";
 
-import { ForbiddenException, NOtFoundException } from "../../../constants/exceptions";
+import {
+  ForbiddenException,
+  NOtFoundException,
+} from "../../../constants/exceptions";
 import { PackageErrorMessage } from "../../../../presentation/shared/constants/messages/packageMessages";
 import { Status } from "../../../../domain/enums/status";
 
 import { mapPackageToMemberUpdate } from "../../../mappers/member/mapPackageToMemberUpdate";
 import { mapStripeSessionToRevenue } from "../../../mappers/gymAdmin/mapStripeSessionToRevenue";
 
-export class MemberProcessStripeWebhookUseCase
-  implements IMemberProcessStripeWebhookUseCase
-{
+export class MemberProcessStripeWebhookUseCase implements IMemberProcessStripeWebhookUseCase {
   constructor(
     private _gymAdminRevenueRepository: IGymAdminRevenueRepository,
     private _memberRepository: IMemberRepository,
