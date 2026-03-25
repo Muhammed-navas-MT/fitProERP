@@ -21,7 +21,11 @@ export class SlotAndBookingController {
   ): Promise<void> {
     try {
       const memberId = res.locals.data.id;
-      const data = await this._listAvailableSlotUseCase.execute(memberId);
+      const trainerId = req.query.trainerId ? String(req.query.trainerId) : "";
+      const data = await this._listAvailableSlotUseCase.execute({
+        memberId,
+        trainerId,
+      });
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
@@ -41,10 +45,12 @@ export class SlotAndBookingController {
     try {
       const data = req.body;
       const userId = res.locals.data.id;
+      const subdomain = res.locals.data.subdomain;
       const url = await this._createMemberSessionCheckoutUseCase.execute({
         ...data,
         amount: Number(data.amount),
         userId,
+        subdomain,
       });
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,

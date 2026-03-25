@@ -1,4 +1,5 @@
 import { TrainerEntity } from "../../domain/entities/trainer/trainerEntity";
+import { IListActiveTrainersResponseDto } from "../dtos/auth/trainerDto";
 import {
   IListActiveTrainers,
   IListTrainerRequestDTO,
@@ -57,10 +58,22 @@ export class TrainerMapper {
       experience: trainer.experience,
       baseSalary: trainer.baseSalary,
       commisionRate: trainer.commisionRate,
+      allocatedLeaveCount: trainer.allocatedLeaveCount,
+      sessionCount: trainer.sessionCount,
       status: trainer.status,
       dutyTime: trainer.dutyTime,
       address: trainer.address,
       createdAt: trainer.createdAt || new Date(),
     };
+  }
+
+  static toListAcitveTrainersResponse(
+    trainers: TrainerEntity[],
+  ): IListActiveTrainersResponseDto[] {
+    return trainers.map((trainer) => ({
+      id: trainer._id as string,
+      name: trainer.name,
+      specialization: trainer.specialization,
+    }));
   }
 }

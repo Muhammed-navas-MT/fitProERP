@@ -41,7 +41,7 @@ const clientManagementItems = [
     label: "Members",
     path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`,
   },
-  { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
+  // { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
   { icon: MessageSquare, label: "Chat", path: "/trainer/chat" },
   { icon: Video, label: "Video Call", path: "/trainer/video" },
   { icon: Bell, label: "Notifications", path: "/trainer/notifications" },

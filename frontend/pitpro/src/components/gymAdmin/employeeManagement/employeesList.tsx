@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom"
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 import { EditEmployeeDialog } from "@/components/gymAdmin/employeeManagement/updateTrainerModal"
 import { TableSkeleton } from "../memberManagement/TableSkeleton"
+import { TrainerItem } from "@/types/updateTrainerType"
 
 export type EmployeeStatus = "ACTIVE" | "IN_ACTIVE" | "PENDING"
 
@@ -52,8 +53,8 @@ export function EmployeesList() {
     )
   }
 
-  const handleEdit = (trainer) => {
-    setSelectedTrainerId(trainer.id) 
+  const handleEdit = (trainerId:string) => {
+    setSelectedTrainerId(trainerId) 
     setIsEditOpen(true)
   }
 
@@ -94,7 +95,7 @@ export function EmployeesList() {
                 </td>
               </tr>
             ) : (
-              trainers.map((trainer) => (
+              trainers.map((trainer:TrainerItem) => (
                 <tr
                   key={trainer.id}
                   className="border-b border-zinc-900 hover:bg-zinc-900/40 transition"
@@ -127,7 +128,7 @@ export function EmployeesList() {
                   </td>
 
                   <td className="py-3 px-2 text-zinc-400">
-                    {new Date(trainer.createdAt).toLocaleDateString()}
+                    {new Date(trainer.joinDate).toLocaleDateString()}
                   </td>
 
                   <td className="py-3 px-2">
@@ -144,7 +145,7 @@ export function EmployeesList() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => handleEdit(trainer)}
+                        onClick={() => handleEdit(trainer.id)}
                         className="text-zinc-400 hover:bg-zinc-800 hover:text-white"
                       >
                         <Edit className="h-4 w-4" />

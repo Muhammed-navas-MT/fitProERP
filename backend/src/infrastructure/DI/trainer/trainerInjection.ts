@@ -43,6 +43,13 @@ import { slotRuleModel } from "../../repository/databaseConfigs/models/slotRuleM
 import { CreateSlotRuleUseCase } from "../../../application/useCases/trainer/slotRuleManagement/createSlotRuleUseCase";
 import { SlotRuleController } from "../../../presentation/controller/trainer/slotRuleController";
 import { RRuleService } from "../../services/RRuleService";
+import { FindSlotRuleUseCase } from "../../../application/useCases/trainer/slotRuleManagement/findSlotRuleUseCase";
+import { UpdateSlotUseCase } from "../../../application/useCases/trainer/slotRuleManagement/updateSlotRuleUseCase";
+import { SessionRepository } from "../../repository/member/sessionRepo";
+import { sessionModel } from "../../repository/databaseConfigs/models/sessionModel";
+import { ListTrainerSessionUseCase } from "../../../application/useCases/trainer/sessionManagement/listAllSessionUseCase";
+import { SessionController } from "../../../presentation/controller/trainer/sessionController";
+import { ListAllSlotUseCase } from "../../../application/useCases/trainer/slotRuleManagement/listAllAvailableSlotUseCase";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -52,6 +59,7 @@ const trainerRepository = new TrainerRepository(trainerModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const leaveRepository = new LeaveRepository(trainerLeaveModel);
 const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
+const sessionRepository = new SessionRepository(sessionModel);
 const loginUseCase = new TrainerLoginUseCase(
   trainerRepository,
   hashService,
@@ -139,8 +147,14 @@ const createLeaveuseCase = new CreateLeaveUseCase(
   trainerRepository,
 );
 const findLeaveUseCase = new FindLeaveUseCase(leaveRepository);
-const updateLeaveUseCase = new UpdateLeaveUseCase(leaveRepository);
-const listLeaveUseCase = new ListAllLeaveUseCase(leaveRepository);
+const updateLeaveUseCase = new UpdateLeaveUseCase(
+  leaveRepository,
+  trainerRepository,
+);
+const listLeaveUseCase = new ListAllLeaveUseCase(
+  leaveRepository,
+  trainerRepository,
+);
 export const injectedLeaveController = new LeaveController(
   createLeaveuseCase,
   findLeaveUseCase,
@@ -153,7 +167,32 @@ const rRuleService = new RRuleService();
 const createSlotRuleUseCase = new CreateSlotRuleUseCase(
   slotRuleRepository,
   rRuleService,
+  trainerRepository,
 );
+const findSlotRuleUseCase = new FindSlotRuleUseCase(slotRuleRepository);
+const updateSlotRuleUseCase = new UpdateSlotUseCase(
+  slotRuleRepository,
+  rRuleService,
+  trainerRepository,
+);
+const listAllSlotUseCase = new ListAllSlotUseCase(
+  slotRuleRepository,
+  rRuleService,
+  sessionRepository,
+);
+
 export const injectedSlotRuleController = new SlotRuleController(
   createSlotRuleUseCase,
+  findSlotRuleUseCase,
+  updateSlotRuleUseCase,
+  listAllSlotUseCase,
+);
+
+//session management
+const listTrainerSessionUseCase = new ListTrainerSessionUseCase(
+  sessionRepository,
+);
+
+export const injectedSessionController = new SessionController(
+  listTrainerSessionUseCase,
 );

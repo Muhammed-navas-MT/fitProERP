@@ -5,6 +5,11 @@ export interface AvailableSlotResponseDto {
   slots: AvailableSlotDay[];
 }
 
+export interface AvailableSlotRequestDto {
+  memberId: string;
+  trainerId: string;
+}
+
 export interface AvailableSlotDay {
   date: string;
   slots: TimeSlot[];
@@ -45,6 +50,7 @@ export interface ListAllSessionsResponseDto {
   page: number;
   limit: number;
   totalPages: number;
+  countOfUpComingSession: number;
   session: ListSessionsItem[];
 }
 

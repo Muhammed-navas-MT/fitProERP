@@ -5,7 +5,11 @@ import { ISessionModel } from "../databaseConfigs/models/sessionModel";
 import { SessionEntity } from "../../../domain/entities/member/sessionEntity";
 import { SessionStatus } from "../../../domain/enums/sessionStatus";
 import { ListAllSessionsRequestDto } from "../../../application/dtos/memberDto/slotAndBookingDto";
-import { PopulateSessionItem } from "../databaseConfigs/types/sessionPopulatedTypes";
+import {
+  PopulateSessionItem,
+  PopulateTrainerSessionItem,
+} from "../databaseConfigs/types/sessionPopulatedTypes";
+import { ListSessionRequestDto } from "../../../application/dtos/trainerDto/sessionDto";
 
 export class SessionRepository
   extends BaseRepository<ISessionModel>
@@ -67,6 +71,32 @@ export class SessionRepository
       .skip(skip)
       .limit(limit)
       .lean<PopulateSessionItem[]>();
+
+    return {
+      sessions,
+      total,
+    };
+  }
+
+  async listAllSessionByTrainerId(
+    params: ListSessionRequestDto,
+  ): Promise<{ sessions: PopulateTrainerSessionItem[]; total: number }> {
+    const { trainerId, page, limit } = params;
+    const skip = (page - 1) * limit;
+    const total = await this._model.countDocuments({
+      trainerId,
+    });
+
+    const sessions = await this._model
+      .find({ trainerId })
+      .populate({
+        path: "memberId",
+        select: "name profileImg",
+      })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean<PopulateTrainerSessionItem[]>();
 
     return {
       sessions,

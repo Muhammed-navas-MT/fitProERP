@@ -12,6 +12,7 @@ interface LeaveData {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -43,7 +44,12 @@ export function ViewLeaveModal({ open, onClose, leave }: ViewLeaveModalProps) {
   return (
     <BaseModal isOpen={open} onClose={onClose} title="Leave Details">
       <div className="space-y-4">
-        <InfoRow label="Applied Date" value={format(leave.appliedDate, "dd MMM yyyy")} />
+        
+        
+        <div className="grid grid-cols-2 gap-4">
+          <InfoRow label="Applied Date" value={format(leave.appliedDate, "dd MMM yyyy")} />
+         <InfoRow label="Leave Count" value={leave.leaveCount} />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <InfoRow label="Start Date" value={format(leave.startDate, "dd MMM yyyy")} />
           <InfoRow label="End Date" value={format(leave.endDate, "dd MMM yyyy")} />

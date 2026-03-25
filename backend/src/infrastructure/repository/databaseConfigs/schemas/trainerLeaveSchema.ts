@@ -21,6 +21,10 @@ export const trainerLeaveSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    leaveCount: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
       enum: Object.values(LeaveStatus),

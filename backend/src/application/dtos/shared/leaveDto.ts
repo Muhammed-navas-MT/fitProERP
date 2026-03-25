@@ -11,6 +11,7 @@ export interface FindLeaveResponseDto {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -31,10 +32,13 @@ export interface ListLeavesResponseDto {
   status?: string;
   total: number;
   totalPages: number;
+  isExided: boolean;
+  exidedmessage?: string;
   leaves: {
     id: string;
     startDate: Date;
     endDate: Date;
+    leaveCount: number;
     status: LeaveStatus;
     reason: string;
     appliedDate: Date;
@@ -52,6 +56,7 @@ export interface FindTrainerLeaveResponseDto {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -65,6 +70,8 @@ export interface FindTrainerLeaveResponseDto {
     name: string;
     email: string;
   };
+  isExided: boolean;
+  Exidedmessage?: string;
 }
 
 export interface ListTrainersLeavesRequestDto {
@@ -85,6 +92,7 @@ export interface ListTrainerLeavesResponseDto {
     id: string;
     startDate: Date;
     endDate: Date;
+    leaveCount: number;
     status: LeaveStatus;
     reason: string;
     appliedDate: Date;

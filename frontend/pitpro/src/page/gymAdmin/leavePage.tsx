@@ -51,6 +51,7 @@ export default function TrainerLeavePage() {
   const leaves = useMemo(() => {
     return leavesData?.leaves ?? [];
   }, [leavesData]);
+  console.log(leaves)
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);

@@ -11,6 +11,7 @@ export interface IListTrainerLeaveItem {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   appliedDate: Date;
@@ -84,6 +85,15 @@ export function LeaveTable({
       render: (leave) => (
         <p className="text-zinc-300 max-w-[200px] truncate">
           {leave.reason}
+        </p>
+      ),
+    },
+
+    {
+      header: "Leave Count",
+      render: (leave) => (
+        <p className="text-zinc-300 max-w-[200px] truncate">
+          {leave.leaveCount} Days
         </p>
       ),
     },

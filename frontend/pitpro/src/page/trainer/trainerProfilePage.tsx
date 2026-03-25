@@ -28,6 +28,8 @@ interface ProfileData {
   experience: number;
   baseSalary: number;
   commisionRate: number;
+  sessionCount: number;
+  allocatedLeaveCount: number;
   status: string;
   dutyTime: {
     startTime: string;
@@ -52,7 +54,7 @@ export default function ProfilePage() {
   resolver: zodResolver(updateTrainerPasswordSchema),
 });
 
-const { mutate: updatePassword, isLoading:isUpdatingPassword } = useUpdateTrainerpassword();
+const { mutate: updatePassword, isPending:isUpdatingPassword } = useUpdateTrainerpassword();
 
   const {
     register,
@@ -90,6 +92,7 @@ const { mutate: updatePassword, isLoading:isUpdatingPassword } = useUpdateTraine
   }
 
   const profileData: ProfileData = data.data;
+  console.log(profileData);
 
   const handleCancel = () => {
     reset({
@@ -191,6 +194,18 @@ const { mutate: updatePassword, isLoading:isUpdatingPassword } = useUpdateTraine
                     <p className="text-xs text-gray-400">Commission</p>
                     <p className="text-lg font-semibold text-white">
                       {profileData.commisionRate}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Leave / Month</p>
+                    <p className="text-lg font-semibold text-white">
+                      {profileData.allocatedLeaveCount}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Session / Day</p>
+                    <p className="text-lg font-semibold text-white">
+                      {profileData.sessionCount}
                     </p>
                   </div>
                 </div>

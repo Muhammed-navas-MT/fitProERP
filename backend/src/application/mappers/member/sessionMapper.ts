@@ -9,12 +9,14 @@ export class SessionMapper {
     params: ListAllSessionsRequestDto,
     sessions: PopulateSessionItem[],
     total: number,
+    countOfUpComingSession: number,
   ): ListAllSessionsResponseDto {
     return {
       limit: params.limit,
       page: params.page,
       total,
       totalPages: Math.ceil(total / params.limit),
+      countOfUpComingSession,
       session: sessions.map((session) => {
         return {
           _id: session._id.toString(),

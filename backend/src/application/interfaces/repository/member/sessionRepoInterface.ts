@@ -1,6 +1,10 @@
 import { SessionEntity } from "../../../../domain/entities/member/sessionEntity";
-import { PopulateSessionItem } from "../../../../infrastructure/repository/databaseConfigs/types/sessionPopulatedTypes";
+import {
+  PopulateSessionItem,
+  PopulateTrainerSessionItem,
+} from "../../../../infrastructure/repository/databaseConfigs/types/sessionPopulatedTypes";
 import { ListAllSessionsRequestDto } from "../../../dtos/memberDto/slotAndBookingDto";
+import { ListSessionRequestDto } from "../../../dtos/trainerDto/sessionDto";
 import { IBaseRepository } from "../base/baseRepo";
 
 export interface ISessionRepository extends IBaseRepository<SessionEntity> {
@@ -16,4 +20,7 @@ export interface ISessionRepository extends IBaseRepository<SessionEntity> {
   listAllSessionByMemberId(
     params: ListAllSessionsRequestDto,
   ): Promise<{ sessions: PopulateSessionItem[]; total: number }>;
+  listAllSessionByTrainerId(
+    params: ListSessionRequestDto,
+  ): Promise<{ sessions: PopulateTrainerSessionItem[]; total: number }>;
 }

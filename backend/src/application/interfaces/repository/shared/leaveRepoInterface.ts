@@ -24,4 +24,9 @@ export interface ILeaveRepository extends IBaseRepository<ITrainerLeaveEntity> {
     gymId: string,
   ): Promise<{ leaves: PopulateListTrainerLeaves[]; total: number }>;
   findTrainerLeaveDetail(leaveId: string): Promise<PopulateTrainerLeave>;
+  findLeavesByTrainerIdAndDateRange(
+    trainerId: string,
+    rangeStart: Date,
+    rangeEnd: Date,
+  ): Promise<ITrainerLeaveEntity[]>;
 }

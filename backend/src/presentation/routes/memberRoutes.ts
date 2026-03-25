@@ -8,6 +8,7 @@ import {
   injectedMemberProfileController,
   injectedPackageListAndCheckoutController,
   injectedSlotAndBookingController,
+  injectedtrainerController,
   injectedWorkoutPlanController,
 } from "../../infrastructure/DI/member/memberInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
@@ -174,6 +175,13 @@ export class MemberRoutes {
       ROUTES.MEMBER.LIST_SESSIONS,
       (req: Request, res: Response, next: NextFunction) => {
         injectedSlotAndBookingController.handleListAllSession(req, res, next);
+      },
+    );
+
+    this._route.get(
+      ROUTES.MEMBER.LIST_ACTIVE_TRAINERS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedtrainerController.listActiveTrainers(req, res, next);
       },
     );
   }

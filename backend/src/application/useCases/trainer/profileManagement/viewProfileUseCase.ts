@@ -10,7 +10,8 @@ export class ViewProfileUseCase implements IViewProfileUseCase {
 
   async execute(trainerId: string): Promise<TrainerDTO> {
     const trainer = await this.trainerRepository.findById(trainerId);
-    if (!trainer) throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND    );
+    console.log(trainer);
+    if (!trainer) throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
 
     return TrainerMapper.toFindTrainerResponse(trainer);
   }

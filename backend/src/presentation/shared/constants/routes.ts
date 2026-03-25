@@ -111,6 +111,10 @@ export const ROUTES = {
     UPDATE_LEAVE: "/update_leave/:leaveId",
     FIND_LEAVE: "/find_leave/:leaveId",
     CREATE_SLOT_RULE: "/create_slot_rule",
+    FIND_SLOT_RULE: "/find_slot_rule",
+    UPDATE_SLOT_RULE: "/update_slot_rule/:slotRuleId",
+    LIST_SESSION: "/list_session",
+    LIST_SLOTS: "/list_slots",
   },
 
   MEMBER: {
@@ -137,5 +141,6 @@ export const ROUTES = {
     LIST_AVAILABLE_SLOT: "/list_availabe_slot",
     CHECKOUT_SESSION: "/checkout_session",
     LIST_SESSIONS: "/list_sessions",
+    LIST_ACTIVE_TRAINERS: "/list_trainers",
   },
 };

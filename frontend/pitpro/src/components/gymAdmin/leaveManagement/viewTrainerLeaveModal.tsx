@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { AlertTriangle } from "lucide-react";
 import { useFindLeave } from "@/hook/gymAdmin/leaveHooks";
 
 interface Props {
@@ -16,6 +17,7 @@ export interface TrainerLeaveItem {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -31,6 +33,9 @@ export interface TrainerLeaveItem {
     name: string;
     email: string;
   };
+
+  isExided: boolean;
+  Exidedmessage?: string;
 }
 
 export default function ViewLeaveModal({ leaveId, onClose }: Props) {
@@ -39,13 +44,12 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
   if (!leaveId) return null;
 
   const leave: TrainerLeaveItem = data?.data;
+  console.log(leave, "view leave page");
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-      <div className="bg-zinc-900 w-[500px] rounded-lg shadow-lg p-6 text-white">
-
-        {/* Header */}
-        <div className="flex justify-between items-center mb-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="w-[500px] rounded-lg bg-zinc-900 p-6 text-white shadow-lg">
+        <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Trainer Leave Details</h2>
           <button
             onClick={onClose}
@@ -55,58 +59,70 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
           </button>
         </div>
 
-        {isLoading && (
-          <p className="text-zinc-400">Loading...</p>
-        )}
+        {isLoading && <p className="text-zinc-400">Loading...</p>}
 
         {leave && (
           <div className="space-y-4 text-sm">
+            {leave.isExided && (
+              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+                  <div>
+                    <p className="font-semibold text-red-400">
+                      Allocated Leave Exceeded
+                    </p>
+                    <p className="mt-1 text-xs text-red-300">
+                      {leave.Exidedmessage ||
+                        "This trainer has exceeded the allocated leave limit."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            {/* Trainer */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Trainer</p>
+              <p className="text-xs text-zinc-400">Trainer</p>
               <p className="font-medium">{leave.trainerDetail.name}</p>
-              <p className="text-zinc-400 text-xs">
+              <p className="text-xs text-zinc-400">
                 {leave.trainerDetail.email}
               </p>
             </div>
 
-            {/* Branch */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Branch</p>
+              <p className="text-xs text-zinc-400">Branch</p>
               <p>{leave.branchDetail.branchName}</p>
-              <p className="text-zinc-400 text-xs">
+              <p className="text-xs text-zinc-400">
                 {leave.branchDetail.city} - {leave.branchDetail.pincode}
               </p>
             </div>
 
-            {/* Leave Dates */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Leave Period</p>
+              <p className="text-xs text-zinc-400">Leave Period</p>
               <p>
                 {format(new Date(leave.startDate), "dd MMM yyyy")} —{" "}
                 {format(new Date(leave.endDate), "dd MMM yyyy")}
               </p>
             </div>
 
-            {/* Applied Date */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Applied Date</p>
+              <p className="text-xs text-zinc-400">Leave Count</p>
+              <p>{leave.leaveCount}</p>
+            </div>
+
+            <div className="border-b border-zinc-800 pb-3">
+              <p className="text-xs text-zinc-400">Applied Date</p>
               <p>{format(new Date(leave.appliedDate), "dd MMM yyyy")}</p>
             </div>
 
-            {/* Reason */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Reason</p>
+              <p className="text-xs text-zinc-400">Reason</p>
               <p>{leave.reason}</p>
             </div>
 
-            {/* Status */}
             <div className="border-b border-zinc-800 pb-3">
-              <p className="text-zinc-400 text-xs">Status</p>
+              <p className="text-xs text-zinc-400">Status</p>
               <span
-                className={`px-3 py-1 rounded text-xs font-medium
-                ${
+                className={`rounded px-3 py-1 text-xs font-medium ${
                   leave.status === "APPROVED"
                     ? "bg-green-600/20 text-green-400"
                     : leave.status === "REJECTED"
@@ -118,27 +134,23 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
               </span>
             </div>
 
-            {/* Rejection Reason */}
             {leave.status === "REJECTED" && leave.rejectionReason && (
               <div>
-                <p className="text-zinc-400 text-xs">Rejection Reason</p>
+                <p className="text-xs text-zinc-400">Rejection Reason</p>
                 <p className="text-red-400">{leave.rejectionReason}</p>
               </div>
             )}
-
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex justify-end mt-6">
+        <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded text-sm"
+            className="rounded bg-zinc-700 px-4 py-2 text-sm hover:bg-zinc-600"
           >
             Close
           </button>
         </div>
-
       </div>
     </div>
   );

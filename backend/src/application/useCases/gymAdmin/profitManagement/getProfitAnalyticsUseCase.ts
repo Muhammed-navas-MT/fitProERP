@@ -45,6 +45,11 @@ export class GetProfitAnalyticsUseCase implements IGetProfitAnalyticsUseCase {
         ...analytics.summary,
         totalRevenue: revenue,
         totalExpense: expense,
+        netProfit: revenue - expense,
+        profitMargin:
+          revenue > 0
+            ? Number((((revenue - expense) / revenue) * 100).toFixed(2))
+            : 0,
       },
     };
   }

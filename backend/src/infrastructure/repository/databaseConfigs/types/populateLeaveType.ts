@@ -19,6 +19,7 @@ export interface PopulateTrainerLeave {
   _id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -31,6 +32,7 @@ export interface PopulateListTrainerLeaves {
   _id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   appliedDate: Date;

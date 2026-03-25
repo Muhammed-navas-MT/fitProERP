@@ -20,8 +20,23 @@ export interface FindSlotRuleResponseDto {
 }
 
 export interface UpdateSlotRuleRequestDto {
-  slots?: Slot[];
-  startDate?: string;
-  endDate?: string;
+  slots: Slot[];
+  startDate?: Date;
+  endDate?: Date;
   isActive?: boolean;
+}
+
+export interface AvailableSlotResponseDto {
+  slots: AvailableSlotDay[];
+}
+
+export interface AvailableSlotDay {
+  date: string;
+  slots: TimeSlot[];
+}
+
+export interface TimeSlot {
+  startTime: string;
+  endTime: string;
+  isBooked: boolean;
 }

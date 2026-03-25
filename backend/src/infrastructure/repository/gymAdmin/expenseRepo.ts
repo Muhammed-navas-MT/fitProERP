@@ -35,6 +35,7 @@ export class GymAdminExpenseRepository
 
     const pipeline: PipelineStage[] = [
       {
+        // $match: {gymId: params.gymId},
         $lookup: {
           from: "branches",
           localField: "branchId",

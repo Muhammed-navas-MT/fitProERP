@@ -323,7 +323,10 @@ export const injectedProfitCotroller = new ProfitController(getProfitAnalytics);
 //Trainer leave management
 const rejectLeave = new RejectTrainerLeaveUseCase(leaveRepository);
 const approveLeave = new ApproveTrainerLeaveUseCase(leaveRepository);
-const findTrainerLeave = new FindTrainerLeaveUseCase(leaveRepository);
+const findTrainerLeave = new FindTrainerLeaveUseCase(
+  leaveRepository,
+  trainerRepository,
+);
 const listAllTrainerLeave = new ListAllTrainerLeaveUseCase(leaveRepository);
 
 export const injectedTrainerLeaveController = new TrainerLeaveController(
