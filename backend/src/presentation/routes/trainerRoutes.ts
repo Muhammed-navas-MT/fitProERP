@@ -5,6 +5,7 @@ import {
   injectedLeaveController,
   injectedMemberController,
   injectedProfileController,
+  injectedSessionController,
   injectedSlotRuleController,
   injectedTrainerLoginController,
   injectedTrainerLogoutController,
@@ -190,6 +191,34 @@ export class TrainerRoutes {
       TRAINER.CREATE_SLOT_RULE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedSlotRuleController.handleCreateslotRule(req, res, next);
+      },
+    );
+
+    this._route.get(
+      TRAINER.FIND_SLOT_RULE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSlotRuleController.handleFindSlotRule(req, res, next);
+      },
+    );
+
+    this._route.post(
+      TRAINER.UPDATE_SLOT_RULE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSlotRuleController.handleUpdateSlotRule(req, res, next);
+      },
+    );
+
+    this._route.get(
+      TRAINER.LIST_SESSION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSessionController.handleListSession(req, res, next);
+      },
+    );
+
+    this._route.get(
+      TRAINER.LIST_SLOTS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSlotRuleController.handleListSlot(req, res, next);
       },
     );
   }

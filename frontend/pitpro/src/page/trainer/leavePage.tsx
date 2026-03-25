@@ -20,6 +20,7 @@ import { useDebounce } from "@/hook/useDebounce";
 import TrainerLeavePageSkeleton from "@/components/trainer/leaveComponents/trainerLeavePageSkeleton";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
+import { MovingWarningBanner } from "@/components/trainer/leaveComponents/movingWarningBanner";
 
 enum LeaveStatus {
   PENDING = "PENDING",
@@ -31,6 +32,7 @@ interface LeaveItem {
   id: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;
@@ -71,7 +73,8 @@ export default function LeavesPage() {
   const leaves: LeaveItem[] = data?.data?.leaves ?? [];
   const total = data?.data?.total ?? 0;
   const totalPages = data?.data?.totalPages ?? 1;
-  console.log(leaves)
+  const isExided = data?.data?.isExided ?? false;
+  const exidedmessage = data?.data?.exidedmessage ?? "";
 
   const columns: TableColumn<LeaveItem>[] = [
     {
@@ -94,10 +97,16 @@ export default function LeavesPage() {
       render: (row) => format(new Date(row.endDate), "dd MMM yyyy"),
       className: "text-white",
     },
+
     {
       header: "Reason",
       render: (row) => row.reason,
       className: "text-zinc-300",
+    },
+    {
+      header: "Leave Count",
+      render: (row) => `${row.leaveCount} Days`,
+      className: "text-white",
     },
     {
       header: "Status",
@@ -127,119 +136,116 @@ export default function LeavesPage() {
     },
   ];
 
-  /* ---------------- Loading ---------------- */
-
-  if (isLoading  && !data) {
+  if (isLoading && !data) {
     return <TrainerLeavePageSkeleton />;
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <Sidebar />
+  <div className="min-h-screen bg-zinc-950">
+    <Sidebar />
 
-      <div className="lg:pl-[220px]">
-        <Header
-          title="Leave Management"
-          subtitle="Manage your leave requests"
-          avatar={avatarText}
-        />
+    <div className="lg:pl-[220px]">
+      <Header
+        title="Leave Management"
+        subtitle="Manage your leave requests"
+        avatar={avatarText}
+      />
 
-        <div className="p-4 lg:p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            {/* Filters */}
+      <div className="p-4 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <MovingWarningBanner
+            show={isExided}
+            message={exidedmessage}
+          />
 
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-              <div className="flex-1 flex gap-3">
-                <SearchInput
-                  value={search}
-                  onChange={setSearch}
-                  placeholder="Search by reason..."
-                />
-
-                <select
-                  value={status ?? ""}
-                  onChange={(e) => setStatus(e.target.value || undefined)}
-                  className="bg-zinc-900 border border-zinc-700 text-sm rounded-lg px-3 py-2 text-white"
-                >
-                  <option value="">All Status</option>
-                  <option value="PENDING">Pending</option>
-                  <option value="APPROVED">Approved</option>
-                  <option value="REJECTED">Rejected</option>
-                </select>
-              </div>
-
-              <button
-                onClick={() => setAddOpen(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-700 transition"
-              >
-                <Plus className="h-4 w-4" />
-                Apply Leave
-              </button>
-            </div>
-
-            {/* Table */}
-
-            <div className="relative">
-              {isFetching && (
-                <div className="absolute right-2 top-2">
-                  <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
-                </div>
-              )}
-
-              <TrainerReusableTable
-                data={leaves}
-                columns={columns}
-                emptyText="No leaves found"
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            <div className="flex flex-1 gap-3">
+              <SearchInput
+                value={search}
+                onChange={setSearch}
+                placeholder="Search by reason..."
               />
+
+              <select
+                value={status ?? ""}
+                onChange={(e) => setStatus(e.target.value || undefined)}
+                className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white"
+              >
+                <option value="">All Status</option>
+                <option value="PENDING">Pending</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
             </div>
 
-            {/* Pagination */}
+            <button
+              onClick={() => setAddOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700"
+            >
+              <Plus className="h-4 w-4" />
+              Apply Leave
+            </button>
+          </div>
 
-            <div className="flex items-center justify-between text-sm text-zinc-400">
-              <p>
-                Showing {(page - 1) * limit + 1} -{" "}
-                {Math.min(page * limit, total)} of {total}
-              </p>
-
-              <div className="flex items-center gap-2">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => p - 1)}
-                  className="px-3 py-1 rounded bg-zinc-800 text-white disabled:opacity-40"
-                >
-                  Prev
-                </button>
-
-                <span>
-                  Page {page} / {totalPages}
-                </span>
-
-                <button
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="px-3 py-1 rounded bg-zinc-800 text-white disabled:opacity-40"
-                >
-                  Next
-                </button>
+          <div className="relative">
+            {isFetching && (
+              <div className="absolute right-2 top-2">
+                <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
               </div>
-            </div>
+            )}
 
-            <AddLeaveModal open={addOpen} onClose={() => setAddOpen(false)} />
-
-            <ViewLeaveModal
-              open={!!viewLeave}
-              onClose={() => setViewLeave(null)}
-              leave={viewLeave}
-            />
-
-            <UpdateLeaveModal
-              open={!!editLeave}
-              onClose={() => setEditLeave(null)}
-              leave={editLeave}
+            <TrainerReusableTable
+              data={leaves}
+              columns={columns}
+              emptyText="No leaves found"
             />
           </div>
+
+          <div className="flex items-center justify-between text-sm text-zinc-400">
+            <p>
+              Showing {(page - 1) * limit + 1} -{" "}
+              {Math.min(page * limit, total)} of {total}
+            </p>
+
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
+              >
+                Prev
+              </button>
+
+              <span>
+                Page {page} / {totalPages}
+              </span>
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          <AddLeaveModal open={addOpen} onClose={() => setAddOpen(false)} />
+
+          <ViewLeaveModal
+            open={!!viewLeave}
+            onClose={() => setViewLeave(null)}
+            leave={viewLeave}
+          />
+
+          <UpdateLeaveModal
+            open={!!editLeave}
+            onClose={() => setEditLeave(null)}
+            leave={editLeave}
+          />
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }

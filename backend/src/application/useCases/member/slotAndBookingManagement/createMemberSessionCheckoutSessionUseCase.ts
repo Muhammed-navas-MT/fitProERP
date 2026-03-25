@@ -1,15 +1,22 @@
 import { stripe } from "../../../../infrastructure/services/stripeClient";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
+import { SlotAndBookingError } from "../../../../presentation/shared/constants/messages/slotAndBookingMessages";
 import {
   ForbiddenException,
   NOtFoundException,
 } from "../../../constants/exceptions";
 import { CreateMemberSessionCheckoutRequestDto } from "../../../dtos/memberDto/slotAndBookingDto";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
+import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
+import { ICacheService } from "../../../interfaces/service/cacheServiceInterface";
 import { ICreateMemberSessionCheckoutSessionUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCaseInterface";
 
 export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberSessionCheckoutSessionUseCase {
-  constructor(private _memberRepository: IMemberRepository) {}
+  constructor(
+    private _memberRepository: IMemberRepository,
+    private _cacheService: ICacheService,
+    private _sessionRepository: ISessionRepository,
+  ) {}
 
   async execute(data: CreateMemberSessionCheckoutRequestDto): Promise<string> {
     const member = await this._memberRepository.findById(data.userId);
@@ -26,7 +33,31 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
       throw new ForbiddenException("Invalid session amount");
     }
 
-    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/session-payment-success`;
+    const alreadyBooked = await this._sessionRepository.findOneBySlotAndDate(
+      data.trainerId,
+      data.slotId,
+      new Date(data.sessionDate),
+    );
+
+    if (alreadyBooked) {
+      throw new ForbiddenException(SlotAndBookingError.ALREADY_BOOKED);
+    }
+
+    const booked = await this._cacheService.getData(
+      `${data.trainerId}:${data.sessionDate}:${data.slotId}`,
+    );
+
+    if (booked) {
+      throw new ForbiddenException(SlotAndBookingError.ALREADY_BOOKED);
+    }
+
+    await this._cacheService.setData(
+      `${data.trainerId}:${data.sessionDate}:${data.slotId}`,
+      data.startTime,
+      300,
+    );
+
+    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/book_trainer`;
     const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/session-payment-cancel`;
 
     const session = await stripe.checkout.sessions.create({

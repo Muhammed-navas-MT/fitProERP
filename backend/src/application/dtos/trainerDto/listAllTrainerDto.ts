@@ -14,6 +14,8 @@ export interface IListTrainerResponseDTO {
     email?: string;
     phone?: string;
     joinDate?: string;
+    sessionCount?: number;
+    allocatedLeaveCount?: number;
     specializations?: string[];
     status?: Status;
     avatar?: string;
@@ -44,6 +46,8 @@ export interface TrainerDTO {
   experience: number;
   baseSalary: number;
   commisionRate: number;
+  sessionCount: number;
+  allocatedLeaveCount: number;
   status: Status;
   dutyTime: {
     startTime: string;
@@ -64,6 +68,8 @@ export interface IUpdateTrainerDTO {
   experience?: number;
   baseSalary?: number;
   commisionRate?: number;
+  sessionCount?: number;
+  allocatedLeaveCount?: number;
   status?: Status;
   dutyTime?: {
     startTime: string;

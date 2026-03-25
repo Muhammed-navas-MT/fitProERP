@@ -61,7 +61,7 @@ export default function RevenuePage() {
           planCount = item.count;
         }
 
-        if (item.sourceType === "Session") {
+        if (item.sourceType === "Booking") {
           sessionAmount = item.totalAmount;
           sessionCount = item.count;
         }

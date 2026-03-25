@@ -1,5 +1,3 @@
-import { TrendingUp } from "lucide-react";
-
 interface SummaryCardsProps {
   netProfit: number;
   totalRevenue: number;
@@ -19,20 +17,21 @@ export function SummaryCards({
   profitMargin,
   profitGrowth,
 }: SummaryCardsProps) {
+  console.log(netProfit,totalExpense,profitMargin)
   const cards = [
     {
       label: "Net Profit",
       value: formatCurrency(netProfit),
       sub: (
-        <span className="flex items-center gap-1 text-xs text-emerald-400">
-          <TrendingUp className="h-3 w-3" />
+        <span className="flex items-center gap-1 text-xs text-zinc-500">
+
           +{profitGrowth}% from last month
         </span>
       ),
     },
     {
       label: "Total Revenue",
-      value: formatCurrency(totalRevenue),
+      value: <span className="text-green-400">{formatCurrency(totalRevenue)}</span>,
       sub: <span className="text-xs text-zinc-500">This Month</span>,
     },
     {
@@ -43,7 +42,7 @@ export function SummaryCards({
     {
       label: "Profit Margin",
       value: `${profitMargin}%`,
-      sub: <span className="text-xs text-emerald-400">Healthy margin</span>,
+      sub: <span className="text-xs text-zinc-500"> margin</span>,
     },
   ];
 

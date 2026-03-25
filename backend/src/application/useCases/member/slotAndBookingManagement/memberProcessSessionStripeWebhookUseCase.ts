@@ -9,11 +9,13 @@ import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType
 import { IMemberProcessSessionStripeWebhookUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/memberProcessSessionStripeWebhookUseCaseInterface";
 import { StripeError } from "../../../../presentation/shared/constants/messages/stripeMessages";
 import { SlotAndBookingError } from "../../../../presentation/shared/constants/messages/slotAndBookingMessages";
+import { ICacheService } from "../../../interfaces/service/cacheServiceInterface";
 
 export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessSessionStripeWebhookUseCase {
   constructor(
     private _sessionRepository: ISessionRepository,
     private _gymAdminRevenueRepository: IGymAdminRevenueRepository,
+    private _cacheService: ICacheService,
   ) {}
 
   async execute(event: Stripe.Event): Promise<void> {
@@ -61,6 +63,8 @@ export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessS
     if (alreadyBooked) {
       throw new ForbiddenException(SlotAndBookingError.ALREADY_BOOKED);
     }
+
+    await this._cacheService.deleteData(`${trainerId}:${date}:${slotId}`);
 
     const createdSessionId = await this._sessionRepository.create({
       memberId: userId,

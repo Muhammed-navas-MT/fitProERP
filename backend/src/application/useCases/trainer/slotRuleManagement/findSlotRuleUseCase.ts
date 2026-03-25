@@ -6,7 +6,7 @@ import { SlotRuleMapper } from "../../../mappers/trainer/slotRuleMapper";
 export class FindSlotRuleUseCase implements IFindSlotRuleUseCase {
   constructor(private _slotRuleRepository: ISlotRuleRepository) {}
   async execute(trainerId: string): Promise<FindSlotRuleResponseDto | null> {
-    const slotRule = await this._slotRuleRepository.findById(trainerId);
+    const slotRule = await this._slotRuleRepository.findByTrainerId(trainerId);
     if (!slotRule) {
       return null;
     }

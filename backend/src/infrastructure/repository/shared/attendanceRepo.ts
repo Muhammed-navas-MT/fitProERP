@@ -14,7 +14,7 @@ export class AttendanceRepository
 
   async findByUserAndDate(
     userId: string,
-    date: Date
+    date: Date,
   ): Promise<AttendanceEntity | null> {
     const start = new Date(date);
     start.setHours(0, 0, 0, 0);
@@ -74,7 +74,7 @@ export class AttendanceRepository
 
   async getCurrentMonthAttendance(
     userId: string,
-    branchIds: string[]
+    branchIds: string[],
   ): Promise<AttendanceEntity[]> {
     const now = new Date();
     const startOfMonth = new Date(
@@ -83,7 +83,7 @@ export class AttendanceRepository
       1,
       0,
       0,
-      0
+      0,
     );
     const endOfMonth = new Date(
       now.getFullYear(),
@@ -91,7 +91,7 @@ export class AttendanceRepository
       0,
       23,
       59,
-      59
+      59,
     );
 
     const query: FilterQuery<AttendanceEntity> = {

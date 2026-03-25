@@ -18,11 +18,10 @@ export class SlotRuleMapper {
   static toSlotRuleEntity(
     updatedData: UpdateSlotRuleRequestDto,
     existData: SlotRuleEntity,
+    rrule: string,
   ): SlotRuleEntity {
     return {
-      ...existData,
-
-      isActive: updatedData.isActive ?? existData.isActive,
+      trainerId: existData.trainerId,
 
       startDate: updatedData.startDate
         ? new Date(updatedData.startDate)
@@ -33,6 +32,10 @@ export class SlotRuleMapper {
         : existData.endDate,
 
       slots: updatedData.slots ?? existData.slots,
+
+      isActive: updatedData.isActive ?? existData.isActive,
+
+      rrule,
     };
   }
 }

@@ -6,6 +6,7 @@ export interface ITrainerLeaveEntity {
   trainerId: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;

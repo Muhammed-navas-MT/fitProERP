@@ -96,15 +96,25 @@ export enum TrainerError {
 
   GYM_NOT_ACTIVE = "This gym is currently inactive. Please contact support",
   ONE_TRAINER_REQUIRED = "At least one active trainer is required",
-}
 
+  SESSION_COUNT_INVALID_TYPE = "Session count must be a number",
+  SESSION_COUNT_NEGATIVE = "Session count cannot be negative",
+  SESSION_COUNT_EXCEEDS_WORKING_HOURS = "Session count cannot exceed working hours",
+  SESSION_COUNT_REQUIRED = "Session count is required",
+  SESSION_COUNT_MIN = "Session count cannot be less than 0",
+
+  ALLOCATED_LEAVE_INVALID_TYPE = "Allocated leave count must be a number",
+  ALLOCATED_LEAVE_NEGATIVE = "Allocated leave count cannot be negative",
+  ALLOCATED_LEAVE_REQUIRED = "Allocated leave count is required",
+  ALLOCATED_LEAVE_EXCEEDS_LIMIT = "Allocated leave count exceeds allowed limit",
+  ALLOCATED_LEAVE_MIN = "Allocated leave count cannot be less than 0",
+}
 
 export enum TrainerSuccess {
   TRAINER_CREATED = "Trainer account created successfully",
   TRAINER_UPDATED = "Trainer information updated successfully",
   TRAINER_ACTIVATED = "Trainer account activated successfully",
   TRAINER_DEACTIVATED = "Trainer account deactivated successfully",
-
 
   PROFILE_UPDATED = "Profile updated successfully",
   PROFILE_PICTURE_UPDATED = "Profile picture updated successfully",
@@ -134,9 +144,8 @@ export enum TrainerSuccess {
 
   REGISTRATION_SEND_OTP = "OTP for Registration in compass",
   OTP_SUCCESSFULL = "Otp sent successfully",
-  OTP_VERIFIED_SUCCESSFULL= "Otp verified successfully",
+  OTP_VERIFIED_SUCCESSFULL = "Otp verified successfully",
   REGISTRATION_SUCCESS = "Account created successfully! You can now log in",
   LOGIN_SUCCESS = "Account login successfully",
-  LOGOUT_SUCCESS = "Account logout successfully"
-
+  LOGOUT_SUCCESS = "Account logout successfully",
 }

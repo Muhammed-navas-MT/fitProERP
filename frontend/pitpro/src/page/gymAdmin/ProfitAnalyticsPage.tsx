@@ -14,6 +14,8 @@ const ProfitAnalytics = () => {
   const { summary, profitTrend, branchProfitability, insights } =
     data?.data || {};
 
+    console.log(summary)
+
   return (
     <div className="min-h-screen bg-zinc-950">
       <Sidebar />

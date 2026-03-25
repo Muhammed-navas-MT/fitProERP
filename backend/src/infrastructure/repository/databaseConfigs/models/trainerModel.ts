@@ -17,6 +17,8 @@ export interface ITrainerModel extends Document {
   experience: number;
   baseSalary: number;
   commisionRate: number;
+  sessionCount: number;
+  allocatedLeaveCount: number;
   status: Status;
   dutyTime: {
     startTime: string;

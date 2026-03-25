@@ -17,6 +17,7 @@ import { MemberRepository } from "../../repository/member/memberRepo";
 import { SessionRepository } from "../../repository/member/sessionRepo";
 import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
 import { SubscriptionRepository } from "../../repository/superAdmin/subscriptionRepo";
+import { CacheService } from "../../services/cacheService";
 
 const paymentRepository = new SuperAdminPaymentRepository(paymentModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
@@ -27,6 +28,7 @@ const sessionRepository = new SessionRepository(sessionModel);
 const gymAdminRevenueRepository = new GymAdminRevenueRepository(
   gymAdminRevenueModel,
 );
+const cacheService = new CacheService();
 const processStripeWebhookUseCase = new ProcessStripeWebhookUseCase(
   paymentRepository,
   gymAdminRepository,
@@ -41,6 +43,7 @@ const memberProcessSessionWebhookUseCase =
   new MemberProcessSessionStripeWebhookUseCase(
     sessionRepository,
     gymAdminRevenueRepository,
+    cacheService,
   );
 const stripeWebhookRouteUseCase = new StripeWebhookRouterUseCase(
   processStripeWebhookUseCase,

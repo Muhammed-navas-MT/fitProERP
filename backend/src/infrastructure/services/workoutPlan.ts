@@ -62,10 +62,8 @@ Format:
 
     const content = response.choices[0].message.content || "";
 
-    // remove markdown
     let cleaned = content.replace(/```json|```/g, "").trim();
 
-    // extract only JSON
     const start = cleaned.indexOf("{");
     const end = cleaned.lastIndexOf("}");
 

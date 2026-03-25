@@ -11,6 +11,7 @@ import {
   PopulateListTrainerLeaves,
   PopulateTrainerLeave,
 } from "../databaseConfigs/types/populateLeaveType";
+import { LeaveStatus } from "../../../domain/enums/leaveStatus";
 
 export class LeaveRepository
   extends BaseRepository<ITrainerLeaveModel>
@@ -140,6 +141,7 @@ export class LeaveRepository
           _id: 1,
           startDate: 1,
           endDate: 1,
+          leaveCount: 1,
           status: 1,
           reason: 1,
           appliedDate: "$createdAt",
@@ -203,6 +205,7 @@ export class LeaveRepository
           _id: 1,
           startDate: 1,
           endDate: 1,
+          leaveCount: 1,
           status: 1,
           reason: 1,
           rejectionReason: 1,
@@ -231,5 +234,22 @@ export class LeaveRepository
     }
 
     return result[0];
+  }
+
+  async findLeavesByTrainerIdAndDateRange(
+    trainerId: string,
+    rangeStart: Date,
+    rangeEnd: Date,
+  ): Promise<ITrainerLeaveEntity[]> {
+    const leaves = await this._model
+      .find({
+        trainerId,
+        startDate: { $lte: rangeEnd },
+        endDate: { $gte: rangeStart },
+        status: { $ne: LeaveStatus.REJECTED },
+      })
+      .lean();
+
+    return leaves;
   }
 }

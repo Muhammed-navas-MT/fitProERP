@@ -8,6 +8,7 @@ export interface ITrainerLeaveModel extends Document {
   trainerId: string;
   startDate: Date;
   endDate: Date;
+  leaveCount: number;
   status: LeaveStatus;
   reason: string;
   rejectionReason?: string;

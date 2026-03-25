@@ -10,3 +10,15 @@ export interface PopulateSessionItem {
   endTime: string;
   status: SessionStatus;
 }
+
+export interface PopulateTrainerSessionItem {
+  _id: string;
+  memberId: {
+    name: string;
+    profileImg?: string;
+  };
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: SessionStatus;
+}

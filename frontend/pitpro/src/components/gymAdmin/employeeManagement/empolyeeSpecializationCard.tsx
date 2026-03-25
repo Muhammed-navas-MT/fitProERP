@@ -8,10 +8,10 @@ export function SpecializationCard({
   specializations,
 }: SpecializationCardProps) {
   return (
-    <div className="rounded-xl border border-orange-500/20 bg-black p-5">
+    <div className="rounded-xl border border-zinc-700 bg-black p-5">
       <div className="mb-3 flex items-center gap-2">
         <Award className="h-5 w-5 text-orange-500" />
-        <p className="text-sm text-zinc-400">Specializations</p>
+        <p className="text-xs uppercase tracking-wide text-zinc-400">Specializations</p>
       </div>
 
       {specializations.length > 0 ? (
