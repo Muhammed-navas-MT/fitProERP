@@ -148,6 +148,7 @@ const listAvailableSlotUseCase = new ListAllAvailableSlotUseCase(
   rRuleService,
   sessionRepository,
   cacheService,
+  trainerLeaveRepository,
 );
 
 const createMemberSessionCheckoutUseCase =

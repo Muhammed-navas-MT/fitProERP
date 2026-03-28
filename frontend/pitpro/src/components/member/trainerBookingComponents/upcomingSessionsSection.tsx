@@ -75,38 +75,47 @@ export function UpcomingSessionsSection({
                       className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wide ${
                         session.status === "CONFIRMED"
                           ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-zinc-800 text-gray-400"
+                          : session.status === "COMPLETED"
+                            ? "bg-blue-500/10 text-blue-400"
+                            : session.status === "CANCELLED"
+                              ? "bg-red-500/10 text-red-400"
+                              : "bg-zinc-800 text-gray-400"
                       }`}
                     >
                       {session.status}
                     </span>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenMenuId((prev) =>
-                          prev === session._id ? null : session._id,
-                        )
-                      }
-                      className="rounded-md p-1 hover:bg-zinc-800"
-                    >
-                      <MoreVertical className="h-4 w-4 text-gray-400 hover:text-white" />
-                    </button>
+                    {session.status !== "COMPLETED" &&
+                      session.status !== "CANCELLED" && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenMenuId((prev) =>
+                                prev === session._id ? null : session._id,
+                              )
+                            }
+                            className="rounded-md p-1 hover:bg-zinc-800"
+                          >
+                            <MoreVertical className="h-4 w-4 text-gray-400 hover:text-white" />
+                          </button>
 
-                    {openMenuId === session._id && (
-                      <div className="absolute right-0 top-10 z-50 w-36 rounded-lg border border-zinc-700 bg-zinc-900 shadow-lg">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleCancel(session._id);
-                            setOpenMenuId(null);
-                          }}
-                          className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-zinc-800"
-                        >
-                          Cancel Session
-                        </button>
-                      </div>
-                    )}
+                          {openMenuId === session._id && (
+                            <div className="absolute right-0 top-10 z-50 w-36 rounded-lg border border-zinc-700 bg-zinc-900 shadow-lg">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  handleCancel(session._id);
+                                  setOpenMenuId(null);
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-zinc-800"
+                              >
+                                Cancel Session
+                              </button>
+                            </div>
+                          )}
+                        </>
+                      )}
                   </div>
                 </div>
               </CardContent>

@@ -4,7 +4,10 @@ import {
   IListMemberInGymRequestDTO,
   IListMemberRequestDTO,
 } from "../../../dtos/memberDto/listAllMembersDto";
-import { IPopulatedMember } from "../../../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
+import {
+  IPopulatedMember,
+  IPopulatedMemberType,
+} from "../../../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
 
 export interface IMemberRepository extends IBaseRepository<MemberEntity> {
   findByEmail(email: string): Promise<MemberEntity | null>;
@@ -36,4 +39,5 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
     assignMemberCount: number;
     activeMembersCount: number;
   }>;
+  findDetailById(memberId: string): Promise<IPopulatedMemberType | null>;
 }

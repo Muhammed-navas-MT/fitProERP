@@ -3,9 +3,13 @@ import { ListSessionRequestDto } from "../../../application/dtos/trainerDto/sess
 import { IListTrainerSessionUseCase } from "../../../application/interfaces/useCase/trainer/sessionManagement/listAllSessionsUseCaseInterface";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
+import { IMarkAsCompletedUseCase } from "../../../application/interfaces/useCase/trainer/sessionManagement/markAsComplitedUseCaseInterface";
 
 export class SessionController {
-  constructor(private _listSessionUseCase: IListTrainerSessionUseCase) {}
+  constructor(
+    private _listSessionUseCase: IListTrainerSessionUseCase,
+    private _markAsComplitedUseCase: IMarkAsCompletedUseCase,
+  ) {}
   async handleListSession(
     req: Request,
     res: Response,
@@ -23,6 +27,24 @@ export class SessionController {
         res,
         "Trainer session listed successfully",
         response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  async handleMarkAsComplitedSession(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { sessionId } = req.params;
+      await this._markAsComplitedUseCase.execute(sessionId);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Session Completed Successfully",
+        { sessionId },
       );
     } catch (error) {
       next(error);

@@ -5,20 +5,16 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { IViewProfileUseCase } from "../../../interfaces/useCase/member/profileManagement/viewProfileUseCaseInterface";
 import { MemberMapper } from "../../../mappers/memeberMapper";
 
-export class ViewMemberProfileUseCase implements IViewProfileUseCase{
-    constructor(
-        private _memberRepository:IMemberRepository
-    ){}
-    async execute(memberId: string): Promise<MemberDTO> {
-        try {
-           const member = await this._memberRepository.findById(memberId);
-           if(!member){
-            throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
-           };
-           const memberData = MemberMapper.toMemberDTO(member);
-           return memberData
-        } catch (error) {
-            throw error
-        }
+export class ViewMemberProfileUseCase implements IViewProfileUseCase {
+  constructor(private _memberRepository: IMemberRepository) {}
+  async execute(memberId: string): Promise<MemberDTO> {
+    const member = await this._memberRepository.findById(memberId);
+    const mem = await this._memberRepository.findDetailById(memberId);
+    console.log(mem.package?.planId);
+    if (!member) {
+      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
+    const memberData = MemberMapper.toMemberDTO(member);
+    return memberData;
+  }
 }

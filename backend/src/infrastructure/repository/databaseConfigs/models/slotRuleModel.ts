@@ -3,8 +3,8 @@ import { SlotRuleSchema } from "../schemas/slotRuleSchema";
 
 interface TimeSlot {
   _id: string;
-  startTime: string; // "07:00"
-  endTime: string; // "08:00"
+  startTime: string;
+  endTime: string;
   amount: number;
 }
 

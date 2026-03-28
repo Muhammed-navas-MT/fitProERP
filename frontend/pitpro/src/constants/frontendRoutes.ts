@@ -60,6 +60,7 @@ export const FRONTEND_ROUTES = {
         LIST_PAYMENTS:"payments",
         WORKOUT_PLAN:"workout_plans",
         DIET_PLAN:"diet_plans",
-        BOOK_TRAINER:"book_trainer"
+        BOOK_TRAINER:"book_trainer",
+        PROGRESS: "progress",
     }
 }
