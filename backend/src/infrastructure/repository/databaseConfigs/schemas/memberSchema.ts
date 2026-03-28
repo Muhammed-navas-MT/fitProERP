@@ -123,7 +123,7 @@ export const memberSchema = new Schema(
     package: {
       planId: {
         type: Schema.Types.ObjectId,
-        ref: "Plan",
+        ref: "Package",
       },
       startDate: {
         type: Date,

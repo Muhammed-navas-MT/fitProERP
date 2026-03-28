@@ -115,6 +115,7 @@ export const ROUTES = {
     UPDATE_SLOT_RULE: "/update_slot_rule/:slotRuleId",
     LIST_SESSION: "/list_session",
     LIST_SLOTS: "/list_slots",
+    MARK_AS_COMPLETED: "/mark_as_completed/:sessionId",
   },
 
   MEMBER: {

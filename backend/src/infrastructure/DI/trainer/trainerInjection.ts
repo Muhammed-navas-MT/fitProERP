@@ -50,6 +50,7 @@ import { sessionModel } from "../../repository/databaseConfigs/models/sessionMod
 import { ListTrainerSessionUseCase } from "../../../application/useCases/trainer/sessionManagement/listAllSessionUseCase";
 import { SessionController } from "../../../presentation/controller/trainer/sessionController";
 import { ListAllSlotUseCase } from "../../../application/useCases/trainer/slotRuleManagement/listAllAvailableSlotUseCase";
+import { MarkAsCompletedUseCase } from "../../../application/useCases/trainer/sessionManagement/markAsCompletedUseCase";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -192,7 +193,9 @@ export const injectedSlotRuleController = new SlotRuleController(
 const listTrainerSessionUseCase = new ListTrainerSessionUseCase(
   sessionRepository,
 );
+const markAsCompletedUseCase = new MarkAsCompletedUseCase(sessionRepository);
 
 export const injectedSessionController = new SessionController(
   listTrainerSessionUseCase,
+  markAsCompletedUseCase,
 );

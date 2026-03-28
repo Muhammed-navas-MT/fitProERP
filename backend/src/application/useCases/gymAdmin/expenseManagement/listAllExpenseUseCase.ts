@@ -11,6 +11,7 @@ export class ListAllExpenseUseCase implements IListAllExpenseUseCase {
   async execute(
     params: IListExpenseRequestDto,
   ): Promise<IListExpenseResponseDto> {
+    console.log(params);
     const {
       expense,
       total,
@@ -18,6 +19,7 @@ export class ListAllExpenseUseCase implements IListAllExpenseUseCase {
       thisMonthTotalExpense,
       grandTotal,
     } = await this._expenseRepository.findAllExpense(params);
+    console.log(expense);
     const response = mapExpenseListResponse(
       expense,
       params,

@@ -1,3 +1,4 @@
+import { LeaveStatus } from "../../../../domain/enums/leaveStatus";
 import { SessionStatus } from "../../../../domain/enums/sessionStatus";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import { NOtFoundException } from "../../../constants/exceptions";
@@ -7,6 +8,7 @@ import {
 } from "../../../dtos/memberDto/slotAndBookingDto";
 import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
 import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
+import { ILeaveRepository } from "../../../interfaces/repository/shared/leaveRepoInterface";
 import { ISlotRuleRepository } from "../../../interfaces/repository/trainer.ts/slotRuleRepoInterface";
 import { ICacheService } from "../../../interfaces/service/cacheServiceInterface";
 import { IRRuleService } from "../../../interfaces/service/RRuleserviceInterface";
@@ -30,6 +32,7 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
     private _rRuleService: IRRuleService,
     private _sessionRepository: ISessionRepository,
     private _cacheService: ICacheService,
+    private _leaveRepository: ILeaveRepository,
   ) {}
 
   private _getTodayDateString(): string {
@@ -78,7 +81,47 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
     const today = this._getTodayDateString();
     const currentTime = this._getCurrentTimeString();
 
-    const filteredDates = allDates.filter((date) => date >= today);
+    const futureDates = allDates.filter((date) => date >= today);
+
+    if (!futureDates.length) {
+      return result;
+    }
+
+    const rangeStart = new Date(futureDates[0]);
+    const rangeEnd = new Date(futureDates[futureDates.length - 1]);
+
+    const leaves =
+      await this._leaveRepository.findLeavesByTrainerIdAndDateRange(
+        trainerId,
+        rangeStart,
+        rangeEnd,
+      );
+
+    const leaveStatuses = new Set([LeaveStatus.APPROVED, LeaveStatus.PENDING]);
+
+    const leaveDateSet = new Set<string>();
+
+    for (const leave of leaves) {
+      if (!leaveStatuses.has(leave.status)) continue;
+
+      const start = new Date(leave.startDate);
+      const end = new Date(leave.endDate);
+
+      const cursor = new Date(start);
+      cursor.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+
+      while (cursor <= end) {
+        const year = cursor.getFullYear();
+        const month = String(cursor.getMonth() + 1).padStart(2, "0");
+        const day = String(cursor.getDate()).padStart(2, "0");
+        leaveDateSet.add(`${year}-${month}-${day}`);
+
+        cursor.setDate(cursor.getDate() + 1);
+      }
+    }
+
+    const filteredDates = futureDates.filter((date) => !leaveDateSet.has(date));
 
     if (!filteredDates.length) {
       return result;
@@ -103,9 +146,11 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
 
     const dateMap = new Map<string, SlotDay>();
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < Math.min(2, filteredDates.length); i++) {
+      const currentDate = filteredDates[i];
+
       const currentAndFutureSlots = slotRule.slots.filter((slot) => {
-        if (filteredDates[i] > today) return true;
+        if (currentDate > today) return true;
         return slot.startTime >= currentTime;
       });
 
@@ -113,9 +158,8 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
 
       const slots = await Promise.all(
         currentAndFutureSlots.map(async (slot) => {
-          const bookingKey = `${filteredDates[i]}_${slot.startTime}`;
-
-          const redisKey = `${trainerId}:${filteredDates[i]}:${slot._id}`;
+          const bookingKey = `${currentDate}_${slot.startTime}`;
+          const redisKey = `${trainerId}:${currentDate}:${slot._id}`;
           const lockedSlot = await this._cacheService.getData(redisKey);
 
           return {
@@ -128,8 +172,8 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
         }),
       );
 
-      dateMap.set(filteredDates[i], {
-        date: filteredDates[i],
+      dateMap.set(currentDate, {
+        date: currentDate,
         slots,
       });
     }

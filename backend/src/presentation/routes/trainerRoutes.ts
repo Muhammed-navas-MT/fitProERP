@@ -221,6 +221,13 @@ export class TrainerRoutes {
         injectedSlotRuleController.handleListSlot(req, res, next);
       },
     );
+
+    this._route.put(
+      TRAINER.MARK_AS_COMPLETED,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSessionController.handleMarkAsComplitedSession(req, res, next);
+      },
+    );
   }
 
   public get_routes(): Router {

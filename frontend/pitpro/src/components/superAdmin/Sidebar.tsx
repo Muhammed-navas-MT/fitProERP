@@ -8,12 +8,11 @@ import {
 } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useSuperAdminLogout } from "@/hook/superAdmin/superAdminLogoutHook";
 import { useDispatch } from "react-redux";
 import { deleteToken } from "@/store/slice/tokenSlice";
 import { clearSuperAdminData } from "@/store/slice/superAdminSlice";
-import { Link } from "react-router-dom";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -28,6 +27,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const dispatch = useDispatch();
   const { mutate: logout } = useSuperAdminLogout();
+
   const onLogout = () => {
     logout(undefined, {
       onSuccess: () => {
@@ -74,8 +74,12 @@ export default function Sidebar({
     const isActive = location.pathname === href;
 
     return `
-      flex items-center gap-3 px-4 py-3 rounded-lg transition 
-      ${isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"}
+      flex items-center gap-3 px-4 py-3 rounded-lg transition
+      ${
+        isActive
+          ? "bg-gray-800 text-white"
+          : "text-gray-300 hover:bg-gray-800 hover:text-white"
+      }
     `;
   };
 
@@ -91,9 +95,9 @@ export default function Sidebar({
 
         <div
           className={`
-          fixed top-0 left-0 z-50 h-full w-64 bg-[#111418] border-r border-gray-800 transform transition-transform duration-300 lg:hidden
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        `}
+            fixed top-0 left-0 z-50 h-full w-64 bg-[#111418] border-r border-gray-800 transform transition-transform duration-300 lg:hidden
+            ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          `}
         >
           <div className="flex justify-between items-center p-4 border-b border-gray-800">
             <div className="flex items-center gap-3">
@@ -105,6 +109,7 @@ export default function Sidebar({
                 <p className="text-gray-500 text-xs">Gym Management</p>
               </div>
             </div>
+
             <button
               onClick={onClose}
               className="p-1 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -140,9 +145,9 @@ export default function Sidebar({
   return (
     <div
       className={`
-      w-64 h-screen bg-[#111418] border-r border-gray-800 flex flex-col transition-all duration-300
-      ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-    `}
+        w-64 h-screen bg-[#111418] border-r border-gray-800 flex flex-col transition-all duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+      `}
     >
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">
@@ -160,10 +165,10 @@ export default function Sidebar({
         <ul className="space-y-2">
           {menuItems.map((item) => (
             <li key={item.label}>
-              <a href={item.href} className={getLinkClasses(item.href)}>
+              <Link to={item.href} className={getLinkClasses(item.href)}>
                 <item.icon size={20} />
                 <span>{item.label}</span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

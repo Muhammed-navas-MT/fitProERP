@@ -70,7 +70,7 @@ export class GymAdminExpenseController {
   ): Promise<void> {
     try {
       const params: IListExpenseRequestDto = {
-        expenseType: String(req.query.expenseType) || "",
+        expenseType: req.query.expenseType ? String(req.query.expenseType) : "",
         gymId: res.locals.data.id,
         limit: Number(req.query.limit) || 5,
         page: Number(req.query.page) || 1,

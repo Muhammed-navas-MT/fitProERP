@@ -8,6 +8,7 @@ import MemberDashboard from "@/page/member/dashboardPage";
 import DietPlanPage from "@/page/member/dietPlanPage";
 import MemberLoginPage from "@/page/member/memberLoginPage";
 import MemberProfilePage from "@/page/member/memberProfilePage";
+import ProgressPage from "@/page/member/memberProgressPage";
 import MemberShipPage from "@/page/member/memberShipPage";
 import MemberPackages from "@/page/member/packagesListPage";
 import PaymentsPage from "@/page/member/paymentPage";
@@ -62,6 +63,7 @@ const MemberRoutes = () => {
           <Route path={FRONTEND_ROUTES.MEMBER.WORKOUT_PLAN} element={<WorkoutPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.DIET_PLAN} element={<DietPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.BOOK_TRAINER} element={<TrainerBookingPage/>}/>
+          {/* <Route path={FRONTEND_ROUTES.MEMBER.PROGRESS} element={<ProgressPage/>}/> */}
         </Route>
       </Route>
     </Routes>

@@ -20,3 +20,17 @@ export const listSessionService = async (page:number,limit:number) => {
     throw error;
   }
 };
+
+export const markAsCompletedService = async (sessionId:string) => {
+  try {
+    const response = await AxiosInstance.put(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.MARK_AS_COMPLETED}/${sessionId}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};

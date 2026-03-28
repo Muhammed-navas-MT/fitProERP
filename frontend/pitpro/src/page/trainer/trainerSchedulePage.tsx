@@ -15,7 +15,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { CreateSlotRuleModal } from "@/components/trainer/scheduleComponents/createSlotRuleModal";
 import { ViewRuleModal } from "@/components/trainer/scheduleComponents/activeRulesModal";
-import { useListSession } from "@/hook/trainer/sessionHooks";
+import {
+  useListSession,
+  useMarkAsCompleted,
+} from "@/hook/trainer/sessionHooks";
 import { useListSlot } from "@/hook/trainer/slotRuleHooks";
 import { TrainerSlotCard } from "@/components/trainer/scheduleComponents/trainerSlotCard";
 
@@ -26,7 +29,7 @@ enum SessionStatus {
   CANCELLED = "CANCELLED",
 }
 
-interface ListSessionItem {
+export interface ListSessionItem {
   id: string;
   memberDetail: {
     name: string;
@@ -50,7 +53,7 @@ interface TrainerSlotDay {
   slots: TrainerSlotItem[];
 }
 
-const LIMIT = 6;
+const LIMIT = 4;
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("en-IN", {
@@ -98,6 +101,7 @@ export default function TrainerSchedulePage() {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const {
     data: sessionRes,
@@ -110,6 +114,8 @@ export default function TrainerSchedulePage() {
     isLoading: isSlotLoading,
     isError: isSlotError,
   } = useListSlot();
+
+  const { mutate: markAsCompleted } = useMarkAsCompleted(page, LIMIT);
 
   const sessionData = sessionRes?.data;
   const sessions: ListSessionItem[] = sessionData?.sessions ?? [];
@@ -124,6 +130,11 @@ export default function TrainerSchedulePage() {
     }
     return slotData.find((day) => day.date === selectedDate)?.slots ?? [];
   }, [slotData, selectedDate]);
+
+  const handleComplete = (sessionId: string) => {
+    console.log("Complete session:", sessionId);
+    markAsCompleted(sessionId)
+  };
 
   return (
     <div className="flex min-h-screen bg-[#0f0f0f] text-white">
@@ -272,7 +283,7 @@ export default function TrainerSchedulePage() {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4 relative">
                               <span
                                 className={`text-xs px-2 py-1 rounded-full border ${getStatusClass(
                                   session.status,
@@ -281,10 +292,31 @@ export default function TrainerSchedulePage() {
                                 {session.status}
                               </span>
 
+                              {openMenuId === session.id && (
+                                <div className="absolute right-0 top-10 w-44 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-lg z-50">
+                                  {session.status === "CONFIRMED" && (
+                                    <button
+                                      onClick={() => {
+                                        handleComplete(session.id);
+                                        setOpenMenuId(null);
+                                      }}
+                                      className="w-full text-left px-4 py-2 text-sm text-green-400 hover:bg-[#2a2a2a] rounded-t-lg"
+                                    >
+                                      Mark as Completed
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="text-gray-400 hover:text-white"
+                                onClick={() =>
+                                  setOpenMenuId((prev) =>
+                                    prev === session.id ? null : session.id,
+                                  )
+                                }
                               >
                                 <MoreHorizontal className="w-4 h-4" />
                               </Button>
