@@ -15,6 +15,7 @@ export class ListAllSessionsUseCase implements IListAllSessionsUseCase {
   ): Promise<ListAllSessionsResponseDto> {
     const { sessions, total } =
       await this._sessionRepository.listAllSessionByMemberId(params);
+    console.log(sessions);
 
     const countOfUpComingSession = sessions.reduce((acc, session) => {
       if (session.status === SessionStatus.CONFIRMED) {

@@ -1,69 +1,73 @@
 export interface ICreatePackageRequestDTO {
-  branchId:string;  
+  branchId: string;
   name: string;
   price: number;
-  durationInDays:number;
-  features:string[];
-  isDailySession:boolean;
+  durationInDays: number;
+  sessionCount: number;
+  features: string[];
+  isDailySession: boolean;
 }
 export interface IUpdatePackageRequestDTO {
-  branchId:string;  
+  branchId: string;
   name: string;
   price: number;
-  durationInDays:number;
-  features:string[];
-  isDailySession:boolean;
+  durationInDays: number;
+  sessionCount: number;
+  features: string[];
+  isDailySession: boolean;
 }
 
 export interface IViewPackageResponseDTO {
-  id: string
-  gymId: string
-  branchId: string
-  branchName: string
-  name: string
-  price: number
-  durationInDays: number
-  features: string[]
-  isDailySession: boolean
-  isActive: boolean
+  id: string;
+  gymId: string;
+  branchId: string;
+  branchName: string;
+  name: string;
+  price: number;
+  durationInDays: number;
+  sessionCount: number;
+  features: string[];
+  isDailySession: boolean;
+  isActive: boolean;
 }
-
 
 export interface IListPackageRequestDTO {
   search: string;
   page: number;
   limit: number;
-  branchId:string
+  branchId: string;
 }
 
 export interface IListPackageItemDTO {
-  id: string
-  gymId: string
-  branchId: string
-  branchName: string
-  name: string
-  price: number
-  durationInDays: number
-  features: string[]
-  isDailySession: boolean
-  isActive: boolean
+  id: string;
+  gymId: string;
+  branchId: string;
+  branchName: string;
+  name: string;
+  price: number;
+  durationInDays: number;
+  sessionCount: number;
+  features: string[];
+  isDailySession: boolean;
+  isActive: boolean;
 }
 
 export interface IListPackageResponseDTO {
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-  search?: string
-  data: IListPackageItemDTO[]
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  search?: string;
+  data: IListPackageItemDTO[];
 }
 
 export interface IListActivePackagesDTO {
-  id:string;  
+  id: string;
   name: string;
   durationInDays: number;
+  sessionCount: number;
   price: number;
   features: string[];
   isDailySession: boolean;
-  isActive?:boolean;
+  isActive?: boolean;
 }

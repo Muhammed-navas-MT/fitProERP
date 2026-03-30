@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
 import { PaymentMethod } from "../../../../domain/enums/paymentMethod";
 import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType";
+import { RefundStatus } from "../../../../domain/enums/refundStatus";
 
 export const RevenueSchema = new mongoose.Schema(
   {
@@ -45,6 +46,9 @@ export const RevenueSchema = new mongoose.Schema(
     stripeSessionId: {
       type: String,
     },
+    paymentIntentId: {
+      type: String,
+    },
     currency: {
       type: String,
     },
@@ -52,6 +56,19 @@ export const RevenueSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(PaymentStatus),
       required: true,
+    },
+    refundId: {
+      type: String,
+    },
+    refundStatus: {
+      type: String,
+      enum: Object.values(RefundStatus),
+    },
+    refundedAmount: {
+      type: Number,
+    },
+    refundedAt: {
+      type: Date,
     },
   },
   {

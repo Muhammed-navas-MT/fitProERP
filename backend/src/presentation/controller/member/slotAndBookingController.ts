@@ -7,12 +7,15 @@ import { SlotAndBookingSuccess } from "../../shared/constants/messages/slotAndBo
 import { StripeSuccess } from "../../shared/constants/messages/stripeMessages";
 import { IListAllSessionsUseCase } from "../../../application/interfaces/useCase/member/slotAndBookingManagement/listAllSessionsUseCaseInterface";
 import { ListAllSessionsRequestDto } from "../../../application/dtos/memberDto/slotAndBookingDto";
+import { ICancelSessionUseCase } from "../../../application/interfaces/useCase/member/slotAndBookingManagement/cancelSessionUseCaseInterface";
+import { SessionSuccess } from "../../shared/constants/messages/sessionMessages";
 
 export class SlotAndBookingController {
   constructor(
     private _listAvailableSlotUseCase: IListAllAvailableSlotUseCase,
     private _createMemberSessionCheckoutUseCase: ICreateMemberSessionCheckoutSessionUseCase,
     private _listAllSessionsUseCase: IListAllSessionsUseCase,
+    private _cancelSessionUseCase: ICancelSessionUseCase,
   ) {}
   async handleListAvailableSlot(
     req: Request,
@@ -81,6 +84,26 @@ export class SlotAndBookingController {
         res,
         SlotAndBookingSuccess.LISTED_SESSION,
         response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleCancelSession(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const sessionId = req.params.sessionId;
+      const memberId = res.locals.data.id;
+
+      await this._cancelSessionUseCase.execute(sessionId, memberId);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        SessionSuccess.CANCELLED,
       );
     } catch (error) {
       next(error);

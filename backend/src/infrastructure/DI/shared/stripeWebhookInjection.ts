@@ -44,6 +44,7 @@ const memberProcessSessionWebhookUseCase =
     sessionRepository,
     gymAdminRevenueRepository,
     cacheService,
+    memberRepository,
   );
 const stripeWebhookRouteUseCase = new StripeWebhookRouterUseCase(
   processStripeWebhookUseCase,

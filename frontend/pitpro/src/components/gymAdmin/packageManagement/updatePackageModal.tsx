@@ -30,11 +30,13 @@ export function UpdatePackageModal({
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<UpdatePackageForm>({
     resolver: zodResolver(updatePackageSchema),
   });
 
+  const isDailySession = watch("isDailySession");
   const [featuresInput, setFeaturesInput] = useState<string>("");
 
   useEffect(() => {
@@ -45,12 +47,22 @@ export function UpdatePackageModal({
       name: packageData.name,
       price: packageData.price,
       durationInDays: packageData.durationInDays,
+      sessionCount: packageData.sessionCount,
       features: packageData.features,
       isDailySession: packageData.isDailySession,
     });
 
     setFeaturesInput(packageData.features.join(", "));
   }, [packageData, reset]);
+
+  useEffect(() => {
+      if (isDailySession) {
+        setValue("sessionCount", packageData?.sessionCount);
+      }
+      if(!isDailySession){
+        setValue("sessionCount",0);
+      }
+    }, [isDailySession, setValue]);
 
   const handleFormSubmit = (data: UpdatePackageForm) => {
     if (!packageData) return;
@@ -98,7 +110,9 @@ export function UpdatePackageModal({
             ))}
           </select>
           {errors.branchId && (
-            <p className="text-xs text-red-500 mt-1">{errors.branchId.message}</p>
+            <p className="text-xs text-red-500 mt-1">
+              {errors.branchId.message}
+            </p>
           )}
         </div>
 
@@ -133,12 +147,36 @@ export function UpdatePackageModal({
             className="w-full rounded border border-zinc-800 bg-zinc-900 px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
           />
           {errors.durationInDays && (
-            <p className="text-xs text-red-500 mt-1">{errors.durationInDays.message}</p>
+            <p className="text-xs text-red-500 mt-1">
+              {errors.durationInDays.message}
+            </p>
           )}
         </div>
 
         <div>
-          <p className="mb-1 text-sm text-zinc-400">Features (comma separated)</p>
+          <p className="mb-1 text-sm text-zinc-400">Session Count</p>
+          <input
+            type="number"
+            disabled={!isDailySession} 
+            {...register("sessionCount", { valueAsNumber: true })}
+            className={`w-full rounded px-3 py-2 text-white focus:outline-none ${
+              !isDailySession
+                ? "bg-zinc-800 border border-zinc-700 cursor-not-allowed opacity-60"
+                : "bg-zinc-900 border border-zinc-800 focus:border-orange-500"
+            }`}
+          />
+
+          {errors.sessionCount && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.sessionCount.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <p className="mb-1 text-sm text-zinc-400">
+            Features (comma separated)
+          </p>
           <input
             type="text"
             value={featuresInput}
@@ -150,7 +188,7 @@ export function UpdatePackageModal({
                   .split(",")
                   .map((f) => f.trim())
                   .filter(Boolean),
-                { shouldValidate: true }
+                { shouldValidate: true },
               )
             }
             placeholder="Eg: Cardio, Trainer Support"
@@ -159,7 +197,10 @@ export function UpdatePackageModal({
           {errors.features && (
             <p className="text-xs text-red-500 mt-1">
               {Array.isArray(errors.features)
-                ? errors.features.map((f) => f?.message).filter(Boolean).join(", ")
+                ? errors.features
+                    .map((f) => f?.message)
+                    .filter(Boolean)
+                    .join(", ")
                 : errors.features.message}
             </p>
           )}

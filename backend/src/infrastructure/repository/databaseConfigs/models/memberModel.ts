@@ -38,6 +38,9 @@ export interface IMemberModel extends Document {
   };
   package?: {
     planId: string;
+    name: string;
+    sessionCount: number;
+    usedSession: number;
     startDate?: Date;
     endDate?: Date;
     price: number;

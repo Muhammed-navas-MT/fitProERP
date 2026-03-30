@@ -42,4 +42,5 @@ export interface IGymAdminRevenueRepository extends IBaseRepository<IGymAdminRev
     startDate: Date,
     endDate: Date,
   ): Promise<number>;
+  findBySessionId(sessionId: string): Promise<IGymAdminRevenueEntity | null>;
 }

@@ -40,4 +40,6 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
     activeMembersCount: number;
   }>;
   findDetailById(memberId: string): Promise<IPopulatedMemberType | null>;
+  incrementUsedSession(memberId: string): Promise<void>;
+  decrementUsedSession(memberId: string): Promise<void>;
 }

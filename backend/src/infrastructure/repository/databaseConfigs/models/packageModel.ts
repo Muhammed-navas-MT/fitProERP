@@ -7,6 +7,7 @@ export interface IPackageModel extends Document {
   branchId: string;
   name: string;
   durationInDays: number;
+  sessionCount: number;
   price: number;
   features: string[];
   isDailySession: boolean;

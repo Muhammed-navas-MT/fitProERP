@@ -184,6 +184,13 @@ export class MemberRoutes {
         injectedtrainerController.listActiveTrainers(req, res, next);
       },
     );
+
+    this._route.put(
+      ROUTES.MEMBER.CANCEL_SESSION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSlotAndBookingController.handleCancelSession(req, res, next);
+      },
+    );
   }
   public get_routes(): Router {
     return this._route;

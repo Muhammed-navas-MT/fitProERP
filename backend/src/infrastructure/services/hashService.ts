@@ -1,9 +1,9 @@
 import { IHashService } from "../../application/interfaces/service/hashServiceInterface";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 export class HashPassword implements IHashService {
   async hash(password: string): Promise<string> {
-    return bcrypt.hash(password,10);
+    return bcrypt.hash(password, 10);
   }
 
   async compare(password: string, hashedPassword: string): Promise<boolean> {

@@ -1,0 +1,7 @@
+export enum RefundStatus {
+  NONE = "NONE",
+  PENDING = "PENDING",
+  REFUNDED = "REFUNDED",
+  PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED",
+  FAILED = "FAILED",
+}

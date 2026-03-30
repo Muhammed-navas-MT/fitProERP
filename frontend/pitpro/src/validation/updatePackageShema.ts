@@ -23,6 +23,12 @@ export const updatePackageSchema = z.object({
     .positive("Duration must be greater than 0")
     .optional(),
 
+    sessionCount: z
+    .number()
+    .int("Session count must be a whole number")
+    .min(0)
+    .optional(),
+
   features: z
     .array(
       z.string().min(1, "Feature cannot be empty")

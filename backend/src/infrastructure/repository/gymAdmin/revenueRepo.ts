@@ -9,6 +9,7 @@ import {
   SummaryType,
 } from "../databaseConfigs/types/populatedRevenueType";
 import { IListPaymentsRequestDto } from "../../../application/dtos/memberDto/purchasePackageDto";
+import { IGymAdminRevenueEntity } from "../../../domain/entities/gymAdmin/revenueEntity";
 
 export class GymAdminRevenueRepository
   extends BaseRepository<IGymAdminRevenueModel>
@@ -438,5 +439,14 @@ export class GymAdminRevenueRepository
     ]);
 
     return result[0]?.totalRevenue || 0;
+  }
+  async findBySessionId(
+    sessionId: string,
+  ): Promise<IGymAdminRevenueEntity | null> {
+    const revenue = await this._model.findOne({ sourceId: sessionId }).lean();
+    if (!revenue) {
+      return null;
+    }
+    return revenue;
   }
 }

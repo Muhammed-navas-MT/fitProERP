@@ -31,6 +31,9 @@ export enum SessionError {
   UPDATE_FAILED = "Failed to update session",
   DELETE_FAILED = "Failed to delete session",
   CANNOT_COMPLETE_BEFORE_END_TIME = "Session cannot be marked as completed before end time",
+  COMPLETED_SESSION_CANNOT_CANCELLED = "Completed session cannot be cancelled",
+  ALREADY_CANCELLED = "Session already cancelled",
+  CANCELLED_3_HOURS_BEFORE = "Session can only be cancelled at least 3 hours before start time",
 }
 
 export enum SessionSuccess {

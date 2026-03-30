@@ -36,10 +36,14 @@ export function AddPackageModal({
       name: "",
       price: 0,
       durationInDays: 0,
+      sessionCount: 0,
       features: [],
       isDailySession: false,
     },
   });
+
+  const isDailySession = watch("isDailySession");
+
   const [featuresInput, setFeaturesInput] = React.useState(
     watch("features").join(", ")
   );
@@ -47,6 +51,12 @@ export function AddPackageModal({
   React.useEffect(() => {
     setFeaturesInput(watch("features").join(", "));
   }, [watch("features")]);
+
+  React.useEffect(() => {
+    if (isDailySession) {
+      setValue("sessionCount", 0);
+    }
+  }, [isDailySession, setValue]);
 
   const handleFormSubmit = (data: ICreatePackageType) => {
     const featuresArray = featuresInput
@@ -63,11 +73,11 @@ export function AddPackageModal({
   };
 
   React.useEffect(() => {
-  if (!isPending && open) {
-    reset();
-    setFeaturesInput("");
-  }
-}, [isPending, open, reset]);
+    if (!isPending && open) {
+      reset();
+      setFeaturesInput("");
+    }
+  }, [isPending, open, reset]);
 
   return (
     <BaseModal
@@ -137,7 +147,28 @@ export function AddPackageModal({
         </div>
 
         <div>
-          <p className="mb-1 text-sm text-zinc-400">Features (comma separated)</p>
+          <p className="mb-1 text-sm text-zinc-400">Session Count</p>
+          <input
+            type="number"
+            {...register("sessionCount", { valueAsNumber: true })}
+            disabled={!isDailySession} 
+            className={`w-full rounded px-3 py-2 text-white focus:outline-none ${
+              !isDailySession
+                ? "bg-zinc-800 border border-zinc-700 cursor-not-allowed opacity-60"
+                : "bg-zinc-900 border border-zinc-800 focus:border-orange-500"
+            }`}
+          />
+          {errors.sessionCount && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.sessionCount.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <p className="mb-1 text-sm text-zinc-400">
+            Features (comma separated)
+          </p>
           <input
             type="text"
             value={featuresInput}

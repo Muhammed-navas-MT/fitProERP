@@ -175,4 +175,16 @@ export class MemberRepository
 
     return member;
   }
+  async incrementUsedSession(memberId: string): Promise<void> {
+    await this._model.updateOne(
+      { _id: memberId },
+      { $inc: { "package.usedSession": 1 } },
+    );
+  }
+  async decrementUsedSession(memberId: string): Promise<void> {
+    await this._model.updateOne(
+      { _id: memberId },
+      { $inc: { "package.usedSession": -1 } },
+    );
+  }
 }

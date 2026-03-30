@@ -47,6 +47,8 @@ export class MemberProcessStripeWebhookUseCase implements IMemberProcessStripeWe
 
     const updatedMemberData = mapPackageToMemberUpdate(
       planId,
+      pkg.name,
+      pkg.sessionCount,
       pkg.price,
       pkg.durationInDays,
     );

@@ -3,20 +3,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Clock, MoreVertical } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import type { ListSessionsItem } from "@/types/member/memberSessionType";
+import { useCancelSession } from "@/hook/member/slotAndBookingHooks";
 
 interface Props {
   isLoadingSessions: boolean;
   sessions: ListSessionsItem[];
+  page:number;
+  limit:number;
 }
 
 export function UpcomingSessionsSection({
   isLoadingSessions,
   sessions,
+  page,
+  limit,
 }: Props) {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const { mutate: cancelSession } = useCancelSession(page,limit);
 
   const handleCancel = (sessionId: string) => {
-    console.log("Cancel session:", sessionId);
+    cancelSession(sessionId);
   };
 
   return (
@@ -38,9 +44,7 @@ export function UpcomingSessionsSection({
             ))
         ) : sessions.length === 0 ? (
           <div className="rounded-3xl border-2 border-dashed border-gray-800 p-10 text-center">
-            <p className="text-sm text-gray-500">
-              No upcoming sessions found.
-            </p>
+            <p className="text-sm text-gray-500">No upcoming sessions found.</p>
           </div>
         ) : (
           sessions.map((session) => (

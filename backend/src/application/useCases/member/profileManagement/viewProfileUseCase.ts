@@ -10,6 +10,9 @@ export class ViewMemberProfileUseCase implements IViewProfileUseCase {
   async execute(memberId: string): Promise<MemberDTO> {
     const member = await this._memberRepository.findById(memberId);
     const mem = await this._memberRepository.findDetailById(memberId);
+    if (!mem) {
+      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
+    }
     console.log(mem.package?.planId);
     if (!member) {
       throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);

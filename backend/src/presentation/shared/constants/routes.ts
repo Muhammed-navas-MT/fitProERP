@@ -143,5 +143,6 @@ export const ROUTES = {
     CHECKOUT_SESSION: "/checkout_session",
     LIST_SESSIONS: "/list_sessions",
     LIST_ACTIVE_TRAINERS: "/list_trainers",
+    CANCEL_SESSION: "/cancel_session/:sessionId",
   },
 };

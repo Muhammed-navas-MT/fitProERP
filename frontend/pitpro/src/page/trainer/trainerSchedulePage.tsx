@@ -133,7 +133,7 @@ export default function TrainerSchedulePage() {
 
   const handleComplete = (sessionId: string) => {
     console.log("Complete session:", sessionId);
-    markAsCompleted(sessionId)
+    markAsCompleted(sessionId);
   };
 
   return (

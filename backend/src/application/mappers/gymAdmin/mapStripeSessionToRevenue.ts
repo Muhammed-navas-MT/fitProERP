@@ -31,6 +31,7 @@ export const mapStripeSessionToRevenue = ({
     sourceId: planId,
     source: "Membership Plan",
     stripeSessionId: session.id,
+    paymentIntentId: session.payment_intent as string,
     amount: session.amount_total / 100,
     currency: session.currency ?? "inr",
     paymentMethod: PaymentMethod.ONLINE,
