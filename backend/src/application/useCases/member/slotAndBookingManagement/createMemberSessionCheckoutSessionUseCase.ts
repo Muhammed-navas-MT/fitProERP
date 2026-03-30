@@ -1,4 +1,3 @@
-import { stripe } from "../../../../infrastructure/services/stripeClient";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import { SlotAndBookingError } from "../../../../presentation/shared/constants/messages/slotAndBookingMessages";
 import {
@@ -10,12 +9,15 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
 import { ICacheService } from "../../../interfaces/service/cacheServiceInterface";
 import { ICreateMemberSessionCheckoutSessionUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCaseInterface";
+import { SessionStatus } from "../../../../domain/enums/sessionStatus";
+import { IStripeService } from "../../../interfaces/service/stripeServiceInterface";
 
 export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberSessionCheckoutSessionUseCase {
   constructor(
     private _memberRepository: IMemberRepository,
     private _cacheService: ICacheService,
     private _sessionRepository: ISessionRepository,
+    private _stripeService: IStripeService,
   ) {}
 
   async execute(data: CreateMemberSessionCheckoutRequestDto): Promise<string> {
@@ -29,10 +31,6 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
       throw new ForbiddenException(MemberError.DATA_MISSING);
     }
 
-    if (!data.amount || data.amount <= 0) {
-      throw new ForbiddenException("Invalid session amount");
-    }
-
     const alreadyBooked = await this._sessionRepository.findOneBySlotAndDate(
       data.trainerId,
       data.slotId,
@@ -43,55 +41,62 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
       throw new ForbiddenException(SlotAndBookingError.ALREADY_BOOKED);
     }
 
-    const booked = await this._cacheService.getData(
-      `${data.trainerId}:${data.sessionDate}:${data.slotId}`,
-    );
+    const cacheKey = `${data.trainerId}:${data.sessionDate}:${data.slotId}`;
+
+    const booked = await this._cacheService.getData(cacheKey);
 
     if (booked) {
       throw new ForbiddenException(SlotAndBookingError.ALREADY_BOOKED);
     }
 
-    await this._cacheService.setData(
-      `${data.trainerId}:${data.sessionDate}:${data.slotId}`,
-      data.startTime,
-      300,
-    );
+    await this._cacheService.setData(cacheKey, data.startTime, 300);
+
+    const sessionCount = member.package?.sessionCount ?? 0;
+    const usedSession = member.package?.usedSession ?? 0;
+
+    const hasRemainingPackageSessions = usedSession < sessionCount;
+
+    if (hasRemainingPackageSessions) {
+      await this._sessionRepository.create({
+        memberId: data.userId,
+        trainerId: data.trainerId,
+        slotId: data.slotId,
+        date: data.sessionDate,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        amount: 0,
+        status: SessionStatus.CONFIRMED,
+      });
+
+      await this._memberRepository.incrementUsedSession(data.userId);
+
+      await this._cacheService.deleteData(cacheKey);
+
+      return "BOOKED_WITH_PACKAGE";
+    }
+
+    if (!data.amount || data.amount <= 0) {
+      throw new ForbiddenException("Invalid session amount");
+    }
 
     const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/book_trainer`;
     const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/session-payment-cancel`;
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      line_items: [
-        {
-          price_data: {
-            currency: "inr",
-            product_data: {
-              name: "Personal Training Session",
-              description: `Session Date: ${data.sessionDate}`,
-            },
-            unit_amount: Math.round(data.amount * 100),
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        type: "session_booking",
-        userId: data.userId,
-        trainerId: data.trainerId,
-        slotId: data.slotId,
-        sessionDate: data.sessionDate,
-        startTime: data.startTime,
-        endTime: data.endTime,
-        amount: String(data.amount),
-        branchId: member.branchId.toString(),
-        gymId: member.gymId.toString(),
-        role: member.role,
-      },
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+    const { url } = await this._stripeService.createCheckoutSession({
+      amount: data.amount,
+      sessionDate: data.sessionDate,
+      userId: data.userId,
+      trainerId: data.trainerId,
+      slotId: data.slotId,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      branchId: member.branchId.toString(),
+      gymId: member.gymId.toString(),
+      role: member.role,
+      successUrl,
+      cancelUrl,
     });
 
-    return session.url!;
+    return url;
   }
 }

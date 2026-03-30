@@ -11,6 +11,7 @@ import { DeleteProfilePictureUseCase } from "../../../application/useCases/membe
 import { UpdateProfileUseCase } from "../../../application/useCases/member/profileManagement/updateProfileUseCase";
 import { UploadProfilePictureUseCase } from "../../../application/useCases/member/profileManagement/uploadProfilePictureUseCase";
 import { ViewMemberProfileUseCase } from "../../../application/useCases/member/profileManagement/viewProfileUseCase";
+import { CancelSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/cancelSessionUseCase";
 import { CreateMemberSessionCheckoutSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCase";
 import { ListAllAvailableSlotUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllAvailableSlotUseCase";
 import { ListAllSessionsUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllSessionUseCase";
@@ -51,6 +52,8 @@ import { CacheService } from "../../services/cacheService";
 import { HashPassword } from "../../services/hashService";
 import { JwtService } from "../../services/jwtService";
 import { RRuleService } from "../../services/RRuleService";
+import { stripe } from "../../services/stripeClient";
+import { StripeService } from "../../services/stripeService";
 
 const memberRepository = new MemberRepository(memberModel);
 const gymAdminRepository = new GymAdminRepository(gymAdminModel);
@@ -66,6 +69,7 @@ const hashService = new HashPassword();
 const jwtService = new JwtService();
 const cacheService = new CacheService();
 const branchRepository = new BranchRepository(branchModel);
+const stripeService = new StripeService(stripe);
 const loginUseCase = new MemberLoginUseCase(
   memberRepository,
   hashService,
@@ -156,14 +160,21 @@ const createMemberSessionCheckoutUseCase =
     memberRepository,
     cacheService,
     sessionRepository,
+    stripeService,
   );
-
 const listAllSessionUseCase = new ListAllSessionsUseCase(sessionRepository);
+const cancelSessionUseCase = new CancelSessionUseCase(
+  revenueRepository,
+  sessionRepository,
+  memberRepository,
+  stripeService,
+);
 
 export const injectedSlotAndBookingController = new SlotAndBookingController(
   listAvailableSlotUseCase,
   createMemberSessionCheckoutUseCase,
   listAllSessionUseCase,
+  cancelSessionUseCase,
 );
 
 //trainer management

@@ -3,6 +3,7 @@ import { PaymentMethod } from "../../../../domain/enums/paymentMethod";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
 import { RevenueSchema } from "../schemas/revenueSchema";
 import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType";
+import { RefundStatus } from "../../../../domain/enums/refundStatus";
 
 export interface IGymAdminRevenueModel extends Document {
   _id: string;
@@ -14,9 +15,14 @@ export interface IGymAdminRevenueModel extends Document {
   source: string;
   amount: number;
   stripeSessionId: string;
+  paymentIntentId: string;
   paymentMethod: PaymentMethod;
   currency: string;
   status: PaymentStatus;
+  refundId?: string;
+  refundStatus?: RefundStatus;
+  refundedAmount?: number;
+  refundedAt?: Date;
   createdAt: Date;
 }
 

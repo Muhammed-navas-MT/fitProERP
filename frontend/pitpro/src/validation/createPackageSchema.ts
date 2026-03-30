@@ -25,6 +25,14 @@ export const createPackageSchema = z.object({
       message: "Duration cannot start with 0",
     }),
 
+    sessionCount: z
+    .number()
+    .int("Session count must be a whole number")
+    .min(0)
+    .refine((val) => !/^0\d+/.test(val.toString()), {
+      message: "Session count cannot start with 0",
+    }),
+
   features: z
     .array(
       z

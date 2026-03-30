@@ -2,20 +2,20 @@ import Stripe from "stripe";
 import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
 import { IGymAdminRevenueRepository } from "../../../interfaces/repository/gymAdmin/revenueRepoInterface";
 import { ForbiddenException } from "../../../constants/exceptions";
-import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
 import { SessionStatus } from "../../../../domain/enums/sessionStatus";
-import { PaymentMethod } from "../../../../domain/enums/paymentMethod";
-import { RevenueSourceType } from "../../../../domain/enums/gymRevenueSourceType";
 import { IMemberProcessSessionStripeWebhookUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/memberProcessSessionStripeWebhookUseCaseInterface";
 import { StripeError } from "../../../../presentation/shared/constants/messages/stripeMessages";
 import { SlotAndBookingError } from "../../../../presentation/shared/constants/messages/slotAndBookingMessages";
 import { ICacheService } from "../../../interfaces/service/cacheServiceInterface";
+import { BookingMapper } from "../../../mappers/member/bookingMapper";
+import { IMemberRepository } from "../../../interfaces/repository/member/addMemberRepoInterface";
 
 export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessSessionStripeWebhookUseCase {
   constructor(
     private _sessionRepository: ISessionRepository,
     private _gymAdminRevenueRepository: IGymAdminRevenueRepository,
     private _cacheService: ICacheService,
+    private _memberRepository: IMemberRepository,
   ) {}
 
   async execute(event: Stripe.Event): Promise<void> {
@@ -77,19 +77,17 @@ export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessS
       status: SessionStatus.CONFIRMED,
     });
 
-    await this._gymAdminRevenueRepository.create({
+    await this._memberRepository.incrementUsedSession(userId);
+
+    const revenueEntity = BookingMapper.toEntityFromSession({
       gymId,
       branchId,
       userId,
-      sourceType: RevenueSourceType.BOOK,
-      sourceId: createdSessionId,
-      source: "Personal Training Session Booking",
-      stripeSessionId: stripeSession.id,
+      createdSessionId,
+      stripeSession,
       amount,
-      currency: stripeSession.currency ?? "inr",
-      paymentMethod: PaymentMethod.ONLINE,
-      status: PaymentStatus.PAID,
-      createdAt: new Date(),
     });
+
+    await this._gymAdminRevenueRepository.create(revenueEntity);
   }
 }

@@ -125,6 +125,17 @@ export const memberSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "Package",
       },
+      name: {
+        type: String,
+      },
+      sessionCount: {
+        type: Number,
+        min: 0,
+      },
+      usedSession: {
+        type: Number,
+        min: 0,
+      },
       startDate: {
         type: Date,
       },

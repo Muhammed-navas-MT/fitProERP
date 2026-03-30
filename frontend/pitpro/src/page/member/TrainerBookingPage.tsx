@@ -73,7 +73,7 @@ export default function TrainerBookingPage() {
   const total = sessionsData?.data?.total ?? 0;
   const totalPages = sessionsData?.data?.totalPages ?? 1;
 
-  const checkoutMutation = useCheckoutSession();
+  const checkoutMutation = useCheckoutSession(page,limit);
 
   const days: AvailableSlotDay[] = availableData?.data?.slots ?? [];
   const activeDay = days.find((d) => d.date === selectedDate) || days[0];
@@ -251,6 +251,8 @@ export default function TrainerBookingPage() {
               <UpcomingSessionsSection
                 isLoadingSessions={isLoadingSessions}
                 sessions={sessionsData?.data?.session || []}
+                page={page}
+                limit={limit}
               />
               {/* Pagination */}
               <div className="flex items-center justify-between text-sm text-zinc-400 mt-4">

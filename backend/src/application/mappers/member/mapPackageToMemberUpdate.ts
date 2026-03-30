@@ -2,6 +2,8 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 
 export const mapPackageToMemberUpdate = (
   planId: string,
+  name: string,
+  sessionCount: number,
   price: number,
   durationInDays: number,
 ) => {
@@ -13,6 +15,9 @@ export const mapPackageToMemberUpdate = (
   return {
     package: {
       planId,
+      name,
+      sessionCount,
+      usedSession: 0,
       startDate,
       endDate,
       price,
