@@ -144,5 +144,10 @@ export const ROUTES = {
     LIST_SESSIONS: "/list_sessions",
     LIST_ACTIVE_TRAINERS: "/list_trainers",
     CANCEL_SESSION: "/cancel_session/:sessionId",
+    CREATE_PROGRESS: "/create_progress",
+    FIND_PROGRESS: "/find_progress/:progressId",
+    LIST_PROGRESS: "/list_progress",
+    UPDATE_PROGRESS: "/update_progress/:progressId",
+    FIND_PROGRESS_GRAPH_DATA: "/find_progress_graph_data",
   },
 };

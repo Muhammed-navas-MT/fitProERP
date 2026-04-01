@@ -1,4 +1,4 @@
-import { ProgressType } from "@/types/member/progressTypes";
+import { IMonthlyProgressReport } from "@/types/member/progressTypes";
 import {
   XAxis,
   YAxis,
@@ -11,24 +11,21 @@ import {
 } from "recharts";
 
 interface BMIChartProps {
-  data: ProgressType[];
+  data: IMonthlyProgressReport[];
 }
 
 export function BMIChart({ data }: BMIChartProps) {
-  const chartData = data
-    .sort((a, b) => new Date(a.progressDate).getTime() - new Date(b.progressDate).getTime())
-    .map((entry) => ({
-      name: new Date(entry.progressDate).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      }),
-      bmi: entry.bmi,
-      weight: entry.weight.value,
-    }));
+  const chartData = data.map((entry) => ({
+    name: entry.month,
+    bmi: entry.bmi,
+    weight: entry.weight,
+    bodyFatPercentage: entry.bodyFatPercentage,
+    muscleMass: entry.muscleMass,
+  }));
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
+      <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
         No data yet. Create your first report!
       </div>
     );
@@ -36,14 +33,19 @@ export function BMIChart({ data }: BMIChartProps) {
 
   return (
     <ResponsiveContainer width="100%" height={280}>
-      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+      <AreaChart
+        data={chartData}
+        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+      >
         <defs>
           <linearGradient id="bmiGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="hsl(24, 95%, 53%)" stopOpacity={0.3} />
             <stop offset="95%" stopColor="hsl(24, 95%, 53%)" stopOpacity={0} />
           </linearGradient>
         </defs>
+
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(0, 0%, 16%)" />
+
         <XAxis
           dataKey="name"
           stroke="hsl(0, 0%, 40%)"
@@ -51,6 +53,7 @@ export function BMIChart({ data }: BMIChartProps) {
           tickLine={false}
           axisLine={false}
         />
+
         <YAxis
           stroke="hsl(0, 0%, 40%)"
           fontSize={12}
@@ -58,6 +61,7 @@ export function BMIChart({ data }: BMIChartProps) {
           axisLine={false}
           domain={["dataMin - 2", "dataMax + 2"]}
         />
+
         <Tooltip
           contentStyle={{
             backgroundColor: "hsl(0, 0%, 7%)",
@@ -67,6 +71,7 @@ export function BMIChart({ data }: BMIChartProps) {
             fontSize: "13px",
           }}
         />
+
         <ReferenceLine
           y={18.5}
           stroke="hsl(199, 89%, 48%)"
@@ -85,6 +90,7 @@ export function BMIChart({ data }: BMIChartProps) {
           strokeDasharray="4 4"
           strokeOpacity={0.5}
         />
+
         <Area
           type="monotone"
           dataKey="bmi"
@@ -92,7 +98,12 @@ export function BMIChart({ data }: BMIChartProps) {
           strokeWidth={3}
           fill="url(#bmiGradient)"
           dot={{ fill: "hsl(24, 95%, 53%)", strokeWidth: 0, r: 5 }}
-          activeDot={{ r: 7, fill: "hsl(24, 95%, 53%)", stroke: "hsl(0, 0%, 7%)", strokeWidth: 3 }}
+          activeDot={{
+            r: 7,
+            fill: "hsl(24, 95%, 53%)",
+            stroke: "hsl(0, 0%, 7%)",
+            strokeWidth: 3,
+          }}
         />
       </AreaChart>
     </ResponsiveContainer>

@@ -142,6 +142,11 @@ export const API_ROUTES = {
     CHECKOUT_SESSION: "/checkout_session",
     LIST_SESSIONS: "/list_sessions",
     LIST_ACTIVE_TRAINERS: "/list_trainers",
-    CANCEL_SESSION: "/cancel_session"
+    CANCEL_SESSION: "/cancel_session",
+    CREATE_PROGRESS: "/create_progress",
+    FIND_PROGRESS: "/find_progress",
+    LIST_PROGRESS: "/list_progress",
+    UPDATE_PROGRESS: "/update_progress",
+    FIND_PROGRESS_GRAPH_DATA: "/find_progress_graph_data",
   }
 };
