@@ -11,6 +11,11 @@ import { DeleteProfilePictureUseCase } from "../../../application/useCases/membe
 import { UpdateProfileUseCase } from "../../../application/useCases/member/profileManagement/updateProfileUseCase";
 import { UploadProfilePictureUseCase } from "../../../application/useCases/member/profileManagement/uploadProfilePictureUseCase";
 import { ViewMemberProfileUseCase } from "../../../application/useCases/member/profileManagement/viewProfileUseCase";
+import { CreateProgressUseCase } from "../../../application/useCases/member/progressManagement/createProgressUseCase";
+import { FindProgressUseCase } from "../../../application/useCases/member/progressManagement/findProgressDetailsUseCase";
+import { FindProgressGraphDataUseCase } from "../../../application/useCases/member/progressManagement/findProgressGraphDataUseCase";
+import { ListAllProgressUseCase } from "../../../application/useCases/member/progressManagement/listAllprogressUseCase";
+import { UpdateProgressUseCase } from "../../../application/useCases/member/progressManagement/updateProgressUseCase";
 import { CancelSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/cancelSessionUseCase";
 import { CreateMemberSessionCheckoutSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCase";
 import { ListAllAvailableSlotUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllAvailableSlotUseCase";
@@ -22,6 +27,7 @@ import { MemberLoginController } from "../../../presentation/controller/member/m
 import { MemberLogoutController } from "../../../presentation/controller/member/memberLogoutController";
 import { PackageListAndCheckoutController } from "../../../presentation/controller/member/packageListAndPurchaseController";
 import { ProfileController } from "../../../presentation/controller/member/profileManagementController";
+import { ProgressController } from "../../../presentation/controller/member/progressController";
 import { SlotAndBookingController } from "../../../presentation/controller/member/slotAndBookingController";
 import { TrainerController } from "../../../presentation/controller/member/trainerManagementController";
 import { WorkoutPlanController } from "../../../presentation/controller/member/workoutPlanController";
@@ -31,6 +37,7 @@ import { dietPlanModel } from "../../repository/databaseConfigs/models/deitPlanM
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
+import { progressModel } from "../../repository/databaseConfigs/models/progressModel";
 import { gymAdminRevenueModel } from "../../repository/databaseConfigs/models/revenueModel";
 import { sessionModel } from "../../repository/databaseConfigs/models/sessionModel";
 import { slotRuleModel } from "../../repository/databaseConfigs/models/slotRuleModel";
@@ -43,6 +50,7 @@ import { PackageRepository } from "../../repository/gymAdmin/packageRepo";
 import { GymAdminRevenueRepository } from "../../repository/gymAdmin/revenueRepo";
 import { DietPlanRepository } from "../../repository/member/dietPlanRepo";
 import { MemberRepository } from "../../repository/member/memberRepo";
+import { ProgressRepository } from "../../repository/member/progressRepo";
 import { SessionRepository } from "../../repository/member/sessionRepo";
 import { WorkoutPlanRepository } from "../../repository/member/workoutPlanRepo";
 import { LeaveRepository } from "../../repository/shared/leaveRepo";
@@ -65,6 +73,7 @@ const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
 const sessionRepository = new SessionRepository(sessionModel);
 const trainerRepository = new TrainerRepository(trainerModel);
 const trainerLeaveRepository = new LeaveRepository(trainerLeaveModel);
+const progressRepository = new ProgressRepository(progressModel);
 const hashService = new HashPassword();
 const jwtService = new JwtService();
 const cacheService = new CacheService();
@@ -185,4 +194,29 @@ const listActiveTrainersUseCase = new ListActiveTrainersUseCase(
 );
 export const injectedtrainerController = new TrainerController(
   listActiveTrainersUseCase,
+);
+
+//progress management
+const createProgressUseCase = new CreateProgressUseCase(
+  progressRepository,
+  memberRepository,
+);
+const listProgressUseCase = new ListAllProgressUseCase(
+  progressRepository,
+  memberRepository,
+);
+const findProgressUseCase = new FindProgressUseCase(progressRepository);
+const updateProgressUseCase = new UpdateProgressUseCase(
+  progressRepository,
+  memberRepository,
+);
+const findProgressGraphDataUseCase = new FindProgressGraphDataUseCase(
+  progressRepository,
+);
+export const injectedProgressController = new ProgressController(
+  createProgressUseCase,
+  findProgressUseCase,
+  listProgressUseCase,
+  updateProgressUseCase,
+  findProgressGraphDataUseCase,
 );

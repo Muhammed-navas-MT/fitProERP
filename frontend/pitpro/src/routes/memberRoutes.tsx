@@ -63,7 +63,7 @@ const MemberRoutes = () => {
           <Route path={FRONTEND_ROUTES.MEMBER.WORKOUT_PLAN} element={<WorkoutPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.DIET_PLAN} element={<DietPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.BOOK_TRAINER} element={<TrainerBookingPage/>}/>
-          {/* <Route path={FRONTEND_ROUTES.MEMBER.PROGRESS} element={<ProgressPage/>}/> */}
+          <Route path={FRONTEND_ROUTES.MEMBER.PROGRESS} element={<ProgressPage/>}/>
         </Route>
       </Route>
     </Routes>

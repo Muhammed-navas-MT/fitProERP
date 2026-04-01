@@ -1,97 +1,138 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Scale, Ruler, Activity, FileText } from "lucide-react";
-import { getBMICategory, ProgressType } from "@/types/member/progressTypes";
+import { Scale, Activity, FileText, Dumbbell } from "lucide-react";
+import { ICreateProgressType } from "@/types/member/progressTypes";
+import {
+  createProgressSchema,
+  CreateProgressSchemaType,
+} from "@/validation/progressZodSchema";
+import { useCreateProgress } from "@/hook/member/progressHook";
+import { toast } from "sonner";
 
 interface CreateProgressModalProps {
-  onSubmit: (data: ProgressType) => void;
+  page:number,
+  isOpen:boolean
+  onClose:()=>void
 }
 
-export function CreateProgressModal({ onSubmit }: CreateProgressModalProps) {
-  const [open, setOpen] = useState(false);
-  const [weight, setWeight] = useState("");
-  const [heightCm, setHeightCm] = useState("");
-  const [bodyFat, setBodyFat] = useState("");
-  const [muscleMass, setMuscleMass] = useState("");
-  const [note, setNote] = useState("");
-  const [unit, setUnit] = useState<"kg" | "lb">("kg");
+const defaultValues: CreateProgressSchemaType = {
+  weight: {
+    value: 0,
+    unit: "kg",
+  },
+  bodyFatPercentage: undefined,
+  muscleMass: undefined,
+  note: "",
+};
 
-  const calculatedBMI =
-    weight && heightCm
-      ? (() => {
-          const w = unit === "lb" ? parseFloat(weight) * 0.453592 : parseFloat(weight);
-          const h = parseFloat(heightCm) / 100;
-          return h > 0 ? parseFloat((w / (h * h)).toFixed(1)) : 0;
-        })()
-      : 0;
+export function CreateProgressModal({
+  page,
+  onClose,
+  isOpen
+}: CreateProgressModalProps) {
+  const [unit, setUnit] = useState<"kg" | "lbs">("kg");
 
-  const bmiCategory = calculatedBMI > 0 ? getBMICategory(calculatedBMI) : null;
+  const { mutate: createProgress, isPending } = useCreateProgress(page);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!weight || !heightCm) return;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CreateProgressSchemaType>({
+    resolver: zodResolver(createProgressSchema),
+    defaultValues,
+  });
 
-    const entry: ProgressType = {
-      memberId: "current-user",
-      weight: { value: parseFloat(weight), unit },
-      bmi: calculatedBMI,
-      bmiCategory: bmiCategory!,
-      bodyFatPercentage: bodyFat ? parseFloat(bodyFat) : undefined,
-      muscleMass: muscleMass ? { value: parseFloat(muscleMass), unit } : undefined,
-      note: note || undefined,
-      progressDate: new Date(),
+  const muscleMassValue = watch("muscleMass.value");
+
+  useEffect(() => {
+    setValue("weight.unit", unit);
+
+    if (muscleMassValue !== undefined) {
+      setValue("muscleMass.unit", unit);
+    }
+  }, [unit, setValue, muscleMassValue]);
+
+  const handleFormSubmit = (data: CreateProgressSchemaType) => {
+    const payload: ICreateProgressType = {
+      weight: {
+        value: data.weight.value,
+        unit: data.weight.unit,
+      },
+      bodyFatPercentage: data.bodyFatPercentage,
+      muscleMass:
+        data.muscleMass?.value !== undefined
+          ? {
+              value: data.muscleMass.value,
+              unit: data.muscleMass.unit,
+            }
+          : undefined,
+      note: data.note?.trim() || undefined,
     };
 
-    onSubmit(entry);
-    setOpen(false);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setWeight("");
-    setHeightCm("");
-    setBodyFat("");
-    setMuscleMass("");
-    setNote("");
+    createProgress(payload, {
+      onSuccess: () => {
+        toast.success("Progress created successfully")
+        onClose()
+        reset(defaultValues);
+        setUnit("kg");
+      },
+      onError:(err)=>{
+        toast.error(err.message|| " progress create faild")
+      }
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gradient-orange text-primary-foreground font-semibold gap-2 rounded-xl px-6 hover:opacity-90 transition-opacity">
-          <Plus size={18} />
-          New Report
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="bg-card border-border sm:max-w-lg">
+    <Dialog
+      open={isOpen}
+      onOpenChange={(value) => {
+        onClose()
+        if (!value) {
+          reset(defaultValues);
+          setUnit("kg");
+        }
+      }}
+    >
+
+      <DialogContent className="border border-zinc-800 bg-zinc-950 text-white sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-foreground">
-            Create BMI Report
+          <DialogTitle className="text-xl font-bold text-white">
+            Add Progress Record
           </DialogTitle>
+          <p className="text-sm text-zinc-400">
+            Save your latest body metrics and notes.
+          </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-5 mt-2">
-          {/* Unit Toggle */}
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className="mt-3 space-y-5"
+        >
           <div className="flex gap-2">
-            {(["kg", "lb"] as const).map((u) => (
+            {(["kg"] as const).map((u) => (
               <button
                 key={u}
                 type="button"
                 onClick={() => setUnit(u)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                   unit === u
-                    ? "gradient-orange text-primary-foreground"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                    ? "bg-orange-500 text-white"
+                    : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`}
               >
                 {u.toUpperCase()}
@@ -99,121 +140,102 @@ export function CreateProgressModal({ onSubmit }: CreateProgressModalProps) {
             ))}
           </div>
 
-          {/* Weight & Height */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-muted-foreground flex items-center gap-2">
-                <Scale size={14} /> Weight ({unit})
-              </Label>
-              <Input
-                type="number"
-                step="0.1"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder={`e.g. ${unit === "kg" ? "75" : "165"}`}
-                className="bg-secondary border-border text-foreground"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-muted-foreground flex items-center gap-2">
-                <Ruler size={14} /> Height (cm)
-              </Label>
-              <Input
-                type="number"
-                step="0.1"
-                value={heightCm}
-                onChange={(e) => setHeightCm(e.target.value)}
-                placeholder="e.g. 175"
-                className="bg-secondary border-border text-foreground"
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2 text-zinc-300">
+              <Scale size={14} />
+              Weight ({unit})
+            </Label>
+            <Input
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder={`Enter weight in ${unit}`}
+              className="border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500"
+              {...register("weight.value", {
+                setValueAs: (value) =>
+                  value === "" ? undefined : Number(value),
+              })}
+            />
+            {errors.weight?.value && (
+              <p className="text-sm text-red-400">
+                {errors.weight.value.message}
+              </p>
+            )}
           </div>
 
-          {/* Live BMI Preview */}
-          {calculatedBMI > 0 && (
-            <div className="glass-card p-4 flex items-center justify-between animate-fade-scale">
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">Calculated BMI</p>
-                <p className="text-3xl font-black text-foreground">{calculatedBMI}</p>
-              </div>
-              <span
-                className={`px-3 py-1.5 rounded-full text-xs font-bold border ${
-                  bmiCategory === "Normal"
-                    ? "bg-success/10 border-success/30 text-success"
-                    : bmiCategory === "Overweight"
-                    ? "bg-warning/10 border-warning/30 text-warning"
-                    : bmiCategory === "Obese"
-                    ? "bg-destructive/10 border-destructive/30 text-destructive"
-                    : "bg-info/10 border-info/30 text-info"
-                }`}
-              >
-                {bmiCategory}
-              </span>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2 text-zinc-300">
+                <Activity size={14} />
+                Body Fat %
+              </Label>
+              <Input
+                type="number"
+                step="0.1"
+                min="0"
+                placeholder="Optional"
+                className="border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500"
+                {...register("bodyFatPercentage", {
+                  setValueAs: (value) =>
+                    value === "" ? undefined : Number(value),
+                })}
+              />
+              {errors.bodyFatPercentage && (
+                <p className="text-sm text-red-400">
+                  {errors.bodyFatPercentage.message}
+                </p>
+              )}
             </div>
-          )}
 
-          {/* Optional fields */}
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-muted-foreground flex items-center gap-2">
-                <Activity size={14} /> Body Fat %
+              <Label className="flex items-center gap-2 text-zinc-300">
+                <Dumbbell size={14} />
+                Muscle Mass ({unit})
               </Label>
               <Input
                 type="number"
                 step="0.1"
-                value={bodyFat}
-                onChange={(e) => setBodyFat(e.target.value)}
+                min="0"
                 placeholder="Optional"
-                className="bg-secondary border-border text-foreground"
+                className="border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500"
+                {...register("muscleMass.value", {
+                  setValueAs: (value) =>
+                    value === "" ? undefined : Number(value),
+                })}
               />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-muted-foreground flex items-center gap-2">
-                <Dumbbell size={14} /> Muscle Mass ({unit})
-              </Label>
-              <Input
-                type="number"
-                step="0.1"
-                value={muscleMass}
-                onChange={(e) => setMuscleMass(e.target.value)}
-                placeholder="Optional"
-                className="bg-secondary border-border text-foreground"
-              />
+              {errors.muscleMass?.value && (
+                <p className="text-sm text-red-400">
+                  {errors.muscleMass.value.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-muted-foreground flex items-center gap-2">
-              <FileText size={14} /> Note
+            <Label className="flex items-center gap-2 text-zinc-300">
+              <FileText size={14} />
+              Note
             </Label>
             <Textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Any additional notes..."
-              className="bg-secondary border-border text-foreground resize-none"
-              rows={3}
+              placeholder="Add any note about your progress..."
+              rows={4}
+              className="resize-none border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500"
+              {...register("note")}
             />
+            {errors.note && (
+              <p className="text-sm text-red-400">{errors.note.message}</p>
+            )}
           </div>
 
           <Button
             type="submit"
-            disabled={!weight || !heightCm}
-            className="w-full gradient-orange text-primary-foreground font-semibold rounded-xl h-12 hover:opacity-90 transition-opacity"
+            disabled={isPending}
+            className="h-11 w-full rounded-xl bg-orange-500 font-semibold text-white hover:bg-orange-600 disabled:opacity-50"
           >
-            Save Report
+            {isPending ? "Saving..." : "Save Progress"}
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function Dumbbell(props: { size: number }) {
-  return (
-    <svg width={props.size} height={props.size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m6.5 6.5 11 11" /><path d="m21 21-1-1" /><path d="m3 3 1 1" /><path d="m18 22 4-4" /><path d="m2 6 4-4" /><path d="m3 10 7-7" /><path d="m14 21 7-7" />
-    </svg>
   );
 }

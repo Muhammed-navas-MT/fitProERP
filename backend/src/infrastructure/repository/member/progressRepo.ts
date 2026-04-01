@@ -30,4 +30,27 @@ export class ProgressRepository
 
     return { progress, total };
   }
+  async findProgressByDate(memberId: string): Promise<ProgressEntity[]> {
+    const today = new Date();
+
+    const startDate = new Date(
+      today.getFullYear(),
+      today.getMonth() - 11,
+      1,
+      0,
+      0,
+      0,
+      0,
+    );
+
+    const progress = await this._model
+      .find({
+        memberId,
+        progressDate: { $gte: startDate, $lte: today },
+      })
+      .sort({ progressDate: 1 })
+      .lean<ProgressEntity[]>();
+
+    return progress;
+  }
 }

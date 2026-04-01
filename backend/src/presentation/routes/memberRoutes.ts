@@ -7,6 +7,7 @@ import {
   injectedMemberLogoutController,
   injectedMemberProfileController,
   injectedPackageListAndCheckoutController,
+  injectedProgressController,
   injectedSlotAndBookingController,
   injectedtrainerController,
   injectedWorkoutPlanController,
@@ -189,6 +190,36 @@ export class MemberRoutes {
       ROUTES.MEMBER.CANCEL_SESSION,
       (req: Request, res: Response, next: NextFunction) => {
         injectedSlotAndBookingController.handleCancelSession(req, res, next);
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.CREATE_PROGRESS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProgressController.handleCreateProgress(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.FIND_PROGRESS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProgressController.handleFindProgress(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.LIST_PROGRESS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProgressController.handleListProgress(req, res, next);
+      },
+    );
+    this._route.put(
+      ROUTES.MEMBER.UPDATE_PROGRESS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProgressController.handleUpdateProgress(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.FIND_PROGRESS_GRAPH_DATA,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedProgressController.handleGetProgressGraphData(req, res, next);
       },
     );
   }
