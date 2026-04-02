@@ -42,7 +42,7 @@ const clientManagementItems = [
     path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`,
   },
   // { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
-  { icon: MessageSquare, label: "Chat", path: "/trainer/chat" },
+  { icon: MessageSquare, label: "Chat", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.CHAT}` },
   { icon: Video, label: "Video Call", path: "/trainer/video" },
   { icon: Bell, label: "Notifications", path: "/trainer/notifications" },
 ];

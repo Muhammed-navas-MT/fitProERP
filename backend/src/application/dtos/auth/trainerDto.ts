@@ -45,3 +45,8 @@ export interface IListActiveTrainersResponseDto {
   name: string;
   specialization: string[];
 }
+
+export interface AssignedTrainerResponseDto {
+  id: string;
+  name: string;
+}

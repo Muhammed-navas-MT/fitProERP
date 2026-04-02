@@ -9,74 +9,73 @@ import { clearGymAdminData } from "@/store/slice/gymAdminSlice";
 import { clearData } from "@/store/slice/authSlice";
 
 const AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-    headers: {
-        "Content-Type": "application/json",
-    },
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 AxiosInstance.interceptors.request.use((config) => {
-    const accessToken = store.getState().token.token;
-    const host = window.location.hostname;
-    const parts = host.split('.');
-    let subdomain = null;
-    if(parts.length === 2 && parts[1] === "localhost") {
-        subdomain = parts[0];
-    }
-    if(subdomain){
-        config.headers["X-Tenant"] = subdomain;
-    }
-    if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
+  const accessToken = store.getState().token.token;
+  const host = window.location.hostname;
+  const parts = host.split(".");
+  let subdomain = null;
+  if (parts.length === 2 && parts[1] === "localhost") {
+    subdomain = parts[0];
+  }
+  if (subdomain) {
+    config.headers["X-Tenant"] = subdomain;
+  }
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
 });
 
-
 AxiosInstance.interceptors.response.use(
-    (res) => res,
+  (res) => res,
 
-    async (err) => {
-        const originalRequest = err.config;
-        if (!err.response) {
-            console.error("Network error / CORS blocked");
-            return Promise.reject(err);
-        }
-
-        if (
-            err.response.status === 401 &&
-            err.response.data?.message === "Access token has expired" &&
-            !originalRequest._retry
-        ) {
-            try {
-                originalRequest._retry = true;
-                const response = await AxiosInstance.post(`${API_ROUTES.AUTH.BASE}${API_ROUTES.AUTH.REFRESH}`);
-                store.dispatch(setToken(response.data.data));
-                originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
-                return AxiosInstance(originalRequest);
-
-            } catch (error) {
-                console.log(error);
-                const authContext = store.getState().authContext;
-                console.log(authContext);
-                if(authContext.role === "SUPERADMIN"){
-                    store.dispatch(clearSuperAdminData())
-                    window.location.href=`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`
-                }else if(authContext.role === "GYMADMIN"){
-                    window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`
-                    store.dispatch(clearGymAdminData())                    
-                }else if(authContext.role === "TRAINER"){
-                    window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`
-                    store.dispatch(clearData())
-                }
-                store.dispatch(deleteToken());
-                store.dispatch(clearAuthContext());
-            }
-        }
-        return Promise.reject(err);
+  async (err) => {
+    const originalRequest = err.config;
+    if (!err.response) {
+      console.error("Network error / CORS blocked");
+      return Promise.reject(err);
     }
+
+    if (
+      err.response.status === 401 &&
+      err.response.data?.message === "Access token has expired" &&
+      !originalRequest._retry
+    ) {
+      try {
+        originalRequest._retry = true;
+        const response = await AxiosInstance.post(
+          `${API_ROUTES.AUTH.BASE}${API_ROUTES.AUTH.REFRESH}`,
+        );
+        store.dispatch(setToken(response.data.data));
+        originalRequest.headers.Authorization = `Bearer ${response.data.data}`;
+        return AxiosInstance(originalRequest);
+      } catch (error) {
+        console.log(error);
+        const authContext = store.getState().authContext;
+        console.log(authContext);
+        if (authContext.role === "SUPERADMIN") {
+          store.dispatch(clearSuperAdminData());
+          window.location.href = `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`;
+        } else if (authContext.role === "GYMADMIN") {
+          window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`;
+          store.dispatch(clearGymAdminData());
+        } else if (authContext.role === "TRAINER") {
+          window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`;
+          store.dispatch(clearData());
+        }
+        store.dispatch(deleteToken());
+        store.dispatch(clearAuthContext());
+      }
+    }
+    return Promise.reject(err);
+  },
 );
 
 export default AxiosInstance;
-

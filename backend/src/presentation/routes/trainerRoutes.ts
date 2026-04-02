@@ -12,6 +12,7 @@ import {
 } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
+import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
 export class TrainerRoutes {
   private _route: Router;
   constructor() {
@@ -226,6 +227,36 @@ export class TrainerRoutes {
       TRAINER.MARK_AS_COMPLETED,
       (req: Request, res: Response, next: NextFunction) => {
         injectedSessionController.handleMarkAsComplitedSession(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.CONVERSATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.createConversation(req, res, next);
+      },
+    );
+    this._route.get(
+      TRAINER.CONVERSATIONS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.listConversations(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.MESSAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.sendMessage(req, res, next);
+      },
+    );
+    this._route.get(
+      TRAINER.LIST_MESSAGES,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.listMessages(req, res, next);
+      },
+    );
+    this._route.patch(
+      TRAINER.SEEN_CONVERSATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.markMessageSeen(req, res, next);
       },
     );
   }

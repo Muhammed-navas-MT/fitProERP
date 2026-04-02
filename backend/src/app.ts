@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
+import http from "http";
 import { configEnv } from "./config/envConfig";
 import { MongodbConfig } from "./config/mongoConfig";
 import express, { Express } from "express";
@@ -16,6 +17,7 @@ import { injectedStripeWebhookHelper } from "./infrastructure/DI/shared/stripeWe
 import { accessAndErrorLoggerMiddleware } from "./presentation/middlewares/loggingMiddleware";
 import cron from "node-cron";
 import { injectedIGenerateMonthlyProfitJob } from "./infrastructure/DI/jobs/generateMonthlyProfitJob";
+import { initSocket } from "./infrastructure/services/socketServer";
 
 class Express_app {
   private _app: Express;
@@ -110,7 +112,9 @@ class Express_app {
   }
 
   listen() {
-    this._app.listen(Number(configEnv.PORT), () =>
+    const server = http.createServer(this._app);
+    initSocket(server);
+    server.listen(Number(configEnv.PORT), () =>
       console.log("server is Running...."),
     );
   }

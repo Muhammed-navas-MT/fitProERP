@@ -1,10 +1,16 @@
+import { ChatUserModel } from "../../enums/chatUserModel";
 import { MessageType } from "../../enums/messageType";
 
 export interface ConversationEntity {
   _id?: string;
-  members: string[];
+  conversationKey: string;
+  members: {
+    userId: string;
+    userModel: ChatUserModel;
+  }[];
   participants: {
     userId: string;
+    userModel: ChatUserModel;
     isOnline: boolean;
     lastSeen?: Date;
   }[];

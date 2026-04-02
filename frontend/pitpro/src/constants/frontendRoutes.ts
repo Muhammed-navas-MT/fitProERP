@@ -46,7 +46,8 @@ export const FRONTEND_ROUTES = {
         DETAIL_MEMBER:"detail-member",
         PROFILE:"profile",
         LEAVE:"leaves",
-        SESSION:"sessions"
+        SESSION:"sessions",
+        CHAT: "chat",
 
     },
     MEMBER:{
@@ -62,5 +63,6 @@ export const FRONTEND_ROUTES = {
         DIET_PLAN:"diet_plans",
         BOOK_TRAINER:"book_trainer",
         PROGRESS: "progress",
+        CHAT: "chat",
     }
 }

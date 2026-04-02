@@ -15,6 +15,7 @@ import {
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
+import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
 
 export class MemberRoutes {
   private _route: Router;
@@ -220,6 +221,42 @@ export class MemberRoutes {
       ROUTES.MEMBER.FIND_PROGRESS_GRAPH_DATA,
       (req: Request, res: Response, next: NextFunction) => {
         injectedProgressController.handleGetProgressGraphData(req, res, next);
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.CONVERSATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.createConversation(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.CONVERSATIONS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.listConversations(req, res, next);
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.MESSAGE,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.sendMessage(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.LIST_MESSAGES,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.listMessages(req, res, next);
+      },
+    );
+    this._route.patch(
+      ROUTES.MEMBER.SEEN_CONVERSATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.markMessageSeen(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.FIND_ASSIGNED_TRAINER,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedtrainerController.findAssignedTrainers(req, res, next);
       },
     );
   }
