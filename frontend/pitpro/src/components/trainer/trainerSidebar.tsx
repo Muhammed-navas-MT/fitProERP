@@ -4,11 +4,11 @@ import {
   Calendar,
   DollarSign,
   FileText,
-  Wallet,
+  // Wallet,
   Users,
   Dumbbell,
   MessageSquare,
-  Video,
+  // Video,
   Bell,
   LogOut,
 } from "lucide-react";
@@ -32,7 +32,6 @@ const mainMenuItems = [
   { icon: Calendar, label: "My Schedule", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.SESSION}` },
   { icon: DollarSign, label: "Salary", path: "/trainer/salary" },
   { icon: FileText, label: "Leave Request", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LEAVE}` },
-  { icon: Wallet, label: "Wallet", path: "/trainer/wallet" },
 ];
 
 const clientManagementItems = [
@@ -41,10 +40,7 @@ const clientManagementItems = [
     label: "Members",
     path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`,
   },
-  // { icon: Dumbbell, label: "Workout Plan", path: "/trainer/workout" },
   { icon: MessageSquare, label: "Chat", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.CHAT}` },
-  { icon: Video, label: "Video Call", path: "/trainer/video" },
-  { icon: Bell, label: "Notifications", path: "/trainer/notifications" },
 ];
 
 export function Sidebar() {

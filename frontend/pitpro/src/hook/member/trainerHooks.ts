@@ -9,13 +9,11 @@ export const useGetActiveTrainers = ()=>{
     })
 }
 
-export const useFindAssignedTrainers = (memberId:string)=>{
+export const useFindAssignedTrainers = ()=>{
     return useQuery({
-        queryKey:["assigned_trainer",memberId],
+        queryKey:["assigned_trainer"],
         queryFn :()=>findAssignedTrainerService(),
         placeholderData:keepPreviousData,
-        refetchOnWindowFocus: false, 
-        enabled: !!memberId,
 
     })
 }
