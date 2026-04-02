@@ -3,6 +3,7 @@ import { ListConversationsDto } from "../../../dtos/shared/messageDtos";
 import { IConversationRepository } from "../../../interfaces/repository/shared/conversationRepository";
 import { IMessageRepository } from "../../../interfaces/repository/shared/messageRepoInterface";
 import { IListConversationsUseCase } from "../../../interfaces/useCase/shared/chatManagement/listConversationsUseCaseInterface";
+import { ConversationMapper } from "../../../mappers/conversationMapper";
 
 export class ListConversationsUseCase implements IListConversationsUseCase {
   constructor(
@@ -33,8 +34,15 @@ export class ListConversationsUseCase implements IListConversationsUseCase {
       ),
     ]);
 
+    const responseConversations = ConversationMapper.toListConversationResponse(
+      conversations,
+      total,
+      page,
+      limit,
+    );
+
     const conversationsWithUnread = await Promise.all(
-      conversations.map(async (conversation) => {
+      responseConversations.conversations.map(async (conversation) => {
         const unreadCount =
           await this._messageRepository.countUnreadByConversation(
             conversation._id as string,

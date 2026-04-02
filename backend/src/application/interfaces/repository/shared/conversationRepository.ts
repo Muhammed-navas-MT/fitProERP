@@ -1,6 +1,7 @@
 import { ConversationEntity } from "../../../../domain/entities/shared/conversationEntity";
 import { ChatUserModel } from "../../../../domain/enums/chatUserModel";
 import { MessageType } from "../../../../domain/enums/messageType";
+import { IPopulatedConversation } from "../../../../infrastructure/repository/databaseConfigs/types/populatedConversationType";
 import { IBaseRepository } from "../base/baseRepo";
 
 export interface IConversationRepository extends IBaseRepository<ConversationEntity> {
@@ -24,7 +25,7 @@ export interface IConversationRepository extends IBaseRepository<ConversationEnt
     userModel: ChatUserModel,
     page: number,
     limit: number,
-  ): Promise<ConversationEntity[]>;
+  ): Promise<IPopulatedConversation[]>;
 
   countUserConversations(
     userId: string,

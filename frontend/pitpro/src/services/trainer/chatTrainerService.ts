@@ -48,7 +48,6 @@ export const listTrainerConversationsService = async () => {
     const response = await AxiosInstance.get(
       `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.CONVERSATIONS}`,
     );
-
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {

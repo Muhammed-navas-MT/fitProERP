@@ -54,7 +54,7 @@ export default function ChatPage() {
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
 
   const { data: assignedTrainerResponse, isLoading: isTrainerLoading } =
-    useFindAssignedTrainers(currentUserId);
+    useFindAssignedTrainers();
 
   const assignedTrainer = useMemo(() => {
     if (!assignedTrainerResponse) return null;
@@ -295,7 +295,7 @@ export default function ChatPage() {
                   selectedConversationId={selectedConversationId}
                   currentUserId={currentUserId}
                   onSelectConversation={handleSelectConversation}
-                  trainerName={assignedTrainer.name}
+                  trainerName={assignedTrainerName}
                 />
               </div>
             </aside>

@@ -32,6 +32,34 @@ export interface ListConversationsDto {
   limit?: number;
 }
 
+export interface ListConverSationsResponseDto {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  conversations: {
+    _id: string;
+    conversationKey: string;
+    members: {
+      userId: string;
+      userModel: ChatUserModel;
+      name: string;
+    }[];
+    participants: {
+      userId: string;
+      userModel: ChatUserModel;
+      isOnline: boolean;
+      lastSeen?: Date;
+    }[];
+    lastMessageId?: string;
+    lastMessage?: string;
+    lastMessageType?: MessageType;
+    lastMessageAt?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }[];
+}
+
 export interface MarkConversationSeenDto {
   conversationId: string;
   viewerId: string;

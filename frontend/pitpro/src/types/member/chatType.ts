@@ -33,6 +33,11 @@ export interface ConversationParticipant {
 export interface ConversationItem {
   _id: string;
   conversationKey?: string;
+  members: {
+    userId: string;
+    userModel: ChatUserModel;
+    name: string;
+  }[];
   participants: ConversationParticipant[];
   lastMessage?: string;
   lastMessageType?: MessageType;

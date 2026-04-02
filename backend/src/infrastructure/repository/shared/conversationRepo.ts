@@ -5,6 +5,7 @@ import { BaseRepository } from "../base/baseRepo";
 import { IConversationModel } from "../databaseConfigs/models/conversationModel";
 import { ConversationEntity } from "../../../domain/entities/shared/conversationEntity";
 import { ChatUserModel } from "../../../domain/enums/chatUserModel";
+import { IPopulatedConversation } from "../databaseConfigs/types/populatedConversationType";
 
 export class ConversationRepository
   extends BaseRepository<IConversationModel>
@@ -65,7 +66,7 @@ export class ConversationRepository
     userModel: ChatUserModel,
     page: number,
     limit: number,
-  ): Promise<ConversationEntity[]> {
+  ): Promise<IPopulatedConversation[]> {
     const skip = (page - 1) * limit;
 
     const conversations = await this._model
@@ -77,10 +78,14 @@ export class ConversationRepository
           },
         },
       })
+      .populate({
+        path: "members.userId",
+        select: "name _id",
+      })
       .sort({ lastMessageAt: -1, updatedAt: -1 })
       .skip(skip)
       .limit(limit)
-      .lean();
+      .lean<IPopulatedConversation[]>();
 
     return conversations;
   }
