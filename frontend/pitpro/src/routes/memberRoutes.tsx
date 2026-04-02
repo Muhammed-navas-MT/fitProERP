@@ -4,6 +4,7 @@ import MemberStatusRoute from "@/components/shared/protectedComponets/memberStat
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import ChatPage from "@/page/member/chatPage";
 import MemberDashboard from "@/page/member/dashboardPage";
 import DietPlanPage from "@/page/member/dietPlanPage";
 import MemberLoginPage from "@/page/member/memberLoginPage";
@@ -64,6 +65,7 @@ const MemberRoutes = () => {
           <Route path={FRONTEND_ROUTES.MEMBER.DIET_PLAN} element={<DietPlanPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.BOOK_TRAINER} element={<TrainerBookingPage/>}/>
           <Route path={FRONTEND_ROUTES.MEMBER.PROGRESS} element={<ProgressPage/>}/>
+          <Route path={FRONTEND_ROUTES.MEMBER.CHAT} element={<ChatPage/>}/>
         </Route>
       </Route>
     </Routes>

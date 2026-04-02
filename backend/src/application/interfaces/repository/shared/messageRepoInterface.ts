@@ -14,4 +14,13 @@ export interface IMessageRepository extends IBaseRepository<MessageEntity> {
     status: MessageStatus,
     seenAt?: Date,
   ): Promise<MessageEntity | null>;
+  createMessage(data: MessageEntity): Promise<MessageEntity>;
+  markConversationMessagesSeen(
+    conversationId: string,
+    viewerId: string,
+  ): Promise<number>;
+  countUnreadByConversation(
+    conversationId: string,
+    receiverId: string,
+  ): Promise<number>;
 }

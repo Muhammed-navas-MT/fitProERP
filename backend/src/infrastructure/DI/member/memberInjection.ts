@@ -20,6 +20,7 @@ import { CancelSessionUseCase } from "../../../application/useCases/member/slotA
 import { CreateMemberSessionCheckoutSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCase";
 import { ListAllAvailableSlotUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllAvailableSlotUseCase";
 import { ListAllSessionsUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllSessionUseCase";
+import { FindAssignedTrainerUseCase } from "../../../application/useCases/member/trainerListManagement/findAssignedTrainerUseCase";
 import { CreateWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/createWorkoutPlanUseCase";
 import { ListWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/listWorkoutPlnaUseCase";
 import { DietPlanController } from "../../../presentation/controller/member/dietPlanController";
@@ -192,8 +193,13 @@ const listActiveTrainersUseCase = new ListActiveTrainersUseCase(
   memberRepository,
   trainerLeaveRepository,
 );
+const findAssignedTrainerUseCase = new FindAssignedTrainerUseCase(
+  trainerRepository,
+  memberRepository,
+);
 export const injectedtrainerController = new TrainerController(
   listActiveTrainersUseCase,
+  findAssignedTrainerUseCase,
 );
 
 //progress management

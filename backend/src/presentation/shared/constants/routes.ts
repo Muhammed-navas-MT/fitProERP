@@ -116,6 +116,11 @@ export const ROUTES = {
     LIST_SESSION: "/list_session",
     LIST_SLOTS: "/list_slots",
     MARK_AS_COMPLETED: "/mark_as_completed/:sessionId",
+    CONVERSATION: "/conversation",
+    CONVERSATIONS: "/conversations",
+    MESSAGE: "/messages",
+    LIST_MESSAGES: "/messages/:conversationId",
+    SEEN_CONVERSATION: "/conversation/:conversationId/seen",
   },
 
   MEMBER: {
@@ -149,5 +154,11 @@ export const ROUTES = {
     LIST_PROGRESS: "/list_progress",
     UPDATE_PROGRESS: "/update_progress/:progressId",
     FIND_PROGRESS_GRAPH_DATA: "/find_progress_graph_data",
+    FIND_ASSIGNED_TRAINER: "/find_assigned_trainer",
+    CONVERSATION: "/conversation",
+    CONVERSATIONS: "/conversations",
+    MESSAGE: "/messages",
+    LIST_MESSAGES: "/messages/:conversationId",
+    SEEN_CONVERSATION: "/conversation/:conversationId/seen",
   },
 };

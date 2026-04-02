@@ -1,6 +1,7 @@
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import TrainerChatPage from "@/page/trainer/chatTrainerPage";
 import DashboardPage from "@/page/trainer/dashboardPage";
 import LeavesPage from "@/page/trainer/leavePage";
 import MemberDetailPage from "@/page/trainer/memberDetailPage";
@@ -45,12 +46,10 @@ const TrainerRoutes = () => {
         path={FRONTEND_ROUTES.TRAINER.PROFILE}
         element={<ProfilePage/>}
         />
-
         <Route path={`${FRONTEND_ROUTES.TRAINER.DETAIL_MEMBER}/:memberId`} element={<MemberDetailPage/>}/>
-
         <Route path={FRONTEND_ROUTES.TRAINER.LEAVE} element={<LeavesPage/>}/>
-
         <Route path={FRONTEND_ROUTES.TRAINER.SESSION} element={<TrainerSchedulePage/>}/>
+        <Route path={FRONTEND_ROUTES.TRAINER.CHAT} element={<TrainerChatPage/>}/>
 
       </Route>
     </Routes>
