@@ -12,6 +12,9 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
 import { ICancelSessionUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/cancelSessionUseCaseInterface";
 import { IStripeService } from "../../../interfaces/service/stripeServiceInterface";
+import { Roles } from "../../../../domain/enums/roles";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
 
 export class CancelSessionUseCase implements ICancelSessionUseCase {
   constructor(
@@ -19,6 +22,7 @@ export class CancelSessionUseCase implements ICancelSessionUseCase {
     private _sessionRepository: ISessionRepository,
     private _memberRepository: IMemberRepository,
     private _stripeService: IStripeService,
+    private _notificationService: INotificationService,
   ) {}
 
   async execute(sessionId: string, memberId: string): Promise<void> {
@@ -68,8 +72,33 @@ export class CancelSessionUseCase implements ICancelSessionUseCase {
     if (usedSession > 0) {
       await this._memberRepository.decrementUsedSession(memberId);
     }
+    const trainerId = session.trainerId.toString();
 
-    if (!isExtraPaidSession) return;
+    if (!isExtraPaidSession) {
+      await this._notificationService.notifyMany([
+        {
+          receiverId: memberId,
+          receiverRole: Roles.MEMBER,
+          title: "Session Cancelled",
+          message: `Your session on ${session.date} has been cancelled.`,
+          type: NotificationType.SESSION_CANCELLED,
+          relatedId: sessionId,
+          relatedModel: "Session",
+          actionLink: "/member/book_trainer",
+        },
+        {
+          receiverId: trainerId,
+          receiverRole: Roles.TRAINER,
+          title: "Session Cancelled",
+          message: `A session scheduled on ${session.date} has been cancelled by the member.`,
+          type: NotificationType.SESSION_CANCELLED,
+          relatedId: sessionId,
+          relatedModel: "Session",
+          actionLink: "/trainer/sessions",
+        },
+      ]);
+      return;
+    }
     if (!revenue) return;
     if (!revenue.paymentIntentId) return;
     if (revenue.status !== PaymentStatus.PAID) return;
@@ -94,5 +123,27 @@ export class CancelSessionUseCase implements ICancelSessionUseCase {
       },
       revenue._id as string,
     );
+    await this._notificationService.notifyMany([
+      {
+        receiverId: memberId,
+        receiverRole: Roles.MEMBER,
+        title: "Session Cancelled & Refunded",
+        message: `Your session on ${session.date} has been cancelled. The refund has been processed successfully.`,
+        type: NotificationType.SESSION_REFUNDED,
+        relatedId: sessionId,
+        relatedModel: "Session",
+        actionLink: "/member/sessions",
+      },
+      {
+        receiverId: trainerId,
+        receiverRole: Roles.TRAINER,
+        title: "Session Cancelled",
+        message: `A session on ${session.date} has been cancelled and refunded to the member.`,
+        type: NotificationType.SESSION_CANCELLED,
+        relatedId: sessionId,
+        relatedModel: "Session",
+        actionLink: "/trainer/sessions",
+      },
+    ]);
   }
 }

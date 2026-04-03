@@ -23,6 +23,7 @@ import { ListAllSessionsUseCase } from "../../../application/useCases/member/slo
 import { FindAssignedTrainerUseCase } from "../../../application/useCases/member/trainerListManagement/findAssignedTrainerUseCase";
 import { CreateWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/createWorkoutPlanUseCase";
 import { ListWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/listWorkoutPlnaUseCase";
+import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
 import { DietPlanController } from "../../../presentation/controller/member/dietPlanController";
 import { MemberLoginController } from "../../../presentation/controller/member/memberLoginController";
 import { MemberLogoutController } from "../../../presentation/controller/member/memberLogoutController";
@@ -37,6 +38,7 @@ import { branchModel } from "../../repository/databaseConfigs/models/branchModel
 import { dietPlanModel } from "../../repository/databaseConfigs/models/deitPlanModel";
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
+import { notificationModel } from "../../repository/databaseConfigs/models/notificationModel";
 import { PackageModel } from "../../repository/databaseConfigs/models/packageModel";
 import { progressModel } from "../../repository/databaseConfigs/models/progressModel";
 import { gymAdminRevenueModel } from "../../repository/databaseConfigs/models/revenueModel";
@@ -55,12 +57,15 @@ import { ProgressRepository } from "../../repository/member/progressRepo";
 import { SessionRepository } from "../../repository/member/sessionRepo";
 import { WorkoutPlanRepository } from "../../repository/member/workoutPlanRepo";
 import { LeaveRepository } from "../../repository/shared/leaveRepo";
+import { NotificationRepository } from "../../repository/shared/notificationRepo";
 import { SlotRuleRepository } from "../../repository/trainer/slotRuleRepo";
 import { TrainerRepository } from "../../repository/trainer/trainerRepo";
 import { CacheService } from "../../services/cacheService";
 import { HashPassword } from "../../services/hashService";
 import { JwtService } from "../../services/jwtService";
+import { NotificationService } from "../../services/notificationService";
 import { RRuleService } from "../../services/RRuleService";
+import { SocketService } from "../../services/socketService";
 import { stripe } from "../../services/stripeClient";
 import { StripeService } from "../../services/stripeService";
 
@@ -75,11 +80,13 @@ const sessionRepository = new SessionRepository(sessionModel);
 const trainerRepository = new TrainerRepository(trainerModel);
 const trainerLeaveRepository = new LeaveRepository(trainerLeaveModel);
 const progressRepository = new ProgressRepository(progressModel);
+const notificationRepository = new NotificationRepository(notificationModel);
 const hashService = new HashPassword();
 const jwtService = new JwtService();
 const cacheService = new CacheService();
 const branchRepository = new BranchRepository(branchModel);
 const stripeService = new StripeService(stripe);
+const socketService = new SocketService();
 const loginUseCase = new MemberLoginUseCase(
   memberRepository,
   hashService,
@@ -130,11 +137,17 @@ export const injectedPackageListAndCheckoutController =
     createCheckoutUseCase,
     listAllPayments,
   );
+const createNotificationUseCase = new CreateNotificationUseCase(
+  notificationRepository,
+  socketService,
+);
+const notificationService = new NotificationService(createNotificationUseCase);
 
 //workout plan managemente
 const createWorkoutPlanUseCase = new CreateWorkoutPlanUseCase(
   workoutPlanRepository,
   memberRepository,
+  notificationService,
 );
 const listWorkoutUseCase = new ListWorkoutPlanUseCase(workoutPlanRepository);
 export const injectedWorkoutPlanController = new WorkoutPlanController(
@@ -146,6 +159,7 @@ export const injectedWorkoutPlanController = new WorkoutPlanController(
 const createDietPlanUseCase = new CreateDietPlanUseCase(
   dietPlanRepository,
   memberRepository,
+  notificationService,
 );
 const listDietPlnaUseCase = new ListDietPlanUseCase(dietPlanRepository);
 
@@ -171,6 +185,7 @@ const createMemberSessionCheckoutUseCase =
     cacheService,
     sessionRepository,
     stripeService,
+    createNotificationUseCase,
   );
 const listAllSessionUseCase = new ListAllSessionsUseCase(sessionRepository);
 const cancelSessionUseCase = new CancelSessionUseCase(
@@ -178,6 +193,7 @@ const cancelSessionUseCase = new CancelSessionUseCase(
   sessionRepository,
   memberRepository,
   stripeService,
+  notificationService,
 );
 
 export const injectedSlotAndBookingController = new SlotAndBookingController(

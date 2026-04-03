@@ -1,3 +1,5 @@
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { Roles } from "../../../../domain/enums/roles";
 import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
 import { LeaveError } from "../../../../presentation/shared/constants/messages/leaveMessages";
 import {
@@ -7,6 +9,7 @@ import {
 import { CreateLeaveRequestDto } from "../../../dtos/shared/leaveDto";
 import { ILeaveRepository } from "../../../interfaces/repository/shared/leaveRepoInterface";
 import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
+import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
 import { ICreateLeaveUseCase } from "../../../interfaces/useCase/trainer/leaveManagement/createLeaveUseCaseInterface";
 import { LeaveMapper } from "../../../mappers/trainer/leaveMapper";
 
@@ -14,6 +17,7 @@ export class CreateLeaveUseCase implements ICreateLeaveUseCase {
   constructor(
     private _leaveRepository: ILeaveRepository,
     private _trainerRepository: ITrainerRepository,
+    private _notificationService: INotificationService,
   ) {}
 
   async execute(data: CreateLeaveRequestDto): Promise<void> {
@@ -64,6 +68,16 @@ export class CreateLeaveUseCase implements ICreateLeaveUseCase {
       trainer.gymId,
     );
 
-    await this._leaveRepository.create(leaveDate);
+    const leaveId = await this._leaveRepository.create(leaveDate);
+    await this._notificationService.notify({
+      receiverId: trainer.gymId,
+      receiverRole: Roles.GYMADMIN,
+      title: "New Leave Request",
+      message: `${trainer.name} has applied for leave from ${startDate.toDateString()} to ${endDate.toDateString()}.`,
+      type: NotificationType.LEAVE_APPLIED,
+      relatedId: leaveId,
+      relatedModel: "Leave",
+      actionLink: "/gym-admin/leaves",
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { MessageEntity } from "../../../domain/entities/shared/messageEntity";
+import { NotificationEntity } from "../../../domain/entities/shared/notificationEntity";
 
 export interface ISocketService {
   emitReceiveMessage(
@@ -25,4 +26,5 @@ export interface ISocketService {
       seenBy: string;
     },
   ): void;
+  emitNotification(receiverId: string, notification: NotificationEntity): void;
 }

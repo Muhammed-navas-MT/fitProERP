@@ -116,6 +116,11 @@ export default function TrainerBookingPage() {
         onSuccess: (response) => {
           const checkoutUrl = response?.data?.url;
 
+          if(checkoutUrl == "BOOKED_WITH_PACKAGE"){
+            toast.success("Session booked Successfully")
+            return;
+          };
+
           if (checkoutUrl) {
             window.location.href = checkoutUrl;
             return;

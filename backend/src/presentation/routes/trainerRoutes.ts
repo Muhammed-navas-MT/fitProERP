@@ -13,6 +13,7 @@ import {
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
+import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
 export class TrainerRoutes {
   private _route: Router;
   constructor() {
@@ -257,6 +258,32 @@ export class TrainerRoutes {
       TRAINER.SEEN_CONVERSATION,
       (req: Request, res: Response, next: NextFunction) => {
         injectedChatController.markMessageSeen(req, res, next);
+      },
+    );
+    this._route.get(
+      TRAINER.LIST_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleListNotification(req, res, next);
+      },
+    );
+    this._route.patch(
+      TRAINER.MARK_ALL_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkAllNotificationsAsRead(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.patch(
+      TRAINER.MARK_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkNotificationAsRead(
+          req,
+          res,
+          next,
+        );
       },
     );
   }
