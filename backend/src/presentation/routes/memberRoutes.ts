@@ -16,6 +16,7 @@ import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminI
 import { upload } from "../middlewares/multer";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
+import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
 
 export class MemberRoutes {
   private _route: Router;
@@ -257,6 +258,32 @@ export class MemberRoutes {
       ROUTES.MEMBER.FIND_ASSIGNED_TRAINER,
       (req: Request, res: Response, next: NextFunction) => {
         injectedtrainerController.findAssignedTrainers(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.LIST_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleListNotification(req, res, next);
+      },
+    );
+    this._route.patch(
+      ROUTES.MEMBER.MARK_ALL_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkAllNotificationsAsRead(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.patch(
+      ROUTES.MEMBER.MARK_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkNotificationAsRead(
+          req,
+          res,
+          next,
+        );
       },
     );
   }

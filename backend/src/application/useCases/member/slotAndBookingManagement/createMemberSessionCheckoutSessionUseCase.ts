@@ -11,6 +11,9 @@ import { ICacheService } from "../../../interfaces/service/cacheServiceInterface
 import { ICreateMemberSessionCheckoutSessionUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCaseInterface";
 import { SessionStatus } from "../../../../domain/enums/sessionStatus";
 import { IStripeService } from "../../../interfaces/service/stripeServiceInterface";
+import { Roles } from "../../../../domain/enums/roles";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { ICreateNotificationUseCase } from "../../../interfaces/useCase/shared/notificationManagement/createNotificationUseCaseInterface";
 
 export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberSessionCheckoutSessionUseCase {
   constructor(
@@ -18,6 +21,7 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
     private _cacheService: ICacheService,
     private _sessionRepository: ISessionRepository,
     private _stripeService: IStripeService,
+    private _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(data: CreateMemberSessionCheckoutRequestDto): Promise<string> {
@@ -57,7 +61,7 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
     const hasRemainingPackageSessions = usedSession < sessionCount;
 
     if (hasRemainingPackageSessions) {
-      await this._sessionRepository.create({
+      const sessionId = await this._sessionRepository.create({
         memberId: data.userId,
         trainerId: data.trainerId,
         slotId: data.slotId,
@@ -71,6 +75,28 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
       await this._memberRepository.incrementUsedSession(data.userId);
 
       await this._cacheService.deleteData(cacheKey);
+
+      await this._createNotificationUseCase.execute({
+        receiverId: data.trainerId,
+        receiverRole: Roles.TRAINER,
+        title: "New Session Booking",
+        message: `A member booked a session on ${data.sessionDate} from ${data.startTime} to ${data.endTime}.`,
+        type: NotificationType.SESSION_BOOKED,
+        relatedId: sessionId,
+        relatedModel: "Session",
+        actionLink: "/trainer/sessions",
+      });
+
+      await this._createNotificationUseCase.execute({
+        receiverId: data.userId,
+        receiverRole: Roles.MEMBER,
+        title: "Session Confirmed",
+        message: `Your session is confirmed for ${data.sessionDate} from ${data.startTime} to ${data.endTime}.`,
+        type: NotificationType.SESSION_BOOKED,
+        relatedId: sessionId,
+        relatedModel: "Session",
+        actionLink: "/member/book_trainer",
+      });
 
       return "BOOKED_WITH_PACKAGE";
     }

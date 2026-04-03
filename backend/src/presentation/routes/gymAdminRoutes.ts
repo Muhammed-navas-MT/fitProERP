@@ -21,6 +21,7 @@ import {
 } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { upload } from "../middlewares/multer";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
+import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
 
 export class GymAdminRoutes {
   private _route: Router;
@@ -356,6 +357,33 @@ export class GymAdminRoutes {
       GYMADMIN.APPROVE_LEAVE,
       (req: Request, res: Response, next: NextFunction) => {
         injectedTrainerLeaveController.handleApproveLeave(req, res, next);
+      },
+    );
+
+    this._route.get(
+      GYMADMIN.LIST_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleListNotification(req, res, next);
+      },
+    );
+    this._route.patch(
+      GYMADMIN.MARK_ALL_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkAllNotificationsAsRead(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.patch(
+      GYMADMIN.MARK_NOTIFICATION,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedNotificationController.handleMarkNotificationAsRead(
+          req,
+          res,
+          next,
+        );
       },
     );
   }

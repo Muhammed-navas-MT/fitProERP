@@ -1,5 +1,6 @@
 import { ISocketService } from "../../application/interfaces/service/socketServiceInterface";
 import { MessageEntity } from "../../domain/entities/shared/messageEntity";
+import { NotificationEntity } from "../../domain/entities/shared/notificationEntity";
 import { SocketRooms } from "./socketRoom";
 import { getIO } from "./socketServer";
 
@@ -45,5 +46,9 @@ export class SocketService implements ISocketService {
   ): void {
     const io = getIO();
     io.to(SocketRooms.user(senderId)).emit("conversation_seen", payload);
+  }
+  emitNotification(receiverId: string, notification: NotificationEntity): void {
+    const io = getIO();
+    io.to(SocketRooms.user(receiverId)).emit("notification:new", notification);
   }
 }

@@ -7,20 +7,20 @@ import { IListActiveBranchUseCase } from "../../interfaces/useCase/trainer/listA
 import { BranchResponseMapper } from "../../mappers/gymAdmin/branchMapper";
 
 export class ListActiveBranchUseCase implements IListActiveBranchUseCase {
-    constructor(
-        private _branchRepository:IBranchRepository,
-        private _trainerRepository:ITrainerRepository
-    ){}
-    async listActiveBranch(trainerId: string): Promise<IListActiveBranchResponseDTO | null> {
-        try {
-            const trainer = await this._trainerRepository.findById(trainerId);
-            if(!trainer) {
-                throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND)
-            };
-            const branches = await this._branchRepository.listAllActiveBranch(trainer.gymId);
-            return BranchResponseMapper.toListActiveItem(branches);
-        } catch (error) {
-            throw error
-        }
+  constructor(
+    private _branchRepository: IBranchRepository,
+    private _trainerRepository: ITrainerRepository,
+  ) {}
+  async listActiveBranch(
+    trainerId: string,
+  ): Promise<IListActiveBranchResponseDTO | null> {
+    const trainer = await this._trainerRepository.findById(trainerId);
+    if (!trainer) {
+      throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
     }
+    const branches = await this._branchRepository.listAllActiveBranch(
+      trainer.gymId,
+    );
+    return BranchResponseMapper.toListActiveItem(branches);
+  }
 }

@@ -51,6 +51,11 @@ import { ListTrainerSessionUseCase } from "../../../application/useCases/trainer
 import { SessionController } from "../../../presentation/controller/trainer/sessionController";
 import { ListAllSlotUseCase } from "../../../application/useCases/trainer/slotRuleManagement/listAllAvailableSlotUseCase";
 import { MarkAsCompletedUseCase } from "../../../application/useCases/trainer/sessionManagement/markAsCompletedUseCase";
+import { NotificationRepository } from "../../repository/shared/notificationRepo";
+import { notificationModel } from "../../repository/databaseConfigs/models/notificationModel";
+import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
+import { SocketService } from "../../services/socketService";
+import { NotificationService } from "../../services/notificationService";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -61,6 +66,13 @@ const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const leaveRepository = new LeaveRepository(trainerLeaveModel);
 const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
 const sessionRepository = new SessionRepository(sessionModel);
+const notificationRepository = new NotificationRepository(notificationModel);
+const socketService = new SocketService();
+const createNotificationUseCase = new CreateNotificationUseCase(
+  notificationRepository,
+  socketService,
+);
+const notificationService = new NotificationService(createNotificationUseCase);
 const loginUseCase = new TrainerLoginUseCase(
   trainerRepository,
   hashService,
@@ -96,6 +108,7 @@ const createMember = new CreateMemberUseCase(
   sendPasswordEmailContentGenerator,
   gymAdminRepository,
   trainerRepository,
+  notificationService,
 );
 const findMember = new FindMemberUseCase(memberRepository);
 const updateMember = new UpdateMemberUseCase(memberRepository);
@@ -146,6 +159,7 @@ export const injectedProfileController = new ProfileManagementController(
 const createLeaveuseCase = new CreateLeaveUseCase(
   leaveRepository,
   trainerRepository,
+  notificationService,
 );
 const findLeaveUseCase = new FindLeaveUseCase(leaveRepository);
 const updateLeaveUseCase = new UpdateLeaveUseCase(

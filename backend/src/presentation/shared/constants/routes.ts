@@ -78,6 +78,9 @@ export const ROUTES = {
     APPROVE_LEAVE: "/approve_leave/:leaveId",
     REJECT_LEAVE: "/reject_leave/:leaveId",
     FIND_LEAVE: "/find_leave/:leaveId",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
   },
 
   TRAINER: {
@@ -121,6 +124,9 @@ export const ROUTES = {
     MESSAGE: "/messages",
     LIST_MESSAGES: "/messages/:conversationId",
     SEEN_CONVERSATION: "/conversation/:conversationId/seen",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
   },
 
   MEMBER: {
@@ -160,5 +166,8 @@ export const ROUTES = {
     MESSAGE: "/messages",
     LIST_MESSAGES: "/messages/:conversationId",
     SEEN_CONVERSATION: "/conversation/:conversationId/seen",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
   },
 };

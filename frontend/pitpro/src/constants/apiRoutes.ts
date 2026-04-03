@@ -78,6 +78,9 @@ export const API_ROUTES = {
     APPROVE_LEAVE: "/approve_leave",
     REJECT_LEAVE: "/reject_leave",
     FIND_LEAVE: "/find_leave",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read",
   },
 
   TRAINER: {
@@ -121,6 +124,9 @@ export const API_ROUTES = {
     MESSAGE: "/messages",
     LIST_MESSAGES: "/messages",
     SEEN_CONVERSATION: "/conversation",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read",
   },
   MEMBER: {
     BASE: "/member",
@@ -159,5 +165,8 @@ export const API_ROUTES = {
     MESSAGE: "/messages",
     LIST_MESSAGES: "/messages",
     SEEN_CONVERSATION: "/conversation",
+    LIST_NOTIFICATION: "/list_notification",
+    MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
+    MARK_NOTIFICATION: "/mark_notification_read",
   },
 };
