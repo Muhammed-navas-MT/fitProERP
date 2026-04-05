@@ -144,6 +144,16 @@ export class CancelSessionUseCase implements ICancelSessionUseCase {
         relatedModel: "Session",
         actionLink: "/trainer/sessions",
       },
+      {
+        receiverId: member.gymId,
+        receiverRole: Roles.GYMADMIN,
+        title: "Session Cancelled & Refunded",
+        message: `A session scheduled on ${session.date} has been cancelled. The member has been refunded successfully.`,
+        type: NotificationType.SESSION_CANCELLED,
+        relatedId: sessionId,
+        relatedModel: "Session",
+        actionLink: "/gym-admin/sessions",
+      },
     ]);
   }
 }

@@ -1,7 +1,10 @@
 import Stripe from "stripe";
 import { ISessionRepository } from "../../../interfaces/repository/member/sessionRepoInterface";
 import { IGymAdminRevenueRepository } from "../../../interfaces/repository/gymAdmin/revenueRepoInterface";
-import { ForbiddenException } from "../../../constants/exceptions";
+import {
+  ForbiddenException,
+  NOtFoundException,
+} from "../../../constants/exceptions";
 import { SessionStatus } from "../../../../domain/enums/sessionStatus";
 import { IMemberProcessSessionStripeWebhookUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/memberProcessSessionStripeWebhookUseCaseInterface";
 import { StripeError } from "../../../../presentation/shared/constants/messages/stripeMessages";
@@ -12,6 +15,7 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { Roles } from "../../../../domain/enums/roles";
 import { ICreateNotificationUseCase } from "../../../interfaces/useCase/shared/notificationManagement/createNotificationUseCaseInterface";
 import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 
 export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessSessionStripeWebhookUseCase {
   constructor(
@@ -51,6 +55,12 @@ export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessS
       !gymId
     ) {
       throw new ForbiddenException(StripeError.METADATA_MISSING);
+    }
+
+    const member = await this._memberRepository.findById(userId);
+
+    if (!member) {
+      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
 
     const alreadyProcessed =
@@ -109,11 +119,22 @@ export class MemberProcessSessionStripeWebhookUseCase implements IMemberProcessS
       receiverId: userId,
       receiverRole: Roles.MEMBER,
       title: "Session Confirmed",
-      message: `Your session is confirmed for ${date} from ${startTime} to ${endTime}.`,
+      message: `Your session is confirmed for ${date} from ${startTime} to ${startTime}.`,
       type: NotificationType.SESSION_BOOKED,
       relatedId: createdSessionId,
       relatedModel: "Session",
       actionLink: "/member/book_trainer",
+    });
+
+    await this._createNotificationUseCase.execute({
+      receiverId: member.gymId,
+      receiverRole: Roles.GYMADMIN,
+      title: "New Session Booking",
+      message: `A member booked a session on ${date} from ${startTime} to ${startTime}.`,
+      type: NotificationType.SESSION_BOOKED,
+      relatedId: createdSessionId,
+      relatedModel: "Session",
+      actionLink: "/gym-admin/sessions",
     });
   }
 }

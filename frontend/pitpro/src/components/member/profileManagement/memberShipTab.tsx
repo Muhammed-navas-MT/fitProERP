@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CreditCard, AlertCircle } from "lucide-react"
-import { MemberDTO } from "./healthDetailsTab"
+import { MemberDetailType } from "./healthDetailsTab"
 
 interface MembershipTabProps {
-  member: MemberDTO
+  member: MemberDetailType
 }
 
 export function MembershipTab({ member }: MembershipTabProps) {
@@ -48,7 +48,7 @@ export function MembershipTab({ member }: MembershipTabProps) {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h3 className="text-2xl font-bold text-white mb-2">
-              Plan {pkg.planId}
+              Plan: {pkg.planName}
             </h3>
             <Badge
               className={`${getStatusColor(pkg.status)} border px-3 py-1`}
@@ -112,9 +112,9 @@ export function MembershipTab({ member }: MembershipTabProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-gray-400">Plan ID</p>
+              <p className="text-sm text-gray-400">Plan Name</p>
               <p className="text-white font-mono font-semibold">
-                {pkg.planId}
+                {pkg.planName}
               </p>
             </div>
             <div>

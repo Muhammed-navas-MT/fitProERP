@@ -275,4 +275,61 @@ export class ProgressMapper {
       message,
     };
   }
+
+  static toGoalAchieved(
+    progress: ProgressEntity,
+    targetWeight?: { value: number; unit?: string },
+  ): IGoalWeightStatus {
+    if (!targetWeight) {
+      return {
+        targetWeight: null,
+        achieved: false,
+        remainingWeight: null,
+        differenceFromTarget: null,
+        message: "Set your target weight to track progress",
+      };
+    }
+
+    const progressUnit = (progress.weight.unit as "kg" | "lbs") || "kg";
+    const targetUnit = (targetWeight.unit as "kg" | "lbs") || "kg";
+
+    const convertToKg = (value: number, unit: "kg" | "lbs") => {
+      return unit === "lbs" ? value * 0.453592 : value;
+    };
+
+    const convertFromKg = (value: number, unit: "kg" | "lbs") => {
+      return unit === "lbs"
+        ? +(value / 0.453592).toFixed(1)
+        : +value.toFixed(1);
+    };
+
+    const currentWeightInKg = convertToKg(progress.weight.value, progressUnit);
+    const targetWeightInKg = convertToKg(targetWeight.value, targetUnit);
+
+    const differenceInKg = Math.abs(currentWeightInKg - targetWeightInKg);
+    const difference = convertFromKg(differenceInKg, progressUnit);
+
+    let achieved = false;
+    let message = "";
+
+    if (currentWeightInKg === targetWeightInKg) {
+      achieved = true;
+      message = "🎉 You achieved your target weight!";
+    } else if (currentWeightInKg > targetWeightInKg) {
+      message = `You need to lose ${difference} ${progressUnit}`;
+    } else {
+      message = `You need to gain ${difference} ${progressUnit}`;
+    }
+
+    return {
+      targetWeight: {
+        value: convertFromKg(targetWeightInKg, progressUnit),
+        unit: progressUnit,
+      },
+      achieved,
+      remainingWeight: achieved ? 0 : difference,
+      differenceFromTarget: difference,
+      message,
+    };
+  }
 }

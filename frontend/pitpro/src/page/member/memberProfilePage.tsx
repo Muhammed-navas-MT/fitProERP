@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/member/memberSidebar";
-import { MemberDTO } from "@/components/member/profileManagement/healthDetailsTab";
+import { MemberDetailType } from "@/components/member/profileManagement/healthDetailsTab";
 import { ProfileHeader } from "@/components/member/profileManagement/profileHeader";
 import { MemberProfileSkeleton } from "@/components/member/profileManagement/profilepageSckeleton";
 import { ProfileTabs } from "@/components/member/profileManagement/profileTabs";
@@ -33,7 +33,7 @@ export default function MemberProfilePage() {
     }
   }, [isError, error]);
 
-  const member: MemberDTO | undefined = data?.data;
+  const member: MemberDetailType | undefined = data?.data;
 
   return (
     <div className="min-h-screen bg-black text-white">

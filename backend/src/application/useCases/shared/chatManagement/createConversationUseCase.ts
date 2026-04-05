@@ -1,15 +1,36 @@
 import { ConversationEntity } from "../../../../domain/entities/shared/conversationEntity";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { Roles } from "../../../../domain/enums/roles";
 import { CreateConversationDto } from "../../../dtos/shared/messageDtos";
 import { IConversationRepository } from "../../../interfaces/repository/shared/conversationRepository";
+import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
 import { ICreateConversationUseCase } from "../../../interfaces/useCase/shared/chatManagement/createConversationUseCaseInterface";
 
 export class CreateConversationUseCase implements ICreateConversationUseCase {
-  constructor(private _conversationRepository: IConversationRepository) {}
+  constructor(
+    private _conversationRepository: IConversationRepository,
+    private _notificationService: INotificationService,
+  ) {}
 
   private buildConversationKey(data: CreateConversationDto): string {
     const first = `${data.firstUserModel}:${data.firstUserId}`;
     const second = `${data.secondUserModel}:${data.secondUserId}`;
     return [first, second].sort().join("_");
+  }
+
+  private mapUserModelToRole(userModel: string): Roles {
+    switch (userModel) {
+      case "Member":
+        return Roles.MEMBER;
+      case "Trainer":
+        return Roles.TRAINER;
+      case "GymAdmin":
+        return Roles.GYMADMIN;
+      case "SuperAdmin":
+        return Roles.SUPERADMIN;
+      default:
+        throw new Error("Invalid user model");
+    }
   }
 
   async execute(data: CreateConversationDto): Promise<ConversationEntity> {
@@ -60,8 +81,19 @@ export class CreateConversationUseCase implements ICreateConversationUseCase {
       ],
     };
 
-    return await this._conversationRepository.createConversation(
-      conversationData,
-    );
+    const conversation =
+      await this._conversationRepository.createConversation(conversationData);
+
+    await this._notificationService.notify({
+      receiverId: secondUserId,
+      receiverRole: this.mapUserModelToRole(secondUserModel),
+      title: "New Conversation Started",
+      message: "A new conversation has been started with you.",
+      type: NotificationType.NEW_MESSAGE,
+      relatedId: conversation._id?.toString(),
+      relatedModel: "Conversation",
+      actionLink: "/chat",
+    });
+    return conversation;
   }
 }

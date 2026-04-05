@@ -1,12 +1,12 @@
 import { useState } from "react"
-import { HealthDetailsTab, MemberDTO } from "./healthDetailsTab"
+import { HealthDetailsTab, MemberDetailType } from "./healthDetailsTab"
 import { PersonalInfoTab } from "./personalInfoTab"
 import { MembershipTab } from "./memberShipTab"
 
 type TabType = "personal" | "health" | "membership"
 
 interface ProfileTabsProps {
-  member: MemberDTO
+  member: MemberDetailType
 }
 
 export function ProfileTabs({ member }: ProfileTabsProps) {

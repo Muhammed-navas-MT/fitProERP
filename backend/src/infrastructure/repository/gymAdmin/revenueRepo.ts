@@ -10,6 +10,7 @@ import {
 } from "../databaseConfigs/types/populatedRevenueType";
 import { IListPaymentsRequestDto } from "../../../application/dtos/memberDto/purchasePackageDto";
 import { IGymAdminRevenueEntity } from "../../../domain/entities/gymAdmin/revenueEntity";
+import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 
 export class GymAdminRevenueRepository
   extends BaseRepository<IGymAdminRevenueModel>
@@ -117,7 +118,15 @@ export class GymAdminRevenueRepository
           {
             $group: {
               _id: "$sourceType",
-              totalAmount: { $sum: "$amount" },
+              totalAmount: {
+                $sum: {
+                  $cond: [
+                    { $ne: ["$status", PaymentStatus.REFUNDED] },
+                    "$amount",
+                    0,
+                  ],
+                },
+              },
               count: { $sum: 1 },
             },
           },
@@ -135,7 +144,15 @@ export class GymAdminRevenueRepository
           {
             $group: {
               _id: null,
-              totalAmount: { $sum: "$amount" },
+              totalAmount: {
+                $sum: {
+                  $cond: [
+                    { $ne: ["$status", PaymentStatus.REFUNDED] },
+                    "$amount",
+                    0,
+                  ],
+                },
+              },
             },
           },
           {
@@ -331,7 +348,15 @@ export class GymAdminRevenueRepository
             {
               $group: {
                 _id: null,
-                total: { $sum: "$amount" },
+                total: {
+                  $sum: {
+                    $cond: [
+                      { $ne: ["$status", PaymentStatus.REFUNDED] },
+                      "$amount",
+                      0,
+                    ],
+                  },
+                },
               },
             },
           ],
@@ -340,7 +365,15 @@ export class GymAdminRevenueRepository
             {
               $group: {
                 _id: "$sourceType",
-                totalAmount: { $sum: "$amount" },
+                totalAmount: {
+                  $sum: {
+                    $cond: [
+                      { $ne: ["$status", PaymentStatus.REFUNDED] },
+                      "$amount",
+                      0,
+                    ],
+                  },
+                },
                 count: { $sum: 1 },
               },
             },
@@ -357,7 +390,12 @@ export class GymAdminRevenueRepository
       },
     ];
 
-    const result = await this._model.aggregate(pipeline);
+    const result = await this._model.aggregate<{
+      payments: IPopulatedPayment[];
+      totalCount: { count: number }[];
+      grandTotal: { total: number }[];
+      summary: SummaryType[];
+    }>(pipeline);
 
     const payments: IPopulatedPayment[] = result[0]?.payments || [];
     const total = result[0]?.totalCount?.[0]?.count || 0;
@@ -381,8 +419,8 @@ export class GymAdminRevenueRepository
     const result = await this._model.aggregate([
       {
         $match: {
-          gymId,
-          branchId,
+          gymId: new Types.ObjectId(gymId),
+          branchId: new Types.ObjectId(branchId),
           createdAt: {
             $gte: startDate,
             $lte: endDate,
@@ -392,7 +430,15 @@ export class GymAdminRevenueRepository
       {
         $group: {
           _id: null,
-          totalRevenue: { $sum: "$amount" },
+          totalRevenue: {
+            $sum: {
+              $cond: [
+                { $ne: ["$status", PaymentStatus.REFUNDED] },
+                "$amount",
+                0,
+              ],
+            },
+          },
         },
       },
     ]);
@@ -433,13 +479,22 @@ export class GymAdminRevenueRepository
       {
         $group: {
           _id: null,
-          totalRevenue: { $sum: "$amount" },
+          totalRevenue: {
+            $sum: {
+              $cond: [
+                { $ne: ["$status", PaymentStatus.REFUNDED] },
+                "$amount",
+                0,
+              ],
+            },
+          },
         },
       },
     ]);
 
     return result[0]?.totalRevenue || 0;
   }
+
   async findBySessionId(
     sessionId: string,
   ): Promise<IGymAdminRevenueEntity | null> {

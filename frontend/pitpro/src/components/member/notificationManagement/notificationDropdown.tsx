@@ -1,12 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  Bell,
-  BellOff,
-  Check,
-  CheckCheck,
-  Loader2,
-  X,
-} from "lucide-react";
+import { Bell, CheckCheck, Loader2, X } from "lucide-react";
 import {
   useListNotifications,
   useMarkAllNotificationsAsRead,
@@ -48,10 +41,9 @@ export default function NotificationDropdown({ isOpen, onClose }: Props) {
     notifications.filter((item) => !item.isRead).length;
 
   const filteredNotifications = useMemo(() => {
-    if (activeTab === "UNREAD") {
-      return notifications.filter((item) => !item.isRead);
-    }
-    return notifications;
+    return activeTab === "UNREAD"
+      ? notifications.filter((item) => !item.isRead)
+      : notifications;
   }, [notifications, activeTab]);
 
   const handleNotificationClick = (notification: NotificationItem) => {
@@ -73,10 +65,10 @@ export default function NotificationDropdown({ isOpen, onClose }: Props) {
     const diffHour = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHour / 24);
 
-    if (diffMin < 1) return "Just now";
-    if (diffMin < 60) return `${diffMin}m ago`;
-    if (diffHour < 24) return `${diffHour}h ago`;
-    if (diffDay < 7) return `${diffDay}d ago`;
+    if (diffMin < 1) return "now";
+    if (diffMin < 60) return `${diffMin}m`;
+    if (diffHour < 24) return `${diffHour}h`;
+    if (diffDay < 7) return `${diffDay}d`;
 
     return created.toLocaleDateString();
   };
@@ -84,147 +76,114 @@ export default function NotificationDropdown({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-14 z-50 w-[380px] overflow-hidden rounded-3xl border border-orange-500/20 bg-zinc-950 shadow-2xl shadow-black/40">
-      <div className="border-b border-zinc-800 px-5 py-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500/10">
-              <Bell className="h-7 w-7 text-orange-400" />
-            </div>
+    <div className="absolute right-0 top-14 z-50 w-[340px] overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-xl">
+      <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Bell className="h-4 w-4 text-orange-400" />
+          <h2 className="text-sm font-semibold text-white">Notifications</h2>
+          {unreadCount > 0 && (
+            <span className="rounded-full bg-orange-500/15 px-2 py-0.5 text-[11px] text-orange-400">
+              {unreadCount}
+            </span>
+          )}
+        </div>
 
-            <div>
-              <h2 className="text- font-bold text-white">Notification</h2>
-              <p className="text-sm text-zinc-400">
-                {unreadCount > 0
-                  ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
-                  : "No unread notifications"}
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleMarkAllRead}
+            disabled={isMarkingAllRead || unreadCount === 0}
+            className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-900 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            title="Mark all as read"
+          >
+            {isMarkingAllRead ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCheck className="h-4 w-4" />
+            )}
+          </button>
 
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+            className="rounded-md p-1.5 text-zinc-400 hover:bg-zinc-900 hover:text-white"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-5 py-4">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setActiveTab("UNREAD")}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
-              activeTab === "UNREAD"
-                ? "bg-orange-500 text-white"
-                : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800"
-            }`}
-          >
-            <span className="flex items-center gap-2">
-              Unread
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs ${
-                  activeTab === "UNREAD"
-                    ? "bg-white/20 text-white"
-                    : "bg-zinc-800 text-zinc-300"
-                }`}
-              >
-                {unreadCount}
-              </span>
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("ALL")}
-            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
-              activeTab === "ALL"
-                ? "bg-orange-500 text-white"
-                : "bg-zinc-900 text-zinc-300 hover:bg-zinc-800"
-            }`}
-          >
-            All
-          </button>
-        </div>
+      <div className="flex gap-2 border-b border-zinc-800 px-4 py-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab("UNREAD")}
+          className={`rounded-md px-3 py-1 text-xs font-medium ${
+            activeTab === "UNREAD"
+              ? "bg-orange-500 text-white"
+              : "bg-zinc-900 text-zinc-400"
+          }`}
+        >
+          Unread
+        </button>
 
         <button
           type="button"
-          onClick={handleMarkAllRead}
-          disabled={isMarkingAllRead || unreadCount === 0}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-900 text-zinc-300 transition hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-          title="Mark all as read"
+          onClick={() => setActiveTab("ALL")}
+          className={`rounded-md px-3 py-1 text-xs font-medium ${
+            activeTab === "ALL"
+              ? "bg-orange-500 text-white"
+              : "bg-zinc-900 text-zinc-400"
+          }`}
         >
-          {isMarkingAllRead ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <CheckCheck className="h-5 w-5" />
-          )}
+          All
         </button>
       </div>
 
-      <div className="max-h-[420px] overflow-y-auto px-3 pb-3">
+      <div className="max-h-[360px] overflow-y-auto">
         {isLoading ? (
-          <div className="flex h-[260px] items-center justify-center">
-            <Loader2 className="h-7 w-7 animate-spin text-orange-400" />
+          <div className="flex items-center justify-center py-10">
+            <Loader2 className="h-5 w-5 animate-spin text-orange-400" />
           </div>
         ) : filteredNotifications.length === 0 ? (
-          <div className="flex h-[260px] flex-col items-center justify-center text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900">
-              <BellOff className="h-8 w-8 text-zinc-500" />
-            </div>
-            <p className="text-xl font-medium text-zinc-300">
-              No notifications found
-            </p>
-            <p className="mt-1 text-sm text-zinc-500">
-              You're all caught up for now
-            </p>
+          <div className="px-4 py-8 text-center text-sm text-zinc-500">
+            No notifications
           </div>
         ) : (
-          <div className="space-y-2">
-            {filteredNotifications.map((notification) => (
-              <button
-                key={notification.id}
-                type="button"
-                onClick={() => handleNotificationClick(notification)}
-                className={`w-full rounded-2xl border p-4 text-left transition ${
-                  notification.isRead
-                    ? "border-zinc-800 bg-zinc-900/70 hover:border-zinc-700 hover:bg-zinc-900"
-                    : "border-orange-500/20 bg-orange-500/10 hover:border-orange-400/40 hover:bg-orange-500/15"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="truncate text-sm font-semibold text-white">
-                        {notification.title}
-                      </h4>
-
-                      {!notification.isRead && (
-                        <span className="h-2.5 w-2.5 rounded-full bg-orange-400" />
-                      )}
-                    </div>
-
-                    <p className="mt-1 line-clamp-2 text-sm text-zinc-400">
-                      {notification.message}
+          filteredNotifications.map((notification) => (
+            <button
+              key={notification.id}
+              type="button"
+              onClick={() => handleNotificationClick(notification)}
+              className={`w-full border-b border-zinc-800 px-4 py-3 text-left hover:bg-zinc-900/70 ${
+                !notification.isRead ? "bg-orange-500/5" : ""
+              }`}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate text-sm font-medium text-white">
+                      {notification.title}
                     </p>
-
-                    <p className="mt-3 text-xs text-zinc-500">
-                      {formatTime(notification.createdAt)}
-                    </p>
+                    {!notification.isRead && (
+                      <span className="h-2 w-2 rounded-full bg-orange-400" />
+                    )}
                   </div>
 
-                  {!notification.isRead && isMarkingRead ? (
-                    <Loader2 className="mt-1 h-4 w-4 animate-spin text-orange-400" />
-                  ) : !notification.isRead ? (
-                    <Check className="mt-1 h-4 w-4 text-orange-400" />
-                  ) : null}
+                  <p className="mt-1 text-xs text-zinc-400 whitespace-normal break-words">
+                    {notification.message}
+                  </p>
+
+                  <p className="mt-1 text-[11px] text-zinc-500">
+                    {formatTime(notification.createdAt)}
+                  </p>
                 </div>
-              </button>
-            ))}
-          </div>
+
+                {!notification.isRead && isMarkingRead ? (
+                  <Loader2 className="mt-0.5 h-3.5 w-3.5 animate-spin text-orange-400" />
+                ) : null}
+              </div>
+            </button>
+          ))
         )}
       </div>
     </div>

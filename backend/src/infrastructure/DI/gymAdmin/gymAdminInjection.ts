@@ -92,6 +92,11 @@ import { ApproveTrainerLeaveUseCase } from "../../../application/useCases/gymAdm
 import { FindTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/findLeaveDetailUseCase";
 import { ListAllTrainerLeaveUseCase } from "../../../application/useCases/gymAdmin/trainerLeaveManagement/listAllTRainerLeaveUseCase";
 import { TrainerLeaveController } from "../../../presentation/controller/gymAdmin/trainerLeaveManagementController";
+import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
+import { NotificationRepository } from "../../repository/shared/notificationRepo";
+import { notificationModel } from "../../repository/databaseConfigs/models/notificationModel";
+import { NotificationService } from "../../services/notificationService";
+import { SocketService } from "../../services/socketService";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -107,6 +112,13 @@ const jwtService = new JwtService();
 const cacheService = new CacheService();
 const hashService = new HashPassword();
 const cloudinaryService = new CloudinaryService();
+const socketService = new SocketService();
+const noticationRepository = new NotificationRepository(notificationModel);
+const notificationUseCase = new CreateNotificationUseCase(
+  noticationRepository,
+  socketService,
+);
+const notificationService = new NotificationService(notificationUseCase);
 const signUpUseCase = new SignUpUseCase(
   gymAdminRepository,
   hashService,
@@ -235,8 +247,12 @@ const createMember = new CreateMemberUseCase(
   gymAdminRepository,
   trainerRepository,
   branchRepository,
+  notificationService,
 );
-const updateMember = new UpdateMemberUseCase(memberRepository);
+const updateMember = new UpdateMemberUseCase(
+  memberRepository,
+  notificationService,
+);
 const findMember = new FindMemberUseCase(memberRepository);
 const blockMember = new BlockMemberUseCase(memberRepository);
 const unBlockMember = new UnBlockMemberUseCase(memberRepository);
@@ -321,8 +337,14 @@ const getProfitAnalytics = new GetProfitAnalyticsUseCase(
 export const injectedProfitCotroller = new ProfitController(getProfitAnalytics);
 
 //Trainer leave management
-const rejectLeave = new RejectTrainerLeaveUseCase(leaveRepository);
-const approveLeave = new ApproveTrainerLeaveUseCase(leaveRepository);
+const rejectLeave = new RejectTrainerLeaveUseCase(
+  leaveRepository,
+  notificationService,
+);
+const approveLeave = new ApproveTrainerLeaveUseCase(
+  leaveRepository,
+  notificationService,
+);
 const findTrainerLeave = new FindTrainerLeaveUseCase(
   leaveRepository,
   trainerRepository,

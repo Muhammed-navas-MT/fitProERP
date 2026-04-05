@@ -25,10 +25,20 @@ export interface IPopulatedPlan {
   name: string;
 }
 
+export interface IPopulatedGym {
+  _id: string;
+  gymName: string;
+}
+
+export interface PopulatedBranch {
+  _id: string;
+  branchName: string;
+}
+
 export interface IPopulatedMemberType {
   _id: string;
-  gymId: string;
-  branchId?: string;
+  gymId: IPopulatedGym;
+  branchId?: PopulatedBranch;
   trainerId: string;
   name: string;
   email: string;

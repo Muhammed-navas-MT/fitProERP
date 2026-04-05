@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 
 import {
   useCreateConversation,
@@ -61,7 +61,6 @@ export default function ChatPage() {
 
     return assignedTrainerResponse?.data;
   }, [assignedTrainerResponse]);
-  console.log(assignedTrainer)
 
   const assignedTrainerId = assignedTrainer?.id || "";
   const assignedTrainerName = assignedTrainer?.name || "Trainer";
@@ -265,6 +264,12 @@ export default function ChatPage() {
     );
   };
 
+  const handleCloseChat = () => {
+    setSelectedConversationId("");
+    setLiveMessages([]);
+    setIsOtherUserTyping(false);
+  };
+
   const isCreateButtonDisabled =
     isCreatingConversation || isTrainerLoading || !assignedTrainerId;
 
@@ -330,12 +335,23 @@ export default function ChatPage() {
                 </div>
               ) : (
                 <>
-                  <div className="shrink-0">
-                    <ChatHeader
-                      otherParticipant={otherParticipant}
-                      isTyping={isOtherUserTyping}
-                      trainerName={assignedTrainer.name}
-                    />
+                  <div className="shrink-0 border-b border-zinc-900">
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <ChatHeader
+                        otherParticipant={otherParticipant}
+                        isTyping={isOtherUserTyping}
+                        trainerName={assignedTrainer.name}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={handleCloseChat}
+                        className="ml-3 flex items-center gap-2 rounded-lg border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-orange-500/40 hover:text-white"
+                      >
+                        <X size={16} />
+                        Close Chat
+                      </button>
+                    </div>
                   </div>
 
                   <div className="min-h-0 flex-1 overflow-hidden">

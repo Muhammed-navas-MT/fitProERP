@@ -111,7 +111,10 @@ const createMember = new CreateMemberUseCase(
   notificationService,
 );
 const findMember = new FindMemberUseCase(memberRepository);
-const updateMember = new UpdateMemberUseCase(memberRepository);
+const updateMember = new UpdateMemberUseCase(
+  memberRepository,
+  notificationService,
+);
 const listAllMembers = new ListAllMembers(
   memberRepository,
   gymAdminRepository,
@@ -207,7 +210,10 @@ export const injectedSlotRuleController = new SlotRuleController(
 const listTrainerSessionUseCase = new ListTrainerSessionUseCase(
   sessionRepository,
 );
-const markAsCompletedUseCase = new MarkAsCompletedUseCase(sessionRepository);
+const markAsCompletedUseCase = new MarkAsCompletedUseCase(
+  sessionRepository,
+  notificationService,
+);
 
 export const injectedSessionController = new SessionController(
   listTrainerSessionUseCase,

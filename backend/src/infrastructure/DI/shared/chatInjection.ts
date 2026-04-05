@@ -4,16 +4,26 @@ import { ListMessagesUseCase } from "../../../application/useCases/shared/chatMa
 import { MarkConversationSeenUseCase } from "../../../application/useCases/shared/chatManagement/markConversationSeenUseCase";
 // import { MarkMessageSeenUseCase } from "../../../application/useCases/shared/chatManagement/markMessageSeenUseCase";
 import { SendMessageUseCase } from "../../../application/useCases/shared/chatManagement/sendMessageUseCase";
+import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
 import { MessageController } from "../../../presentation/controller/shared/chatController";
 import { conversationModel } from "../../repository/databaseConfigs/models/conversationModel";
 import { messageModel } from "../../repository/databaseConfigs/models/messageModel";
+import { notificationModel } from "../../repository/databaseConfigs/models/notificationModel";
 import { ConversationRepository } from "../../repository/shared/conversationRepo";
 import { MessageRepository } from "../../repository/shared/messageRepo";
+import { NotificationRepository } from "../../repository/shared/notificationRepo";
+import { NotificationService } from "../../services/notificationService";
 import { SocketService } from "../../services/socketService";
 
 const conversationRepository = new ConversationRepository(conversationModel);
 const messageRepository = new MessageRepository(messageModel);
 const socketService = new SocketService();
+const notificatinRepository = new NotificationRepository(notificationModel);
+const createNotificationUseCase = new CreateNotificationUseCase(
+  notificatinRepository,
+  socketService,
+);
+const notificationService = new NotificationService(createNotificationUseCase);
 
 const sendMessageUseCase = new SendMessageUseCase(
   messageRepository,
@@ -30,6 +40,7 @@ const listMessageuseCase = new ListMessagesUseCase(
 // );
 const createConversationUseCase = new CreateConversationUseCase(
   conversationRepository,
+  notificationService,
 );
 const listConverSationUseCase = new ListConversationsUseCase(
   conversationRepository,

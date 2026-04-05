@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/card"
 import { Ruler, Target, Heart, AlertTriangle, User } from "lucide-react"
 
-export interface MemberDTO {
+export interface MemberDetailType {
   id: string;
-  gymId: string;
-  branchId?: string;
+  gymName: string;
+  branchName: string;
   trainerId: string;
   name: string;
   email: string;
@@ -34,7 +34,7 @@ export interface MemberDTO {
     fitnessGoal: string;
   };
   package?: {
-    planId: string;
+    planName: string;
     startDate?: Date;
     endDate?: Date;
     price: number;
@@ -43,7 +43,7 @@ export interface MemberDTO {
   status: string;
 }
 
-export function HealthDetailsTab({ member }: { member: MemberDTO }) {
+export function HealthDetailsTab({ member }: { member: MemberDetailType }) {
   const health = member.healthDetails
   const bmi =
     health.weight.value /

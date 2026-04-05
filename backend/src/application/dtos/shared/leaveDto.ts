@@ -43,6 +43,11 @@ export interface ListLeavesResponseDto {
     reason: string;
     appliedDate: Date;
   }[];
+  summary: {
+    allocatedLeavesThisMonth: number;
+    usedLeavesThisMonth: number;
+    extraLeavesTaken: number;
+  };
 }
 
 export interface UpdateLeaveRequestDto {

@@ -1,4 +1,5 @@
 import { Status } from "../../../../domain/enums/status";
+import { Roles } from "../../../../domain/enums/roles";
 import { EmailPayloadType } from "../../../../domain/type/emailPayload";
 import {
   MemberError,
@@ -19,9 +20,11 @@ import { IHashService } from "../../../interfaces/service/hashServiceInterface";
 import { IEmailService } from "../../../interfaces/service/IEmail/emailServiceInterface";
 import { ISendPasswordEmailContentGenerator } from "../../../interfaces/service/IEmail/sendPasswordEmailContentGenerator";
 import { IPasswordGenerator } from "../../../interfaces/service/passwordGenerator";
+import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
 import { ICreateMemberUseCase } from "../../../interfaces/useCase/gymAdmin/memberManagement/createMemberUseCaseInterface";
 import { MemberMapper } from "../../../mappers/memeberMapper";
 import { BranchStatus } from "../../../../domain/enums/branchStatus";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
 
 export class CreateMemberUseCase implements ICreateMemberUseCase {
   private _hashService: IHashService;
@@ -32,6 +35,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
   private _trainerRepository: ITrainerRepository;
   private _gymAdminRepository: IGymAdminRepository;
   private _branchRepository: IBranchRepository;
+  private _notificationService: INotificationService;
 
   constructor(
     memberRepository: IMemberRepository,
@@ -42,6 +46,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     gymAdminRepository: IGymAdminRepository,
     trainerRepository: ITrainerRepository,
     branchRepository: IBranchRepository,
+    notificationService: INotificationService,
   ) {
     this._hashService = hashService;
     this._memberRepository = memberRepository;
@@ -51,6 +56,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     this._gymAdminRepository = gymAdminRepository;
     this._trainerRepository = trainerRepository;
     this._branchRepository = branchRepository;
+    this._notificationService = notificationService;
   }
 
   async createMember(data: IAddMemberDTO): Promise<void> {
@@ -86,7 +92,6 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     }
 
     const password = await this._generatePassword.generate();
-    console.log(password);
     const hashPassword = await this._hashService.hash(password);
 
     const newMember = MemberMapper.toMemberEntity(
@@ -96,7 +101,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
       data.branchId,
     );
 
-    await this._memberRepository.create(newMember);
+    const createdMemberId = await this._memberRepository.create(newMember);
 
     const htmlContent = this._sendPasswordTemplateGenerator.generateHtml({
       loginUrl: `http://${gym.subdomain}.localhost:5173/member/login`,
@@ -112,5 +117,16 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     };
 
     await this._emailService.sendEmail(payload);
+
+    await this._notificationService.notify({
+      receiverId: data.trainerId,
+      receiverRole: Roles.TRAINER,
+      title: "New Member Assigned",
+      message: `${data.name} has been added and assigned to you as a member.`,
+      type: NotificationType.MEMBER_ASSIGNED,
+      relatedId: createdMemberId,
+      relatedModel: "Member",
+      actionLink: "/trainer/members",
+    });
   }
 }

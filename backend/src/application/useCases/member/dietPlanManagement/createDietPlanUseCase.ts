@@ -30,6 +30,17 @@ export class CreateDietPlanUseCase implements ICreateDietPlanUseCase {
         { days: dietPlan.days },
         existDietId,
       );
+      await this._notificationSerive.notify({
+        receiverId: userId,
+        receiverRole: Roles.MEMBER,
+        title: "Diet Plan Ready 🥗",
+        message:
+          "Your personalized diet plan has been created. Start following it to achieve your fitness goals!",
+        type: NotificationType.DIET_PLAN_CREATED,
+        relatedId: existDietId,
+        relatedModel: "DietPlan",
+        actionLink: "/member/diet_plans",
+      });
     } else {
       const DietPlan: DietPlanEntity = {
         memberId: userId,
