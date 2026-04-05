@@ -1,13 +1,14 @@
 import { MemberEntity } from "../../domain/entities/member/memberEntity";
 import { Roles } from "../../domain/enums/roles";
 import { Status } from "../../domain/enums/status";
-import { IPopulatedMember } from "../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
+import { IPopulatedMember, IPopulatedMemberType } from "../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
 import { IAddMemberDTO, UpdateMemberDTO } from "../dtos/auth/memberDto";
 import {
   IListMemberInGymRequestDTO,
   IListMemberRequestDTO,
   IListMemberResponseDTO,
   Member,
+  MemberDetailDto,
   MemberDTO,
 } from "../dtos/memberDto/listAllMembersDto";
 import { UpdateMemberProfileDTO } from "../dtos/memberDto/profileManagementDtos";
@@ -252,6 +253,62 @@ export class MemberMapper {
         .join(""),
       status: data.status as Status,
       createdAt: data.createdAt || new Date(),
+    };
+  }
+
+  static toMemberDetailDto(member: IPopulatedMemberType): MemberDetailDto {
+    return {
+      id: member._id,
+
+      gymName: member.gymId?.gymName || "",
+      branchName: member.branchId?.branchName || "",
+
+      trainerId: member.trainerId,
+
+      name: member.name,
+      email: member.email,
+      phone: member.phone,
+      profileImg: member.profileImg,
+      address: member.address,
+
+      role: member.role,
+      emergencyNumber: member.emergencyNumber,
+
+      healthDetails: {
+        gender: member.healthDetails.gender,
+        dateOfBirth: member.healthDetails.dateOfBirth,
+
+        weight: {
+          value: member.healthDetails.weight.value,
+          unit: member.healthDetails.weight.unit,
+        },
+
+        height: {
+          value: member.healthDetails.height.value,
+          unit: member.healthDetails.height.unit,
+        },
+
+        targetWeight: {
+          value: member.healthDetails.targetWeight.value,
+          unit: member.healthDetails.targetWeight.unit,
+        },
+
+        medicalConditions: member.healthDetails.medicalConditions,
+        allergies: member.healthDetails.allergies,
+        fitnessGoal: member.healthDetails.fitnessGoal,
+      },
+
+      package: member.package
+        ? {
+            planName: member.package.planId?.name || "",
+            startDate: member.package.startDate,
+            endDate: member.package.endDate,
+            price: member.package.price,
+            status: member.package.status,
+          }
+        : undefined,
+
+      status: member.status,
     };
   }
 }

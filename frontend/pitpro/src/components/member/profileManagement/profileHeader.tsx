@@ -5,13 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Camera, Trash2 } from "lucide-react";
 import ReactCrop, { Crop, centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import { MemberDTO } from "./healthDetailsTab";
+import { MemberDetailType } from "./healthDetailsTab";
 import {
   useUploadProfilePicture,
   useDeleteProfilePicture,
 } from "@/hook/member/profileManagementHook";
 interface ProfileHeaderProps {
-  member: MemberDTO;
+  member: MemberDetailType;
 }
 
 export function ProfileHeader({ member }: ProfileHeaderProps) {
@@ -266,10 +266,10 @@ export function ProfileHeader({ member }: ProfileHeaderProps) {
 
           <div>
             <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-1">
-              Member ID
+              Gym Name
             </p>
             <p className="text-sm font-medium text-white font-mono">
-              {member.id.substring(0, 8)}...
+              {member.gymName}
             </p>
           </div>
 
@@ -278,7 +278,7 @@ export function ProfileHeader({ member }: ProfileHeaderProps) {
               Gym Branch
             </p>
             <p className="text-sm font-medium text-white">
-              {member.branchId || "Main Branch"}
+              {member.branchName || "Main Branch"}
             </p>
           </div>
         </div>

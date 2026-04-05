@@ -31,6 +31,17 @@ export class CreateWorkoutPlanUseCase implements ICreateWorkoutPlanUseCase {
         { days: workout.days },
         existWorkoutId,
       );
+      await this._notificationService.notify({
+        receiverId: userId,
+        receiverRole: Roles.MEMBER,
+        title: "Workout Plan Ready 💪",
+        message:
+          "Your workout plan is ready. Stay consistent and crush your goals!",
+        type: NotificationType.WORKOUT_PLAN_CREATED,
+        relatedId: existWorkoutId,
+        relatedModel: "WorkoutPlan",
+        actionLink: "/member/workout_plans",
+      });
     } else {
       const workoutPlan: WorkoutPlanEntity = {
         memberId: userId,

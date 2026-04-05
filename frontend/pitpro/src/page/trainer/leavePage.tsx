@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Plus, Eye, Pencil, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Eye,
+  Pencil,
+  Loader2,
+  CalendarDays,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
 import { format } from "date-fns";
 
 import { SearchInput } from "@/components/trainer/searchInput";
@@ -39,6 +47,43 @@ interface LeaveItem {
   appliedDate: Date;
 }
 
+interface LeaveSummary {
+  allocatedLeavesThisMonth: number;
+  usedLeavesThisMonth: number;
+  extraLeavesTaken: number;
+}
+
+interface SummaryCardProps {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  valueClassName?: string;
+}
+
+function SummaryCard({
+  title,
+  value,
+  icon,
+  valueClassName = "text-white",
+}: SummaryCardProps) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-zinc-400">{title}</p>
+          <h3 className={`mt-3 text-3xl font-bold ${valueClassName}`}>
+            {value}
+          </h3>
+        </div>
+
+        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-purple-400">
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LeavesPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
@@ -76,6 +121,12 @@ export default function LeavesPage() {
   const isExided = data?.data?.isExided ?? false;
   const exidedmessage = data?.data?.exidedmessage ?? "";
 
+  const summary: LeaveSummary = data?.data?.summary ?? {
+    allocatedLeavesThisMonth: 0,
+    usedLeavesThisMonth: 0,
+    extraLeavesTaken: 0,
+  };
+
   const columns: TableColumn<LeaveItem>[] = [
     {
       header: "#",
@@ -97,7 +148,6 @@ export default function LeavesPage() {
       render: (row) => format(new Date(row.endDate), "dd MMM yyyy"),
       className: "text-white",
     },
-
     {
       header: "Reason",
       render: (row) => row.reason,
@@ -105,7 +155,7 @@ export default function LeavesPage() {
     },
     {
       header: "Leave Count",
-      render: (row) => `${row.leaveCount} Days`,
+      render: (row) => `${row.leaveCount ?? 0} Days`,
       className: "text-white",
     },
     {
@@ -141,111 +191,132 @@ export default function LeavesPage() {
   }
 
   return (
-  <div className="min-h-screen bg-zinc-950">
-    <Sidebar />
+    <div className="min-h-screen bg-zinc-950">
+      <Sidebar />
 
-    <div className="lg:pl-[220px]">
-      <Header
-        title="Leave Management"
-        subtitle="Manage your leave requests"
-        avatar={avatarText}
-      />
+      <div className="lg:pl-[220px]">
+        <Header
+          title="Leave Management"
+          subtitle="Manage your leave requests"
+          avatar={avatarText}
+        />
 
-      <div className="p-4 lg:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <MovingWarningBanner
-            show={isExided}
-            message={exidedmessage}
-          />
+        <div className="p-4 lg:p-8">
+          <div className="mx-auto max-w-7xl space-y-6">
+            <MovingWarningBanner show={isExided} message={exidedmessage} />
 
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-            <div className="flex flex-1 gap-3">
-              <SearchInput
-                value={search}
-                onChange={setSearch}
-                placeholder="Search by reason..."
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <SummaryCard
+                title="Allocated Leaves This Month"
+                value={summary.allocatedLeavesThisMonth}
+                icon={<CalendarDays className="h-5 w-5" />}
               />
 
-              <select
-                value={status ?? ""}
-                onChange={(e) => setStatus(e.target.value || undefined)}
-                className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white"
-              >
-                <option value="">All Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="APPROVED">Approved</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
+              <SummaryCard
+                title="Used Leaves This Month"
+                value={summary.usedLeavesThisMonth}
+                icon={<CheckCircle2 className="h-5 w-5" />}
+                valueClassName="text-blue-400"
+              />
+
+              <SummaryCard
+                title="Extra Leaves Taken"
+                value={summary.extraLeavesTaken}
+                icon={<AlertTriangle className="h-5 w-5" />}
+                valueClassName={
+                  summary.extraLeavesTaken > 0 ? "text-red-400" : "text-green-400"
+                }
+              />
             </div>
 
-            <button
-              onClick={() => setAddOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700"
-            >
-              <Plus className="h-4 w-4" />
-              Apply Leave
-            </button>
-          </div>
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+              <div className="flex flex-1 gap-3">
+                <SearchInput
+                  value={search}
+                  onChange={setSearch}
+                  placeholder="Search by reason..."
+                />
 
-          <div className="relative">
-            {isFetching && (
-              <div className="absolute right-2 top-2">
-                <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
+                <select
+                  value={status ?? ""}
+                  onChange={(e) => setStatus(e.target.value || undefined)}
+                  className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white"
+                >
+                  <option value="">All Status</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="APPROVED">Approved</option>
+                  <option value="REJECTED">Rejected</option>
+                </select>
               </div>
-            )}
 
-            <TrainerReusableTable
-              data={leaves}
-              columns={columns}
-              emptyText="No leaves found"
+              <button
+                onClick={() => setAddOpen(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700"
+              >
+                <Plus className="h-4 w-4" />
+                Apply Leave
+              </button>
+            </div>
+
+            <div className="relative">
+              {isFetching && (
+                <div className="absolute right-2 top-2">
+                  <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
+                </div>
+              )}
+
+              <TrainerReusableTable
+                data={leaves}
+                columns={columns}
+                emptyText="No leaves found"
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-sm text-zinc-400">
+              <p>
+                Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)}{" "}
+                of {total}
+              </p>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                  className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
+                >
+                  Prev
+                </button>
+
+                <span>
+                  Page {page} / {totalPages}
+                </span>
+
+                <button
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+
+            <AddLeaveModal open={addOpen} onClose={() => setAddOpen(false)} />
+
+            <ViewLeaveModal
+              open={!!viewLeave}
+              onClose={() => setViewLeave(null)}
+              leave={viewLeave}
+            />
+
+            <UpdateLeaveModal
+              open={!!editLeave}
+              onClose={() => setEditLeave(null)}
+              leave={editLeave}
             />
           </div>
-
-          <div className="flex items-center justify-between text-sm text-zinc-400">
-            <p>
-              Showing {(page - 1) * limit + 1} -{" "}
-              {Math.min(page * limit, total)} of {total}
-            </p>
-
-            <div className="flex items-center gap-2">
-              <button
-                disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
-              >
-                Prev
-              </button>
-
-              <span>
-                Page {page} / {totalPages}
-              </span>
-
-              <button
-                disabled={page === totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="rounded bg-zinc-800 px-3 py-1 text-white disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-
-          <AddLeaveModal open={addOpen} onClose={() => setAddOpen(false)} />
-
-          <ViewLeaveModal
-            open={!!viewLeave}
-            onClose={() => setViewLeave(null)}
-            leave={viewLeave}
-          />
-
-          <UpdateLeaveModal
-            open={!!editLeave}
-            onClose={() => setEditLeave(null)}
-            leave={editLeave}
-          />
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }

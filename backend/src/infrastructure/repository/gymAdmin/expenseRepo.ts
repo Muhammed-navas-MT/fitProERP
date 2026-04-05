@@ -329,8 +329,8 @@ export class GymAdminExpenseRepository
     const result = await this._model.aggregate([
       {
         $match: {
-          gymId,
-          branchId,
+          gymId: new Types.ObjectId(gymId),
+          branchId: new Types.ObjectId(branchId),
           paymentDate: { $gte: startDate, $lte: endDate },
         },
       },

@@ -222,6 +222,7 @@ export const injectedtrainerController = new TrainerController(
 const createProgressUseCase = new CreateProgressUseCase(
   progressRepository,
   memberRepository,
+  notificationService,
 );
 const listProgressUseCase = new ListAllProgressUseCase(
   progressRepository,

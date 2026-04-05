@@ -97,7 +97,6 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
         relatedModel: "Session",
         actionLink: "/member/book_trainer",
       });
-
       return "BOOKED_WITH_PACKAGE";
     }
 

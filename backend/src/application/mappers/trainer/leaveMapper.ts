@@ -47,6 +47,11 @@ export class LeaveMapper {
     leaves: ITrainerLeaveEntity[],
     total: number,
     isExided: boolean,
+    summary: {
+      allocatedLeavesThisMonth: number;
+      usedLeavesThisMonth: number;
+      extraLeavesTaken: number;
+    },
     exidedmessage?: string,
   ): ListLeavesResponseDto {
     return {
@@ -69,6 +74,7 @@ export class LeaveMapper {
           status: leave.status,
         };
       }),
+      summary,
     };
   }
 

@@ -9,9 +9,11 @@ import {
 } from "../../../application/dtos/memberDto/listAllMembersDto";
 import {
   IPopulatedBranch,
+  IPopulatedGym,
   IPopulatedMember,
   IPopulatedMemberType,
   IPopulatedPlan,
+  PopulatedBranch,
 } from "../databaseConfigs/types/populatedMemberType";
 import { Status } from "../../../domain/enums/status";
 
@@ -167,14 +169,23 @@ export class MemberRepository
   async findDetailById(memberId: string): Promise<IPopulatedMemberType | null> {
     const member = await this._model
       .findById(memberId)
+      .populate<{ gymId: IPopulatedGym }>({
+        path: "gymId",
+        select: "gymName",
+      })
+      .populate<{ branchId: PopulatedBranch }>({
+        path: "branchId",
+        select: "branchName",
+      })
       .populate<{ "package.planId": IPopulatedPlan }>({
         path: "package.planId",
         select: "name",
       })
-      .lean<IPopulatedMemberType>();
+      .lean<IPopulatedMemberType | null>();
 
     return member;
   }
+
   async incrementUsedSession(memberId: string): Promise<void> {
     await this._model.updateOne(
       { _id: memberId },

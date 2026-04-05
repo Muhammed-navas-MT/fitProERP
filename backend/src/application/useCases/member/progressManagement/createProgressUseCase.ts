@@ -6,11 +6,14 @@ import { IMemberRepository } from "../../../interfaces/repository/member/addMemb
 import { NOtFoundException } from "../../../constants/exceptions";
 import { MemberError } from "../../../../presentation/shared/constants/errorMessage/memberMessage";
 import { ProgressMapper } from "../../../mappers/member/progressMapper";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
 
 export class CreateProgressUseCase implements ICreateProgressUseCase {
   constructor(
     private _progressRepository: IProgressRepository,
     private _memberRepository: IMemberRepository,
+    private _notificationService: INotificationService,
   ) {}
 
   async execute(data: ICreateProgressDto, memberId: string): Promise<void> {
@@ -52,6 +55,24 @@ export class CreateProgressUseCase implements ICreateProgressUseCase {
       bmi,
       bmiCategory,
     );
+
+    const goalWeightStatus = ProgressMapper.toGoalAchieved(
+      progressEntity,
+      member.healthDetails?.targetWeight,
+    );
+
+    if (goalWeightStatus.achieved) {
+      await this._notificationService.notify({
+        receiverId: member._id!.toString(),
+        receiverRole: member.role,
+        title: "🎉 Goal Achieved!",
+        message: `Congratulations ${member.name}! You have successfully reached your target weight. Keep pushing 💪`,
+        type: NotificationType.GOAL_ACHIEVED,
+        relatedId: memberId,
+        relatedModel: "Progress",
+        actionLink: "/member/progress",
+      });
+    }
 
     await this._progressRepository.create(progressEntity);
   }

@@ -89,3 +89,45 @@ export interface Member {
   status: Status;
   createdAt?: Date;
 }
+
+export interface MemberDetailDto {
+  id: string;
+  gymName: string;
+  branchName: string;
+  trainerId: string;
+  name: string;
+  email: string;
+  phone: string;
+  profileImg?: string;
+  address: string;
+  role: Roles;
+  emergencyNumber: string;
+
+  healthDetails: {
+    gender: string;
+    dateOfBirth: Date;
+    weight: {
+      value: number;
+      unit?: string;
+    };
+    height: {
+      value: number;
+      unit?: string;
+    };
+    targetWeight: {
+      value: number;
+      unit?: string;
+    };
+    medicalConditions?: string;
+    allergies?: string;
+    fitnessGoal: string;
+  };
+  package?: {
+    planName: string;
+    startDate?: Date;
+    endDate?: Date;
+    price: number;
+    status: PaymentStatus;
+  };
+  status: Status;
+}

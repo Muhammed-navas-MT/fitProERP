@@ -10,15 +10,9 @@ import { LeaveMapper } from "../../../mappers/trainer/leaveMapper";
 import { LeaveStatus } from "../../../../domain/enums/leaveStatus";
 
 const normalizeDate = (date: Date): Date => {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
-
-const getMonthKey = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  return `${year}-${month}`;
+  const normalizedDate = new Date(date);
+  normalizedDate.setHours(0, 0, 0, 0);
+  return normalizedDate;
 };
 
 const getStartOfMonth = (date: Date): Date => {
@@ -27,10 +21,6 @@ const getStartOfMonth = (date: Date): Date => {
 
 const getEndOfMonth = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
-};
-
-const getNextMonthStart = (date: Date): Date => {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 1);
 };
 
 const calculateOverlapDays = (
@@ -44,32 +34,11 @@ const calculateOverlapDays = (
   );
   const end = normalizeDate(leaveEnd < rangeEnd ? leaveEnd : rangeEnd);
 
-  const diff = end.getTime() - start.getTime();
+  const differenceInTime = end.getTime() - start.getTime();
 
-  return diff >= 0 ? Math.floor(diff / (1000 * 60 * 60 * 24)) + 1 : 0;
-};
-
-const splitLeaveDaysByMonth = (
-  startDate: Date,
-  endDate: Date,
-): Record<string, number> => {
-  const result: Record<string, number> = {};
-
-  let cursor = normalizeDate(startDate);
-  const finalDate = normalizeDate(endDate);
-
-  while (cursor <= finalDate) {
-    const monthStart = getStartOfMonth(cursor);
-    const monthEnd = getEndOfMonth(cursor);
-    const key = getMonthKey(cursor);
-
-    const days = calculateOverlapDays(startDate, endDate, monthStart, monthEnd);
-
-    result[key] = (result[key] ?? 0) + days;
-    cursor = getNextMonthStart(cursor);
-  }
-
-  return result;
+  return differenceInTime >= 0
+    ? Math.floor(differenceInTime / (1000 * 60 * 60 * 24)) + 1
+    : 0;
 };
 
 export class ListAllLeaveUseCase implements IListAllLeavesUseCase {
@@ -91,55 +60,53 @@ export class ListAllLeaveUseCase implements IListAllLeavesUseCase {
     const { leaves, total } =
       await this._leaveRepository.findAllLeavesByTrainerId(params, trainerId);
 
-    const currentMonthKey = getMonthKey(new Date());
+    const currentDate = new Date();
+    const currentMonthStartDate = getStartOfMonth(currentDate);
+    const currentMonthEndDate = getEndOfMonth(currentDate);
 
-    const monthlyMap: Record<string, number> = {};
-
-    for (const item of leaves) {
-      if (item.status === LeaveStatus.REJECTED) continue;
-
-      const monthlySplit = splitLeaveDaysByMonth(
-        new Date(item.startDate),
-        new Date(item.endDate),
+    const monthlyLeaves =
+      await this._leaveRepository.findLeavesByTrainerIdAndDateRange(
+        trainerId,
+        currentMonthStartDate,
+        currentMonthEndDate,
       );
 
-      for (const [month, days] of Object.entries(monthlySplit)) {
-        monthlyMap[month] = (monthlyMap[month] ?? 0) + days;
-      }
+    let usedLeavesThisMonth = 0;
+
+    for (const leave of monthlyLeaves) {
+      if (leave.status === LeaveStatus.REJECTED) continue;
+
+      usedLeavesThisMonth += calculateOverlapDays(
+        new Date(leave.startDate),
+        new Date(leave.endDate),
+        currentMonthStartDate,
+        currentMonthEndDate,
+      );
     }
 
-    let isExided = false;
-    let exidedmessage: string | undefined;
+    const allocatedLeavesThisMonth = trainer.allocatedLeaveCount ?? 0;
+    const extraLeavesTaken = Math.max(
+      usedLeavesThisMonth - allocatedLeavesThisMonth,
+      0,
+    );
 
-    leaves.map((currentLeave) => {
-      const currentLeaveSplit = splitLeaveDaysByMonth(
-        new Date(currentLeave.startDate),
-        new Date(currentLeave.endDate),
-      );
+    const isExceeded = extraLeavesTaken > 0;
 
-      for (const month of Object.keys(currentLeaveSplit)) {
-        const usedDays = monthlyMap[month] ?? 0;
-
-        if (
-          month === currentMonthKey &&
-          usedDays > trainer.allocatedLeaveCount
-        ) {
-          isExided = true;
-          exidedmessage = `The requested leave exceeds the monthly allocation. 
-Allocated leave: ${trainer.allocatedLeaveCount} days. 
-Total leave used: ${usedDays} days.
-Please review your leave balance or seek approval from the management.`;
-          break;
-        }
-      }
-    });
+    const exceededMessage = isExceeded
+      ? `The monthly leave allocation has been exceeded. Allocated leave: ${allocatedLeavesThisMonth} days. Used leave this month: ${usedLeavesThisMonth} days. Extra leave taken: ${extraLeavesTaken} days.`
+      : undefined;
 
     const response = LeaveMapper.toListAllLeavesDto(
       params,
       leaves,
       total,
-      isExided,
-      exidedmessage,
+      isExceeded,
+      {
+        allocatedLeavesThisMonth,
+        usedLeavesThisMonth,
+        extraLeavesTaken,
+      },
+      exceededMessage,
     );
     return response;
   }
