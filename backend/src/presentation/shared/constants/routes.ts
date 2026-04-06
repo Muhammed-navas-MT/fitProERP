@@ -127,6 +127,7 @@ export const ROUTES = {
     LIST_NOTIFICATION: "/list_notification",
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 
   MEMBER: {

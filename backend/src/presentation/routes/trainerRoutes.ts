@@ -2,6 +2,7 @@ import { ROUTES } from "../shared/constants/routes";
 import { Request, Response, NextFunction, Router } from "express";
 import {
   injectedCheckAccessTrainerMiddleware,
+  injectedDashboardController,
   injectedLeaveController,
   injectedMemberController,
   injectedProfileController,
@@ -284,6 +285,12 @@ export class TrainerRoutes {
           res,
           next,
         );
+      },
+    );
+    this._route.get(
+      TRAINER.GET_DASHBOARD_DETAILS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedDashboardController.handleGetDetails(req, res, next);
       },
     );
   }

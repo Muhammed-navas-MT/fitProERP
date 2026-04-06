@@ -103,4 +103,18 @@ export class SessionRepository
       total,
     };
   }
+
+  async listTodaySessionsByTrainerId(
+    trainerId: string,
+    date: string,
+  ): Promise<PopulateTrainerSessionItem[]> {
+    const sessions = await this._model
+      .find({ trainerId, date })
+      .populate({
+        path: "memberId",
+        select: "name profileImg",
+      })
+      .lean<PopulateTrainerSessionItem[]>();
+    return sessions;
+  }
 }
