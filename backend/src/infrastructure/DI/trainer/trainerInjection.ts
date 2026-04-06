@@ -56,6 +56,8 @@ import { notificationModel } from "../../repository/databaseConfigs/models/notif
 import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
 import { SocketService } from "../../services/socketService";
 import { NotificationService } from "../../services/notificationService";
+import { GetDetailsUseCase } from "../../../application/useCases/trainer/dashboardManagement/getDetailUseCase";
+import { DashboardController } from "../../../presentation/controller/trainer/dashboardManagementController";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -218,4 +220,13 @@ const markAsCompletedUseCase = new MarkAsCompletedUseCase(
 export const injectedSessionController = new SessionController(
   listTrainerSessionUseCase,
   markAsCompletedUseCase,
+);
+
+// Dashboard Management
+const getDetailsUseCase = new GetDetailsUseCase(
+  sessionRepository,
+  memberRepository,
+);
+export const injectedDashboardController = new DashboardController(
+  getDetailsUseCase,
 );

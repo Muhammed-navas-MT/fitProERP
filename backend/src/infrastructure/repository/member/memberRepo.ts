@@ -198,4 +198,32 @@ export class MemberRepository
       { $inc: { "package.usedSession": -1 } },
     );
   }
+
+  async countTotalAndActiveByTrainerId(
+    trainerId: string,
+  ): Promise<{ total: number; active: number }> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          trainerId: new Types.ObjectId(trainerId),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          active: {
+            $sum: {
+              $cond: [{ $eq: ["$status", Status.ACTIVE] }, 1, 0],
+            },
+          },
+        },
+      },
+    ]);
+
+    return {
+      total: result[0]?.total || 0,
+      active: result[0]?.active || 0,
+    };
+  }
 }

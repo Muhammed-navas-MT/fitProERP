@@ -11,11 +11,16 @@ import {
   useTodayAttendance,
   useCurrentMonthAttendance,
 } from "@/hook/trainer/attendanceHook";
+import { useGetDashboardData } from "@/hook/trainer/dashboardHook";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
 import { toast } from "sonner";
-import { mapAttendanceToCalendar, UIStatus } from "@/utils/mapAttendanceToCalendar";
+import {
+  mapAttendanceToCalendar,
+  UIStatus,
+} from "@/utils/mapAttendanceToCalendar";
 import { GetAttendanceType } from "@/types/attendanceType";
+import { DashboardSummaryType } from "@/types/trainer/dashboardType";
 
 export default function DashboardPage() {
   const name = useSelector((state: rootstate) => state.authData.name);
@@ -27,15 +32,33 @@ export default function DashboardPage() {
     .join("")
     .toUpperCase();
 
-  const { data: todayAttendanceRes, isLoading: isTodayAttendanceLoading, refetch } =
-    useTodayAttendance();
+  const {
+    data: dashboardRes,
+    isLoading: isDashboardLoading,
+  } = useGetDashboardData();
 
-  const { mutate: markAttendance, isPending: isCheckInPending } = useMarkAttendance();
-  const { mutate: updateAttendance, isPending: isCheckOutPending } = useUpdateAttendance();
+  const dashboard: DashboardSummaryType | undefined =
+    dashboardRes?.data ?? dashboardRes;
 
-  const { data: currentMonthAttendance, isLoading: isCurrentMonthLoading,refetch:refetchCurrentMonathAttendance } = useCurrentMonthAttendance();
+  const {
+    data: todayAttendanceRes,
+    isLoading: isTodayAttendanceLoading,
+    refetch,
+  } = useTodayAttendance();
 
-  const attendance: GetAttendanceType | undefined = todayAttendanceRes?.data ?? todayAttendanceRes;
+  const { mutate: markAttendance, isPending: isCheckInPending } =
+    useMarkAttendance();
+  const { mutate: updateAttendance, isPending: isCheckOutPending } =
+    useUpdateAttendance();
+
+  const {
+    data: currentMonthAttendance,
+    isLoading: isCurrentMonthLoading,
+    refetch: refetchCurrentMonathAttendance,
+  } = useCurrentMonthAttendance();
+
+  const attendance: GetAttendanceType | undefined =
+    todayAttendanceRes?.data ?? todayAttendanceRes;
 
   const isCheckedIn = !!attendance?.checkInTime;
   const isCheckedOut = !!attendance?.checkOutTime;
@@ -62,11 +85,12 @@ export default function DashboardPage() {
 
   const handleCheckOut = () => {
     if (!attendance?._id) return;
+
     updateAttendance(attendance._id, {
       onSuccess: (res) => {
         toast.success(res?.data?.message || "Attendance Checked Out");
         refetch();
-        refetchCurrentMonathAttendance()
+        refetchCurrentMonathAttendance();
       },
       onError: (err) => {
         toast.error(err.message || "Error while checking out!");
@@ -81,7 +105,11 @@ export default function DashboardPage() {
 
   let calendarData: UIStatus[][] = [];
   if (currentMonthAttendance?.data) {
-    calendarData = mapAttendanceToCalendar(currentMonthAttendance.data, currentYear, currentMonth);
+    calendarData = mapAttendanceToCalendar(
+      currentMonthAttendance.data,
+      currentYear,
+      currentMonth,
+    );
   }
 
   return (
@@ -106,11 +134,31 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <StatCard title="Active Clients" value="24" icon={Users} />
-            <StatCard title="Today's Sessions" value="2/3" icon={Calendar} />
+            <StatCard
+              title="Active Clients"
+              value={
+                isDashboardLoading
+                  ? "..."
+                  : `${dashboard?.clients.active ?? 0}/${dashboard?.clients.assigned ?? 0}`
+              }
+              icon={Users}
+            />
+            <StatCard
+              title="Today's Sessions"
+              value={
+                isDashboardLoading
+                  ? "..."
+                  : `${dashboard?.sessions.completed ?? 0}/${dashboard?.sessions.total ?? 0}`
+              }
+              icon={Calendar}
+            />
             <StatCard
               title="Monthly Earnings"
-              value="₹ 25,000"
+              value={
+                isDashboardLoading
+                  ? "..."
+                  : `₹ ${dashboard?.earnings.monthly?.toLocaleString() ?? 0}`
+              }
               icon={IndianRupee}
             />
           </div>
@@ -118,19 +166,27 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6">
               <h3 className="text-white font-semibold text-lg mb-4">
-                {"Today's Schedule"}
+                Today's Schedule
               </h3>
+
               <div className="space-y-3">
-                <ScheduleItem
-                  name="Sarah Johnson"
-                  type="Personal Training"
-                  time="06:00 AM"
-                />
-                <ScheduleItem
-                  name="Mike Chen"
-                  type="Personal Training"
-                  time="09:00 AM"
-                />
+                {isDashboardLoading ? (
+                  <p className="text-sm text-gray-400">Loading sessions...</p>
+                ) : dashboard?.upcomingSessions?.length ? (
+                  dashboard.upcomingSessions.map((session) => (
+                    <ScheduleItem
+                      key={session.id}
+                      name={session.memberName}
+                      type="Personal Training"
+                      time={`${session.startTime} - ${session.endTime}`}
+                      profileImg={session.profileImg}
+                    />
+                  ))
+                ) : (
+                  <div className="rounded-lg border border-dashed border-[#2a2a2a] p-6 text-center text-sm text-gray-400">
+                    No upcoming sessions for today
+                  </div>
+                )}
               </div>
             </div>
 

@@ -37,31 +37,37 @@ import { EmailService } from "../../services/IEmail/emailService";
 import { RejectGymEmailContentGenerator } from "../../services/IEmail/rejectGymEmailContentGenerator";
 import { JwtService } from "../../services/jwtService";
 
-
-const superAdminRepo = new SuperAdminRepository(superAdminModel)
+const superAdminRepo = new SuperAdminRepository(superAdminModel);
 const paymentRepository = new SuperAdminPaymentRepository(paymentModel);
-const injectedSuperAdminUseCase = new SuperAdminUseCase(superAdminRepo)
-const jwtservice = new JwtService()
+const injectedSuperAdminUseCase = new SuperAdminUseCase(superAdminRepo);
+const jwtservice = new JwtService();
 const cacheService = new CacheService();
-const tokenValidationUseCase = new TokenValidationUseCase(jwtservice,cacheService);
-export const injectedSuperAdminController = new SuperAdminController(injectedSuperAdminUseCase,jwtservice,tokenValidationUseCase);
+const tokenValidationUseCase = new TokenValidationUseCase(
+  jwtservice,
+  cacheService,
+);
+export const injectedSuperAdminController = new SuperAdminController(
+  injectedSuperAdminUseCase,
+  jwtservice,
+  tokenValidationUseCase,
+);
 
 const subscriptionRepo = new SubscriptionRepository(subscriptionModel);
-const createSubscription = new CreateSubscriptionUseCase(subscriptionRepo)
+const createSubscription = new CreateSubscriptionUseCase(subscriptionRepo);
 const blockSubscription = new BlockSubscriptionUseCase(subscriptionRepo);
 const findSubscripition = new FindSubscripitionUseCase(subscriptionRepo);
 const listSubscription = new ListSubscriptionsUseCase(subscriptionRepo);
 const unBlockSubscription = new UnBlockSubscriptionUseCase(subscriptionRepo);
 const updateSubscription = new UpdateSubscriptionUseCase(subscriptionRepo);
-const listAllActiveSubscription = new ListAllSubscription(subscriptionRepo)
-export const injectedSubscriptionController= new SubscriptionController(
-    blockSubscription,
-    createSubscription,
-    findSubscripition,
-    listSubscription,
-    unBlockSubscription,
-    updateSubscription,
-    listAllActiveSubscription
+const listAllActiveSubscription = new ListAllSubscription(subscriptionRepo);
+export const injectedSubscriptionController = new SubscriptionController(
+  blockSubscription,
+  createSubscription,
+  findSubscripition,
+  listSubscription,
+  unBlockSubscription,
+  updateSubscription,
+  listAllActiveSubscription,
 );
 
 //gym admin controller
@@ -70,16 +76,42 @@ const trainerRepository = new TrainerRepository(trainerModel);
 const memberRepository = new MemberRepository(memberModel);
 const emailService = new EmailService();
 const approveGymEmailContentGenerator = new ApproveGymEmailContentGenerator();
-const rejectGymEmailContentGenerator = new RejectGymEmailContentGenerator()
-const listGyms = new ListGymUseCase(gymAdminRepository,trainerRepository);
+const rejectGymEmailContentGenerator = new RejectGymEmailContentGenerator();
+const listGyms = new ListGymUseCase(gymAdminRepository, trainerRepository);
 const blockGym = new blockGymUseCase(gymAdminRepository);
 const unBlockGym = new UnBlockGymUseCase(gymAdminRepository);
-const findgym = new FindGymUseCase(memberRepository,gymAdminRepository,trainerRepository,subscriptionRepo);
-const approveGym = new ApproveGymUseCase(gymAdminRepository,emailService,approveGymEmailContentGenerator);
-const rejectGym = new RejectGymUseCase(gymAdminRepository,emailService,rejectGymEmailContentGenerator)
-export const injectedGymManagementController = new GymAdminManagementController(listGyms,blockGym,unBlockGym,findgym,approveGym,rejectGym)
+const findgym = new FindGymUseCase(
+  memberRepository,
+  gymAdminRepository,
+  trainerRepository,
+  subscriptionRepo,
+);
+const approveGym = new ApproveGymUseCase(
+  gymAdminRepository,
+  emailService,
+  approveGymEmailContentGenerator,
+);
+const rejectGym = new RejectGymUseCase(
+  gymAdminRepository,
+  emailService,
+  rejectGymEmailContentGenerator,
+);
+export const injectedGymManagementController = new GymAdminManagementController(
+  listGyms,
+  blockGym,
+  unBlockGym,
+  findgym,
+  approveGym,
+  rejectGym,
+);
 
-const findPayment = new FindPaymentUseCase(paymentRepository,gymAdminRepository,subscriptionRepo);
-const listAllPayments = new ListPaymentUseCase(paymentRepository)
-export const injectedPaymentController = new PaymentController(listAllPayments,findPayment);
-
+const findPayment = new FindPaymentUseCase(
+  paymentRepository,
+  gymAdminRepository,
+  subscriptionRepo,
+);
+const listAllPayments = new ListPaymentUseCase(paymentRepository);
+export const injectedPaymentController = new PaymentController(
+  listAllPayments,
+  findPayment,
+);

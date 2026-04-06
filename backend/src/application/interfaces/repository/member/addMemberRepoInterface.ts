@@ -42,4 +42,7 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
   findDetailById(memberId: string): Promise<IPopulatedMemberType | null>;
   incrementUsedSession(memberId: string): Promise<void>;
   decrementUsedSession(memberId: string): Promise<void>;
+  countTotalAndActiveByTrainerId(
+    trainerId: string,
+  ): Promise<{ total: number; active: number }>;
 }

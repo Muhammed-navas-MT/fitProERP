@@ -23,4 +23,8 @@ export interface ISessionRepository extends IBaseRepository<SessionEntity> {
   listAllSessionByTrainerId(
     params: ListSessionRequestDto,
   ): Promise<{ sessions: PopulateTrainerSessionItem[]; total: number }>;
+  listTodaySessionsByTrainerId(
+    trainerId: string,
+    date: string,
+  ): Promise<PopulateTrainerSessionItem[]>;
 }
