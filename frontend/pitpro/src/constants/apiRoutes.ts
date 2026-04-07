@@ -21,6 +21,7 @@ export const API_ROUTES = {
     REJECT_GYM: "/gym_reject",
     LIST_PAYMENTS: "/payments",
     PAYMENT_DETAIL: "/payment_detail",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 
   GYMADMIN: {
@@ -81,6 +82,7 @@ export const API_ROUTES = {
     LIST_NOTIFICATION: "/list_notification",
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 
   TRAINER: {
@@ -169,5 +171,6 @@ export const API_ROUTES = {
     LIST_NOTIFICATION: "/list_notification",
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 };

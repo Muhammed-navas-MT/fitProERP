@@ -16,6 +16,7 @@ import {
   PopulatedBranch,
 } from "../databaseConfigs/types/populatedMemberType";
 import { Status } from "../../../domain/enums/status";
+import { MemberShipGrowthDto } from "../../../application/dtos/gymAdminDto/dashboardDto";
 
 export class MemberRepository
   extends BaseRepository<IMemberModel>
@@ -225,5 +226,65 @@ export class MemberRepository
       total: result[0]?.total || 0,
       active: result[0]?.active || 0,
     };
+  }
+
+  async countByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({ gymId });
+  }
+
+  async countActiveByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({
+      gymId,
+      status: Status.ACTIVE,
+    });
+  }
+
+  async getMemberShipGrowthByGymId(
+    gymId: string,
+  ): Promise<MemberShipGrowthDto[]> {
+    const currentYear = new Date().getFullYear();
+
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymAdminId: new Types.ObjectId(gymId),
+          createdAt: {
+            $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+            $lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return months.map((month, index) => {
+      const found = result.find((item) => item._id === index + 1);
+
+      return {
+        month,
+        count: found?.count || 0,
+      };
+    });
   }
 }

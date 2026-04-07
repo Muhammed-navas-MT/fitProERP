@@ -97,6 +97,8 @@ import { NotificationRepository } from "../../repository/shared/notificationRepo
 import { notificationModel } from "../../repository/databaseConfigs/models/notificationModel";
 import { NotificationService } from "../../services/notificationService";
 import { SocketService } from "../../services/socketService";
+import { GetDashboardDetailsUseCase } from "../../../application/useCases/gymAdmin/dashboardManagement/getDashboardDetailsUseCase";
+import { GymAdminDashboardController } from "../../../presentation/controller/gymAdmin/dashboardController";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -357,3 +359,14 @@ export const injectedTrainerLeaveController = new TrainerLeaveController(
   listAllTrainerLeave,
   rejectLeave,
 );
+
+const getDashboardDetailsUseCase = new GetDashboardDetailsUseCase(
+  memberRepository,
+  trainerRepository,
+  branchRepository,
+  revenueRepository,
+  gymAdminRepository,
+);
+
+export const injectedGymAdminDashboardController =
+  new GymAdminDashboardController(getDashboardDetailsUseCase);

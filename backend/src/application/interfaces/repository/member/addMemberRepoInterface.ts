@@ -45,4 +45,6 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
   countTotalAndActiveByTrainerId(
     trainerId: string,
   ): Promise<{ total: number; active: number }>;
+  countByGymId(gymId: string): Promise<number>;
+  countActiveByGymId(gymId: string): Promise<number>;
 }

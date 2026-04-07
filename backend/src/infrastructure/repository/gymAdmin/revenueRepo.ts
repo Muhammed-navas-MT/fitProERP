@@ -11,6 +11,12 @@ import {
 import { IListPaymentsRequestDto } from "../../../application/dtos/memberDto/purchasePackageDto";
 import { IGymAdminRevenueEntity } from "../../../domain/entities/gymAdmin/revenueEntity";
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
+import {
+  ActivityDto,
+  MemberShipGrowthDto,
+  RevenueGrowthDto,
+} from "../../../application/dtos/gymAdminDto/dashboardDto";
+import { RevenueSourceType } from "../../../domain/enums/gymRevenueSourceType";
 
 export class GymAdminRevenueRepository
   extends BaseRepository<IGymAdminRevenueModel>
@@ -503,5 +509,135 @@ export class GymAdminRevenueRepository
       return null;
     }
     return revenue;
+  }
+
+  async getRevenueGrowthByGymId(gymId: string): Promise<RevenueGrowthDto[]> {
+    const currentYear = new Date().getFullYear();
+
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId: new Types.ObjectId(gymId),
+          status: PaymentStatus.PAID,
+          createdAt: {
+            $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+            $lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          revenue: { $sum: "$amount" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return months.map((month, index) => {
+      const found = result.find((item) => item._id === index + 1);
+
+      return {
+        month,
+        revenue: found?.revenue || 0,
+      };
+    });
+  }
+
+  async getRecentActivitiesByGymId(gymId: string): Promise<ActivityDto[]> {
+    const result = await this._model
+      .find({ gymId })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+
+    return result.map((item, index) => ({
+      id: index + 1,
+      action:
+        item.status === PaymentStatus.PAID
+          ? "Payment received"
+          : "Payment refunded",
+      name: item.source || "Revenue",
+      time: this.formatTimeAgo(item.createdAt),
+    }));
+  }
+
+  private formatTimeAgo(date: Date): string {
+    const now = new Date().getTime();
+    const value = new Date(date).getTime();
+    const diff = Math.floor((now - value) / 1000);
+
+    if (diff < 60) return `${diff} sec ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
+    return `${Math.floor(diff / 86400)} day ago`;
+  }
+
+  async getMonthlyPlanCountsByGymId(
+    gymId: string,
+  ): Promise<MemberShipGrowthDto[]> {
+    const currentYear = new Date().getFullYear();
+
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          gymId: new Types.ObjectId(gymId),
+          status: PaymentStatus.PAID,
+          sourceType: RevenueSourceType.PLAN,
+          createdAt: {
+            $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
+            $lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return months.map((month, index) => {
+      const found = result.find((item) => item._id === index + 1);
+
+      return {
+        month,
+        count: found?.count || 0,
+      };
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
+import { GetDashboardDetailUseCase } from "../../../application/useCases/member/dashboardManagement/getDashboardDetailUseCase";
 import { CreateDietPlanUseCase } from "../../../application/useCases/member/dietPlanManagement/createDietPlanUseCase";
 import { ListDietPlanUseCase } from "../../../application/useCases/member/dietPlanManagement/listDietPlanUseCase";
 import { ListActiveTrainersUseCase } from "../../../application/useCases/member/listActiveTrainersUseCase";
@@ -24,6 +25,7 @@ import { FindAssignedTrainerUseCase } from "../../../application/useCases/member
 import { CreateWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/createWorkoutPlanUseCase";
 import { ListWorkoutPlanUseCase } from "../../../application/useCases/member/workoutPlanManagement/listWorkoutPlnaUseCase";
 import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
+import { DashboardController } from "../../../presentation/controller/member/dashboardController";
 import { DietPlanController } from "../../../presentation/controller/member/dietPlanController";
 import { MemberLoginController } from "../../../presentation/controller/member/memberLoginController";
 import { MemberLogoutController } from "../../../presentation/controller/member/memberLogoutController";
@@ -242,4 +244,14 @@ export const injectedProgressController = new ProgressController(
   listProgressUseCase,
   updateProgressUseCase,
   findProgressGraphDataUseCase,
+);
+
+//dashboard management
+const getDashboardDetailUseCase = new GetDashboardDetailUseCase(
+  memberRepository,
+  workoutPlanRepository,
+  progressRepository,
+);
+export const injectedDashboardController = new DashboardController(
+  getDashboardDetailUseCase,
 );

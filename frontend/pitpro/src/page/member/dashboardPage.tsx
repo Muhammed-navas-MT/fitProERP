@@ -1,8 +1,9 @@
+"use client";
+
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
 import { AttendanceCalendar } from "@/components/shared/attendanceCalendar";
 import { AttendanceCard } from "@/components/trainer/dashboard/attendanceCardComponent";
-import { BMIGraph } from "@/components/shared/bmiGraph";
 import { TodaysWorkout } from "@/components/shared/todaysWorkout";
 import { Card, CardContent } from "@/components/ui/card";
 import { rootstate } from "@/store/store";
@@ -20,9 +21,22 @@ import {
   UIStatus,
 } from "@/utils/mapAttendanceToCalendar";
 import { GetAttendanceType } from "@/types/attendanceType";
+import { useDashboardDetail } from "@/hook/member/dashboardHook";
+import { BMIChart } from "@/components/member/progressComponents/BMIChart";
+
+export interface Exercise {
+  name?: string;
+  equipment?: string;
+  sets?: string;
+  reps?: string;
+  rest?: string;
+}
 
 export default function MemberDashboard() {
   const name = useSelector((state: rootstate) => state.authData.name);
+
+  const { data } = useDashboardDetail();
+  const dashboardData = data?.data ?? data;
 
   const avatarText = name
     ?.split(" ")
@@ -76,6 +90,7 @@ export default function MemberDashboard() {
 
   const handleCheckOut = () => {
     if (!attendance?._id) return;
+
     updateAttendance(attendance._id, {
       onSuccess: (res) => {
         toast.success(res?.data?.message || "Attendance Checked Out");
@@ -98,42 +113,38 @@ export default function MemberDashboard() {
     calendarData = mapAttendanceToCalendar(
       currentMonthAttendance.data,
       currentYear,
-      currentMonth
+      currentMonth,
     );
   }
 
-  const bmiData = [
-    { week: "Week 1", normalweight: 22 },
-    { week: "Week 2", normalweight: 22.5 },
-    { week: "Week 3", overweight: 25 },
-    { week: "Week 4", overweight: 25.2 },
-    { week: "Week 5", normalweight: 24 },
-    { week: "Week 6", normalweight: 23.5 },
-    { week: "Week 7", normalweight: 23 },
-    { week: "Week 8", normalweight: 22.8 },
-    { week: "Week 9", normalweight: 22.5 },
-    { week: "Week 10", normalweight: 22.2 },
-  ];
+  const todayWorkoutLabel = dashboardData?.todayWorkout?.targetMuscles?.length
+    ? dashboardData.todayWorkout.targetMuscles.join(", ")
+    : "No Workout";
+
+  const exercises: Exercise[] = dashboardData?.todayWorkout?.exercises ?? [];
+  const mid = Math.ceil(exercises.length / 2);
+
+  const firstHalf = exercises.slice(0, mid);
+  const secondHalf = exercises.slice(mid);
 
   const workoutSections = [
     {
-      category: "Chest",
-      exercises: [
-        { name: "Incline Dumbbell Press", sets: 4, reps: 12 },
-        { name: "Flat Dumbbell Press", sets: 3, reps: 12 },
-        { name: "Incline Flys", sets: 3, reps: 12 },
-        { name: "Pec Deck", sets: 3, reps: 12 },
-      ],
+      category: dashboardData?.todayWorkout?.targetMuscles?.[0] || "Workout A",
+      exercises: firstHalf.map((exercise: Exercise) => ({
+        name: exercise.name || "Unnamed Exercise",
+        sets: exercise.sets || "-",
+        reps: exercise.reps || "-",
+      })),
     },
     {
-      category: "Triceps",
-      exercises: [
-        { name: "Skull Crushers", sets: 4, reps: 12 },
-        { name: "Rope Extensions", sets: 3, reps: 12 },
-        { name: "Straight Bar Pushdowns", sets: 3, reps: 12 },
-      ],
+      category: dashboardData?.todayWorkout?.targetMuscles?.[1] || "Workout B",
+      exercises: secondHalf.map((exercise: Exercise) => ({
+        name: exercise.name || "Unnamed Exercise",
+        sets: exercise.sets || "-",
+        reps: exercise.reps || "-",
+      })),
     },
-  ];
+  ].filter((section) => section.exercises.length > 0);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -146,67 +157,85 @@ export default function MemberDashboard() {
           subtitle="Ready to crush your fitness goals today."
         />
 
-        <main className="p-4 lg:p-8 space-y-6">
-          {/* ================= QUICK STATS ================= */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
+        <main className="space-y-6 p-4 lg:p-8">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
                 <div className="flex justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Days Trained</p>
-                    <p className="text-3xl font-bold text-orange-600">18</p>
-                    <p className="text-xs text-gray-500">This month</p>
+                    <p className="text-3xl font-bold text-orange-600">
+                      {dashboardData?.daysTrained ?? 0}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Overall trained days
+                    </p>
                   </div>
-                  <div className="p-3 bg-green-700 rounded-lg">
-                    <Activity className="w-6 h-6 text-white" />
+                  <div className="rounded-lg bg-green-700 p-3">
+                    <Activity className="h-6 w-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
+            <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
                 <div className="flex justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Current Weight</p>
                     <p className="text-3xl font-bold text-orange-600">
-                      75.2 kg
+                      {dashboardData?.currentWeight
+                        ? `${dashboardData.currentWeight.value} ${dashboardData.currentWeight.unit}`
+                        : "N/A"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Last measured 4 days ago
+                      Latest recorded weight
                     </p>
                   </div>
-                  <div className="p-3 bg-purple-700 rounded-lg">
-                    <TrendingDown className="w-6 h-6 text-white" />
+                  <div className="rounded-lg bg-purple-700 p-3">
+                    <TrendingDown className="h-6 w-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-[#0a0a0a] border border-gray-800 shadow-sm hover:shadow-md">
+            <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
                 <div className="flex justify-between">
                   <div>
                     <p className="text-sm text-gray-400">Today Workout</p>
-                    <p className="text-3xl font-bold text-orange-600">Legs</p>
-                    <p className="text-xs text-gray-500">Tomorrow</p>
+                    <p className="text-2xl font-bold text-orange-600">
+                      {todayWorkoutLabel}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {dashboardData?.todayWorkout?.dayOfWeek ||
+                        "No plan for today"}
+                    </p>
                   </div>
-                  <div className="p-3 bg-indigo-700 rounded-lg">
-                    <Target className="w-6 h-6 text-white" />
+                  <div className="rounded-lg bg-indigo-700 p-3">
+                    <Target className="h-6 w-6 text-white" />
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <BMIGraph
-            data={bmiData}
-            lineColor="#f97316"
-            gridColor="#374151"
-            title="BMI Trend (10 Weeks)"
-          />
+          <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm">
+            <CardContent className="pt-6">
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-orange-600">
+                  BMI Progress
+                </h2>
+                <p className="text-sm text-gray-400">
+                  Monthly BMI report based on your progress data
+                </p>
+              </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+              <BMIChart data={dashboardData?.progressGraphData ?? []} />
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
             <AttendanceCard
               status={attendanceStatusText}
               checkInTime={
@@ -238,7 +267,22 @@ export default function MemberDashboard() {
             />
           </div>
 
-          <TodaysWorkout sections={workoutSections} />
+          {dashboardData?.todayWorkout ? (
+            <TodaysWorkout sections={workoutSections} />
+          ) : (
+            <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm">
+              <CardContent className="flex min-h-[220px] items-center justify-center">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-orange-600">
+                    No workout for today
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-400">
+                    There is no workout assigned for today.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </main>
       </div>
     </div>

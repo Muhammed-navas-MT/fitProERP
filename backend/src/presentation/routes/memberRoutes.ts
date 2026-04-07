@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ROUTES } from "../shared/constants/routes";
 import {
   injectedCheckMemberAccessMiddleWare,
+  injectedDashboardController,
   injectedDietPlanController,
   injectedMemberLoginController,
   injectedMemberLogoutController,
@@ -284,6 +285,12 @@ export class MemberRoutes {
           res,
           next,
         );
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.GET_DASHBOARD_DETAILS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedDashboardController.handleDashboard(req, res, next);
       },
     );
   }

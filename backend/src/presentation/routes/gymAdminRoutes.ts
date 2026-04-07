@@ -5,6 +5,7 @@ import {
   injectedBranchController,
   // injectedCheckGymAdminSubscriptionMiddleware,
   injectedExpenseController,
+  injectedGymAdminDashboardController,
   injectedGymAdminLoginController,
   injectedGymAdminLogoutController,
   injectedGymAdminProfileControler,
@@ -384,6 +385,12 @@ export class GymAdminRoutes {
           res,
           next,
         );
+      },
+    );
+    this._route.get(
+      GYMADMIN.GET_DASHBOARD_DETAILS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminDashboardController.handleGetData(req, res, next);
       },
     );
   }

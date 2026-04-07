@@ -19,7 +19,7 @@ export class ListAllProgressUseCase implements IListAllProgressUseCase {
     const { progress, total } =
       await this._progressRepository.listAllProgress(params);
 
-    const allProgress = await this._progressRepository.findProgressByDate(
+    const allProgress = await this._progressRepository.findProgressByMemberId(
       params.memberId,
     );
 
