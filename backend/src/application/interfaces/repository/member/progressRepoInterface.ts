@@ -6,5 +6,5 @@ export interface IProgressRepository extends IBaseRepository<ProgressEntity> {
   listAllProgress(
     params: IListProgressRequestDto,
   ): Promise<{ progress: ProgressEntity[]; total: number }>;
-  findProgressByDate(memberId: string): Promise<ProgressEntity[]>;
+  findProgressByMemberId(memberId: string): Promise<ProgressEntity[]>;
 }

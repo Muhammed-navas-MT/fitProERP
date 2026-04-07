@@ -1,25 +1,44 @@
-"use client"
+"use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
-const data = [
-  { month: "Jan", newMembers: 45, renewals: 32 },
-  { month: "Feb", newMembers: 52, renewals: 38 },
-  { month: "Mar", newMembers: 48, renewals: 35 },
-  { month: "Apr", newMembers: 61, renewals: 42 },
-  { month: "May", newMembers: 68, renewals: 45 },
-  { month: "Jun", newMembers: 75, renewals: 48 },
-]
+interface MemberShipGrowthType {
+  month: string;
+  count: number;
+}
 
-export function MembershipChart() {
+interface MembershipChartProps {
+  data: MemberShipGrowthType[];
+}
+
+export function MembershipChart({ data }: MembershipChartProps) {
   return (
     <div className="rounded-lg border border-orange-500/20 bg-black/40 p-6">
       <div className="mb-4 flex items-center gap-2">
-        <svg className="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        <svg
+          className="h-5 w-5 text-orange-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+          />
         </svg>
         <h3 className="text-lg font-semibold text-white">Membership Growth</h3>
       </div>
+
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -33,11 +52,15 @@ export function MembershipChart() {
               color: "#fff",
             }}
           />
-          <Legend />
-          <Line type="monotone" dataKey="newMembers" stroke="#f97316" strokeWidth={2} name="New Members" />
-          <Line type="monotone" dataKey="renewals" stroke="#06b6d4" strokeWidth={2} name="Renewals" />
+          <Line
+            type="monotone"
+            dataKey="count"
+            stroke="#f97316"
+            strokeWidth={3}
+            name="Members"
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }

@@ -20,6 +20,7 @@ export const ROUTES = {
       REJECT_GYM: "/gym_reject/:gymId",
       PAYMENT_DETAIL: "/payment_detail/:paymentId",
       LIST_PAYMENTS: "/payments",
+      GET_DASHBOARD_DETAILS: "/get_dashboard_details",
     },
   },
 
@@ -81,6 +82,7 @@ export const ROUTES = {
     LIST_NOTIFICATION: "/list_notification",
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 
   TRAINER: {
@@ -170,5 +172,6 @@ export const ROUTES = {
     LIST_NOTIFICATION: "/list_notification",
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
+    GET_DASHBOARD_DETAILS: "/get_dashboard_details",
   },
 };

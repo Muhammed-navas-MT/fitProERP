@@ -30,7 +30,7 @@ export class ProgressRepository
 
     return { progress, total };
   }
-  async findProgressByDate(memberId: string): Promise<ProgressEntity[]> {
+  async findProgressByMemberId(memberId: string): Promise<ProgressEntity[]> {
     const today = new Date();
 
     const startDate = new Date(

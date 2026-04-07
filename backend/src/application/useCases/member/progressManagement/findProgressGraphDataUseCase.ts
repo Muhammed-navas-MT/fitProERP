@@ -7,7 +7,7 @@ export class FindProgressGraphDataUseCase implements IFindProgressGraphDataUseCa
   constructor(private _progressRepository: IProgressRepository) {}
   async execute(memberId: string): Promise<IMonthlyProgressReport[]> {
     const progress =
-      await this._progressRepository.findProgressByDate(memberId);
+      await this._progressRepository.findProgressByMemberId(memberId);
     const response = ProgressMapper.toGraphData(progress);
     return response;
   }

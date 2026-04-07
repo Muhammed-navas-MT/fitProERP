@@ -4,6 +4,11 @@ import {
   IPopulatedRevenue,
   SummaryType,
 } from "../../../../infrastructure/repository/databaseConfigs/types/populatedRevenueType";
+import {
+  ActivityDto,
+  MemberShipGrowthDto,
+  RevenueGrowthDto,
+} from "../../../dtos/gymAdminDto/dashboardDto";
 import { IListRevenueRequestDTO } from "../../../dtos/gymAdminDto/revenueDto";
 import { IListPaymentsRequestDto } from "../../../dtos/memberDto/purchasePackageDto";
 import { IBaseRepository } from "../base/baseRepo";
@@ -43,4 +48,7 @@ export interface IGymAdminRevenueRepository extends IBaseRepository<IGymAdminRev
     endDate: Date,
   ): Promise<number>;
   findBySessionId(sessionId: string): Promise<IGymAdminRevenueEntity | null>;
+  getMonthlyPlanCountsByGymId(gymId: string): Promise<MemberShipGrowthDto[]>;
+  getRevenueGrowthByGymId(gymId: string): Promise<RevenueGrowthDto[]>;
+  getRecentActivitiesByGymId(gymId: string): Promise<ActivityDto[]>;
 }

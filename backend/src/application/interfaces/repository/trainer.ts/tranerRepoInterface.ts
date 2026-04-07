@@ -21,4 +21,6 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
     branchId: string,
     trainerId: string,
   ): Promise<{ id: string }[]>;
+  countByGymId(gymId: string): Promise<number>;
+  countActiveByGymId(gymId: string): Promise<number>;
 }

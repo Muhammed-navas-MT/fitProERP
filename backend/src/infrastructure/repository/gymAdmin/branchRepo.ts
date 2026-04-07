@@ -83,4 +83,15 @@ export class BranchRepository
 
     return branches.map((branch) => branch._id.toString());
   }
+
+  async countByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({ gymId });
+  }
+
+  async countActiveByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({
+      gymId,
+      status: "ACTIVE",
+    });
+  }
 }

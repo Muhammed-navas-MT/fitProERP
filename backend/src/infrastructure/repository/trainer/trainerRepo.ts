@@ -29,9 +29,7 @@ export class TrainerRepository
     });
   }
 
-  async listAllTrainers(
-    params: IListTrainerRequestDTO
-  ): Promise<{
+  async listAllTrainers(params: IListTrainerRequestDTO): Promise<{
     trainers: (TrainerEntity & { branchName: string })[];
     total: number;
   }> {
@@ -74,10 +72,9 @@ export class TrainerRepository
     });
   }
 
-
   async findActiveTrainersByBranchAndGym(
     branchId: string,
-    gymId: string
+    gymId: string,
   ): Promise<TrainerEntity[]> {
     return this._model.find({
       branchId,
@@ -86,9 +83,7 @@ export class TrainerRepository
     });
   }
 
-  async findActiveTrainersByBranch(
-    branchId: string,
-  ): Promise<TrainerEntity[]> {
+  async findActiveTrainersByBranch(branchId: string): Promise<TrainerEntity[]> {
     return this._model.find({
       branchId,
       status: Status.ACTIVE,
@@ -104,7 +99,7 @@ export class TrainerRepository
 
   async findActiveTrainersByBranchExcludingTrainer(
     branchId: string,
-    trainerId: string
+    trainerId: string,
   ): Promise<{ id: string }[]> {
     const trainers = await this._model.find(
       {
@@ -112,9 +107,19 @@ export class TrainerRepository
         status: Status.ACTIVE,
         _id: { $ne: trainerId },
       },
-      { _id: 1 }
+      { _id: 1 },
     );
 
     return trainers.map((t) => ({ id: t._id.toString() }));
+  }
+  async countByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({ gymId });
+  }
+
+  async countActiveByGymId(gymId: string): Promise<number> {
+    return await this._model.countDocuments({
+      gymId,
+      status: Status.ACTIVE,
+    });
   }
 }
