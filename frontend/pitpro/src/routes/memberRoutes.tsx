@@ -7,6 +7,7 @@ import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import ChatPage from "@/page/member/chatPage";
 import MemberDashboard from "@/page/member/dashboardPage";
 import DietPlanPage from "@/page/member/dietPlanPage";
+import MemberForgetPasswordPage from "@/page/member/forgetPasswordPage";
 import MemberLoginPage from "@/page/member/memberLoginPage";
 import MemberProfilePage from "@/page/member/memberProfilePage";
 import ProgressPage from "@/page/member/memberProgressPage";
@@ -20,6 +21,7 @@ import { Route, Routes } from "react-router-dom";
 const MemberRoutes = () => {
   return (
     <Routes>
+        <Route path={FRONTEND_ROUTES.MEMBER.FORGET_PASSWORD} element= {<MemberForgetPasswordPage/>}/>
       <Route
         element={
           <PublicRoute
@@ -27,6 +29,7 @@ const MemberRoutes = () => {
           />
         }
       >
+      
         <Route
           path={FRONTEND_ROUTES.MEMBER.LOGIN}
           element={<MemberLoginPage />}

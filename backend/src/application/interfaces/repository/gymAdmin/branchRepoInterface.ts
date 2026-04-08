@@ -16,4 +16,7 @@ export interface IBranchRepository extends IBaseRepository<IBranchEntity> {
   findAllBranchIds(gymId: string): Promise<string[]>;
   countByGymId(gymId: string): Promise<number>;
   countActiveByGymId(gymId: string): Promise<number>;
+  countTotalBranches(): Promise<number>;
+  countBranchesCreatedThisMonth(start: Date, end: Date): Promise<number>;
+  countBranchesCreatedLastMonth(start: Date, end: Date): Promise<number>;
 }

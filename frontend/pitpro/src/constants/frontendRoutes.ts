@@ -64,5 +64,6 @@ export const FRONTEND_ROUTES = {
         BOOK_TRAINER:"book_trainer",
         PROGRESS: "progress",
         CHAT: "chat",
+        FORGET_PASSWORD: "forget_password"
     }
 }

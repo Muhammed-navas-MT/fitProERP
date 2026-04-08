@@ -1,4 +1,5 @@
 import { TokenValidationUseCase } from "../../../application/useCases/auth/tokenValidationUseCase";
+import { GetDashboardDetailUseCase } from "../../../application/useCases/superAdmin/dashboardmanagement/getDashboardDetailUseCase";
 import { ApproveGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/approveGymUseCase";
 import { blockGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/blockGymUseCase";
 import { FindGymUseCase } from "../../../application/useCases/superAdmin/gymMangement/findGymUseCase";
@@ -15,16 +16,19 @@ import { ListSubscriptionsUseCase } from "../../../application/useCases/superAdm
 import { UnBlockSubscriptionUseCase } from "../../../application/useCases/superAdmin/subscription/unBlockSubscriptionUseCase";
 import { UpdateSubscriptionUseCase } from "../../../application/useCases/superAdmin/subscription/updateSubscriptionUseCase";
 import { SuperAdminUseCase } from "../../../application/useCases/superAdmin/superAdminLoginUseCase";
+import { SuperAdminDashboardController } from "../../../presentation/controller/superAdmin/dashboardController";
 import { GymAdminManagementController } from "../../../presentation/controller/superAdmin/gymAdminManagementController";
 import { PaymentController } from "../../../presentation/controller/superAdmin/paymentController";
 import { SubscriptionController } from "../../../presentation/controller/superAdmin/subscriptionController";
 import { SuperAdminController } from "../../../presentation/controller/superAdmin/superAdminLoginController";
+import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
 import { gymAdminModel } from "../../repository/databaseConfigs/models/gymAdminModel";
 import { memberModel } from "../../repository/databaseConfigs/models/memberModel";
 import { subscriptionModel } from "../../repository/databaseConfigs/models/subscriptionModel";
 import { superAdminModel } from "../../repository/databaseConfigs/models/superAdminModel";
 import { paymentModel } from "../../repository/databaseConfigs/models/superAdminPaymentModel";
 import { trainerModel } from "../../repository/databaseConfigs/models/trainerModel";
+import { BranchRepository } from "../../repository/gymAdmin/branchRepo";
 import { GymAdminRepository } from "../../repository/gymAdmin/gymAdminRepo";
 import { MemberRepository } from "../../repository/member/memberRepo";
 import { SuperAdminPaymentRepository } from "../../repository/superAdmin/paymentRepo";
@@ -42,6 +46,8 @@ const paymentRepository = new SuperAdminPaymentRepository(paymentModel);
 const injectedSuperAdminUseCase = new SuperAdminUseCase(superAdminRepo);
 const jwtservice = new JwtService();
 const cacheService = new CacheService();
+const gymAdminRepository = new GymAdminRepository(gymAdminModel);
+const branchRepository = new BranchRepository(branchModel);
 const tokenValidationUseCase = new TokenValidationUseCase(
   jwtservice,
   cacheService,
@@ -71,7 +77,6 @@ export const injectedSubscriptionController = new SubscriptionController(
 );
 
 //gym admin controller
-const gymAdminRepository = new GymAdminRepository(gymAdminModel);
 const trainerRepository = new TrainerRepository(trainerModel);
 const memberRepository = new MemberRepository(memberModel);
 const emailService = new EmailService();
@@ -114,4 +119,14 @@ const listAllPayments = new ListPaymentUseCase(paymentRepository);
 export const injectedPaymentController = new PaymentController(
   listAllPayments,
   findPayment,
+);
+
+const getDashboardDetailUseCase = new GetDashboardDetailUseCase(
+  gymAdminRepository,
+  branchRepository,
+  paymentRepository,
+);
+
+export const injectedDashboardController = new SuperAdminDashboardController(
+  getDashboardDetailUseCase,
 );

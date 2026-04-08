@@ -1,3 +1,3 @@
 export interface ISendPasswordEmailContentGenerator {
-    generateHtml(data: Record<string,string>):string;
+  generateHtml(data: Record<string, string>): string;
 }

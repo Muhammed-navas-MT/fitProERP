@@ -173,5 +173,8 @@ export const ROUTES = {
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read/:notificationId",
     GET_DASHBOARD_DETAILS: "/get_dashboard_details",
+    VERIFY_EMAIL: "/verify_email",
+    VERIFY_OTP: "/verify_otp",
+    NEW_PASSWORD: "/new_password",
   },
 };

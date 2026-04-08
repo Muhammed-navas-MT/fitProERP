@@ -1,9 +1,9 @@
+import { ISendForgotPasswordOtpEmailContentGenerator } from "../../../application/interfaces/service/IEmail/sendForgotPasswordOtpEmailContentGeneratorInterface";
 import { BaseEmailContentGenerator } from "./baseEmailContentGenerator";
-import { ISendPasswordEmailContentGenerator } from "../../../application/interfaces/service/IEmail/sendPasswordEmailContentGenerator";
 
 export class SendPasswordEmailContentGenerator
   extends BaseEmailContentGenerator
-  implements ISendPasswordEmailContentGenerator
+  implements ISendForgotPasswordOtpEmailContentGenerator
 {
   generateHtml(data: Record<string, string>): string {
     const name = data.name || "Member";

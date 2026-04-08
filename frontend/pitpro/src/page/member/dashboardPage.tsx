@@ -23,6 +23,7 @@ import {
 import { GetAttendanceType } from "@/types/attendanceType";
 import { useDashboardDetail } from "@/hook/member/dashboardHook";
 import { BMIChart } from "@/components/member/progressComponents/BMIChart";
+import MemberDashboardSkeleton from "@/components/member/dashboard/dashboardSkeleton";
 
 export interface Exercise {
   name?: string;
@@ -35,7 +36,8 @@ export interface Exercise {
 export default function MemberDashboard() {
   const name = useSelector((state: rootstate) => state.authData.name);
 
-  const { data } = useDashboardDetail();
+  const { data, isLoading: isDashboardLoading } = useDashboardDetail();
+
   const dashboardData = data?.data ?? data;
 
   const avatarText = name
@@ -61,6 +63,10 @@ export default function MemberDashboard() {
     isLoading: isCurrentMonthLoading,
     refetch: refetchCurrentMonathAttendance,
   } = useCurrentMonthAttendance();
+
+  if (isDashboardLoading) {
+    return <MemberDashboardSkeleton />;
+  }
 
   const attendance: GetAttendanceType | undefined =
     todayAttendanceRes?.data ?? todayAttendanceRes;
@@ -113,7 +119,7 @@ export default function MemberDashboard() {
     calendarData = mapAttendanceToCalendar(
       currentMonthAttendance.data,
       currentYear,
-      currentMonth,
+      currentMonth
     );
   }
 
@@ -129,7 +135,7 @@ export default function MemberDashboard() {
 
   const workoutSections = [
     {
-      category: dashboardData?.todayWorkout?.targetMuscles?.[0] || "Workout A",
+      category: dashboardData?.todayWorkout?.targetMuscles?.[0] || "",
       exercises: firstHalf.map((exercise: Exercise) => ({
         name: exercise.name || "Unnamed Exercise",
         sets: exercise.sets || "-",
@@ -137,14 +143,14 @@ export default function MemberDashboard() {
       })),
     },
     {
-      category: dashboardData?.todayWorkout?.targetMuscles?.[1] || "Workout B",
+      category: dashboardData?.todayWorkout?.targetMuscles?.[1] || "",
       exercises: secondHalf.map((exercise: Exercise) => ({
         name: exercise.name || "Unnamed Exercise",
         sets: exercise.sets || "-",
         reps: exercise.reps || "-",
       })),
     },
-  ].filter((section) => section.exercises.length > 0);
+  ].filter((section) => section.category || section.exercises.length > 0);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -167,9 +173,7 @@ export default function MemberDashboard() {
                     <p className="text-3xl font-bold text-orange-600">
                       {dashboardData?.daysTrained ?? 0}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      Overall trained days
-                    </p>
+                    <p className="text-xs text-gray-500">Overall trained days</p>
                   </div>
                   <div className="rounded-lg bg-green-700 p-3">
                     <Activity className="h-6 w-6 text-white" />
@@ -208,8 +212,7 @@ export default function MemberDashboard() {
                       {todayWorkoutLabel}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {dashboardData?.todayWorkout?.dayOfWeek ||
-                        "No plan for today"}
+                      {dashboardData?.todayWorkout?.dayOfWeek || "No plan for today"}
                     </p>
                   </div>
                   <div className="rounded-lg bg-indigo-700 p-3">
@@ -267,22 +270,7 @@ export default function MemberDashboard() {
             />
           </div>
 
-          {dashboardData?.todayWorkout ? (
-            <TodaysWorkout sections={workoutSections} />
-          ) : (
-            <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm">
-              <CardContent className="flex min-h-[220px] items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-orange-600">
-                    No workout for today
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-400">
-                    There is no workout assigned for today.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <TodaysWorkout sections={workoutSections} />
         </main>
       </div>
     </div>

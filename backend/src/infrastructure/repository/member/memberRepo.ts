@@ -287,4 +287,14 @@ export class MemberRepository
       };
     });
   }
+  async findByEmailAndGymId(data: {
+    email: string;
+    gymId: string;
+  }): Promise<MemberEntity | null> {
+    const member = await this._model
+      .find({ email: data.email, gymId: data.gymId })
+      .lean<MemberEntity>();
+    if (!member) return null;
+    return member;
+  }
 }
