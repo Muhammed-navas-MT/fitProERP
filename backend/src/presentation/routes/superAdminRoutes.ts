@@ -1,6 +1,7 @@
 import { ROUTES } from "../shared/constants/routes";
 import { Response, Request, NextFunction, Router } from "express";
 import {
+  injectedDashboardController,
   injectedGymManagementController,
   injectedPaymentController,
   injectedSubscriptionController,
@@ -140,6 +141,13 @@ export class SuperAdminRoutes {
       SUPERADMIN_AUTH.PAYMENT_DETAIL,
       (req: Request, res: Response, next: NextFunction) => {
         injectedPaymentController.findPayment(req, res, next);
+      },
+    );
+
+    this._route.get(
+      SUPERADMIN_AUTH.GET_DASHBOARD_DETAILS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedDashboardController.handleDashboardData(req, res, next);
       },
     );
   }

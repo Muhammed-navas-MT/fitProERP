@@ -13,6 +13,7 @@ interface SignInFormProps {
   isLoading: boolean;
   onSubmit: (data: LoginSchemaType) => void;
   signUpLink?: string;
+  forgetPasswordLink?: string;
 }
 
 export function SignInForm({
@@ -21,6 +22,7 @@ export function SignInForm({
   isLoading,
   onSubmit,
   signUpLink = "#",
+  forgetPasswordLink = "#",
 }: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -80,7 +82,9 @@ export function SignInForm({
           </button>
 
           {errors.password && (
-            <p className="text-red-500 text-xs pt-1">{errors.password.message}</p>
+            <p className="text-red-500 text-xs pt-1">
+              {errors.password.message}
+            </p>
           )}
         </div>
       </div>
@@ -95,7 +99,9 @@ export function SignInForm({
             Remember me
           </label>
         </div>
-        <a className="text-sm text-[#4C75FF] hover:underline">Forgot password?</a>
+        <a href={forgetPasswordLink} className="text-sm text-[#4C75FF] hover:underline">
+          Forgot password?
+        </a>
       </div>
 
       <Button
@@ -119,7 +125,10 @@ export function SignInForm({
             </div>
           </div>
 
-          <Button  variant="outline" className="bg-[#1A1D23] border-[#2A2D31] w-full">
+          <Button
+            variant="outline"
+            className="bg-[#1A1D23] border-[#2A2D31] w-full"
+          >
             Google
           </Button>
 

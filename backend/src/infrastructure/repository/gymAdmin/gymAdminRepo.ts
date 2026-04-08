@@ -7,6 +7,7 @@ import { IListGymsRequestDTO } from "../../../application/dtos/superAdminDto/gym
 import { Status } from "../../../domain/enums/status";
 import { GymAdminProfileResponseDTO } from "../../../application/dtos/gymAdminDto/gymAdminProfileDtos";
 import { mapGymAdminToProfileResponse } from "../../../application/mappers/gymAdmin/profileMappers";
+import { GymGrowthDto } from "../../../application/dtos/superAdminDto/dashboardDto";
 
 export class GymAdminRepository
   extends BaseRepository<IGymAdminModel>
@@ -102,5 +103,80 @@ export class GymAdminRepository
     const gyms = await this._model.find({}, { _id: 1 }).lean();
 
     return gyms.map((gym) => gym._id.toString());
+  }
+
+  async countTotalGymAdmins(): Promise<number> {
+    return await this._model.countDocuments();
+  }
+
+  async countGymAdminsCreatedThisMonth(
+    start: Date,
+    end: Date,
+  ): Promise<number> {
+    return await this._model.countDocuments({
+      createdAt: { $gte: start, $lt: end },
+    });
+  }
+
+  async countGymAdminsCreatedLastMonth(
+    start: Date,
+    end: Date,
+  ): Promise<number> {
+    return await this._model.countDocuments({
+      createdAt: { $gte: start, $lt: end },
+    });
+  }
+
+  async getGymAdminGrowthByMonth(months: number): Promise<GymGrowthDto[]> {
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - (months - 1));
+    startDate.setDate(1);
+    startDate.setHours(0, 0, 0, 0);
+
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+    ]);
+
+    const growthMap = new Map<string, number>();
+
+    result.forEach((item) => {
+      const key = `${item._id.year}-${item._id.month}`;
+      growthMap.set(key, item.count);
+    });
+
+    const output: GymGrowthDto[] = [];
+    const now = new Date();
+
+    for (let i = months - 1; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const year = date.getFullYear();
+      const monthNumber = date.getMonth() + 1;
+
+      output.push({
+        month: date.toLocaleString("en-US", { month: "short" }),
+        count: growthMap.get(`${year}-${monthNumber}`) || 0,
+      });
+    }
+
+    return output;
   }
 }

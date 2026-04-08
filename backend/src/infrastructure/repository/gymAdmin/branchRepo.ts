@@ -94,4 +94,19 @@ export class BranchRepository
       status: "ACTIVE",
     });
   }
+  async countTotalBranches(): Promise<number> {
+    return await this._model.countDocuments();
+  }
+
+  async countBranchesCreatedThisMonth(start: Date, end: Date): Promise<number> {
+    return await this._model.countDocuments({
+      createdAt: { $gte: start, $lt: end },
+    });
+  }
+
+  async countBranchesCreatedLastMonth(start: Date, end: Date): Promise<number> {
+    return await this._model.countDocuments({
+      createdAt: { $gte: start, $lt: end },
+    });
+  }
 }

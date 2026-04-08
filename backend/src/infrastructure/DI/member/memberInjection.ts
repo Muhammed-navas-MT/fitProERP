@@ -2,6 +2,9 @@ import { TokenValidationUseCase } from "../../../application/useCases/auth/token
 import { GetDashboardDetailUseCase } from "../../../application/useCases/member/dashboardManagement/getDashboardDetailUseCase";
 import { CreateDietPlanUseCase } from "../../../application/useCases/member/dietPlanManagement/createDietPlanUseCase";
 import { ListDietPlanUseCase } from "../../../application/useCases/member/dietPlanManagement/listDietPlanUseCase";
+import { NewMemberPasswordUseCase } from "../../../application/useCases/member/forgetPasswordManagement/newMemberPasswordUseCase";
+import { VerifyMemberEmailUseCase } from "../../../application/useCases/member/forgetPasswordManagement/verifyMemberEmailUseCase";
+import { VerifyMemberOtpUseCase } from "../../../application/useCases/member/forgetPasswordManagement/verifyMemberOtpUseCase";
 import { ListActiveTrainersUseCase } from "../../../application/useCases/member/listActiveTrainersUseCase";
 import { MemberLoginUseCase } from "../../../application/useCases/member/memberLoginUseCase";
 import { CreateMemberCheckoutSessionUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/createMemberCheckoutUseCase";
@@ -27,6 +30,7 @@ import { ListWorkoutPlanUseCase } from "../../../application/useCases/member/wor
 import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
 import { DashboardController } from "../../../presentation/controller/member/dashboardController";
 import { DietPlanController } from "../../../presentation/controller/member/dietPlanController";
+import { MemberForgetPasswordController } from "../../../presentation/controller/member/forgetPasswordController";
 import { MemberLoginController } from "../../../presentation/controller/member/memberLoginController";
 import { MemberLogoutController } from "../../../presentation/controller/member/memberLogoutController";
 import { PackageListAndCheckoutController } from "../../../presentation/controller/member/packageListAndPurchaseController";
@@ -64,8 +68,11 @@ import { SlotRuleRepository } from "../../repository/trainer/slotRuleRepo";
 import { TrainerRepository } from "../../repository/trainer/trainerRepo";
 import { CacheService } from "../../services/cacheService";
 import { HashPassword } from "../../services/hashService";
+import { EmailService } from "../../services/IEmail/emailService";
+import { SendForgotPasswordOtpEmailContentGenerator } from "../../services/IEmail/sendForgotPasswordOtpEmailContentGenerator";
 import { JwtService } from "../../services/jwtService";
 import { NotificationService } from "../../services/notificationService";
+import { OtpService } from "../../services/otpService";
 import { RRuleService } from "../../services/RRuleService";
 import { SocketService } from "../../services/socketService";
 import { stripe } from "../../services/stripeClient";
@@ -89,6 +96,10 @@ const cacheService = new CacheService();
 const branchRepository = new BranchRepository(branchModel);
 const stripeService = new StripeService(stripe);
 const socketService = new SocketService();
+const otpService = new OtpService();
+const sendForgetPasswordOtpEmailContentGenerator =
+  new SendForgotPasswordOtpEmailContentGenerator();
+const emailService = new EmailService();
 const loginUseCase = new MemberLoginUseCase(
   memberRepository,
   hashService,
@@ -255,3 +266,25 @@ const getDashboardDetailUseCase = new GetDashboardDetailUseCase(
 export const injectedDashboardController = new DashboardController(
   getDashboardDetailUseCase,
 );
+
+// forget password management
+const verifyMemberEmailUseCase = new VerifyMemberEmailUseCase(
+  memberRepository,
+  otpService,
+  cacheService,
+  emailService,
+  sendForgetPasswordOtpEmailContentGenerator,
+  gymAdminRepository,
+);
+const verifyMemberOtpUseCase = new VerifyMemberOtpUseCase(cacheService);
+const newPasswordUseCase = new NewMemberPasswordUseCase(
+  memberRepository,
+  hashService,
+  gymAdminRepository,
+);
+export const injectedForgetPasswordMemberController =
+  new MemberForgetPasswordController(
+    verifyMemberEmailUseCase,
+    verifyMemberOtpUseCase,
+    newPasswordUseCase,
+  );

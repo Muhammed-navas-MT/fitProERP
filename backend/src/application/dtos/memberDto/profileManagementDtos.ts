@@ -1,7 +1,3 @@
-import { PaymentStatus } from "../../../domain/enums/paymentStatus";
-import { Roles } from "../../../domain/enums/roles";
-import { Status } from "../../../domain/enums/status";
-
 export interface UpdateMemberProfileDTO {
   name?: string;
   phone?: string;
@@ -12,7 +8,7 @@ export interface UpdateMemberProfileDTO {
     dateOfBirth?: Date;
     weight?: string;
     height?: string;
-    targetWeight?:string;
+    targetWeight?: string;
     medicalConditions?: string;
     allergies?: string;
     fitnessGoal?: string;

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Roles } from "../../../domain/enums/roles";
 import { GymAdminAuthError } from "../constants/errorMessage/gymAdminAuthError";
 
 export const changePasswordSchema = z.object({

@@ -1,6 +1,6 @@
 export enum GymAdminAuthError {
-    EMAIL_DATA_MISSING_IN_CACHE = "Email data is missing from cache",
-    INVALID_OTP = "OTP is invalid",
+  EMAIL_DATA_MISSING_IN_CACHE = "Email data is missing from cache",
+  INVALID_OTP = "OTP is invalid",
 
   GYM_NAME_INVALID_TYPE = "Gym name must be a string",
   GYM_NAME_TOO_SHORT = "Gym name must be at least 3 characters long",

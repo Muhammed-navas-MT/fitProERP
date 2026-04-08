@@ -1,4 +1,5 @@
 import { SignInForm } from "@/components/shared/loginForm"
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { useMemberLogin } from "@/hook/member/memberLoginHook";
 import { setAuthContext } from "@/store/slice/authContextState";
 import { setData } from "@/store/slice/authSlice";
@@ -74,6 +75,7 @@ export default function MemberLoginPage() {
               isLoading={isPending}
               onSubmit={handleLogin}
               signUpLink="/signup"
+              forgetPasswordLink={FRONTEND_ROUTES.MEMBER.FORGET_PASSWORD}
             />
           </div>
         </div>

@@ -4,6 +4,7 @@ import {
   injectedCheckMemberAccessMiddleWare,
   injectedDashboardController,
   injectedDietPlanController,
+  injectedForgetPasswordMemberController,
   injectedMemberLoginController,
   injectedMemberLogoutController,
   injectedMemberProfileController,
@@ -18,10 +19,13 @@ import { upload } from "../middlewares/multer";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
 import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
+import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 
 export class MemberRoutes {
   private _route: Router;
+  private _middleware: SubdomainMiddleware;
   constructor() {
+    this._middleware = new SubdomainMiddleware();
     this._route = Router();
     this._setRoute();
   }
@@ -37,6 +41,35 @@ export class MemberRoutes {
       ROUTES.MEMBER.LOGOUT,
       (req: Request, res: Response, next: NextFunction) => {
         injectedMemberLogoutController.logout(req, res, next);
+      },
+    );
+
+    this._route.use(this._middleware.verifySubdomain);
+
+    this._route.post(
+      ROUTES.MEMBER.VERIFY_EMAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordMemberController.handleVerifyEmail(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.VERIFY_OTP,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordMemberController.handleVerifyOtp(req, res, next);
+      },
+    );
+    this._route.post(
+      ROUTES.MEMBER.NEW_PASSWORD,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordMemberController.handleNewPassword(
+          req,
+          res,
+          next,
+        );
       },
     );
 
