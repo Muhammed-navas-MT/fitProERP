@@ -99,6 +99,11 @@ import { NotificationService } from "../../services/notificationService";
 import { SocketService } from "../../services/socketService";
 import { GetDashboardDetailsUseCase } from "../../../application/useCases/gymAdmin/dashboardManagement/getDashboardDetailsUseCase";
 import { GymAdminDashboardController } from "../../../presentation/controller/gymAdmin/dashboardController";
+import { VerifyGymAdminEmailUseCase } from "../../../application/useCases/gymAdmin/forgetPasswordManagement/verifyEmailUseCase";
+import { SendForgotPasswordOtpEmailContentGenerator } from "../../services/IEmail/sendForgotPasswordOtpEmailContentGenerator";
+import { VerifyGymAdminOtpUseCase } from "../../../application/useCases/gymAdmin/forgetPasswordManagement/verifyOtpUseCase";
+import { GymAdminNewPasswordUseCase } from "../../../application/useCases/gymAdmin/forgetPasswordManagement/newPasswordUseCase";
+import { GymAdminForgetPasswordController } from "../../../presentation/controller/gymAdmin/forgetPasswordController";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -116,6 +121,8 @@ const hashService = new HashPassword();
 const cloudinaryService = new CloudinaryService();
 const socketService = new SocketService();
 const noticationRepository = new NotificationRepository(notificationModel);
+const sendForgetPasswordOtpEmailContentGenerator =
+  new SendForgotPasswordOtpEmailContentGenerator();
 const notificationUseCase = new CreateNotificationUseCase(
   noticationRepository,
   socketService,
@@ -370,3 +377,23 @@ const getDashboardDetailsUseCase = new GetDashboardDetailsUseCase(
 
 export const injectedGymAdminDashboardController =
   new GymAdminDashboardController(getDashboardDetailsUseCase);
+
+// forget password management
+const verifyEmailUseCase = new VerifyGymAdminEmailUseCase(
+  otpService,
+  cacheService,
+  emailService,
+  sendForgetPasswordOtpEmailContentGenerator,
+  gymAdminRepository,
+);
+const verifyOtpUseCase = new VerifyGymAdminOtpUseCase(cacheService);
+const newPasswordUseCase = new GymAdminNewPasswordUseCase(
+  hashService,
+  gymAdminRepository,
+);
+export const injectedForgetPasswordGymAdminController =
+  new GymAdminForgetPasswordController(
+    verifyEmailUseCase,
+    verifyOtpUseCase,
+    newPasswordUseCase,
+  );

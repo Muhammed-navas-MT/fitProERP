@@ -74,7 +74,6 @@ export default function MemberLoginPage() {
               buttonColor="bg-orange-600  hover:bg-orange-800 text-white font-semibold"
               isLoading={isPending}
               onSubmit={handleLogin}
-              signUpLink="/signup"
               forgetPasswordLink={FRONTEND_ROUTES.MEMBER.FORGET_PASSWORD}
             />
           </div>

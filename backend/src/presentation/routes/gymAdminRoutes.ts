@@ -5,6 +5,7 @@ import {
   injectedBranchController,
   // injectedCheckGymAdminSubscriptionMiddleware,
   injectedExpenseController,
+  injectedForgetPasswordGymAdminController,
   injectedGymAdminDashboardController,
   injectedGymAdminLoginController,
   injectedGymAdminLogoutController,
@@ -76,6 +77,37 @@ export class GymAdminRoutes {
       GYMADMIN.AUTH.LOGIN,
       (req: Request, res: Response, next: NextFunction) => {
         injectedGymAdminLoginController.login(req, res, next);
+      },
+    );
+
+    this._route.post(
+      GYMADMIN.VERIFY_EMAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordGymAdminController.handleVerifyEmail(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.post(
+      GYMADMIN.VERIFY_OTP,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordGymAdminController.handleVerifyOtp(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.post(
+      GYMADMIN.NEW_PASSWORD,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordGymAdminController.handleNewPassword(
+          req,
+          res,
+          next,
+        );
       },
     );
 

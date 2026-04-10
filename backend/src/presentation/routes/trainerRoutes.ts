@@ -3,6 +3,7 @@ import { Request, Response, NextFunction, Router } from "express";
 import {
   injectedCheckAccessTrainerMiddleware,
   injectedDashboardController,
+  injectedForgetPasswordTrainerController,
   injectedLeaveController,
   injectedMemberController,
   injectedProfileController,
@@ -15,15 +16,20 @@ import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminI
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
 import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
 import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
+import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
 export class TrainerRoutes {
   private _route: Router;
+  private _middleware: SubdomainMiddleware;
   constructor() {
+    this._middleware = new SubdomainMiddleware();
     this._route = Router();
     this._setRoute();
   }
 
   private _setRoute() {
     const TRAINER = ROUTES.TRAINER;
+    this._route.use(this._middleware.verifySubdomain);
+
     this._route.post(
       TRAINER.AUTH.LOGIN,
       (req: Request, res: Response, next: NextFunction) => {
@@ -35,6 +41,33 @@ export class TrainerRoutes {
       TRAINER.AUTH.LOGOUT,
       (req: Request, res: Response, next: NextFunction) => {
         injectedTrainerLogoutController.trainerLogout(req, res, next);
+      },
+    );
+
+    this._route.post(
+      TRAINER.VERIFY_EMAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordTrainerController.handleVerifyEmail(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.post(
+      TRAINER.VERIFY_OTP,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordTrainerController.handleVerifyOtp(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.NEW_PASSWORD,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedForgetPasswordTrainerController.handleNewPassword(
+          req,
+          res,
+          next,
+        );
       },
     );
 

@@ -22,21 +22,26 @@ export class MemberLoginUseCase implements IMemberLoginUseCase {
   ) {}
 
   async login(data: LoginRequestDTO): Promise<MemberLoginResponseDTO> {
-    const member = await this.memberRepository.findByEmail(data.email);
-
-    if (!member) {
-      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
-    }
-
-    const gym = await this.gymAdminRepository.findById(member.gymId);
+    const gym = await this.gymAdminRepository.findBySubdomian(data.subdomain);
 
     if (!gym) {
       throw new NOtFoundException(MemberError.GYM_NOT_FOUND);
     }
 
+    const member = await this.memberRepository.findByEmailAndGymId({
+      email: data.email,
+      gymId: gym._id?.toString() as string,
+    });
+
+    if (!member) {
+      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
+    }
+
     if (gym.status !== Status.ACTIVE) {
       throw new ForbiddenException(MemberError.GYM_NOT_ACTIVE);
     }
+
+    console.log(member);
 
     const isPasswordValid = await this.hashService.compare(
       data.password,

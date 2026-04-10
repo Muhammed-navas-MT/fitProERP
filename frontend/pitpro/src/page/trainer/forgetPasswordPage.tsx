@@ -1,16 +1,12 @@
 import ForgetPasswordFlow from "@/components/shared/forgetPasswordFlow";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
-import {
-  useMemberEmail,
-  useMemberOtp,
-  useMemberNewPassword,
-} from "@/hook/member/memberForgetPasswordHook";
+import { useTrainerEmail, useTrainerNewPassword, useTrainerOtp } from "@/hook/trainer/trainerForgetPasswordHook";
 import { toast } from "sonner";
 
-export default function MemberForgetPasswordPage() {
-  const emailMutation = useMemberEmail();
-  const otpMutation = useMemberOtp();
-  const newPasswordMutation = useMemberNewPassword();
+export default function TrainerForgetPasswordPage() {
+  const emailMutation = useTrainerEmail();
+  const otpMutation = useTrainerOtp();
+  const newPasswordMutation = useTrainerNewPassword();
 
   const handleSendEmail = async (email: string) => {
     try {
@@ -62,9 +58,9 @@ export default function MemberForgetPasswordPage() {
 
   return (
     <ForgetPasswordFlow
-      loginPath={`${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.LOGIN}`}
-      theme="orange"
-      storageKey="member-forget-password"
+      loginPath={`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`}
+      theme="purple"
+      storageKey="trainer-forget-password"
       onSendEmail={handleSendEmail}
       onVerifyOtp={handleVerifyOtp}
       onResetPassword={handleResetPassword}

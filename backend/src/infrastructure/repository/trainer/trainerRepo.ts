@@ -122,4 +122,12 @@ export class TrainerRepository
       status: Status.ACTIVE,
     });
   }
+  async findByEmailAndGymId(data: {
+    email: string;
+    gymId: string;
+  }): Promise<TrainerEntity | null> {
+    return await this._model
+      .findOne({ email: data.email, gymId: data.gymId })
+      .lean();
+  }
 }

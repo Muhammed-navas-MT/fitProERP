@@ -1,16 +1,16 @@
 import ForgetPasswordFlow from "@/components/shared/forgetPasswordFlow";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import {
-  useMemberEmail,
-  useMemberOtp,
-  useMemberNewPassword,
-} from "@/hook/member/memberForgetPasswordHook";
+  useGymAdminEmail,
+  useGymAdminNewPassword,
+  useGymAdminOtp,
+} from "@/hook/gymAdmin/gymAdminForgetPasswordHook";
 import { toast } from "sonner";
 
-export default function MemberForgetPasswordPage() {
-  const emailMutation = useMemberEmail();
-  const otpMutation = useMemberOtp();
-  const newPasswordMutation = useMemberNewPassword();
+export default function GymAdminForgetPasswordPage() {
+  const emailMutation = useGymAdminEmail();
+  const otpMutation = useGymAdminOtp();
+  const newPasswordMutation = useGymAdminNewPassword();
 
   const handleSendEmail = async (email: string) => {
     try {
@@ -52,19 +52,21 @@ export default function MemberForgetPasswordPage() {
       return response;
     } catch (error) {
       let message = "Failed to update password";
-      if (error instanceof Error) {
-        message = error.message;
-      }
-      toast.error(message);
-      throw error;
+
+    if (error instanceof Error) {
+      message = error.message;
+    }
+
+    toast.error(message);
+    throw error;
     }
   };
 
   return (
     <ForgetPasswordFlow
-      loginPath={`${FRONTEND_ROUTES.MEMBER.BASE}/${FRONTEND_ROUTES.MEMBER.LOGIN}`}
+      loginPath={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`}
       theme="orange"
-      storageKey="member-forget-password"
+      storageKey="gymadmin-forget-password"
       onSendEmail={handleSendEmail}
       onVerifyOtp={handleVerifyOtp}
       onResetPassword={handleResetPassword}

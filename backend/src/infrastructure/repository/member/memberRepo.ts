@@ -77,7 +77,7 @@ export class MemberRepository
       .find({ trainerId })
       .select("_id")
       .lean()
-      .then((docs) => docs.map((d: any) => ({ id: d._id.toString() })));
+      .then((docs) => docs.map((d) => ({ id: d._id.toString() })));
   }
 
   async reassignMembers(
@@ -291,10 +291,8 @@ export class MemberRepository
     email: string;
     gymId: string;
   }): Promise<MemberEntity | null> {
-    const member = await this._model
-      .find({ email: data.email, gymId: data.gymId })
-      .lean<MemberEntity>();
-    if (!member) return null;
-    return member;
+    return await this._model
+      .findOne({ email: data.email, gymId: data.gymId })
+      .lean();
   }
 }

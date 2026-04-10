@@ -12,7 +12,6 @@ interface SignInFormProps {
   buttonColor: string;
   isLoading: boolean;
   onSubmit: (data: LoginSchemaType) => void;
-  signUpLink?: string;
   forgetPasswordLink?: string;
 }
 
@@ -21,7 +20,6 @@ export function SignInForm({
   buttonColor,
   isLoading,
   onSubmit,
-  signUpLink = "#",
   forgetPasswordLink = "#",
 }: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -126,18 +124,12 @@ export function SignInForm({
           </div>
 
           <Button
+          disabled = {true}
             variant="outline"
             className="bg-[#1A1D23] border-[#2A2D31] w-full"
           >
             Google
-          </Button>
-
-          <p className="text-center text-sm text-gray-400 pt-2">
-            Don't have an account?{" "}
-            <a href={signUpLink} className="text-[#4C75FF] hover:underline">
-              Sign up
-            </a>
-          </p>
+          </Button> 
         </>
       )}
     </form>

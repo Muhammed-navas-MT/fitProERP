@@ -3,6 +3,7 @@ import { Roles } from "../../../domain/enums/roles";
 export interface LoginRequestDTO {
   email: string;
   password: string;
+  subdomain: string;
 }
 
 export interface GymAdminLoginRequestDTO {
