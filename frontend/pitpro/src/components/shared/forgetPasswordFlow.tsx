@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useMemo, useState } from "react";
 import {
   Mail,
@@ -7,18 +5,21 @@ import {
   LockKeyhole,
   ArrowLeft,
   CheckCircle2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 
 import {
-  useMemberEmail,
-  useMemberOtp,
-  useMemberNewPassword,
-} from "@/hook/member/memberForgetPasswordHook";
+  EmailFormValues,
+  emailSchema,
+  OtpFormValues,
+  otpSchema,
+  PasswordFormValues,
+  passwordSchema,
+} from "@/validation/forgetPasswordValidationSchema";
 
 type ThemeColor = "purple" | "blue" | "orange";
 type Step = 1 | 2 | 3 | 4;
@@ -27,38 +28,28 @@ interface ForgetPasswordFlowProps {
   loginPath: string;
   theme?: ThemeColor;
   storageKey?: string;
+  sessionExpiryMs?: number;
+  onSendEmail: (email: string) => Promise<{ message?: string } | void>;
+  onVerifyOtp: (data: {
+    email: string;
+    otp: number;
+  }) => Promise<{ message?: string } | void>;
+  onResetPassword: (data: {
+    email: string;
+    password: string;
+  }) => Promise<{ message?: string } | void>;
+  onSessionExpired?: () => void;
+  isEmailLoading?: boolean;
+  isOtpLoading?: boolean;
+  isPasswordLoading?: boolean;
 }
-
-const emailSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Enter a valid email"),
-});
-
-const otpSchema = z.object({
-  otp: z
-    .string()
-    .min(1, "OTP is required")
-    .regex(/^\d{4,6}$/, "OTP must be 4 to 6 digits"),
-});
-
-const passwordSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Confirm password is required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type EmailFormValues = z.infer<typeof emailSchema>;
-type OtpFormValues = z.infer<typeof otpSchema>;
-type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 interface SessionState {
   step: Step;
   email: string;
   otpVerified: boolean;
   emailVerified: boolean;
+  expiresAt?: number;
 }
 
 const DEFAULT_SESSION_STATE: SessionState = {
@@ -67,6 +58,8 @@ const DEFAULT_SESSION_STATE: SessionState = {
   otpVerified: false,
   emailVerified: false,
 };
+
+const DEFAULT_SESSION_EXPIRY_MS = 10 * 60 * 1000;
 
 const themeStyles: Record<
   ThemeColor,
@@ -203,16 +196,22 @@ export default function ForgetPasswordFlow({
   loginPath,
   theme = "purple",
   storageKey = "member-forget-password-flow",
+  sessionExpiryMs = DEFAULT_SESSION_EXPIRY_MS,
+  onSendEmail,
+  onVerifyOtp,
+  onResetPassword,
+  onSessionExpired,
+  isEmailLoading = false,
+  isOtpLoading = false,
+  isPasswordLoading = false,
 }: ForgetPasswordFlowProps) {
   const navigate = useNavigate();
   const currentTheme = useMemo(() => getTheme(theme), [theme]);
 
   const [step, setStep] = useState<Step>(1);
   const [savedEmail, setSavedEmail] = useState("");
-
-  const emailMutation = useMemberEmail();
-  const otpMutation = useMemberOtp();
-  const newPasswordMutation = useMemberNewPassword();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const emailForm = useForm<EmailFormValues>({
     resolver: zodResolver(emailSchema),
@@ -239,10 +238,27 @@ export default function ForgetPasswordFlow({
     mode: "onChange",
   });
 
-  const isLoading =
-    emailMutation.isPending ||
-    otpMutation.isPending ||
-    newPasswordMutation.isPending;
+  const isLoading = isEmailLoading || isOtpLoading || isPasswordLoading;
+
+  const clearSessionState = () => {
+    sessionStorage.removeItem(storageKey);
+  };
+
+  const resetToInitialState = () => {
+    setStep(1);
+    setSavedEmail("");
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    emailForm.reset({ email: "" });
+    otpForm.reset({ otp: "" });
+    passwordForm.reset({ password: "", confirmPassword: "" });
+  };
+
+  const expireSession = () => {
+    clearSessionState();
+    resetToInitialState();
+    onSessionExpired?.();
+  };
 
   const saveSessionState = (data: Partial<SessionState>) => {
     const existingRaw = sessionStorage.getItem(storageKey);
@@ -253,13 +269,10 @@ export default function ForgetPasswordFlow({
     const updated: SessionState = {
       ...existing,
       ...data,
+      expiresAt: Date.now() + sessionExpiryMs,
     };
 
     sessionStorage.setItem(storageKey, JSON.stringify(updated));
-  };
-
-  const clearSessionState = () => {
-    sessionStorage.removeItem(storageKey);
   };
 
   useEffect(() => {
@@ -269,6 +282,11 @@ export default function ForgetPasswordFlow({
     try {
       const parsed: SessionState = JSON.parse(raw);
 
+      if (parsed.expiresAt && Date.now() > parsed.expiresAt) {
+        expireSession();
+        return;
+      }
+
       setStep(parsed.step || 1);
       setSavedEmail(parsed.email || "");
 
@@ -276,95 +294,91 @@ export default function ForgetPasswordFlow({
         emailForm.setValue("email", parsed.email);
       }
     } catch {
-      sessionStorage.removeItem(storageKey);
+      clearSessionState();
     }
   }, [storageKey, emailForm]);
 
-  const handleSendOtp = (values: EmailFormValues) => {
-    emailMutation.mutate(values.email, {
-      onSuccess: (response: any) => {
-        const successMessage = response?.message || "OTP sent successfully";
-        toast.success(successMessage);
+  useEffect(() => {
+    const raw = sessionStorage.getItem(storageKey);
+    if (!raw) return;
 
-        setSavedEmail(values.email);
-        setStep(2);
+    try {
+      const parsed: SessionState = JSON.parse(raw);
 
-        saveSessionState({
-          step: 2,
-          email: values.email,
-          emailVerified: true,
-          otpVerified: false,
-        });
-      },
-      onError: (error: any) => {
-        toast.error(error?.response?.data?.message || error?.message || "Failed to send OTP");
-      },
+      if (!parsed.expiresAt) return;
+
+      const remainingTime = parsed.expiresAt - Date.now();
+
+      if (remainingTime <= 0) {
+        expireSession();
+        return;
+      }
+
+      const timer = window.setTimeout(() => {
+        expireSession();
+      }, remainingTime);
+
+      return () => window.clearTimeout(timer);
+    } catch {
+      clearSessionState();
+    }
+  }, [step, storageKey]);
+
+  const handleSendOtp = async (values: EmailFormValues) => {
+    await onSendEmail(values.email);
+
+    setSavedEmail(values.email);
+    setStep(2);
+
+    saveSessionState({
+      step: 2,
+      email: values.email,
+      emailVerified: true,
+      otpVerified: false,
     });
   };
 
-  const handleVerifyOtp = (values: OtpFormValues) => {
-    otpMutation.mutate(
-      {
-        email: savedEmail || emailForm.getValues("email"),
-        otp: Number(values.otp),
-      },
-      {
-        onSuccess: (response: any) => {
-          const successMessage = response?.message || "OTP verified successfully";
-          toast.success(successMessage);
+  const handleVerifyOtp = async (values: OtpFormValues) => {
+    const email = savedEmail || emailForm.getValues("email");
 
-          setStep(3);
+    await onVerifyOtp({
+      email,
+      otp: Number(values.otp),
+    });
 
-          saveSessionState({
-            step: 3,
-            email: savedEmail || emailForm.getValues("email"),
-            emailVerified: true,
-            otpVerified: true,
-          });
-        },
-        onError: (error: any) => {
-          toast.error(error?.response?.data?.message || error?.message || "Invalid OTP");
-        },
-      }
-    );
+    setStep(3);
+    otpForm.reset();
+
+    saveSessionState({
+      step: 3,
+      email,
+      emailVerified: true,
+      otpVerified: true,
+    });
   };
 
-  const handleResetPassword = (values: PasswordFormValues) => {
-    newPasswordMutation.mutate(
-      {
-        email: savedEmail || emailForm.getValues("email"),
-        password: values.password,
-      },
-      {
-        onSuccess: (response: any) => {
-          const successMessage =
-            response?.message || "Password updated successfully";
+  const handleResetPassword = async (values: PasswordFormValues) => {
+    const email = savedEmail || emailForm.getValues("email");
 
-          toast.success(successMessage);
-          setStep(4);
+    await onResetPassword({
+      email,
+      password: values.password,
+    });
 
-          saveSessionState({
-            step: 4,
-            email: savedEmail || emailForm.getValues("email"),
-            emailVerified: true,
-            otpVerified: true,
-          });
-        },
-        onError: (error: any) => {
-          toast.error(
-            error?.response?.data?.message ||
-              error?.message ||
-              "Failed to update password"
-          );
-        },
-      }
-    );
+    setStep(4);
+
+    saveSessionState({
+      step: 4,
+      email,
+      emailVerified: true,
+      otpVerified: true,
+    });
   };
 
   const handleChangeEmail = () => {
     setStep(1);
-    otpForm.reset();
-    passwordForm.reset();
+    otpForm.reset({ otp: "" });
+    passwordForm.reset({ password: "", confirmPassword: "" });
 
     saveSessionState({
       step: 1,
@@ -376,9 +390,7 @@ export default function ForgetPasswordFlow({
 
   const handleGoToLogin = () => {
     clearSessionState();
-    emailForm.reset();
-    otpForm.reset();
-    passwordForm.reset();
+    resetToInitialState();
     navigate(loginPath);
   };
 
@@ -440,7 +452,7 @@ export default function ForgetPasswordFlow({
                   disabled={isLoading}
                   className={`flex h-12 w-full items-center justify-center rounded-xl text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${currentTheme.primaryBtn}`}
                 >
-                  {emailMutation.isPending ? "Sending OTP..." : "Send OTP"}
+                  {isEmailLoading ? "Sending OTP..." : "Send OTP"}
                 </button>
               </form>
             </>
@@ -484,7 +496,7 @@ export default function ForgetPasswordFlow({
                     disabled={isLoading}
                     className={`flex h-12 w-full items-center justify-center rounded-xl text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${currentTheme.primaryBtn}`}
                   >
-                    {otpMutation.isPending ? "Verifying..." : "Verify OTP"}
+                    {isOtpLoading ? "Verifying..." : "Verify OTP"}
                   </button>
                 </div>
               </form>
@@ -502,34 +514,90 @@ export default function ForgetPasswordFlow({
                 onSubmit={passwordForm.handleSubmit(handleResetPassword)}
                 className="mt-6 space-y-5"
               >
-                <InputField
-                  label="New password"
-                  type="password"
-                  placeholder="Enter new password"
-                  icon={<LockKeyhole size={18} />}
-                  error={passwordForm.formState.errors.password?.message}
-                  themeClass={currentTheme.primaryRing}
-                  {...passwordForm.register("password")}
-                />
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-300">
+                    New password
+                  </label>
 
-                <InputField
-                  label="Confirm password"
-                  type="password"
-                  placeholder="Confirm new password"
-                  icon={<LockKeyhole size={18} />}
-                  error={passwordForm.formState.errors.confirmPassword?.message}
-                  themeClass={currentTheme.primaryRing}
-                  {...passwordForm.register("confirmPassword")}
-                />
+                  <div
+                    className={`flex h-12 items-center gap-3 rounded-xl border px-4 transition ${
+                      passwordForm.formState.errors.password
+                        ? "border-red-500/40 bg-red-500/5"
+                        : `border-white/10 bg-white/5 ${currentTheme.primaryRing}`
+                    }`}
+                  >
+                    <LockKeyhole size={18} className="text-gray-400" />
+
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter new password"
+                      className="w-full bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none"
+                      {...passwordForm.register("password")}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="text-gray-400 transition hover:text-white"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+
+                  {passwordForm.formState.errors.password && (
+                    <p className="text-xs text-red-400">
+                      {passwordForm.formState.errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-300">
+                    Confirm password
+                  </label>
+
+                  <div
+                    className={`flex h-12 items-center gap-3 rounded-xl border px-4 transition ${
+                      passwordForm.formState.errors.confirmPassword
+                        ? "border-red-500/40 bg-red-500/5"
+                        : `border-white/10 bg-white/5 ${currentTheme.primaryRing}`
+                    }`}
+                  >
+                    <LockKeyhole size={18} className="text-gray-400" />
+
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm new password"
+                      className="w-full bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none"
+                      {...passwordForm.register("confirmPassword")}
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      className="text-gray-400 transition hover:text-white"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+                  </div>
+
+                  {passwordForm.formState.errors.confirmPassword && (
+                    <p className="text-xs text-red-400">
+                      {passwordForm.formState.errors.confirmPassword.message}
+                    </p>
+                  )}
+                </div>
 
                 <button
                   type="submit"
                   disabled={isLoading}
                   className={`flex h-12 w-full items-center justify-center rounded-xl text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-60 ${currentTheme.primaryBtn}`}
                 >
-                  {newPasswordMutation.isPending
-                    ? "Updating Password..."
-                    : "Update Password"}
+                  {isPasswordLoading ? "Updating Password..." : "Update Password"}
                 </button>
               </form>
             </>

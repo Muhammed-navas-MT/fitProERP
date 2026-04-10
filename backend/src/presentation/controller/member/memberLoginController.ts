@@ -10,7 +10,7 @@ import { IJwtService } from "../../../application/interfaces/service/jwtServiceI
 import { setCookie } from "../../shared/utils/setCookie";
 import { MemberSuccess } from "../../shared/constants/errorMessage/memberMessage";
 import { configEnv } from "../../../config/envConfig";
-import { IGoogleLoginUseCase } from "../../../application/interfaces/useCase/member/googleLoginUseCaseInterface";
+// import { IGoogleLoginUseCase } from "../../../application/interfaces/useCase/member/googleLoginUseCaseInterface";
 
 export class MemberLoginController {
   private _loginUseCase: IMemberLoginUseCase;
@@ -28,9 +28,11 @@ export class MemberLoginController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { email, password }: LoginRequestDTO = req.body;
+      const subdomain = req.tenant || "";
       const response: MemberLoginResponseDTO = await this._loginUseCase.login({
         email,
         password,
+        subdomain,
       });
       const accessToken = this._jwtService.createAccessToken({
         id: response._id,

@@ -83,6 +83,9 @@ export const API_ROUTES = {
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read",
     GET_DASHBOARD_DETAILS: "/get_dashboard_details",
+    VERIFY_EMAIL: "/verify_email_rest_password",
+    VERIFY_OTP: "/verify_otp_rest_password",
+    NEW_PASSWORD: "/new_password",
   },
 
   TRAINER: {
@@ -130,6 +133,9 @@ export const API_ROUTES = {
     MARK_ALL_NOTIFICATION: "/mark_all_notification_read",
     MARK_NOTIFICATION: "/mark_notification_read",
     GET_DASHBOARD_DETAILS: "/get_dashboard_details",
+    VERIFY_EMAIL: "/verify_email",
+    VERIFY_OTP: "/verify_otp",
+    NEW_PASSWORD: "/new_password",
   },
   MEMBER: {
     BASE: "/member",

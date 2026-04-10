@@ -58,6 +58,12 @@ import { SocketService } from "../../services/socketService";
 import { NotificationService } from "../../services/notificationService";
 import { GetDetailsUseCase } from "../../../application/useCases/trainer/dashboardManagement/getDetailUseCase";
 import { DashboardController } from "../../../presentation/controller/trainer/dashboardManagementController";
+import { VerifyTrainerEmailUseCase } from "../../../application/useCases/trainer/forgetPasswordManagement/verifyEmailUseCase";
+import { SendForgotPasswordOtpEmailContentGenerator } from "../../services/IEmail/sendForgotPasswordOtpEmailContentGenerator";
+import { OtpService } from "../../services/otpService";
+import { VerifyTrainerOtpUseCase } from "../../../application/useCases/trainer/forgetPasswordManagement/verifyOtpUseCase";
+import { TrainerNewPasswordUseCase } from "../../../application/useCases/trainer/forgetPasswordManagement/newPasswordUseCase";
+import { TrainerForgetPasswordController } from "../../../presentation/controller/trainer/forgetPasswordController";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -70,6 +76,9 @@ const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
 const sessionRepository = new SessionRepository(sessionModel);
 const notificationRepository = new NotificationRepository(notificationModel);
 const socketService = new SocketService();
+const otpService = new OtpService();
+const sendForgetPasswordOtpEmailContentGenerator =
+  new SendForgotPasswordOtpEmailContentGenerator();
 const createNotificationUseCase = new CreateNotificationUseCase(
   notificationRepository,
   socketService,
@@ -230,3 +239,25 @@ const getDetailsUseCase = new GetDetailsUseCase(
 export const injectedDashboardController = new DashboardController(
   getDetailsUseCase,
 );
+
+// forget password management
+const verifyEmailUseCase = new VerifyTrainerEmailUseCase(
+  trainerRepository,
+  otpService,
+  cacheService,
+  emailService,
+  sendForgetPasswordOtpEmailContentGenerator,
+  gymAdminRepository,
+);
+const verifyOtpUseCase = new VerifyTrainerOtpUseCase(cacheService);
+const newPasswordUseCase = new TrainerNewPasswordUseCase(
+  trainerRepository,
+  hashService,
+  gymAdminRepository,
+);
+export const injectedForgetPasswordTrainerController =
+  new TrainerForgetPasswordController(
+    verifyEmailUseCase,
+    verifyOtpUseCase,
+    newPasswordUseCase,
+  );

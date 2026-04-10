@@ -23,10 +23,16 @@ import RevenuePage from "@/page/gymAdmin/revenuePage";
 import ExpensePage from "@/page/gymAdmin/expensePage";
 import ProfitAnalytics from "@/page/gymAdmin/ProfitAnalyticsPage";
 import TrainerLeavePage from "@/page/gymAdmin/leavePage";
+import GymAdminForgetPasswordPage from "@/page/gymAdmin/forgetPasswordPage";
 
 const GymAdminRoutes = () => {
   return (
     <Routes>
+      <Route
+        path={FRONTEND_ROUTES.GYM_ADMIN.FORGET_PASSWORD}
+        element={<GymAdminForgetPasswordPage />}
+      />
+
       <Route
         element={
           <GymAdminPublicRoute
@@ -38,7 +44,10 @@ const GymAdminRoutes = () => {
           path={FRONTEND_ROUTES.GYM_ADMIN.LOGIN}
           element={<GymAdminLoginPage />}
         />
-        <Route path={FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL} element={<PendingApprovalPage/>}/>
+        <Route
+          path={FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}
+          element={<PendingApprovalPage />}
+        />
       </Route>
 
       <Route element={<SubscriptionAccessRoute />}>
@@ -48,12 +57,15 @@ const GymAdminRoutes = () => {
         />
       </Route>
 
-       <Route element={<SubscriptionAccessRoute />}>
-        <Route path={FRONTEND_ROUTES.GYM_ADMIN.REAPPLY} element={<ReUploadDocuments/>}/>
+      <Route element={<SubscriptionAccessRoute />}>
+        <Route
+          path={FRONTEND_ROUTES.GYM_ADMIN.REAPPLY}
+          element={<ReUploadDocuments />}
+        />
       </Route>
 
-      <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUCCESS} element={<Success/>}/>
-      <Route path={FRONTEND_ROUTES.GYM_ADMIN.CANCEL} element={<Cancel/>}/>
+      <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUCCESS} element={<Success />} />
+      <Route path={FRONTEND_ROUTES.GYM_ADMIN.CANCEL} element={<Cancel />} />
 
       <Route
         element={
@@ -62,7 +74,6 @@ const GymAdminRoutes = () => {
           />
         }
       >
-        
         <Route element={<GymAdminStatusRoute />}>
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.DASHBOARD}
@@ -73,35 +84,49 @@ const GymAdminRoutes = () => {
             element={<MemeberListPage />}
           />
           <Route
-           path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_MEMBER}/:memberId`}
-           element={<MemberDetailPage/>}
+            path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_MEMBER}/:memberId`}
+            element={<MemberDetailPage />}
           />
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}
             element={<EmployeesPage />}
           />
-          <Route path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_EMPLOYEES}/:id`}
-          element={<EmployeeDetailsPage/>}
+          <Route
+            path={`${FRONTEND_ROUTES.GYM_ADMIN.DETAIL_EMPLOYEES}/:id`}
+            element={<EmployeeDetailsPage />}
           />
-          <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}
-           element={<BranchesPage/>}
-           />
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}
-           element={<GymInfoPage/>}
-           />
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}
-           element={<PackagePage/>}
-           />
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}
-           element={<SubscriptionPage/>}
-           />
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_REVENUE}
-           element={<RevenuePage/>}/>
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}
-           element={<ExpensePage/>}/>
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.PROFIT}
-           element={<ProfitAnalytics/>}/>
-           <Route path={FRONTEND_ROUTES.GYM_ADMIN.LEAVE} element={<TrainerLeavePage/>}/>
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}
+            element={<BranchesPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}
+            element={<GymInfoPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.LIST_PACKAGE}
+            element={<PackagePage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.SUBSCRIPTION}
+            element={<SubscriptionPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.LIST_REVENUE}
+            element={<RevenuePage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.LIST_EXPENSE}
+            element={<ExpensePage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.PROFIT}
+            element={<ProfitAnalytics />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.LEAVE}
+            element={<TrainerLeavePage />}
+          />
         </Route>
       </Route>
     </Routes>

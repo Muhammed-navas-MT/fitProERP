@@ -31,6 +31,8 @@ export class MemberRoutes {
   }
 
   private _setRoute() {
+    this._route.use(this._middleware.verifySubdomain);
+
     this._route.post(
       ROUTES.MEMBER.LOGIN,
       (req: Request, res: Response, next: NextFunction) => {
@@ -43,8 +45,6 @@ export class MemberRoutes {
         injectedMemberLogoutController.logout(req, res, next);
       },
     );
-
-    this._route.use(this._middleware.verifySubdomain);
 
     this._route.post(
       ROUTES.MEMBER.VERIFY_EMAIL,
