@@ -38,7 +38,7 @@ const navItems = [
   { name: "Trainers Leaves",href:`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LEAVE}`,icon: FileText,},
   // { name: "Problems", href: "/problems", icon: AlertCircle },
   { name: "Profile", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.GYM_INFO}`, icon: User },
-  { name: "Salary", href: "/salary", icon: DollarSign },
+  { name: "Salary", href: `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.SALARY}`, icon: DollarSign },
 ]
 
 export function Sidebar() {

@@ -86,6 +86,13 @@ export const ROUTES = {
     VERIFY_EMAIL: "/verify_email_rest_password",
     VERIFY_OTP: "/verify_otp_rest_password",
     NEW_PASSWORD: "/new_password",
+    GENERATE_TRAINER_SALARY: "/generate_trainer_salary",
+    LIST_TRAINER_SALARY: "/list_trainer_salary",
+    CREATE_BILLING_SETUP_INTENT: "/create_billing_setup_intent",
+    GET_BILLING_CONFIG: "/get_billing_config",
+    PAY_TRAINER_SALARY: "/pay_trainer_salary",
+    SAVE_BILLING_EMAIL: "/save_billing_email",
+    SAVE_PAYMENT_METHOD: "/save_payment_method",
   },
 
   TRAINER: {

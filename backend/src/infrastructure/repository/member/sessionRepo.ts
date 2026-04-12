@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { ISessionRepository } from "../../../application/interfaces/repository/member/sessionRepoInterface";
 import { BaseRepository } from "../base/baseRepo";
 import { ISessionModel } from "../databaseConfigs/models/sessionModel";
@@ -116,5 +116,63 @@ export class SessionRepository
       })
       .lean<PopulateTrainerSessionItem[]>();
     return sessions;
+  }
+
+  async countSessionsByTrainerIdAndDate(
+    trainerId: string,
+    month: number,
+    year: number,
+  ): Promise<number> {
+    const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+
+    const nextMonth = month === 12 ? 1 : month + 1;
+    const nextMonthYear = month === 12 ? year + 1 : year;
+
+    const endDate = `${nextMonthYear}-${String(nextMonth).padStart(2, "0")}-01`;
+
+    return await this._model.countDocuments({
+      trainerId,
+      status: SessionStatus.COMPLETED,
+      date: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+  }
+
+  async completedSessionsAmountByTrainerIdAndMonthYear(
+    trainerId: string,
+    salaryMonth: number,
+    salaryYear: number,
+  ): Promise<{ totalSessionsAmount: number; count: number }> {
+    const startDate = `${salaryYear}-${String(salaryMonth).padStart(2, "0")}-01`;
+    const nextMonth = salaryMonth === 12 ? 1 : salaryMonth + 1;
+    const nextMonthYear = salaryMonth === 12 ? salaryYear + 1 : salaryYear;
+    const endDate = `${nextMonthYear}-${String(nextMonth).padStart(2, "0")}-01`;
+
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          trainerId: new Types.ObjectId(trainerId),
+          status: SessionStatus.COMPLETED,
+          date: {
+            $gte: startDate,
+            $lt: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSessionsAmount: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    return {
+      totalSessionsAmount: result[0]?.totalSessionsAmount || 0,
+      count: result[0]?.count || 0,
+    };
   }
 }

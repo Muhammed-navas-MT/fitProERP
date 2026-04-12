@@ -24,6 +24,7 @@ import ExpensePage from "@/page/gymAdmin/expensePage";
 import ProfitAnalytics from "@/page/gymAdmin/ProfitAnalyticsPage";
 import TrainerLeavePage from "@/page/gymAdmin/leavePage";
 import GymAdminForgetPasswordPage from "@/page/gymAdmin/forgetPasswordPage";
+import GenerateSalaryPage from "@/page/gymAdmin/trainerSalaryPage";
 
 const GymAdminRoutes = () => {
   return (
@@ -126,6 +127,10 @@ const GymAdminRoutes = () => {
           <Route
             path={FRONTEND_ROUTES.GYM_ADMIN.LEAVE}
             element={<TrainerLeavePage />}
+          />
+           <Route
+            path={FRONTEND_ROUTES.GYM_ADMIN.SALARY}
+            element={<GenerateSalaryPage />}
           />
         </Route>
       </Route>

@@ -130,4 +130,8 @@ export class TrainerRepository
       .findOne({ email: data.email, gymId: data.gymId })
       .lean();
   }
+  async findActiveTrainersByGymId(gymId: string): Promise<TrainerEntity[]> {
+    const trainers = await this._model.find({ gymId }).lean<TrainerEntity[]>();
+    return trainers;
+  }
 }

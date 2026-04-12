@@ -104,6 +104,20 @@ import { SendForgotPasswordOtpEmailContentGenerator } from "../../services/IEmai
 import { VerifyGymAdminOtpUseCase } from "../../../application/useCases/gymAdmin/forgetPasswordManagement/verifyOtpUseCase";
 import { GymAdminNewPasswordUseCase } from "../../../application/useCases/gymAdmin/forgetPasswordManagement/newPasswordUseCase";
 import { GymAdminForgetPasswordController } from "../../../presentation/controller/gymAdmin/forgetPasswordController";
+import { GenerateTrainerSalaryUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/generateTrainerSalaryUseCase";
+import { TrainerSalaryRepository } from "../../repository/trainer/salaryRepo";
+import { trainerSalaryModel } from "../../repository/databaseConfigs/models/salaryModel";
+import { SessionRepository } from "../../repository/member/sessionRepo";
+import { sessionModel } from "../../repository/databaseConfigs/models/sessionModel";
+import { PayTrainerSalaryUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/payTrainerSalaryUseCase";
+import { StripeService } from "../../services/stripeService";
+import { stripe } from "../../services/stripeClient";
+import { TrainerSalaryController } from "../../../presentation/controller/gymAdmin/salaryManagementController";
+import { ListAllTrainerSalaryUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/listAllTrainerSalaryUseCase";
+import { CreateBillingSetupIntentUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/createBillingSetupIntentUseCase";
+import { GetBillingConfigUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/getBillingConfigUseCase";
+import { SaveBillingEmailUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/saveBillingEmailUseCase";
+import { SaveBillingPaymentMethodUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/saveBillingPaymentMethodUseCase";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -121,6 +135,9 @@ const hashService = new HashPassword();
 const cloudinaryService = new CloudinaryService();
 const socketService = new SocketService();
 const noticationRepository = new NotificationRepository(notificationModel);
+const trainerSalaryRepository = new TrainerSalaryRepository(trainerSalaryModel);
+const sessionRepository = new SessionRepository(sessionModel);
+const stripeService = new StripeService(stripe);
 const sendForgetPasswordOtpEmailContentGenerator =
   new SendForgotPasswordOtpEmailContentGenerator();
 const notificationUseCase = new CreateNotificationUseCase(
@@ -397,3 +414,42 @@ export const injectedForgetPasswordGymAdminController =
     verifyOtpUseCase,
     newPasswordUseCase,
   );
+
+// salary management
+const generateTrainerSalaryUseCase = new GenerateTrainerSalaryUseCase(
+  gymAdminRepository,
+  trainerRepository,
+  trainerSalaryRepository,
+  sessionRepository,
+  leaveRepository,
+);
+const payTrainerSalaryUseCase = new PayTrainerSalaryUseCase(
+  trainerSalaryRepository,
+  gymAdminRepository,
+  trainerRepository,
+  stripeService,
+);
+
+const listAllTrainerSalaryUseCase = new ListAllTrainerSalaryUseCase(
+  trainerSalaryRepository,
+  gymAdminRepository,
+);
+const createBillingSetupIntentUseCase = new CreateBillingSetupIntentUseCase(
+  gymAdminRepository,
+  stripeService,
+);
+const getBillingConfigUseCase = new GetBillingConfigUseCase(gymAdminRepository);
+const saveBillingEmailUseCase = new SaveBillingEmailUseCase(gymAdminRepository);
+const saveBillingPaymentMethodUseCase = new SaveBillingPaymentMethodUseCase(
+  gymAdminRepository,
+  stripeService,
+);
+export const injectedSalaryController = new TrainerSalaryController(
+  generateTrainerSalaryUseCase,
+  listAllTrainerSalaryUseCase,
+  payTrainerSalaryUseCase,
+  createBillingSetupIntentUseCase,
+  getBillingConfigUseCase,
+  saveBillingEmailUseCase,
+  saveBillingPaymentMethodUseCase,
+);

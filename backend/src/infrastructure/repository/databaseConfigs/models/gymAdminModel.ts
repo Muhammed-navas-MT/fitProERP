@@ -3,6 +3,7 @@ import { Status } from "../../../../domain/enums/status";
 import { Document, model } from "mongoose";
 import { Roles } from "../../../../domain/enums/roles";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
+import { PaymentMethodType } from "../../../../domain/enums/stripePaymentMethodType";
 
 export interface IGymAdminModel extends Document {
   _id: string;
@@ -29,6 +30,15 @@ export interface IGymAdminModel extends Document {
   logo: string;
   status?: Status;
   branches?: string[];
+  billingConfig?: {
+    stripeCustomerId?: string;
+    defaultPaymentMethodId?: string;
+    paymentMethodType?: PaymentMethodType;
+    paymentMethodBrand?: string;
+    paymentMethodLast4?: string;
+    billingEmail?: string;
+    isDefaultPaymentMethodAdded?: boolean;
+  };
   createdAt?: Date;
 }
 

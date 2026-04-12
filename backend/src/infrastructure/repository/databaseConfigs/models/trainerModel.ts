@@ -2,6 +2,8 @@ import { Document, model, Model } from "mongoose";
 import { trainerSchema } from "../schemas/trainerSchema";
 import { Status } from "../../../../domain/enums/status";
 import { Roles } from "../../../../domain/enums/roles";
+import { SalaryPaymentMethod } from "../../../../domain/enums/salaryPaymentMethod";
+import { StripeAccountStatus } from "../../../../domain/enums/stripeAccountStatus";
 
 export interface ITrainerModel extends Document {
   _id: string;
@@ -23,6 +25,18 @@ export interface ITrainerModel extends Document {
   dutyTime: {
     startTime: string;
     endTime: string;
+  };
+  salaryConfig?: {
+    paymentType: SalaryPaymentMethod;
+    isPayoutEnabled: boolean;
+    stripeConnectedAccountId?: string;
+    stripeAccountStatus?: StripeAccountStatus;
+    stripeOnboardingCompleted?: boolean;
+    accountHolderName?: string;
+    bankName?: string;
+    bankLast4?: string;
+    ifscCode?: string;
+    upiId?: string;
   };
   createdAt?: Date;
 }

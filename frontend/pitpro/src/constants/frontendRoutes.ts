@@ -25,7 +25,8 @@ export const FRONTEND_ROUTES = {
         LIST_EXPENSE: "expenses",
         PROFIT:"profit_analytics",
         LEAVE:"leaves",
-        FORGET_PASSWORD: "forget_password"
+        FORGET_PASSWORD: "forget_password",
+        SALARY: "salary"
     },
     SUPER_ADMIN:{
         BASE:"/super-admin",
