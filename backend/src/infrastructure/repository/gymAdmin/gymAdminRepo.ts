@@ -8,6 +8,7 @@ import { Status } from "../../../domain/enums/status";
 import { GymAdminProfileResponseDTO } from "../../../application/dtos/gymAdminDto/gymAdminProfileDtos";
 import { mapGymAdminToProfileResponse } from "../../../application/mappers/gymAdmin/profileMappers";
 import { GymGrowthDto } from "../../../application/dtos/superAdminDto/dashboardDto";
+import { PaymentMethodType } from "../../../domain/enums/stripePaymentMethodType";
 
 export class GymAdminRepository
   extends BaseRepository<IGymAdminModel>
@@ -178,5 +179,56 @@ export class GymAdminRepository
     }
 
     return output;
+  }
+
+  async isBillingConfigAdded(gymId: string): Promise<boolean> {
+    const gym = await this._model
+      .findById(gymId)
+      .select("billingConfig.isDefaultPaymentMethodAdded")
+      .lean();
+
+    return !!gym?.billingConfig?.isDefaultPaymentMethodAdded;
+  }
+
+  async updateBillingEmail(
+    gymId: string,
+    billingEmail: string,
+  ): Promise<GymAdminEntity | null> {
+    return await this._model
+      .findByIdAndUpdate(
+        gymId,
+        {
+          $set: {
+            "billingConfig.billingEmail": billingEmail,
+          },
+        },
+        { new: true },
+      )
+      .lean<GymAdminEntity | null>();
+  }
+
+  async updateBillingConfig(
+    gymId: string,
+    data: {
+      stripeCustomerId?: string;
+      defaultPaymentMethodId?: string;
+      paymentMethodType?: PaymentMethodType;
+      paymentMethodBrand?: string;
+      paymentMethodLast4?: string;
+      billingEmail?: string;
+      isDefaultPaymentMethodAdded?: boolean;
+    },
+  ): Promise<GymAdminEntity | null> {
+    const updateData: Record<string, unknown> = {};
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        updateData[`billingConfig.${key}`] = value;
+      }
+    });
+
+    return await this._model
+      .findByIdAndUpdate(gymId, { $set: updateData }, { new: true })
+      .lean<GymAdminEntity | null>();
   }
 }

@@ -27,4 +27,5 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
     email: string;
     gymId: string;
   }): Promise<TrainerEntity | null>;
+  findActiveTrainersByGymId(gymId: string): Promise<TrainerEntity[]>;
 }

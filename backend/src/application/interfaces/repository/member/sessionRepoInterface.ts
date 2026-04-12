@@ -27,4 +27,14 @@ export interface ISessionRepository extends IBaseRepository<SessionEntity> {
     trainerId: string,
     date: string,
   ): Promise<PopulateTrainerSessionItem[]>;
+  countSessionsByTrainerIdAndDate(
+    trainerId: string,
+    month: number,
+    year: number,
+  ): Promise<number>;
+  completedSessionsAmountByTrainerIdAndMonthYear(
+    trainerId: string,
+    salaryMonth: number,
+    salaryYear: number,
+  ): Promise<{ totalSessionsAmount: number; count: number }>;
 }

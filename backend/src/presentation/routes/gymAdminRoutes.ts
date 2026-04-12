@@ -18,6 +18,7 @@ import {
   injectedPurchaseSubscriptionController,
   injectedReApplyController,
   injectedRevenueController,
+  injectedSalaryController,
   injectedTrainerLeaveController,
   injectTrainerManagementController,
 } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
@@ -423,6 +424,42 @@ export class GymAdminRoutes {
       GYMADMIN.GET_DASHBOARD_DETAILS,
       (req: Request, res: Response, next: NextFunction) => {
         injectedGymAdminDashboardController.handleGetData(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.GENERATE_TRAINER_SALARY,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleGenerateSalary(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.LIST_TRAINER_SALARY,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleListAllSalary(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.GET_BILLING_CONFIG,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleGetBillingConfig(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.CREATE_BILLING_SETUP_INTENT,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleCreateBillingSetupIntent(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.SAVE_BILLING_EMAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleSaveBillingEmail(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.SAVE_PAYMENT_METHOD,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleSaveBillingPaymentMethod(req, res, next);
       },
     );
   }
