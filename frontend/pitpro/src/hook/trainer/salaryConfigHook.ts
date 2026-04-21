@@ -2,8 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createTrainerStripeOnboardingLinkService,
   getTrainerSalaryconfigService,
+  listAllSalaryService,
   refreshTrainerStripeStatusService,
   updateTrainerSalaryconfigService,
+  viewSalaryDetailService,
 } from "@/services/trainer/salaryConfigService";
 import { SalaryPaymentMethod } from "@/types/trainer/salarypaymentMethod";
 
@@ -59,5 +61,20 @@ export const useUpdateTrainerSalaryConfig = () => {
         queryKey: ["trainer-salary-config"],
       });
     },
+  });
+};
+
+export const useViewTrainerSalary = (salaryId: string) => {
+  return useQuery({
+    queryKey: ["salary_detail", salaryId],
+    queryFn: () => viewSalaryDetailService(salaryId),
+    enabled: !!salaryId,
+  });
+};
+
+export const useListAllTrainerSalary = (data:{page:number;limit:number}) => {
+  return useQuery({
+    queryKey: ["list_salary", data],
+    queryFn: () => listAllSalaryService(data),
   });
 };

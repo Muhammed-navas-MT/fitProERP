@@ -71,6 +71,10 @@ import { CreateTrainerStripeOnboardingLinkUseCase } from "../../../application/u
 import { StripeService } from "../../services/stripeService";
 import { RefreshTrainerStripeStatusUseCase } from "../../../application/useCases/trainer/salaryManagement/refreshTrainerStripeStatusUseCase";
 import { stripe } from "../../services/stripeClient";
+import { ViewSalaryUseCase } from "../../../application/useCases/trainer/salaryManagement/viewSalaryUseCase";
+import { trainerSalaryModel } from "../../repository/databaseConfigs/models/salaryModel";
+import { ListAllSalaryUseCase } from "../../../application/useCases/trainer/salaryManagement/listAllSalaryUseCase";
+import { TrainerSalaryRepository } from "../../repository/trainer/salaryRepo";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -82,6 +86,7 @@ const leaveRepository = new LeaveRepository(trainerLeaveModel);
 const slotRuleRepository = new SlotRuleRepository(slotRuleModel);
 const sessionRepository = new SessionRepository(sessionModel);
 const notificationRepository = new NotificationRepository(notificationModel);
+const trainerSalaryRepository = new TrainerSalaryRepository(trainerSalaryModel);
 const socketService = new SocketService();
 const otpService = new OtpService();
 const stripeService = new StripeService(stripe);
@@ -286,10 +291,14 @@ const refreshTrainerStripeStatusUseCase = new RefreshTrainerStripeStatusUseCase(
   trainerRepository,
   stripeService,
 );
+const viewSalaryUseCase = new ViewSalaryUseCase(trainerSalaryRepository);
+const listAllSalaryUseCase = new ListAllSalaryUseCase(trainerSalaryRepository);
 export const injectedTrainerSalaryConfigController =
   new TrainerSalaryConfigController(
     getTrainerSalaryConfigUseCase,
     updateTrainerSalaryConfigUseCase,
     createTrainerStripeOnboardingLinkUseCase,
     refreshTrainerStripeStatusUseCase,
+    viewSalaryUseCase,
+    listAllSalaryUseCase,
   );

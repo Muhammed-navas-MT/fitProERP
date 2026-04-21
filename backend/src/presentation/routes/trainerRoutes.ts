@@ -363,6 +363,18 @@ export class TrainerRoutes {
         );
       },
     );
+    this._route.get(
+      TRAINER.VIEW_SALARY,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.viewSalary(req, res, next);
+      },
+    );
+    this._route.get(
+      TRAINER.LIST_ALL_SALARIES,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.listAllSalary(req, res, next);
+      },
+    );
   }
 
   public get_routes(): Router {
