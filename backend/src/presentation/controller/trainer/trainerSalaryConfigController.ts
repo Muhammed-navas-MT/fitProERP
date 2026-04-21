@@ -6,6 +6,8 @@ import { IRefreshTrainerStripeStatusUseCase } from "../../../application/interfa
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { CreateTrainerOnboardingLinkDto } from "../../../application/dtos/trainerDto/trainerSalaryConfigDto";
+import { IViewSalaryUseCase } from "../../../application/interfaces/useCase/trainer/salaryManagement/viewSalaryUseCaseInterface";
+import { IListAllSalaryUseCase } from "../../../application/interfaces/useCase/trainer/salaryManagement/listAllSalaryUseCaseInterface";
 
 export class TrainerSalaryConfigController {
   constructor(
@@ -13,6 +15,8 @@ export class TrainerSalaryConfigController {
     private _updateTrainerSalaryConfigUseCase: IUpdateTrainerSalaryConfigUseCase,
     private _createTrainerStripeOnboardingLinkUseCase: ICreateTrainerStripeOnboardingLinkUseCase,
     private _refreshTrainerStripeStatusUseCase: IRefreshTrainerStripeStatusUseCase,
+    private _viewSalaryUseCase: IViewSalaryUseCase,
+    private _listAllSalaryUseCase: IListAllSalaryUseCase,
   ) {}
 
   async getSalaryConfig(
@@ -98,6 +102,49 @@ export class TrainerSalaryConfigController {
         HTTP_STATUS_CODE.OK,
         res,
         "Stripe account status fetched successfully",
+        response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  async viewSalary(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { salaryId } = req.params;
+      const response = await this._viewSalaryUseCase.execute(salaryId);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Salary details fetched successfully",
+        response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  async listAllSalary(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const trainerId = res.locals.data.id;
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 5;
+
+      const response = await this._listAllSalaryUseCase.execute(
+        trainerId,
+        page,
+        limit,
+      );
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Salary details fetched successfully",
         response,
       );
     } catch (error) {

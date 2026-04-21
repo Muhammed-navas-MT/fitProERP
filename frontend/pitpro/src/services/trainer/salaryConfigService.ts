@@ -68,3 +68,35 @@ export const updateTrainerSalaryconfigService = async (data: {
     throw error;
   }
 };
+
+export const viewSalaryDetailService = async (salaryId: string) => {
+  try {
+    const response = await AxiosInstance.get(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.VIEW_SALARY}/${salaryId}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.messages);
+    }
+    throw error;
+  }
+};
+
+export const listAllSalaryService = async (data: {
+  page: number;
+  limit: number;
+}) => {
+  try {
+    const response = await AxiosInstance.get(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.LIST_ALL_SALARIES}`,
+      { params: data },
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.messages);
+    }
+    throw error;
+  }
+};

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   Clock3,
+  Eye,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -23,57 +24,35 @@ import { SalaryPaymentMethod } from "@/types/trainer/salarypaymentMethod";
 import {
   useCreateTrainerStripeOnboardingLink,
   useGetTrainerSalaryConfig,
+  useListAllTrainerSalary,
   useRefreshTrainerStripeStatus,
   useUpdateTrainerSalaryConfig,
 } from "@/hook/trainer/salaryConfigHook";
+import TrainerSalaryDetailModal from "@/components/trainer/salaryManagement/SalaryDetailmodal";
 
 type StripeAccountStatus = "NOT_CREATED" | "PENDING" | "RESTRICTED" | "ACTIVE";
 
 interface SalaryHistoryItem {
   id: string;
-  monthLabel: string;
+  salaryMonth: number;
+  salaryYear: number;
+  salaryMonthLabel: string;
   grossSalary: number;
-  deduction: number;
+  totalDeduction: number;
   netSalary: number;
   paymentStatus: "PENDING" | "PAID" | "FAILED";
-  paymentDate?: string;
-  paymentMethod: SalaryPaymentMethod;
+  paidAt?: string | null;
+  dueDate?: string | null;
+  paymentMethod: string;
+  currency: string;
+  createdAt?: string;
 }
-
-const dummySalaryHistory: SalaryHistoryItem[] = [
-  {
-    id: "1",
-    monthLabel: "January 2026",
-    grossSalary: 32000,
-    deduction: 2000,
-    netSalary: 30000,
-    paymentStatus: "PAID",
-    paymentDate: "2026-02-02",
-    paymentMethod: SalaryPaymentMethod.BANK_TRANSFER,
-  },
-  {
-    id: "2",
-    monthLabel: "February 2026",
-    grossSalary: 34000,
-    deduction: 1500,
-    netSalary: 32500,
-    paymentStatus: "PAID",
-    paymentDate: "2026-03-03",
-    paymentMethod: SalaryPaymentMethod.BANK_TRANSFER,
-  },
-  {
-    id: "3",
-    monthLabel: "March 2026",
-    grossSalary: 35000,
-    deduction: 1000,
-    netSalary: 34000,
-    paymentStatus: "PENDING",
-    paymentMethod: SalaryPaymentMethod.BANK_TRANSFER,
-  },
-];
 
 export default function TrainerSalaryConfigPage() {
   const name = useSelector((state: rootstate) => state.authData.name);
+
+  const [selectedSalaryId, setSelectedSalaryId] = useState<string | null>(null);
+  const [isSalaryDetailOpen, setIsSalaryDetailOpen] = useState(false);
 
   const avatarText = name
     ?.split(" ")
@@ -83,6 +62,9 @@ export default function TrainerSalaryConfigPage() {
     .toUpperCase();
 
   const { data, isLoading } = useGetTrainerSalaryConfig();
+  const { data: listSalary, isLoading: isSalaryHistoryLoading } =
+    useListAllTrainerSalary({ page: 1, limit: 5 });
+
   const { mutateAsync: updateSalaryConfig, isPending: isSaving } =
     useUpdateTrainerSalaryConfig();
   const {
@@ -93,6 +75,7 @@ export default function TrainerSalaryConfigPage() {
     useRefreshTrainerStripeStatus();
 
   const salaryConfig = data?.data ?? data;
+  const salaryHistory: SalaryHistoryItem[] = listSalary?.data?.data ?? [];
 
   const [paymentType] = useState<SalaryPaymentMethod>(
     SalaryPaymentMethod.BANK_TRANSFER,
@@ -120,8 +103,7 @@ export default function TrainerSalaryConfigPage() {
       case "ACTIVE":
         return {
           text: "Stripe Active",
-          className:
-            "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+          className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
           icon: <CheckCircle2 className="h-4 w-4" />,
         };
       case "RESTRICTED":
@@ -172,6 +154,19 @@ export default function TrainerSalaryConfigPage() {
           ? error.message
           : "Failed to update salary config";
       toast.error(message);
+    }
+  };
+
+  const handleViewSalary = (salaryId: string) => {
+    setSelectedSalaryId(salaryId);
+    setIsSalaryDetailOpen(true);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsSalaryDetailOpen(open);
+
+    if (!open) {
+      setSelectedSalaryId(null);
     }
   };
 
@@ -382,7 +377,7 @@ export default function TrainerSalaryConfigPage() {
                       Salary History
                     </h2>
                     <p className="text-sm text-gray-400">
-                      Dummy data for now. You can connect API later.
+                      Recent salary payout history
                     </p>
                   </div>
                 </div>
@@ -398,39 +393,89 @@ export default function TrainerSalaryConfigPage() {
                         <th className="px-3 py-3">Method</th>
                         <th className="px-3 py-3">Status</th>
                         <th className="px-3 py-3">Paid Date</th>
+                        <th className="px-3 py-3 text-center">Actions</th>
                       </tr>
                     </thead>
+
                     <tbody>
-                      {dummySalaryHistory.map((item) => (
-                        <tr
-                          key={item.id}
-                          className="border-b border-[#222222] hover:bg-[#141414]"
-                        >
-                          <td className="px-3 py-4 text-white">
-                            {item.monthLabel}
-                          </td>
-                          <td className="px-3 py-4 text-right text-gray-300">
-                            ₹{item.grossSalary.toLocaleString("en-IN")}
-                          </td>
-                          <td className="px-3 py-4 text-right text-red-400">
-                            -₹{item.deduction.toLocaleString("en-IN")}
-                          </td>
-                          <td className="px-3 py-4 text-right font-semibold text-emerald-400">
-                            ₹{item.netSalary.toLocaleString("en-IN")}
-                          </td>
-                          <td className="px-3 py-4 text-gray-300">
-                            {item.paymentMethod
-                              .toLowerCase()
-                              .replace(/_/g, " ")}
-                          </td>
-                          <td className="px-3 py-4">
-                            {renderPaymentStatus(item.paymentStatus)}
-                          </td>
-                          <td className="px-3 py-4 text-gray-400">
-                            {item.paymentDate ?? "—"}
+                      {isSalaryHistoryLoading ? (
+                        <tr>
+                          <td
+                            colSpan={8}
+                            className="px-3 py-8 text-center text-gray-400"
+                          >
+                            Loading salary history...
                           </td>
                         </tr>
-                      ))}
+                      ) : salaryHistory.length > 0 ? (
+                        salaryHistory.map((item) => (
+                          <tr
+                            key={item.id}
+                            className="border-b border-[#222222] hover:bg-[#141414]"
+                          >
+                            <td className="px-3 py-4 text-white">
+                              {item.salaryMonthLabel}
+                            </td>
+
+                            <td className="px-3 py-4 text-right text-gray-300">
+                              ₹{item.grossSalary.toLocaleString("en-IN")}
+                            </td>
+
+                            <td className="px-3 py-4 text-right text-red-400">
+                              -₹{item.totalDeduction.toLocaleString("en-IN")}
+                            </td>
+
+                            <td className="px-3 py-4 text-right font-semibold text-emerald-400">
+                              ₹{item.netSalary.toLocaleString("en-IN")}
+                            </td>
+
+                            <td className="px-3 py-4 text-gray-300">
+                              {item.paymentMethod
+                                .toLowerCase()
+                                .replace(/_/g, " ")}
+                            </td>
+
+                            <td className="px-3 py-4">
+                              {renderPaymentStatus(item.paymentStatus)}
+                            </td>
+
+                            <td className="px-3 py-4 text-gray-400">
+                              {item.paidAt
+                                ? new Date(item.paidAt).toLocaleDateString(
+                                    "en-IN",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    },
+                                  )
+                                : "—"}
+                            </td>
+
+                            <td className="px-3 py-4 text-center">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleViewSalary(item.id)}
+                                className="border-[#2a2a2a] bg-transparent text-white hover:bg-[#222222]"
+                              >
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={8}
+                            className="px-3 py-8 text-center text-gray-400"
+                          >
+                            No salary history found.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -522,13 +567,19 @@ export default function TrainerSalaryConfigPage() {
                     • Stripe onboarding must be completed to enable automatic
                     payouts.
                   </li>
-                  <li>• Salary history below is dummy data for now.</li>
+                  <li>• Recent 5 salary records are shown here.</li>
                 </ul>
               </div>
             </div>
           </div>
         </main>
       </div>
+
+      <TrainerSalaryDetailModal
+        open={isSalaryDetailOpen}
+        onOpenChange={handleOpenChange}
+        salaryId={selectedSalaryId ?? ""}
+      />
     </div>
   );
 }

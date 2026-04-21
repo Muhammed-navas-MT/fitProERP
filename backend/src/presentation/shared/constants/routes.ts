@@ -148,6 +148,8 @@ export const ROUTES = {
     GET_SALARY_CONFING: "/get_salary_confing",
     REFRESH_STRIPE_STATUS: "/stripe_refresh_status",
     UPDATE_SALARY_CONFIG: "/update_salary_config",
+    LIST_ALL_SALARIES: "/list_all_salary",
+    VIEW_SALARY: "/view_salary/:salaryId",
   },
 
   MEMBER: {
