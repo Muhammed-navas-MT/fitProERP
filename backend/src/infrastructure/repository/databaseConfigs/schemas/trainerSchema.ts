@@ -1,6 +1,8 @@
 import { Schema } from "mongoose";
 import { Status } from "../../../../domain/enums/status";
 import { Roles } from "../../../../domain/enums/roles";
+import { StripeAccountStatus } from "../../../../domain/enums/stripeAccountStatus";
+import { SalaryPaymentMethod } from "../../../../domain/enums/salaryPaymentMethod";
 
 export const trainerSchema = new Schema(
   {
@@ -82,6 +84,56 @@ export const trainerSchema = new Schema(
       },
       endTime: {
         type: String,
+      },
+    },
+    salaryConfig: {
+      paymentType: {
+        type: String,
+        enum: Object.values(SalaryPaymentMethod),
+      },
+
+      isPayoutEnabled: {
+        type: Boolean,
+        default: false,
+      },
+
+      stripeConnectedAccountId: {
+        type: String,
+      },
+
+      stripeAccountStatus: {
+        type: String,
+        enum: Object.values(StripeAccountStatus),
+      },
+
+      stripeOnboardingCompleted: {
+        type: Boolean,
+        default: false,
+      },
+
+      accountHolderName: {
+        type: String,
+        trim: true,
+      },
+
+      bankName: {
+        type: String,
+        trim: true,
+      },
+
+      bankLast4: {
+        type: String,
+      },
+
+      ifscCode: {
+        type: String,
+        uppercase: true,
+        trim: true,
+      },
+
+      upiId: {
+        type: String,
+        trim: true,
       },
     },
   },

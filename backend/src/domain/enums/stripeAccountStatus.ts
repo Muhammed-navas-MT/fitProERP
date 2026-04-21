@@ -3,4 +3,5 @@ export enum StripeAccountStatus {
   ACTIVE = "ACTIVE",
   RESTRICTED = "RESTRICTED",
   DISABLED = "DISABLED",
+  NOT_CREATED = "NOT_CREATED",
 }

@@ -1,5 +1,7 @@
 import { TrainerSalaryEntity } from "../../../../domain/entities/trainer/salaryPaymentEntity";
+import { NotificationType } from "../../../../domain/enums/notificationTypes";
 import { PaymentStatus } from "../../../../domain/enums/paymentStatus";
+import { Roles } from "../../../../domain/enums/roles";
 import { SalaryPaymentMethod } from "../../../../domain/enums/salaryPaymentMethod";
 import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
@@ -10,6 +12,10 @@ import { ISessionRepository } from "../../../interfaces/repository/member/sessio
 import { ILeaveRepository } from "../../../interfaces/repository/shared/leaveRepoInterface";
 import { ITrainerSalaryRepository } from "../../../interfaces/repository/trainer.ts/trainerSalaryRepoInterface";
 import { ITrainerRepository } from "../../../interfaces/repository/trainer.ts/tranerRepoInterface";
+import {
+  INotificationPayload,
+  INotificationService,
+} from "../../../interfaces/service/notificationServiceInterface";
 import { IGenerateTrainerSalaryUseCase } from "../../../interfaces/useCase/gymAdmin/salaryManagement/generateTrainerSalaryUseCaseInterface";
 
 export class GenerateTrainerSalaryUseCase implements IGenerateTrainerSalaryUseCase {
@@ -19,6 +25,7 @@ export class GenerateTrainerSalaryUseCase implements IGenerateTrainerSalaryUseCa
     private _trainerSalaryRepository: ITrainerSalaryRepository,
     private _sessionRepository: ISessionRepository,
     private _leaveRepository: ILeaveRepository,
+    private _notificationService: INotificationService,
   ) {}
 
   async execute(data: CreateTrainerSalaryDto): Promise<void> {
@@ -64,6 +71,7 @@ export class GenerateTrainerSalaryUseCase implements IGenerateTrainerSalaryUseCa
     }
 
     const salaryDocuments: TrainerSalaryEntity[] = [];
+    const notifications: INotificationPayload[] = [];
 
     for (const trainer of trainers) {
       if (!trainer._id) continue;
@@ -149,17 +157,46 @@ export class GenerateTrainerSalaryUseCase implements IGenerateTrainerSalaryUseCa
         grossSalary: Number(grossSalary.toFixed(2)),
         totalDeduction: Number(totalDeduction.toFixed(2)),
         netSalary: Number(netSalary.toFixed(2)),
-        paymentMethod: SalaryPaymentMethod.BANK_TRANSFER,
+        paymentMethod: SalaryPaymentMethod.STRIPE,
         paymentStatus: PaymentStatus.PENDING,
         currency: "INR",
       };
 
       salaryDocuments.push(salaryDoc);
+      notifications.push({
+        receiverId: trainer._id.toString(),
+        receiverRole: Roles.TRAINER,
+        title: "Salary Generated",
+        message: `Your salary record for ${salaryMonthLabel} has been generated. Net salary: ₹${Number(
+          netSalary.toFixed(2),
+        )}.`,
+        type: NotificationType.SALARY_GENERATED,
+        actionLink: "/trainer/salary",
+        relatedId: trainer._id.toString(),
+        relatedModel: "TrainerSalary",
+      });
     }
 
     if (!salaryDocuments.length) {
       throw new NOtFoundException("No trainer salary records to generate");
     }
+    const generatedCount = salaryDocuments.length;
+
     await this._trainerSalaryRepository.createMany(salaryDocuments);
+
+    const gymAdminNotification: INotificationPayload = {
+      receiverId: gym._id?.toString() as string,
+      receiverRole: Roles.GYMADMIN,
+      title: "Trainer Salaries Generated",
+      message: `${generatedCount} trainer salary record(s) were generated for ${salaryMonthLabel}.`,
+      type: NotificationType.SALARY_GENERATED,
+      actionLink: "/gym-admin/salary-management",
+      relatedModel: "TrainerSalary",
+      relatedId: gym._id?.toString() as string,
+    };
+    await this._notificationService.notifyMany([
+      ...notifications,
+      gymAdminNotification,
+    ]);
   }
 }

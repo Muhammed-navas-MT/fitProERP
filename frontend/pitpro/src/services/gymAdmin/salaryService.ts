@@ -94,3 +94,31 @@ export const saveBillingPaymentMethodService = async (data: {
     throw error;
   }
 };
+
+export const payTrainerSalaryService = async (salaryId: string) => {
+  try {
+    const response = await AxiosInstance.post(
+      `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.PAY_TRAINER_SALARY}/${salaryId}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};
+export const findSalaryDetailService = async (salaryId: string) => {
+  try {
+    const response = await AxiosInstance.get(
+      `${API_ROUTES.GYMADMIN.BASE}${API_ROUTES.GYMADMIN.FIND_SALARY_DETAIL}/${salaryId}`,
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data.message);
+    }
+    throw error;
+  }
+};
+

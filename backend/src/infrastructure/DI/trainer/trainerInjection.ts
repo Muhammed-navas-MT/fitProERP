@@ -64,6 +64,13 @@ import { OtpService } from "../../services/otpService";
 import { VerifyTrainerOtpUseCase } from "../../../application/useCases/trainer/forgetPasswordManagement/verifyOtpUseCase";
 import { TrainerNewPasswordUseCase } from "../../../application/useCases/trainer/forgetPasswordManagement/newPasswordUseCase";
 import { TrainerForgetPasswordController } from "../../../presentation/controller/trainer/forgetPasswordController";
+import { TrainerSalaryConfigController } from "../../../presentation/controller/trainer/trainerSalaryConfigController";
+import { GetTrainerSalaryConfigUseCase } from "../../../application/useCases/trainer/salaryManagement/getTrainerSalaryConfigUseCase";
+import { UpdateTrainerSalaryConfigUseCase } from "../../../application/useCases/trainer/salaryManagement/updateTrainerSalaryConfigUseCase";
+import { CreateTrainerStripeOnboardingLinkUseCase } from "../../../application/useCases/trainer/salaryManagement/createTrainerStripeOnboardingLinkUseCase";
+import { StripeService } from "../../services/stripeService";
+import { RefreshTrainerStripeStatusUseCase } from "../../../application/useCases/trainer/salaryManagement/refreshTrainerStripeStatusUseCase";
+import { stripe } from "../../services/stripeClient";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -77,6 +84,7 @@ const sessionRepository = new SessionRepository(sessionModel);
 const notificationRepository = new NotificationRepository(notificationModel);
 const socketService = new SocketService();
 const otpService = new OtpService();
+const stripeService = new StripeService(stripe);
 const sendForgetPasswordOtpEmailContentGenerator =
   new SendForgotPasswordOtpEmailContentGenerator();
 const createNotificationUseCase = new CreateNotificationUseCase(
@@ -260,4 +268,28 @@ export const injectedForgetPasswordTrainerController =
     verifyEmailUseCase,
     verifyOtpUseCase,
     newPasswordUseCase,
+  );
+
+// Salary management
+const getTrainerSalaryConfigUseCase = new GetTrainerSalaryConfigUseCase(
+  trainerRepository,
+);
+const updateTrainerSalaryConfigUseCase = new UpdateTrainerSalaryConfigUseCase(
+  trainerRepository,
+);
+const createTrainerStripeOnboardingLinkUseCase =
+  new CreateTrainerStripeOnboardingLinkUseCase(
+    trainerRepository,
+    stripeService,
+  );
+const refreshTrainerStripeStatusUseCase = new RefreshTrainerStripeStatusUseCase(
+  trainerRepository,
+  stripeService,
+);
+export const injectedTrainerSalaryConfigController =
+  new TrainerSalaryConfigController(
+    getTrainerSalaryConfigUseCase,
+    updateTrainerSalaryConfigUseCase,
+    createTrainerStripeOnboardingLinkUseCase,
+    refreshTrainerStripeStatusUseCase,
   );

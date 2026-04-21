@@ -6,15 +6,25 @@ import { IStripeWebhookRouterUseCase } from "../../interfaces/useCase/shared/str
 import { Roles } from "../../../domain/enums/roles";
 import { IMemberProcessSessionStripeWebhookUseCase } from "../../interfaces/useCase/member/slotAndBookingManagement/memberProcessSessionStripeWebhookUseCaseInterface";
 import { StripeError } from "../../../presentation/shared/constants/messages/stripeMessages";
+import { IProcessTrainerSalaryStripeWebhookUseCase } from "../../interfaces/useCase/gymAdmin/salaryManagement/processTrainerSalaryStripeWebhookUseCaseInterface";
 
 export class StripeWebhookRouterUseCase implements IStripeWebhookRouterUseCase {
   constructor(
     private _gymAdminWebhookUC: IProcessStripeWebhookUseCase,
     private _memberWebhookUC: IMemberProcessStripeWebhookUseCase,
     private _memberSessionWebhookUC: IMemberProcessSessionStripeWebhookUseCase,
+    private _trainerSalaryWebhookUC: IProcessTrainerSalaryStripeWebhookUseCase,
   ) {}
 
   async execute(event: Stripe.Event): Promise<void> {
+    if (
+      event.type === "payment_intent.succeeded" ||
+      event.type === "payment_intent.payment_failed"
+    ) {
+      await this._trainerSalaryWebhookUC.execute(event);
+      return;
+    }
+
     if (event.type !== "checkout.session.completed") return;
 
     const session = event.data.object as Stripe.Checkout.Session;

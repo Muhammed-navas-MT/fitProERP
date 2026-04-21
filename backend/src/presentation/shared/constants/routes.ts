@@ -90,9 +90,10 @@ export const ROUTES = {
     LIST_TRAINER_SALARY: "/list_trainer_salary",
     CREATE_BILLING_SETUP_INTENT: "/create_billing_setup_intent",
     GET_BILLING_CONFIG: "/get_billing_config",
-    PAY_TRAINER_SALARY: "/pay_trainer_salary",
+    PAY_TRAINER_SALARY: "/pay_trainer_salary/:salaryId",
     SAVE_BILLING_EMAIL: "/save_billing_email",
     SAVE_PAYMENT_METHOD: "/save_payment_method",
+    FIND_SALARY_DETAIL: "/find_salary_detail/:salaryId",
   },
 
   TRAINER: {
@@ -143,6 +144,10 @@ export const ROUTES = {
     VERIFY_EMAIL: "/verify_email",
     VERIFY_OTP: "/verify_otp",
     NEW_PASSWORD: "/new_password",
+    CREATE_STRIPE_ONBOARDING_LING: "/stripe_onboarding_link",
+    GET_SALARY_CONFING: "/get_salary_confing",
+    REFRESH_STRIPE_STATUS: "/stripe_refresh_status",
+    UPDATE_SALARY_CONFIG: "/update_salary_config",
   },
 
   MEMBER: {

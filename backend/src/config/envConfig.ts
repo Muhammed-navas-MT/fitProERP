@@ -21,4 +21,5 @@ export const configEnv = {
   MAX_AGE: process.env.MAX_AGE,
   GEMINI_API_KEY: process.env.GEMINI_API_KEY,
   GROQ_API_KEY: process.env.GROQ_API_KEY,
+  EXCHANGE_RATE_API_KEY: process.env.EXCHANGE_RATE_API_KEY,
 };

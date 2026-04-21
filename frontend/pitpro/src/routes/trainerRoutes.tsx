@@ -9,6 +9,7 @@ import MemberDetailPage from "@/page/trainer/memberDetailPage";
 import { MembersPage } from "@/page/trainer/memberListPage";
 import TrainerLoginPage from "@/page/trainer/trainerLoginPage";
 import ProfilePage from "@/page/trainer/trainerProfilePage";
+import TrainerSalaryConfigPage from "@/page/trainer/trainerSalaryConfigPage";
 import TrainerSchedulePage from "@/page/trainer/trainerSchedulePage";
 import { Route, Routes } from "react-router-dom";
 
@@ -63,6 +64,10 @@ const TrainerRoutes = () => {
         <Route
           path={FRONTEND_ROUTES.TRAINER.CHAT}
           element={<TrainerChatPage />}
+        />
+        <Route
+          path={FRONTEND_ROUTES.TRAINER.SALARY}
+          element={<TrainerSalaryConfigPage />}
         />
       </Route>
     </Routes>

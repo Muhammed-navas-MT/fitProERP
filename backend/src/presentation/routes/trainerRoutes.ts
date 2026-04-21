@@ -11,6 +11,7 @@ import {
   injectedSlotRuleController,
   injectedTrainerLoginController,
   injectedTrainerLogoutController,
+  injectedTrainerSalaryConfigController,
 } from "../../infrastructure/DI/trainer/trainerInjection";
 import { injectAuthMiddleware } from "../../infrastructure/DI/gymAdmin/gymAdminInjection";
 import { injectedAttendanceController } from "../../infrastructure/DI/shared/attendanceInjection";
@@ -324,6 +325,42 @@ export class TrainerRoutes {
       TRAINER.GET_DASHBOARD_DETAILS,
       (req: Request, res: Response, next: NextFunction) => {
         injectedDashboardController.handleGetDetails(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.CREATE_STRIPE_ONBOARDING_LING,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.createStripeOnboardingLink(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.get(
+      TRAINER.GET_SALARY_CONFING,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.getSalaryConfig(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.REFRESH_STRIPE_STATUS,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.refreshStripeStatus(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+    this._route.post(
+      TRAINER.UPDATE_SALARY_CONFIG,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerSalaryConfigController.updateSalaryConfig(
+          req,
+          res,
+          next,
+        );
       },
     );
   }

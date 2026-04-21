@@ -462,6 +462,18 @@ export class GymAdminRoutes {
         injectedSalaryController.handleSaveBillingPaymentMethod(req, res, next);
       },
     );
+    this._route.post(
+      GYMADMIN.PAY_TRAINER_SALARY,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handlePaySalary(req, res, next);
+      },
+    );
+    this._route.get(
+      GYMADMIN.FIND_SALARY_DETAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedSalaryController.handleFindSalaryDetail(req, res, next);
+      },
+    );
   }
 
   public get_routes(): Router {

@@ -5,6 +5,11 @@ import { ITrainerSalaryModel } from "../databaseConfigs/models/salaryModel";
 import { ITrainerSalaryRepository } from "../../../application/interfaces/repository/trainer.ts/trainerSalaryRepoInterface";
 import { PopulatedtrainerSalary } from "../databaseConfigs/types/populatedTrainerSalary";
 import { ListTrainerSalaryRequestDto } from "../../../application/dtos/trainerDto/salaryDtos";
+import {
+  IPopulatedSalary,
+  IPopulatedSalaryBranch,
+  IPopulatedSalaryTrainer,
+} from "../databaseConfigs/types/populatedSalaryType";
 
 export class TrainerSalaryRepository
   extends BaseRepository<ITrainerSalaryModel>
@@ -126,5 +131,23 @@ export class TrainerSalaryRepository
     });
 
     return count > 0;
+  }
+  async findByStripePaymentIntentId(
+    paymentIntentId: string,
+  ): Promise<TrainerSalaryEntity | null> {
+    const salary = await this._model
+      .findOne({ stripePaymentIntentId: paymentIntentId })
+      .lean();
+
+    return salary;
+  }
+
+  async findDetailById(salaryId: string): Promise<IPopulatedSalary | null> {
+    const salary = await this._model
+      .findOne({ _id: salaryId })
+      .populate<IPopulatedSalaryTrainer>("trainerId", "name email")
+      .populate<IPopulatedSalaryBranch>("branchId", "branchName address")
+      .lean<IPopulatedSalary>();
+    return salary;
   }
 }

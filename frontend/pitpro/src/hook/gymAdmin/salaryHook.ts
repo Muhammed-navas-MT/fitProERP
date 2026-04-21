@@ -5,6 +5,8 @@ import {
   getBillingConfigService,
   saveBillingEmailService,
   saveBillingPaymentMethodService,
+  payTrainerSalaryService,
+  findSalaryDetailService,
 } from "@/services/gymAdmin/salaryService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -65,5 +67,32 @@ export const useSaveBillingPaymentMethod = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["billing-config"] });
     },
+  });
+};
+
+export const usePaySalarySalary = (params: { page: number; limit: number }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (salaryId: string) => payTrainerSalaryService(salaryId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["salaries", params],
+      });
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ["salaries", params],
+        });
+      }, 5000);
+    },
+  });
+};
+
+export const useFindSalaryDetail = (salaryId: string) => {
+  return useQuery({
+    queryKey: ["salary_detail", salaryId],
+    queryFn: () => findSalaryDetailService(salaryId),
+    enabled: !!salaryId,
   });
 };

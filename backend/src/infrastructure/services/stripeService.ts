@@ -7,7 +7,7 @@ export class StripeService implements IStripeService {
 
   async createRefund(data: {
     paymentIntentId: string;
-    amount: number;
+    amount?: number;
   }): Promise<{
     id: string;
     amount: number;
@@ -131,28 +131,32 @@ export class StripeService implements IStripeService {
     email: string;
     name: string;
   }): Promise<{ accountId: string }> {
-    const account = await this._stripe.accounts.create({
-      type: "express",
-      email: data.email,
-      capabilities: {
-        transfers: { requested: true },
-      },
-      business_type: "individual",
-      individual: {
-        first_name: data.name,
-      },
-    });
+    try {
+      const account = await this._stripe.accounts.create({
+        type: "express",
+        email: data.email,
+        country: "US",
+        capabilities: {
+          transfers: { requested: true },
+        },
+      });
 
-    return { accountId: account.id };
+      return { accountId: account.id };
+    } catch (error) {
+      console.error("Stripe createConnectedAccount error:", error);
+      throw error;
+    }
   }
 
-  async createConnectedAccountOnboardingLink(
-    accountId: string,
-  ): Promise<{ url: string }> {
+  async createConnectedAccountOnboardingLink(data: {
+    accountId: string;
+    refreshUrl: string;
+    returnUrl: string;
+  }): Promise<{ url: string }> {
     const accountLink = await this._stripe.accountLinks.create({
-      account: accountId,
-      refresh_url: "http://localhost:5173/reauth",
-      return_url: "http://localhost:5173/return",
+      account: data.accountId,
+      refresh_url: data.refreshUrl,
+      return_url: data.returnUrl,
       type: "account_onboarding",
     });
 
@@ -168,6 +172,7 @@ export class StripeService implements IStripeService {
   }): Promise<{
     paymentIntentId: string;
     status: string;
+    clientSecret?: string | null;
     receiptUrl?: string;
   }> {
     const paymentIntent = await this._stripe.paymentIntents.create({
@@ -180,9 +185,20 @@ export class StripeService implements IStripeService {
       metadata: data.metadata,
     });
 
+    let receiptUrl: string | undefined;
+
+    if (typeof paymentIntent.latest_charge === "string") {
+      const charge = await this._stripe.charges.retrieve(
+        paymentIntent.latest_charge,
+      );
+      receiptUrl = charge.receipt_url ?? undefined;
+    }
+
     return {
       paymentIntentId: paymentIntent.id,
       status: paymentIntent.status,
+      clientSecret: paymentIntent.client_secret ?? null,
+      receiptUrl,
     };
   }
 
@@ -191,12 +207,18 @@ export class StripeService implements IStripeService {
     currency: string;
     destinationAccountId: string;
     metadata: Record<string, string>;
+    transferGroup?: string;
+    sourceTransaction?: string;
   }): Promise<{ transferId: string }> {
     const transfer = await this._stripe.transfers.create({
       amount: Math.round(data.amount * 100),
       currency: data.currency,
       destination: data.destinationAccountId,
       metadata: data.metadata,
+      transfer_group: data.transferGroup,
+      ...(data.sourceTransaction
+        ? { source_transaction: data.sourceTransaction }
+        : {}),
     });
 
     return {
@@ -287,5 +309,42 @@ export class StripeService implements IStripeService {
 
       throw new Error(`Stripe retrievePaymentMethod error: ${message}`);
     }
+  }
+  async retrieveConnectedAccount(accountId: string): Promise<{
+    accountId: string;
+    payoutsEnabled: boolean;
+    chargesEnabled: boolean;
+    requirementsCurrentlyDueCount: number;
+    bankName?: string;
+    bankLast4?: string;
+  }> {
+    const account = await this._stripe.accounts.retrieve(accountId);
+
+    if (typeof account === "string") {
+      throw new Error("Invalid connected account response");
+    }
+
+    let bankName: string | undefined;
+    let bankLast4: string | undefined;
+
+    const externalAccounts = account.external_accounts?.data ?? [];
+    const bankAccount = externalAccounts.find(
+      (item) => item.object === "bank_account",
+    );
+
+    if (bankAccount && "bank_name" in bankAccount) {
+      bankName = bankAccount.bank_name ?? undefined;
+      bankLast4 = bankAccount.last4 ?? undefined;
+    }
+
+    return {
+      accountId: account.id,
+      payoutsEnabled: account.payouts_enabled ?? false,
+      chargesEnabled: account.charges_enabled ?? false,
+      requirementsCurrentlyDueCount:
+        account.requirements?.currently_due?.length ?? 0,
+      bankName,
+      bankLast4,
+    };
   }
 }

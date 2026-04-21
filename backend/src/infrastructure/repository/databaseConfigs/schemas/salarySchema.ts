@@ -151,6 +151,19 @@ export const trainerSalarySchema = new mongoose.Schema(
       default: null,
       trim: true,
     },
+    stripeChargeCurrency: {
+      type: String,
+      enum: ["USD"],
+    },
+    stripeChargeAmount: {
+      type: Number,
+    },
+    exchangeRateUsed: {
+      type: Number,
+    },
+    settledAmountInInr: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

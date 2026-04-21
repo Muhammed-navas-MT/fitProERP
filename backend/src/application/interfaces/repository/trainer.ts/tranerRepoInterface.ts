@@ -1,6 +1,8 @@
 import { IBaseRepository } from "../base/baseRepo";
 import { TrainerEntity } from "../../../../domain/entities/trainer/trainerEntity";
 import { IListTrainerRequestDTO } from "../../../dtos/trainerDto/listAllTrainerDto";
+import { SalaryPaymentMethod } from "../../../../domain/enums/salaryPaymentMethod";
+import { StripeAccountStatus } from "../../../../domain/enums/stripeAccountStatus";
 
 export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
   findByEmail(email: string): Promise<TrainerEntity | null>;
@@ -28,4 +30,21 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
     gymId: string;
   }): Promise<TrainerEntity | null>;
   findActiveTrainersByGymId(gymId: string): Promise<TrainerEntity[]>;
+  getSalaryConfigByTrainerId(trainerId: string): Promise<TrainerEntity | null>;
+
+  updateSalaryConfig(
+    trainerId: string,
+    data: {
+      paymentType?: SalaryPaymentMethod;
+      isPayoutEnabled?: boolean;
+      stripeConnectedAccountId?: string;
+      stripeAccountStatus?: StripeAccountStatus;
+      stripeOnboardingCompleted?: boolean;
+      accountHolderName?: string;
+      bankName?: string;
+      bankLast4?: string;
+      ifscCode?: string;
+      upiId?: string;
+    },
+  ): Promise<TrainerEntity | null>;
 }
