@@ -118,6 +118,8 @@ import { CreateBillingSetupIntentUseCase } from "../../../application/useCases/g
 import { GetBillingConfigUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/getBillingConfigUseCase";
 import { SaveBillingEmailUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/saveBillingEmailUseCase";
 import { SaveBillingPaymentMethodUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/saveBillingPaymentMethodUseCase";
+import { ExchangeRateApiService } from "../../services/exchangeRateApiService";
+import { FindSalaryDetailUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/findSalaryDetailUseCase";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -422,12 +424,15 @@ const generateTrainerSalaryUseCase = new GenerateTrainerSalaryUseCase(
   trainerSalaryRepository,
   sessionRepository,
   leaveRepository,
+  notificationService,
 );
+const exchangeRateService = new ExchangeRateApiService();
 const payTrainerSalaryUseCase = new PayTrainerSalaryUseCase(
   trainerSalaryRepository,
   gymAdminRepository,
   trainerRepository,
   stripeService,
+  exchangeRateService,
 );
 
 const listAllTrainerSalaryUseCase = new ListAllTrainerSalaryUseCase(
@@ -444,6 +449,9 @@ const saveBillingPaymentMethodUseCase = new SaveBillingPaymentMethodUseCase(
   gymAdminRepository,
   stripeService,
 );
+const findSalaryDetailUseCase = new FindSalaryDetailUseCase(
+  trainerSalaryRepository,
+);
 export const injectedSalaryController = new TrainerSalaryController(
   generateTrainerSalaryUseCase,
   listAllTrainerSalaryUseCase,
@@ -452,4 +460,5 @@ export const injectedSalaryController = new TrainerSalaryController(
   getBillingConfigUseCase,
   saveBillingEmailUseCase,
   saveBillingPaymentMethodUseCase,
+  findSalaryDetailUseCase,
 );

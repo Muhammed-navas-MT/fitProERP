@@ -1,4 +1,5 @@
 import { TrainerSalaryEntity } from "../../../../domain/entities/trainer/salaryPaymentEntity";
+import { IPopulatedSalary } from "../../../../infrastructure/repository/databaseConfigs/types/populatedSalaryType";
 import { PopulatedtrainerSalary } from "../../../../infrastructure/repository/databaseConfigs/types/populatedTrainerSalary";
 import { ListTrainerSalaryRequestDto } from "../../../dtos/trainerDto/salaryDtos";
 import { IBaseRepository } from "../base/baseRepo";
@@ -34,4 +35,8 @@ export interface ITrainerSalaryRepository extends IBaseRepository<TrainerSalaryE
     salaryMonth: number,
     salaryYear: number,
   ): Promise<boolean>;
+  findByStripePaymentIntentId(
+    paymentIntentId: string,
+  ): Promise<TrainerSalaryEntity | null>;
+  findDetailById(salaryId: string): Promise<IPopulatedSalary | null>;
 }

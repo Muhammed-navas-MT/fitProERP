@@ -44,6 +44,11 @@ export interface ITrainerSalaryModel extends Document {
 
   receiptUrl?: string;
 
+  stripeChargeCurrency?: "USD";
+  stripeChargeAmount?: number;
+  exchangeRateUsed?: number;
+  settledAmountInInr?: number;
+
   createdAt?: Date;
   updatedAt?: Date;
 }

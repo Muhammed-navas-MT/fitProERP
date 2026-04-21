@@ -30,7 +30,7 @@ const mainMenuItems = [
   },
   { icon: User, label: "Profile", path: "/trainer/profile" },
   { icon: Calendar, label: "My Schedule", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.SESSION}` },
-  { icon: DollarSign, label: "Salary", path: "/trainer/salary" },
+  { icon: DollarSign, label: "Salary", path:`${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.SALARY}` },
   { icon: FileText, label: "Leave Request", path: `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LEAVE}` },
 ];
 

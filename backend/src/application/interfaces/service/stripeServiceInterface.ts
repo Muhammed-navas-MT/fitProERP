@@ -38,7 +38,11 @@ export interface IStripeService {
     accountId: string;
   }>;
 
-  createConnectedAccountOnboardingLink(accountId: string): Promise<{
+  createConnectedAccountOnboardingLink(data: {
+    accountId: string;
+    refreshUrl: string;
+    returnUrl: string;
+  }): Promise<{
     url: string;
   }>;
 
@@ -51,6 +55,7 @@ export interface IStripeService {
   }): Promise<{
     paymentIntentId: string;
     status: string;
+    clientSecret?: string | null;
     receiptUrl?: string;
   }>;
 
@@ -59,6 +64,8 @@ export interface IStripeService {
     currency: string;
     destinationAccountId: string;
     metadata: Record<string, string>;
+    transferGroup?: string;
+    sourceTransaction?: string;
   }): Promise<{
     transferId: string;
   }>;
@@ -86,5 +93,13 @@ export interface IStripeService {
     paymentMethodType?: string;
     paymentMethodBrand?: string;
     paymentMethodLast4?: string;
+  }>;
+  retrieveConnectedAccount(accountId: string): Promise<{
+    accountId: string;
+    payoutsEnabled: boolean;
+    chargesEnabled: boolean;
+    requirementsCurrentlyDueCount: number;
+    bankName?: string;
+    bankLast4?: string;
   }>;
 }

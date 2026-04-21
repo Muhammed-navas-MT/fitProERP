@@ -15,6 +15,7 @@ import { ICreateBillingSetupIntentUseCase } from "../../../application/interface
 import { IGetBillingConfigUseCase } from "../../../application/interfaces/useCase/gymAdmin/salaryManagement/getBillingConfigUseCaseInterface";
 import { ISaveBillingEmailUseCase } from "../../../application/interfaces/useCase/gymAdmin/salaryManagement/saveBillingEmailUseCaseInterface";
 import { ISaveBillingPaymentMethodUseCase } from "../../../application/interfaces/useCase/gymAdmin/salaryManagement/saveBillingPaymentMethodUseCaseInterface";
+import { IFindSalaryDetailUseCase } from "../../../application/interfaces/useCase/gymAdmin/salaryManagement/findSalaryDetailUseCaseInterface";
 
 export class TrainerSalaryController {
   constructor(
@@ -25,6 +26,7 @@ export class TrainerSalaryController {
     private _getBillingConfigUseCaase: IGetBillingConfigUseCase,
     private _saveBillingEmailUseCase: ISaveBillingEmailUseCase,
     private _saveBillingPaymentMethodUseCase: ISaveBillingPaymentMethodUseCase,
+    private _findSalaryDetailUseCase: IFindSalaryDetailUseCase,
   ) {}
 
   async handleGenerateSalary(
@@ -44,6 +46,7 @@ export class TrainerSalaryController {
       next(error);
     }
   }
+
   async handleListAllSalary(
     req: Request,
     res: Response,
@@ -55,9 +58,11 @@ export class TrainerSalaryController {
         limit: Number(req.query.limit) || 7,
         page: Number(req.query.page) || 1,
       };
+
       const response = await this._listAllTrainerSalaryUseCase.execute(params);
+
       ResponseHelper.success(
-        HTTP_STATUS_CODE.CREATE,
+        HTTP_STATUS_CODE.OK,
         res,
         "Trainer salary fetched successfully",
         response,
@@ -66,6 +71,7 @@ export class TrainerSalaryController {
       next(error);
     }
   }
+
   async handleCreateBillingSetupIntent(
     req: Request,
     res: Response,
@@ -75,18 +81,21 @@ export class TrainerSalaryController {
       const data: CreateSetupIntentDto = {
         gymId: res.locals.data.id,
       };
+
       const response =
         await this._createBillingSetupIntentUseCase.execute(data);
+
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        " Billing setup completed successfully",
+        "Billing setup intent created successfully",
         response,
       );
     } catch (error) {
       next(error);
     }
   }
+
   async handleGetBillingConfig(
     req: Request,
     res: Response,
@@ -96,12 +105,13 @@ export class TrainerSalaryController {
       const data: GetBillingConfigDto = {
         gymId: res.locals.data.id,
       };
+
       const response = await this._getBillingConfigUseCaase.execute(data);
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        "Get billing config datas",
+        "Billing config fetched successfully",
         response,
       );
     } catch (error) {
@@ -116,16 +126,18 @@ export class TrainerSalaryController {
   ): Promise<void> {
     try {
       const { billingEmail } = req.body;
+
       const data: SaveBillingEmailDto = {
         billingEmail,
         gymId: res.locals.data.id,
       };
-      console.log(data);
+
       const response = await this._saveBillingEmailUseCase.execute(data);
+
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        "Billing Email save successfully",
+        "Billing email saved successfully",
         response,
       );
     } catch (error) {
@@ -140,18 +152,65 @@ export class TrainerSalaryController {
   ): Promise<void> {
     try {
       const { billingEmail, paymentMethodId } = req.body;
+
       const data: SavePaymentMethodDto = {
         billingEmail,
         gymId: res.locals.data.id,
         paymentMethodId,
       };
-      console.log(data);
+
       const response =
         await this._saveBillingPaymentMethodUseCase.execute(data);
+
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        "Billing Email save successfully",
+        "Billing payment method saved successfully",
+        response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handlePaySalary(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { salaryId } = req.params;
+      const gymId = res.locals.data.id;
+
+      const response = await this._payTrainerSalaryUseCase.execute({
+        salaryId,
+        gymId,
+      });
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Trainer salary charge initiated successfully",
+        response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleFindSalaryDetail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { salaryId } = req.params;
+      const response = await this._findSalaryDetailUseCase.execute(salaryId);
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Salary detail fetched successfully",
         response,
       );
     } catch (error) {

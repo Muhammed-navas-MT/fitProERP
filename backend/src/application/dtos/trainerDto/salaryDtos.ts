@@ -90,3 +90,59 @@ export interface SavePaymentMethodResponseDto {
   paymentMethodLast4?: string;
   isDefaultPaymentMethodAdded: boolean;
 }
+
+export interface PayTrainerSalaryResponseDto {
+  salaryId: string;
+  paymentIntentId: string;
+  clientSecret?: string | null;
+  paymentStatus: PaymentStatus;
+  message: string;
+}
+
+export interface FindDetailSalaryResponseDto {
+  id: string;
+
+  salaryMonth: number;
+  salaryYear: number;
+  salaryMonthLabel: string;
+
+  branch: {
+    branchName: string;
+    address: string;
+  };
+
+  trainer: {
+    name: string;
+    email: string;
+  };
+
+  salaryBreakdown: {
+    baseSalary: number;
+    totalSessions: number;
+    commissionRate: number;
+    commissionAmount: number;
+    bonus: number;
+    leaveDeduction: number;
+    otherDeduction: number;
+    manualAdjustment: number;
+  };
+
+  grossSalary: number;
+  totalDeduction: number;
+  netSalary: number;
+
+  paymentMethod: SalaryPaymentMethod;
+  paymentStatus: PaymentStatus;
+  currency: string;
+  dueDate: Date | null;
+  paidAt: Date | null;
+
+  receiptUrl: string | null;
+
+  exchangeRateUsed?: number;
+  settledAmountInInr?: number;
+  stripeChargeAmount?: number;
+  stripeChargeCurrency?: string;
+
+  createdAt: Date;
+}

@@ -6,10 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
-  Edit,
   AlertTriangle,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 import { Sidebar } from "@/components/gymAdmin/sidebar";
 import { TopBar } from "@/components/gymAdmin/topbar";
@@ -19,9 +17,9 @@ import {
   useGetBillingConfig,
   useListSalary,
   useSaveBillingEmail,
+  usePaySalarySalary,
 } from "@/hook/gymAdmin/salaryHook";
 import GymAdminTablePageSkeleton from "@/components/gymAdmin/tablePageSkeleton";
-import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import AddBillingConfigCard from "@/components/gymAdmin/salaryManagement/addBillingConfigCard";
 import BillingConfigModal from "@/components/gymAdmin/salaryManagement/billingConfigModal";
 import {
@@ -34,9 +32,10 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
+import SalaryDetailModal from "@/components/gymAdmin/salaryManagement/SalaryDetailmodal";
 
 type SalaryPaymentMethod = "CASH" | "BANK_TRANSFER" | "UPI" | "CHEQUE";
-type PaymentStatus = "PENDING" | "PAID" | "FAILED";
+type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "PROCESSING";
 
 interface TrainerSalaryResponseDto {
   id: string;
@@ -62,10 +61,10 @@ export default function SalaryManagement() {
     useState<TrainerSalaryResponseDto | null>(null);
   const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [isSalaryDetailOpen, setIsSalaryDetailOpen] = useState(false);
 
   const limit = 10;
-  const navigate = useNavigate();
-
   const params = { page, limit };
 
   const {
@@ -82,6 +81,8 @@ export default function SalaryManagement() {
 
   const { mutateAsync: saveBillingEmail, isPending: isSavingEmail } =
     useSaveBillingEmail();
+
+  const { mutate: paySalary } = usePaySalarySalary(params);
 
   const salaries: TrainerSalaryResponseDto[] = salaryData?.data?.salaries ?? [];
   const totalPages = salaryData?.data?.totalPages ?? 1;
@@ -135,19 +136,19 @@ export default function SalaryManagement() {
       return;
     }
 
-    toast.info(
-      `Pay action for ${salary.trainerName} - ₹${salary.netSalary.toLocaleString(
-        "en-IN",
-      )}`,
-    );
-  };
+    setPayingId(salary.id);
 
-  const handleView = (salary: TrainerSalaryResponseDto) => {
-    navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/salary/${salary.id}`);
-  };
-
-  const handleEdit = (salary: TrainerSalaryResponseDto) => {
-    navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/salary/edit/${salary.id}`);
+    paySalary(salary.id, {
+      onSuccess(res) {
+        toast.success(res?.data?.message || "Payment successful");
+      },
+      onError(err) {
+        toast.error(err.message || "Pay trainer salary failed");
+      },
+      onSettled() {
+        setPayingId(null);
+      },
+    });
   };
 
   const confirmPay = () => {
@@ -158,6 +159,10 @@ export default function SalaryManagement() {
     setSelectedSalary(null);
   };
 
+  const handleView = (salary: TrainerSalaryResponseDto) => {
+    setSelectedSalary(salary);
+    setIsSalaryDetailOpen(true);
+  };
   const formatMethod = (method: SalaryPaymentMethod) => {
     return method.toLowerCase().replace(/_/g, " ");
   };
@@ -165,26 +170,15 @@ export default function SalaryManagement() {
   const renderStatusBadge = (status: PaymentStatus) => {
     const baseClass = "rounded px-3 py-1 text-xs font-medium";
 
-    if (status === "PAID") {
-      return (
-        <span className={`${baseClass} bg-green-600/20 text-green-400`}>
-          PAID
-        </span>
-      );
-    }
-
-    if (status === "FAILED") {
-      return (
-        <span className={`${baseClass} bg-red-600/20 text-red-400`}>
-          FAILED
-        </span>
-      );
-    }
+    const statusStyles: Record<PaymentStatus, string> = {
+      PAID: "bg-green-600/20 text-green-400",
+      FAILED: "bg-red-600/20 text-red-400",
+      PROCESSING: "bg-blue-600/20 text-blue-400",
+      PENDING: "bg-yellow-600/20 text-yellow-400",
+    };
 
     return (
-      <span className={`${baseClass} bg-yellow-600/20 text-yellow-400`}>
-        PENDING
-      </span>
+      <span className={`${baseClass} ${statusStyles[status]}`}>{status}</span>
     );
   };
 
@@ -338,23 +332,10 @@ export default function SalaryManagement() {
 
                           {salary.paymentStatus === "PENDING" ? (
                             <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={() => handleEdit(salary)}
-                              className="text-zinc-400 hover:bg-zinc-800 hover:text-white"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          ) : (
-                            <span className="flex items-center text-xs text-zinc-600">
-                              —
-                            </span>
-                          )}
-
-                          {salary.paymentStatus === "PENDING" ? (
-                            <Button
                               size="sm"
-                              disabled={!isBillingConfigAdded}
+                              disabled={
+                                !isBillingConfigAdded || payingId === salary.id
+                              }
                               onClick={() => {
                                 if (!isBillingConfigAdded) {
                                   toast.error(
@@ -369,7 +350,11 @@ export default function SalaryManagement() {
                               }}
                               className="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                              Pay
+                              {payingId === salary.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                "Pay"
+                              )}
                             </Button>
                           ) : (
                             <span className="flex items-center text-xs text-zinc-600">
@@ -471,6 +456,11 @@ export default function SalaryManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <SalaryDetailModal
+        open={isSalaryDetailOpen}
+        onOpenChange={setIsSalaryDetailOpen}
+        salaryId={selectedSalary?.id || ""}
+      />
     </div>
   );
 }
