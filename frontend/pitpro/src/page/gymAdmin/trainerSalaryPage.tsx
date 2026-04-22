@@ -7,6 +7,10 @@ import {
   ChevronRight,
   Eye,
   AlertTriangle,
+  CreditCard,
+  Mail,
+  CheckCircle2,
+  Pencil,
 } from "lucide-react";
 
 import { Sidebar } from "@/components/gymAdmin/sidebar";
@@ -36,6 +40,7 @@ import SalaryDetailModal from "@/components/gymAdmin/salaryManagement/SalaryDeta
 
 type SalaryPaymentMethod = "CASH" | "BANK_TRANSFER" | "UPI" | "CHEQUE";
 type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "PROCESSING";
+type BillingModalMode = "manage" | "email" | "card";
 
 interface TrainerSalaryResponseDto {
   id: string;
@@ -61,6 +66,8 @@ export default function SalaryManagement() {
     useState<TrainerSalaryResponseDto | null>(null);
   const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
+  const [billingModalMode, setBillingModalMode] =
+    useState<BillingModalMode>("manage");
   const [payingId, setPayingId] = useState<string | null>(null);
   const [isSalaryDetailOpen, setIsSalaryDetailOpen] = useState(false);
 
@@ -93,12 +100,24 @@ export default function SalaryManagement() {
   const billingEmail = billingConfig?.billingEmail ?? "";
   const paymentMethodBrand = billingConfig?.paymentMethodBrand ?? "";
   const paymentMethodLast4 = billingConfig?.paymentMethodLast4 ?? "";
+  const paymentMethodType = billingConfig?.paymentMethodType ?? "";
   const isDefaultPaymentMethodAdded =
     billingConfig?.isDefaultPaymentMethodAdded ?? false;
 
-  const isBillingConfigAdded = !!billingEmail && !!isDefaultPaymentMethodAdded;
+  const hasBillingEmail = !!billingEmail;
+  const hasDefaultPaymentMethod = !!isDefaultPaymentMethodAdded;
 
-  const handleOpenBillingModal = () => {
+  const hasAnyBillingConfig =
+    hasBillingEmail ||
+    hasDefaultPaymentMethod ||
+    !!paymentMethodBrand ||
+    !!paymentMethodLast4 ||
+    !!paymentMethodType;
+
+  const isBillingConfigReady = hasBillingEmail && hasDefaultPaymentMethod;
+
+  const openBillingModal = (mode: BillingModalMode) => {
+    setBillingModalMode(mode);
     setIsBillingModalOpen(true);
   };
 
@@ -130,9 +149,9 @@ export default function SalaryManagement() {
   };
 
   const handlePay = (salary: TrainerSalaryResponseDto) => {
-    if (!isBillingConfigAdded) {
-      toast.error("Please add billing config before paying salary");
-      setIsBillingModalOpen(true);
+    if (!isBillingConfigReady) {
+      toast.error("Please complete billing config before paying salary");
+      openBillingModal("manage");
       return;
     }
 
@@ -163,8 +182,19 @@ export default function SalaryManagement() {
     setSelectedSalary(salary);
     setIsSalaryDetailOpen(true);
   };
+
   const formatMethod = (method: SalaryPaymentMethod) => {
     return method.toLowerCase().replace(/_/g, " ");
+  };
+
+  const formatCardBrand = (brand: string) => {
+    if (!brand) return "Card";
+    return brand.charAt(0).toUpperCase() + brand.slice(1).toLowerCase();
+  };
+
+  const formatPaymentMethodType = (type: string) => {
+    if (!type) return "Not available";
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   };
 
   const renderStatusBadge = (status: PaymentStatus) => {
@@ -201,8 +231,108 @@ export default function SalaryManagement() {
         showUserMenu={true}
       >
         <div className="space-y-6">
-          {!isBillingConfigAdded && (
-            <AddBillingConfigCard onAddBillingConfig={handleOpenBillingModal} />
+          {!hasAnyBillingConfig ? (
+            <AddBillingConfigCard
+              onAddBillingConfig={() => openBillingModal("manage")}
+            />
+          ) : (
+            <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-[#1a1205] via-[#0f0f0f] to-[#09090b] p-4 shadow-lg shadow-orange-950/20 lg:p-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500/15 ring-1 ring-orange-400/20">
+                      <CreditCard className="h-5 w-5 text-orange-300" />
+                    </div>
+
+                    <div>
+                      <h2 className="text-lg font-semibold text-white">
+                        Billing Configuration
+                      </h2>
+                      <p className="text-sm text-zinc-400">
+                        Manage billing email and default payout card
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-xl border border-zinc-800 bg-white/[0.03] p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wide text-zinc-500">
+                        <Mail className="h-4 w-4" />
+                        Billing Email
+                      </div>
+                      <p className="break-all text-sm font-medium text-zinc-200">
+                        {billingEmail || "Not added"}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-zinc-800 bg-white/[0.03] p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wide text-zinc-500">
+                        <CreditCard className="h-4 w-4" />
+                        Card Brand
+                      </div>
+                      <p className="text-sm font-medium text-zinc-200">
+                        {paymentMethodBrand
+                          ? formatCardBrand(paymentMethodBrand)
+                          : "Not added"}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-zinc-800 bg-white/[0.03] p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wide text-zinc-500">
+                        <CreditCard className="h-4 w-4" />
+                        Card Details
+                      </div>
+                      <p className="text-sm font-medium text-zinc-200">
+                        {paymentMethodLast4
+                          ? `**** ${paymentMethodLast4}`
+                          : "Not added"}
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-500">
+                        {formatPaymentMethodType(paymentMethodType)}
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-zinc-800 bg-white/[0.03] p-4">
+                      <div className="mb-2 flex items-center gap-2 text-xs uppercase tracking-wide text-zinc-500">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Status
+                      </div>
+
+                      {isBillingConfigReady ? (
+                        <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          Ready for salary payment
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center gap-2 rounded-full bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
+                          <AlertTriangle className="h-3.5 w-3.5" />
+                          Incomplete billing setup
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    onClick={() => openBillingModal("email")}
+                    variant="outline"
+                    className="border-orange-500/30 bg-orange-500/10 text-orange-200 hover:bg-orange-500/20 hover:text-white"
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Update Billing Email
+                  </Button>
+
+                  <Button
+                    onClick={() => openBillingModal("card")}
+                    className="bg-orange-600 text-white hover:bg-orange-700"
+                  >
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Update Card Details
+                  </Button>
+                </div>
+              </div>
+            </div>
           )}
 
           <div className="rounded-lg border border-orange-500/20 bg-black/40 p-4 lg:p-6">
@@ -223,16 +353,16 @@ export default function SalaryManagement() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                {!isBillingConfigAdded ? (
+                {!isBillingConfigReady ? (
                   <div className="flex items-center gap-2 rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-3 py-2 text-xs text-yellow-300">
                     <AlertTriangle className="h-4 w-4" />
-                    Add billing config first
+                    Complete billing config first
                   </div>
                 ) : (
                   <button
                     onClick={handleGenerate}
                     disabled={isGenerated || isGenerating}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isGenerating && (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -255,9 +385,9 @@ export default function SalaryManagement() {
               <DollarSign className="mb-3 h-12 w-12 opacity-30" />
               <p className="text-sm">No salary records found.</p>
 
-              {!isBillingConfigAdded ? (
+              {!isBillingConfigReady ? (
                 <p className="mt-1 text-xs text-yellow-400">
-                  Please add billing config first.
+                  Please complete billing config first.
                 </p>
               ) : !isGenerated ? (
                 <p className="mt-1 text-xs text-zinc-600">
@@ -334,14 +464,14 @@ export default function SalaryManagement() {
                             <Button
                               size="sm"
                               disabled={
-                                !isBillingConfigAdded || payingId === salary.id
+                                !isBillingConfigReady || payingId === salary.id
                               }
                               onClick={() => {
-                                if (!isBillingConfigAdded) {
+                                if (!isBillingConfigReady) {
                                   toast.error(
-                                    "Please add billing config before paying salary",
+                                    "Please complete billing config before paying salary",
                                   );
-                                  setIsBillingModalOpen(true);
+                                  openBillingModal("manage");
                                   return;
                                 }
 
@@ -390,7 +520,7 @@ export default function SalaryManagement() {
                         onClick={() => setPage(pageNumber)}
                         className={
                           page === pageNumber
-                            ? "bg-orange-500 text-white hover:bg-orange-600"
+                            ? "bg-orange-600 text-white hover:bg-orange-700"
                             : "bg-[#1a1a1a] text-white hover:bg-zinc-800"
                         }
                       >
@@ -418,10 +548,12 @@ export default function SalaryManagement() {
       <BillingConfigModal
         open={isBillingModalOpen}
         onOpenChange={setIsBillingModalOpen}
+        mode={billingModalMode}
         billingEmail={billingEmail}
         isDefaultPaymentMethodAdded={isDefaultPaymentMethodAdded}
         paymentMethodBrand={paymentMethodBrand}
         paymentMethodLast4={paymentMethodLast4}
+        paymentMethodType={paymentMethodType}
         isSaving={isSavingEmail}
         onSaveBillingEmail={handleSaveBillingEmail}
       />
@@ -456,6 +588,7 @@ export default function SalaryManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
       <SalaryDetailModal
         open={isSalaryDetailOpen}
         onOpenChange={setIsSalaryDetailOpen}
