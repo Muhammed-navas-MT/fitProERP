@@ -18,6 +18,7 @@ import { injectedAttendanceController } from "../../infrastructure/DI/shared/att
 import { injectedChatController } from "../../infrastructure/DI/shared/chatInjection";
 import { injectedNotificationController } from "../../infrastructure/DI/shared/notificationInjection";
 import { SubdomainMiddleware } from "../middlewares/subdomainMiddleware";
+import { upload } from "../middlewares/multer";
 export class TrainerRoutes {
   private _route: Router;
   private _middleware: SubdomainMiddleware;
@@ -373,6 +374,19 @@ export class TrainerRoutes {
       TRAINER.LIST_ALL_SALARIES,
       (req: Request, res: Response, next: NextFunction) => {
         injectedTrainerSalaryConfigController.listAllSalary(req, res, next);
+      },
+    );
+    this._route.post(
+      TRAINER.UPLOAD_CHAT_IMAGE,
+      upload.single("image"),
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.uploadImage(req, res, next);
+      },
+    );
+    this._route.get(
+      TRAINER.SHOW_GYM_DETAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedTrainerLoginController.showGymDetail(req, res, next);
       },
     );
   }

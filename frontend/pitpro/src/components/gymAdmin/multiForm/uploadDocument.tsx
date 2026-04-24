@@ -1,16 +1,9 @@
 import type React from "react";
-import {
-  FileText,
-  Upload,
-  X,
-  Crop,
-  FileImage
-} from "lucide-react";
+import { FileText, Upload, X, Crop, FileImage } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
 import { SignupPayload } from "@/types/authPayload";
 import ReactCrop, { type Crop as CropType } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-
 
 interface Props {
   formData: SignupPayload;
@@ -27,11 +20,12 @@ export default function UploadDocumentsStep({
   const [showCropper, setShowCropper] = useState<string | null>(null);
 
   const [crop, setCrop] = useState<CropType>({
-    unit: "%",
-    width: 50,
-    aspect: 1,
-  });
-
+  unit: "%",
+  x: 25,
+  y: 25,
+  width: 50,
+  height: 50,
+});
   const [completedCrop, setCompletedCrop] = useState<CropType | null>(null);
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -41,26 +35,25 @@ export default function UploadDocumentsStep({
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-  },[]);
+  }, []);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-  },[]);
+  }, []);
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent, field: string) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const handleDrop = useCallback((e: React.DragEvent, field: string) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        processFile(e.dataTransfer.files[0], field);
-      }
-    },[]);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processFile(e.dataTransfer.files[0], field);
+    }
+  }, []);
 
   const handleFileSelect = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: string
+    field: string,
   ) => {
     const file = e.target.files?.[0];
     if (file) processFile(file, field);
@@ -96,10 +89,17 @@ export default function UploadDocumentsStep({
   };
 
   const openCropper = (field: string) => {
-    setShowCropper(field);
-    setCompletedCrop(null);
-    setCrop({ unit: "%", width: 50, aspect: 1 });
-  };
+  setShowCropper(field);
+  setCompletedCrop(null);
+
+  setCrop({
+    unit: "%",
+    x: 25,
+    y: 25,
+    width: 50,
+    height: 50,
+  });
+};
 
   const closeCropper = () => setShowCropper(null);
 
@@ -127,7 +127,7 @@ export default function UploadDocumentsStep({
       0,
       0,
       completedCrop.width!,
-      completedCrop.height!
+      completedCrop.height!,
     );
 
     canvas.toBlob((blob) => {
@@ -271,8 +271,11 @@ interface DocUploaderProps {
   handleDrag: (e: React.DragEvent) => void;
   handleDragOver: (e: React.DragEvent) => void;
   handleDrop: (e: React.DragEvent, field: string) => void;
-  handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  handleFileSelect: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string,
+  ) => void;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   error?: string;
 }
 
@@ -312,7 +315,9 @@ function DocumentUploader({
                 <p className="text-neutral-300 text-sm truncate max-w-xs">
                   {getFileName(field)}
                 </p>
-                <p className="text-neutral-500 text-xs mt-1">Document uploaded</p>
+                <p className="text-neutral-500 text-xs mt-1">
+                  Document uploaded
+                </p>
               </div>
             </div>
           )}
@@ -353,7 +358,9 @@ function DocumentUploader({
             <p className="text-neutral-400 text-sm text-center">
               Click to upload or drag and drop
             </p>
-            <p className="text-neutral-500 text-xs mt-1">PDF, JPG, PNG (max. 5MB)</p>
+            <p className="text-neutral-500 text-xs mt-1">
+              PDF, JPG, PNG (max. 5MB)
+            </p>
           </div>
 
           <input

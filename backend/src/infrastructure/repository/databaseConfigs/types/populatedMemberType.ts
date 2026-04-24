@@ -35,6 +35,13 @@ export interface PopulatedBranch {
   branchName: string;
 }
 
+export interface IPopulatedGymDetail {
+  gymId: {
+    gymName: string;
+    logo: string;
+  };
+}
+
 export interface IPopulatedMemberType {
   _id: string;
   gymId: IPopulatedGym;
@@ -73,6 +80,8 @@ export interface IPopulatedMemberType {
     endDate?: Date;
     price: number;
     status: PaymentStatus;
+    sessionCount: number;
+    usedSession: number;
   };
   status: Status;
   createdAt?: Date;

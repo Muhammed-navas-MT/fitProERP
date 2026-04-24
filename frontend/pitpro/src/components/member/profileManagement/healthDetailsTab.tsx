@@ -39,6 +39,8 @@ export interface MemberDetailType {
     endDate?: Date;
     price: number;
     status: string;
+    sessionCount: number;
+    usedSession: number;
   };
   status: string;
 }

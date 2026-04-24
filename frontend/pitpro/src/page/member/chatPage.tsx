@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { MessageCircle, X } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   useCreateConversation,
@@ -9,6 +10,7 @@ import {
   useListMessages,
   useMarkConversationSeen,
   useSendMessage,
+  useUploadChatImage,
 } from "@/hook/member/chatHook";
 import { getSocket } from "@/lib/socket";
 import { useChatSocket } from "@/hook/socketHooks";
@@ -21,7 +23,6 @@ import ChatInput from "@/components/member/chatComponent/chatInput";
 import {
   ConversationItem,
   ConversationSeenEvent,
-  ConversationUpdatedEvent,
   MessageItem,
   SECOND_USER_MODEL,
   TypingEvent,
@@ -39,7 +40,9 @@ export default function ChatPage() {
     (state: rootstate) => state.authData?._id,
   ) as string;
 
-  const name = useSelector((state: rootstate) => state.authData.name);
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
 
   const avatarText = name
     ?.split(" ")
@@ -53,12 +56,14 @@ export default function ChatPage() {
   const [liveMessages, setLiveMessages] = useState<MessageItem[]>([]);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
 
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+
   const { data: assignedTrainerResponse, isLoading: isTrainerLoading } =
     useFindAssignedTrainers();
 
   const assignedTrainer = useMemo(() => {
     if (!assignedTrainerResponse) return null;
-
     return assignedTrainerResponse?.data;
   }, [assignedTrainerResponse]);
 
@@ -77,6 +82,9 @@ export default function ChatPage() {
   const { mutate: sendMessage, isPending: isSendingMessage } = useSendMessage(
     selectedConversationId,
   );
+
+  const { mutateAsync: uploadChatImage, isPending: isUploadingImage } =
+    useUploadChatImage(selectedConversationId);
 
   const { mutate: markConversationSeen } = useMarkConversationSeen();
 
@@ -121,6 +129,14 @@ export default function ChatPage() {
     if (!selectedConversationId) return;
     markConversationSeen(selectedConversationId);
   }, [selectedConversationId, markConversationSeen]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
@@ -171,13 +187,9 @@ export default function ChatPage() {
     [selectedConversationId, markConversationSeen, queryClient],
   );
 
-  const handleConversationUpdated = useCallback(
-    (_data: ConversationUpdatedEvent) => {
-      console.log(_data);
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
-    },
-    [queryClient],
-  );
+  const handleConversationUpdated = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["conversations"] });
+  }, [queryClient]);
 
   const handleConversationSeen = useCallback(
     (data: ConversationSeenEvent) => {
@@ -236,42 +248,94 @@ export default function ChatPage() {
     }, 1000);
   };
 
-  const handleSendMessage = () => {
+  const handleImageSelect = (file: File | null) => {
+    if (!file) return;
+
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setSelectedImageFile(file);
+    setImagePreviewUrl(previewUrl);
+  };
+
+  const handleRemoveImage = () => {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+
+    setSelectedImageFile(null);
+    setImagePreviewUrl("");
+  };
+
+  const handleSendMessage = async () => {
     if (!selectedConversationId || !otherParticipant?.userId) return;
 
     const trimmedMessage = messageText.trim();
-    if (!trimmedMessage) return;
 
-    sendMessage(
-      {
-        conversationId: selectedConversationId,
-        receiverId: otherParticipant.userId,
-        text: trimmedMessage,
-        type: "TEXT",
-      },
-      {
-        onSuccess: () => {
-          setMessageText("");
-          setLiveMessages([]);
-          queryClient.invalidateQueries({
-            queryKey: ["messages", selectedConversationId, 1, 50],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["conversations"],
-          });
+    if (!trimmedMessage && !selectedImageFile) return;
+
+    try {
+      if (selectedImageFile) {
+        await uploadChatImage({
+          file: selectedImageFile,
+          conversationId: selectedConversationId,
+          receiverId: otherParticipant.userId,
+          text: trimmedMessage || undefined,
+        });
+
+        setMessageText("");
+        handleRemoveImage();
+        setLiveMessages([]);
+        queryClient.invalidateQueries({
+          queryKey: ["messages", selectedConversationId, 1, 50],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["conversations"],
+        });
+
+        return;
+      }
+
+      sendMessage(
+        {
+          conversationId: selectedConversationId,
+          receiverId: otherParticipant.userId,
+          text: trimmedMessage,
+          type: "TEXT",
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            setMessageText("");
+            setLiveMessages([]);
+            queryClient.invalidateQueries({
+              queryKey: ["messages", selectedConversationId, 1, 50],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          },
+        },
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to send image";
+      toast.error(message);
+    }
   };
-
   const handleCloseChat = () => {
     setSelectedConversationId("");
     setLiveMessages([]);
     setIsOtherUserTyping(false);
+    setMessageText("");
+    handleRemoveImage();
   };
 
   const isCreateButtonDisabled =
     isCreatingConversation || isTrainerLoading || !assignedTrainerId;
+
+  const isSending = isSendingMessage || isUploadingImage;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -282,6 +346,7 @@ export default function ChatPage() {
           avatar={avatarText}
           title={`Welcome Back, ${name || "Member"}!`}
           subtitle="Ready to crush your fitness goals today."
+          profileImg={profileImg}
         />
 
         <div className="h-[calc(100vh-80px)] overflow-hidden bg-black">
@@ -340,7 +405,7 @@ export default function ChatPage() {
                       <ChatHeader
                         otherParticipant={otherParticipant}
                         isTyping={isOtherUserTyping}
-                        trainerName={assignedTrainer.name}
+                        trainerName={assignedTrainer?.name || "Trainer"}
                       />
 
                       <button
@@ -369,8 +434,12 @@ export default function ChatPage() {
                       setMessageText={setMessageText}
                       onSend={handleSendMessage}
                       onTyping={handleTyping}
-                      isSending={isSendingMessage}
+                      isSending={isSending}
                       disabled={!selectedConversationId}
+                      selectedImageFile={selectedImageFile}
+                      imagePreviewUrl={imagePreviewUrl}
+                      onImageSelect={handleImageSelect}
+                      onRemoveImage={handleRemoveImage}
                     />
                   </div>
                 </>

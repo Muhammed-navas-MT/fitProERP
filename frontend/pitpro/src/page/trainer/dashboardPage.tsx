@@ -153,7 +153,7 @@ export default function DashboardPage() {
               icon={Calendar}
             />
             <StatCard
-              title="Monthly Earnings"
+              title="Last Month Earnings"
               value={
                 isDashboardLoading
                   ? "..."

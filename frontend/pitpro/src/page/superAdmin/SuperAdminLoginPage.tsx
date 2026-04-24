@@ -49,7 +49,6 @@ export default function SuperAdminLoginPage() {
           <SignInForm
             role="SUPERADMIN"
             onSubmit={handleLogin}
-            signUpLink="/fitpro/sign-up" 
             isLoading = {isPending}
             buttonColor="w-full bg-gradient-to-r from-[#4C75FF] to-[#00a1db] hover:from-[#3a5ce6] hover:to-[#0088b8] text-white font-semibold shadow-lg" 
           />

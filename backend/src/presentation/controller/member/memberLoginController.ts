@@ -10,6 +10,7 @@ import { IJwtService } from "../../../application/interfaces/service/jwtServiceI
 import { setCookie } from "../../shared/utils/setCookie";
 import { MemberSuccess } from "../../shared/constants/errorMessage/memberMessage";
 import { configEnv } from "../../../config/envConfig";
+import { IShowGymDetailUseCase } from "../../../application/interfaces/useCase/member/showGymDetailUseCaseInterface";
 // import { IGoogleLoginUseCase } from "../../../application/interfaces/useCase/member/googleLoginUseCaseInterface";
 
 export class MemberLoginController {
@@ -20,6 +21,7 @@ export class MemberLoginController {
     loginUseCase: IMemberLoginUseCase,
     jwtService: IJwtService,
     // googleLogingUseCase: IGoogleLoginUseCase,
+    private _showGymDetailUseCase: IShowGymDetailUseCase,
   ) {
     this._loginUseCase = loginUseCase;
     this._jwtService = jwtService;
@@ -55,6 +57,24 @@ export class MemberLoginController {
         res,
         MemberSuccess.LOGIN_SUCCESS,
         { data: response, accessToken },
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  async showGymDetail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const memberId = res.locals.data.id;
+      const response = await this._showGymDetailUseCase.execute(memberId);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Gym details Fetched successfully",
+        response,
       );
     } catch (error) {
       next(error);

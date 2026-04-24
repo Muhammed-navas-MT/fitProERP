@@ -36,17 +36,17 @@ export default function ProgressPage() {
   const [page, setPage] = useState(1);
   const [openAddModal, setOpenAddModal] = useState(false);
 
-  const name = useSelector((state: rootstate) => state.authData.name);
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
 
   const avatarText = useMemo(() => {
-    return (
-      name
-        ?.split(" ")
-        .map((word) => word[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase() || "JD"
-    );
+    return name
+      ?.split(" ")
+      .map((word) => word[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
   }, [name]);
 
   const { data, isLoading, isError, error } = useListProgress(page);
@@ -120,6 +120,7 @@ export default function ProgressPage() {
           avatar={avatarText}
           title="Progress"
           subtitle="Track your body metrics and fitness changes."
+          profileImg={profileImg}
         />
 
         <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 lg:p-8">

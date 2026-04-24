@@ -1,6 +1,18 @@
 import { Mail, Phone, Calendar, Edit } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Trainer } from "./employeesList"
+import { EmployeeStatus } from "./employeesList";
+
+export interface Trainer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  avatar: string;
+  joinDate: string;
+  status: EmployeeStatus;
+  specializations?: string[];
+}
 
 interface EmployeeCardProps {
   employee: Trainer

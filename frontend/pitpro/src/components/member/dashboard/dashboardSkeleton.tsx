@@ -11,8 +11,10 @@ function SkeletonBlock({ className = "" }: { className?: string }) {
 }
 
 export default function MemberDashboardSkeleton() {
-    const name = useSelector((state: rootstate) => state.authData.name);
-    const avatarText = name
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
+  const avatarText = name
     ?.split(" ")
     .map((word) => word[0])
     .slice(0, 2)
@@ -24,9 +26,10 @@ export default function MemberDashboardSkeleton() {
 
       <div className="md:ml-56">
         <Topbar
-           avatar={avatarText}
+          avatar={avatarText}
           title={`Welcome Back, ${name || "Member"}!`}
           subtitle="Ready to crush your fitness goals today."
+          profileImg={profileImg}
         />
 
         <main className="space-y-6 p-4 lg:p-8">
@@ -67,11 +70,7 @@ export default function MemberDashboardSkeleton() {
                     >
                       <SkeletonBlock
                         className={`w-full rounded-t-md ${
-                          index === 10
-                            ? "h-16"
-                            : index === 11
-                              ? "h-28"
-                              : "h-8"
+                          index === 10 ? "h-16" : index === 11 ? "h-28" : "h-8"
                         }`}
                       />
                       <SkeletonBlock className="mx-auto h-3 w-10" />

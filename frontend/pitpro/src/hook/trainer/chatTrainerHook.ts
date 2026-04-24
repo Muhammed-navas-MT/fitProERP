@@ -4,6 +4,7 @@ import {
   listTrainerConversationsService,
   markConversationSeenService,
   sendTrainerMessageService,
+  uploadTrainerChatImageService,
 } from "@/services/trainer/chatTrainerService";
 import {
   CreateConversationPayload,
@@ -83,3 +84,33 @@ export const useMarkConversationSeen = () => {
     },
   });
 };
+
+export const useUploadChatImage = (conversationId?: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      file: File;
+      conversationId: string;
+      receiverId: string;
+      text?: string;
+    }) => uploadTrainerChatImageService(data),
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["messages", variables.conversationId],
+      });
+
+      if (conversationId) {
+        queryClient.invalidateQueries({
+          queryKey: ["messages", conversationId],
+        });
+      }
+    },
+  });
+};
+

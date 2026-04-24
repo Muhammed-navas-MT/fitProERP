@@ -13,6 +13,8 @@ import { CreateDietButton } from "@/components/member/dietPlanComponentManagemen
 import { DietDay, listDietPlanResponseDto } from "@/types/dietType";
 import { EmptyDietState } from "@/components/member/dietPlanComponentManagement/emptyDietState";
 import { DietPageSkeleton } from "@/components/member/dietPlanComponentManagement/dietPageSkeleton";
+import { useSelector } from "react-redux";
+import { rootstate } from "@/store/store";
 
 export default function DietPlanPage() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -25,6 +27,16 @@ export default function DietPlanPage() {
   const { mutate: createDiet } = useCreateDietPlan();
 
   const diet: listDietPlanResponseDto | undefined = data?.data;
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
+
+  const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   if (isLoading) {
     return (
@@ -33,9 +45,10 @@ export default function DietPlanPage() {
 
         <div className="flex-1 flex flex-col md:ml-56">
           <Topbar
-            avatar="MN"
+            avatar={avatarText}
             title="Welcome Back, Member!"
             subtitle="Stay consistent with your nutrition."
+            profileImg={profileImg}
           />
 
           <main className="p-6">
@@ -53,9 +66,10 @@ export default function DietPlanPage() {
 
         <div className="flex-1 flex flex-col md:ml-56">
           <Topbar
-            avatar="MN"
+            avatar={avatarText}
             title="Welcome Back, Member!"
             subtitle="Stay consistent with your nutrition."
+            profileImg={profileImg}
           />
 
           <main className="flex-1 flex items-center justify-center">
@@ -75,7 +89,8 @@ export default function DietPlanPage() {
 
       <div className="flex-1 flex flex-col md:ml-56">
         <Topbar
-          avatar="MN"
+          avatar={avatarText}
+          profileImg={profileImg}
           title="Welcome Back, Member!"
           subtitle="Stay consistent with your nutrition."
         />

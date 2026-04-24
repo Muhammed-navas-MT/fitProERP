@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Check, User } from "lucide-react";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/member/memberSidebar";
@@ -36,8 +36,9 @@ export default function TrainerBookingPage() {
   const [page, setPage] = useState(1);
   const limit = 4;
 
-  const name = useSelector((state: rootstate) => state.authData.name);
-
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
   const avatarText = name
     ?.split(" ")
     .map((word) => word[0])
@@ -73,7 +74,7 @@ export default function TrainerBookingPage() {
   const total = sessionsData?.data?.total ?? 0;
   const totalPages = sessionsData?.data?.totalPages ?? 1;
 
-  const checkoutMutation = useCheckoutSession(page,limit);
+  const checkoutMutation = useCheckoutSession(page, limit);
 
   const days: AvailableSlotDay[] = availableData?.data?.slots ?? [];
   const activeDay = days.find((d) => d.date === selectedDate) || days[0];
@@ -94,7 +95,9 @@ export default function TrainerBookingPage() {
   }, [selectedTrainerId, availableData]);
 
   if (isLoadingTrainers || isLoadingSlots || isLoadingSessions) {
-    return <TrainerBookingPageSkeleton avatar={avatarText} />;
+    return (
+      <TrainerBookingPageSkeleton avatar={avatarText} profileImg={profileImg} />
+    );
   }
 
   const handleBooking = () => {
@@ -116,10 +119,10 @@ export default function TrainerBookingPage() {
         onSuccess: (response) => {
           const checkoutUrl = response?.data?.url;
 
-          if(checkoutUrl == "BOOKED_WITH_PACKAGE"){
-            toast.success("Session booked Successfully")
+          if (checkoutUrl == "BOOKED_WITH_PACKAGE") {
+            toast.success("Session booked Successfully");
             return;
-          };
+          }
 
           if (checkoutUrl) {
             window.location.href = checkoutUrl;
@@ -146,13 +149,16 @@ export default function TrainerBookingPage() {
           avatar={avatarText}
           title="Trainer Booking"
           subtitle="Book your personal training session easily."
+          profileImg={profileImg}
         />
 
         <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 lg:p-8">
           <BookingQuickStats
             days={days}
             activeDay={activeDay}
-            upcomingSessionsCount={sessionsData?.data?.countOfUpComingSession|| 0}
+            upcomingSessionsCount={
+              sessionsData?.data?.countOfUpComingSession || 0
+            }
           />
 
           <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">

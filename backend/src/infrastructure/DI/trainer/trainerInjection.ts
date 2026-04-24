@@ -75,6 +75,7 @@ import { ViewSalaryUseCase } from "../../../application/useCases/trainer/salaryM
 import { trainerSalaryModel } from "../../repository/databaseConfigs/models/salaryModel";
 import { ListAllSalaryUseCase } from "../../../application/useCases/trainer/salaryManagement/listAllSalaryUseCase";
 import { TrainerSalaryRepository } from "../../repository/trainer/salaryRepo";
+import { ShowGymDetailUseCase } from "../../../application/useCases/trainer/showGymDetailUseCase";
 
 const emailService = new EmailService();
 const hashService = new HashPassword();
@@ -105,9 +106,11 @@ const loginUseCase = new TrainerLoginUseCase(
 const jwtService = new JwtService();
 const cacheService = new CacheService();
 const tokenInValidation = new TokenValidationUseCase(jwtService, cacheService);
+const showGymDetailUseCase = new ShowGymDetailUseCase(trainerRepository);
 export const injectedTrainerLoginController = new TrainerLoginController(
   loginUseCase,
   jwtService,
+  showGymDetailUseCase,
 );
 export const injectedTrainerLogoutController = new TrainerLogoutController(
   tokenInValidation,
@@ -248,6 +251,7 @@ export const injectedSessionController = new SessionController(
 const getDetailsUseCase = new GetDetailsUseCase(
   sessionRepository,
   memberRepository,
+  trainerSalaryRepository,
 );
 export const injectedDashboardController = new DashboardController(
   getDetailsUseCase,

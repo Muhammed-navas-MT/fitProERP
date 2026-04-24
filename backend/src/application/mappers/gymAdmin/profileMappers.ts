@@ -1,11 +1,11 @@
-import { PaymentStatus } from "../../../domain/enums/paymentStatus"
-import { Roles } from "../../../domain/enums/roles"
-import { Status } from "../../../domain/enums/status"
-import { GymAdminProfileType, BranchResponseDTO, GymAdminProfileResponseDTO } from "../../dtos/gymAdminDto/gymAdminProfileDtos"
+import { PaymentStatus } from "../../../domain/enums/paymentStatus";
+import { Roles } from "../../../domain/enums/roles";
+import { Status } from "../../../domain/enums/status";
+import { GymAdminProfileResponseDTO } from "../../dtos/gymAdminDto/gymAdminProfileDtos";
 
 export const mapGymAdminToProfileResponse = (
   gymAdmin: any,
-  branches: string[]
+  branches: string[],
 ): GymAdminProfileResponseDTO => {
   return {
     _id: gymAdmin._id.toString(),
@@ -22,14 +22,12 @@ export const mapGymAdminToProfileResponse = (
     businessLicense: gymAdmin.businessLicense,
     insuranceCertificate: gymAdmin.insuranceCertificate,
 
-    packageId: gymAdmin.packageId
-      ? gymAdmin.packageId.toString()
-      : "",
+    packageId: gymAdmin.packageId ? gymAdmin.packageId.toString() : "",
 
     paymentStatus: gymAdmin.paymentStatus ?? PaymentStatus.PENDING,
 
-    subscriptionStart: gymAdmin.packageStart ?? null,
-    subscriptionEnd: gymAdmin.packageEnd ?? null,
+    subscriptionStart: gymAdmin?.subscriptionStart ?? null,
+    subscriptionEnd: gymAdmin?.subscriptionEnd ?? null,
 
     limits: {
       maxMembers: gymAdmin.limits?.maxMembers ?? 0,
@@ -40,8 +38,8 @@ export const mapGymAdminToProfileResponse = (
     logo: gymAdmin.logo ?? "",
     status: gymAdmin.status ?? Status.PENDING,
 
-    branches, 
+    branches,
 
     createdAt: gymAdmin.createdAt,
-  }
-}
+  };
+};

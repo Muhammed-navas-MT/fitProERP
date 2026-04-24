@@ -1,5 +1,5 @@
 import { ShieldCheck } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import ReactCrop, { Crop as CropType } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { useReUploadDocument } from "@/hook/gymAdmin/reApplyHook";
@@ -35,8 +35,10 @@ export default function ReUploadDocuments() {
   const [showCropper, setShowCropper] = useState<DocumentField | null>(null);
   const [crop, setCrop] = useState<CropType>({
     unit: "%",
-    width: 80,
-    aspect: 1,
+    x: 25,
+    y: 25,
+    width: 50,
+    height: 50,
   });
   const [completedCrop, setCompletedCrop] = useState<CropType | null>(null);
 
@@ -47,14 +49,6 @@ export default function ReUploadDocuments() {
 
   const { mutate: reUpload, isPending } = useReUploadDocument();
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent, field: DocumentField) => {
-      e.preventDefault();
-      const file = e.dataTransfer.files?.[0];
-      if (file) processFile(file, field);
-    },
-    []
-  );
 
   const handleFileSelect = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -167,7 +161,6 @@ export default function ReUploadDocuments() {
             field="businessLicense"
             preview={previewUrls.businessLicense}
             onFile={handleFileSelect}
-            onDrop={handleDrop}
             onRemove={removeFile}
             onCrop={() => setShowCropper("businessLicense")}
             inputRef={businessLicenseRef}
@@ -178,7 +171,6 @@ export default function ReUploadDocuments() {
             field="insuranceCertificate"
             preview={previewUrls.insuranceCertificate}
             onFile={handleFileSelect}
-            onDrop={handleDrop}
             onRemove={removeFile}
             onCrop={() => setShowCropper("insuranceCertificate")}
             inputRef={insuranceCertificateRef}

@@ -1,7 +1,6 @@
 import { Upload, X, Crop, FileImage } from "lucide-react";
 import React from "react";
 
-/* ================= TYPES ================= */
 
 export type DocumentField = "businessLicense" | "insuranceCertificate";
 
@@ -12,10 +11,9 @@ interface DocumentUploaderProps {
   onFile: (e: React.ChangeEvent<HTMLInputElement>, field: DocumentField) => void;
   onRemove: (field: DocumentField) => void;
   onCrop: () => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-/* ================= COMPONENT ================= */
 
 const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   label,

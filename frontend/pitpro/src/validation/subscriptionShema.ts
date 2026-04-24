@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export const subscriptionSchema = z.object({
   planName: z.nativeEnum(SubscriptionPlanName, {
-    errorMap: () => ({ message: "Please select a plan" }),
+    message: "Please select a plan",
   }),
 
   price: z
@@ -16,14 +16,13 @@ export const subscriptionSchema = z.object({
 
   isActive: z.boolean(),
 
-  // Accept objects but validate against enum
   features: z
     .array(
       z.object({
         description: z.nativeEnum(GymOwnerFeature, {
-          errorMap: () => ({ message: "Invalid feature selected" }),
+          message: "Invalid feature selected",
         }),
-      })
+      }),
     )
     .nonempty("At least one feature is required")
     .refine(
@@ -31,7 +30,7 @@ export const subscriptionSchema = z.object({
         const list = items.map((i) => i.description.toLowerCase());
         return new Set(list).size === list.length;
       },
-      { message: "Duplicate features are not allowed" }
+      { message: "Duplicate features are not allowed" },
     ),
 
   limits: z.object({
@@ -43,9 +42,6 @@ export const subscriptionSchema = z.object({
 
 export type SubscriptionFormType = z.infer<typeof subscriptionSchema>;
 
-export type FinalSubmissionType = Omit<
-  SubscriptionFormType,
-  "features"
-> & {
+export type FinalSubmissionType = Omit<SubscriptionFormType, "features"> & {
   features: string[];
 };

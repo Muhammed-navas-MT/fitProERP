@@ -1,6 +1,6 @@
 import { Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -13,6 +13,7 @@ interface HeaderProps {
   avatar: string;
   title: string;
   subtitle: string;
+  profileImg?: string;
 }
 
 interface NotificationItem {
@@ -33,8 +34,9 @@ interface NotificationResponseShape {
   unreadCount?: number;
 }
 
-export function Topbar({ avatar, title, subtitle }: HeaderProps) {
+export function Topbar({ avatar, title, subtitle, profileImg }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
 
@@ -134,6 +136,12 @@ export function Topbar({ avatar, title, subtitle }: HeaderProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setImageError(false);
+  }, [profileImg]);
+
+  const shouldShowImage = !!profileImg?.trim() && !imageError;
+
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-[#1f1f1f] bg-black px-4 lg:px-6">
       <Button
@@ -173,7 +181,15 @@ export function Topbar({ avatar, title, subtitle }: HeaderProps) {
         />
       </div>
 
-      <Avatar className="h-9 w-9">
+      <Avatar className="h-9 w-9 border border-orange-500/30">
+        {shouldShowImage && (
+          <AvatarImage
+            src={profileImg}
+            alt="Profile"
+            className="object-cover"
+            onError={() => setImageError(true)}
+          />
+        )}
         <AvatarFallback className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
           {avatar}
         </AvatarFallback>

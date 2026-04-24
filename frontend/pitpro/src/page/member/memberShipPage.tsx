@@ -10,7 +10,9 @@ import { rootstate } from "@/store/store";
 import { useSelector } from "react-redux";
 
 export default function MemberShipPage() {
-  const name = useSelector((state: rootstate) => state.authData.name);
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
   const avatarText = name
     ?.split(" ")
     .map((word) => word[0])
@@ -28,6 +30,7 @@ export default function MemberShipPage() {
 
         <div className="md:ml-56">
           <Topbar
+            profileImg={profileImg}
             title="Membership Management"
             subtitle="Manage your Membership package"
             avatar={avatarText}
@@ -50,6 +53,7 @@ export default function MemberShipPage() {
             title="Membership Management"
             subtitle="Manage your Membership package"
             avatar={avatarText}
+            profileImg={profileImg}
           />
 
           <EmptyMembershipState />
@@ -66,6 +70,7 @@ export default function MemberShipPage() {
           title="Membership Management"
           subtitle="Manage your Membership package"
           avatar={avatarText}
+          profileImg={profileImg}
         />
         <MembershipCard packages={plans} />
       </div>

@@ -2,22 +2,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { MessageCircle, X } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   useListConversations,
   useListMessages,
   useMarkConversationSeen,
   useSendMessage,
+  useUploadChatImage,
 } from "@/hook/trainer/chatTrainerHook";
 import { getSocket } from "@/lib/socket";
 import { useChatSocket } from "@/hook/socketHooks";
 import { rootstate } from "@/store/store";
 
-
 import {
   ConversationItem,
   ConversationSeenEvent,
-  ConversationUpdatedEvent,
   MessageItem,
   TypingEvent,
 } from "@/types/member/chatType";
@@ -42,15 +42,20 @@ export default function TrainerChatPage() {
   const [liveMessages, setLiveMessages] = useState<MessageItem[]>([]);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
 
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+
   const { data: conversationsResponse, isLoading: isConversationsLoading } =
     useListConversations();
-    console.log(conversationsResponse)
 
   const conversations: ConversationItem[] =
     conversationsResponse?.conversations || conversationsResponse || [];
 
   const { mutate: sendMessage, isPending: isSendingMessage } =
     useSendMessage(selectedConversationId);
+
+  const { mutateAsync: uploadChatImage, isPending: isUploadingImage } =
+    useUploadChatImage(selectedConversationId);
 
   const { mutate: markConversationSeen } = useMarkConversationSeen();
 
@@ -84,6 +89,14 @@ export default function TrainerChatPage() {
     markConversationSeen(selectedConversationId);
   }, [selectedConversationId, markConversationSeen]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(imagePreviewUrl);
+      }
+    };
+  }, [imagePreviewUrl]);
+
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
     setLiveMessages([]);
@@ -95,6 +108,7 @@ export default function TrainerChatPage() {
     setMessageText("");
     setLiveMessages([]);
     setIsOtherUserTyping(false);
+    handleRemoveImage();
   };
 
   const handleReceiveMessage = useCallback(
@@ -114,8 +128,7 @@ export default function TrainerChatPage() {
   );
 
   const handleConversationUpdated = useCallback(
-    (_data: ConversationUpdatedEvent) => {
-      console.log(_data);
+    () => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
     [queryClient],
@@ -178,43 +191,94 @@ export default function TrainerChatPage() {
     }, 1000);
   };
 
-  const handleSendMessage = () => {
+  const handleImageSelect = (file: File | null) => {
+    if (!file) return;
+
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setSelectedImageFile(file);
+    setImagePreviewUrl(previewUrl);
+  };
+
+  const handleRemoveImage = () => {
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+
+    setSelectedImageFile(null);
+    setImagePreviewUrl("");
+  };
+
+  const handleSendMessage = async () => {
     if (!selectedConversationId || !otherParticipant?.userId) return;
 
     const trimmedMessage = messageText.trim();
-    if (!trimmedMessage) return;
 
-    sendMessage(
-      {
-        conversationId: selectedConversationId,
-        receiverId: otherParticipant.userId,
-        text: trimmedMessage,
-        type: "TEXT",
-      },
-      {
-        onSuccess: () => {
-          setMessageText("");
-          setLiveMessages([]);
-          queryClient.invalidateQueries({
-            queryKey: ["messages", selectedConversationId, 1, 50],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["conversations"],
-          });
+    if (!trimmedMessage && !selectedImageFile) return;
+
+    try {
+      if (selectedImageFile) {
+        await uploadChatImage({
+          file: selectedImageFile,
+          conversationId: selectedConversationId,
+          receiverId: otherParticipant.userId,
+          text: trimmedMessage || undefined,
+        });
+
+        setMessageText("");
+        handleRemoveImage();
+        setLiveMessages([]);
+        queryClient.invalidateQueries({
+          queryKey: ["messages", selectedConversationId, 1, 50],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["conversations"],
+        });
+
+        return;
+      }
+
+      sendMessage(
+        {
+          conversationId: selectedConversationId,
+          receiverId: otherParticipant.userId,
+          text: trimmedMessage,
+          type: "TEXT",
         },
-      },
-    );
+        {
+          onSuccess: () => {
+            setMessageText("");
+            setLiveMessages([]);
+            queryClient.invalidateQueries({
+              queryKey: ["messages", selectedConversationId, 1, 50],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["conversations"],
+            });
+          },
+        },
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to send image";
+      toast.error(message);
+    }
   };
 
- const selectedConversationName = useMemo(() => {
-  if (!selectedConversation) return "";
+  const selectedConversationName = useMemo(() => {
+    if (!selectedConversation) return "";
 
-  const member = selectedConversation.members.find(
-    (m) => m.userId !== currentUserId,
-  );
+    const member = selectedConversation.members.find(
+      (m) => m.userId !== currentUserId,
+    );
 
-  return member?.name || `Member ${member?.userId?.slice(-5) || ""}`;
-}, [selectedConversation, currentUserId]);
+    return member?.name || `Member ${member?.userId?.slice(-5) || ""}`;
+  }, [selectedConversation, currentUserId]);
+
+  const isSending = isSendingMessage || isUploadingImage;
 
   return (
     <div className="flex min-h-screen bg-[#0f0f0f] text-white">
@@ -298,8 +362,12 @@ export default function TrainerChatPage() {
                       setMessageText={setMessageText}
                       onSend={handleSendMessage}
                       onTyping={handleTyping}
-                      isSending={isSendingMessage}
+                      isSending={isSending}
                       disabled={!selectedConversationId}
+                      selectedImageFile={selectedImageFile}
+                      imagePreviewUrl={imagePreviewUrl}
+                      onImageSelect={handleImageSelect}
+                      onRemoveImage={handleRemoveImage}
                     />
                   </div>
                 </>

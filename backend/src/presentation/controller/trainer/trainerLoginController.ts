@@ -7,11 +7,16 @@ import { IJwtService } from "../../../application/interfaces/service/jwtServiceI
 import { setCookie } from "../../shared/utils/setCookie";
 import { TrainerSuccess } from "../../shared/constants/errorMessage/trainerMessage";
 import { configEnv } from "../../../config/envConfig";
+import { IShowGymDetailUseCase } from "../../../application/interfaces/useCase/trainer/showGymDetailUseCaseInterface";
 
 export class TrainerLoginController {
   private _loginUseCase: ITrainerLoginUseCase;
   private _jwtService: IJwtService;
-  constructor(loginUseCase: ITrainerLoginUseCase, jwtService: IJwtService) {
+  constructor(
+    loginUseCase: ITrainerLoginUseCase,
+    jwtService: IJwtService,
+    private _showGymDetailUseCase: IShowGymDetailUseCase,
+  ) {
     this._loginUseCase = loginUseCase;
     this._jwtService = jwtService;
   }
@@ -47,6 +52,24 @@ export class TrainerLoginController {
         res,
         TrainerSuccess.LOGIN_SUCCESS,
         { data: response, accessToken },
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+  async showGymDetail(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const trainerId = res.locals.data.id;
+      const response = await this._showGymDetailUseCase.execute(trainerId);
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        "Gym details Fetched successfully",
+        response,
       );
     } catch (error) {
       next(error);

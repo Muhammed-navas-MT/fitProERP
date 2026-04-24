@@ -1,9 +1,9 @@
 import { Card } from "@/components/ui/card"
 import { Mail, Phone, MapPin, AlertCircle } from "lucide-react"
-import { MemberDTO } from "./healthDetailsTab"
+import { MemberDetailType } from "./healthDetailsTab"
 
 interface PersonalInfoTabProps {
-  member: MemberDTO
+  member: MemberDetailType
 }
 
 export function PersonalInfoTab({ member }: PersonalInfoTabProps) {

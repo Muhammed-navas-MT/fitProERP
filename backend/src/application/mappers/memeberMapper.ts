@@ -1,7 +1,10 @@
 import { MemberEntity } from "../../domain/entities/member/memberEntity";
 import { Roles } from "../../domain/enums/roles";
 import { Status } from "../../domain/enums/status";
-import { IPopulatedMember, IPopulatedMemberType } from "../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
+import {
+  IPopulatedMember,
+  IPopulatedMemberType,
+} from "../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
 import { IAddMemberDTO, UpdateMemberDTO } from "../dtos/auth/memberDto";
 import {
   IListMemberInGymRequestDTO,
@@ -305,6 +308,8 @@ export class MemberMapper {
             endDate: member.package.endDate,
             price: member.package.price,
             status: member.package.status,
+            sessionCount: member.package.sessionCount,
+            usedSession: member.package.usedSession,
           }
         : undefined,
 

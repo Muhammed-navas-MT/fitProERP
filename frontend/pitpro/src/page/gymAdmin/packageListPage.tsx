@@ -18,7 +18,7 @@ import {
   useBlockPackage,
   useUnBlockPackage,
   useViewPackage,
-  PAKCAGE_QUERY_KEYS,
+  PACKAGE_QUERY_KEYS,
 } from "@/hook/gymAdmin/packageHooks";
 import { useListActiveBranch } from "@/hook/gymAdmin/branchHooks";
 import { toast } from "sonner";
@@ -85,7 +85,7 @@ export default function PackagePage() {
         toast.success(res?.data?.message || "Package created successfully");
         queryClient.invalidateQueries({
           queryKey: [
-            PAKCAGE_QUERY_KEYS.PACKAGES,
+            PACKAGE_QUERY_KEYS.PACKAGES,
             page,
             searchQuery,
             branchFilter,

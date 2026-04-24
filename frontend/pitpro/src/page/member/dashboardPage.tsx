@@ -34,11 +34,12 @@ export interface Exercise {
 }
 
 export default function MemberDashboard() {
-  const name = useSelector((state: rootstate) => state.authData.name);
-
   const { data, isLoading: isDashboardLoading } = useDashboardDetail();
 
   const dashboardData = data?.data ?? data;
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
 
   const avatarText = name
     ?.split(" ")
@@ -119,7 +120,7 @@ export default function MemberDashboard() {
     calendarData = mapAttendanceToCalendar(
       currentMonthAttendance.data,
       currentYear,
-      currentMonth
+      currentMonth,
     );
   }
 
@@ -161,6 +162,7 @@ export default function MemberDashboard() {
           avatar={avatarText}
           title={`Welcome Back, ${name || "Member"}!`}
           subtitle="Ready to crush your fitness goals today."
+          profileImg={profileImg}
         />
 
         <main className="space-y-6 p-4 lg:p-8">
@@ -173,7 +175,9 @@ export default function MemberDashboard() {
                     <p className="text-3xl font-bold text-orange-600">
                       {dashboardData?.daysTrained ?? 0}
                     </p>
-                    <p className="text-xs text-gray-500">Overall trained days</p>
+                    <p className="text-xs text-gray-500">
+                      Overall trained days
+                    </p>
                   </div>
                   <div className="rounded-lg bg-green-700 p-3">
                     <Activity className="h-6 w-6 text-white" />
@@ -212,7 +216,8 @@ export default function MemberDashboard() {
                       {todayWorkoutLabel}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {dashboardData?.todayWorkout?.dayOfWeek || "No plan for today"}
+                      {dashboardData?.todayWorkout?.dayOfWeek ||
+                        "No plan for today"}
                     </p>
                   </div>
                   <div className="rounded-lg bg-indigo-700 p-3">

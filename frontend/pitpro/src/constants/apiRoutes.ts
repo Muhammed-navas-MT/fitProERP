@@ -150,6 +150,8 @@ export const API_ROUTES = {
     UPDATE_SALARY_CONFIG: "/update_salary_config",
     LIST_ALL_SALARIES: "/list_all_salary",
     VIEW_SALARY: "/view_salary",
+    UPLOAD_CHAT_IMAGE: "/upload_chat",
+    SHOW_GYM_DETAIL: "/show_gym_detail",
   },
   MEMBER: {
     BASE: "/member",
@@ -195,5 +197,7 @@ export const API_ROUTES = {
     VERIFY_EMAIL: "/verify_email",
     VERIFY_OTP: "/verify_otp",
     NEW_PASSWORD: "/new_password",
+    SHOW_GYM_DETAIL: "/show_gym_detail",
+    UPLOAD_CHAT_IMAGE: "/upload_chat",
   },
 };

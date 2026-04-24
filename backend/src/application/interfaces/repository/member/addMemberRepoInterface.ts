@@ -5,6 +5,7 @@ import {
   IListMemberRequestDTO,
 } from "../../../dtos/memberDto/listAllMembersDto";
 import {
+  IPopulatedGymDetail,
   IPopulatedMember,
   IPopulatedMemberType,
 } from "../../../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
@@ -51,4 +52,5 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
     email: string;
     gymId: string;
   }): Promise<MemberEntity | null>;
+  getMemberGymDetail(memberId: string): Promise<IPopulatedGymDetail | null>;
 }

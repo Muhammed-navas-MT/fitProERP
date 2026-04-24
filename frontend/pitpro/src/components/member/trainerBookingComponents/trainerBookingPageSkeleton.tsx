@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface Props {
   avatar?: string;
+  profileImg?:string;
 }
 
-export function TrainerBookingPageSkeleton({ avatar = "MB" }: Props) {
+export function TrainerBookingPageSkeleton({ avatar = "MB", profileImg }: Props) {
   return (
     <div className="min-h-screen bg-black text-white">
       <Sidebar />
@@ -14,6 +15,7 @@ export function TrainerBookingPageSkeleton({ avatar = "MB" }: Props) {
       <div className="md:ml-56">
         <Topbar
           avatar={avatar}
+          profileImg={profileImg}
           title="Trainer Booking"
           subtitle="Book your personal training session easily."
         />

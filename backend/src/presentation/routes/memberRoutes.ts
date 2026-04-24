@@ -276,6 +276,13 @@ export class MemberRoutes {
         injectedChatController.sendMessage(req, res, next);
       },
     );
+    this._route.post(
+      ROUTES.MEMBER.UPLOAD_CHAT_IMAGE,
+      upload.single("image"),
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedChatController.uploadImage(req, res, next);
+      },
+    );
     this._route.get(
       ROUTES.MEMBER.LIST_MESSAGES,
       (req: Request, res: Response, next: NextFunction) => {
@@ -324,6 +331,12 @@ export class MemberRoutes {
       ROUTES.MEMBER.GET_DASHBOARD_DETAILS,
       (req: Request, res: Response, next: NextFunction) => {
         injectedDashboardController.handleDashboard(req, res, next);
+      },
+    );
+    this._route.get(
+      ROUTES.MEMBER.SHOW_GYM_DETAIL,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedMemberLoginController.showGymDetail(req, res, next);
       },
     );
   }

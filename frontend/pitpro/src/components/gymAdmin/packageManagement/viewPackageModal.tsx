@@ -36,6 +36,7 @@ export function ViewPackageModal({ open, onClose, pkg }: Props) {
             label="Type"
             value={pkg.isDailySession ? "Daily Session" : "Monthly"}
           />
+          <Info label="Session Count" value={`${pkg.sessionCount}`} />
 
           <div>
             <p className="text-sm text-zinc-400">Status</p>
@@ -44,7 +45,7 @@ export function ViewPackageModal({ open, onClose, pkg }: Props) {
                 "mt-1 inline-block rounded-full px-4 py-1.5 text-sm font-medium",
                 pkg.isActive
                   ? "bg-green-500/10 text-green-400"
-                  : "bg-red-500/10 text-red-400"
+                  : "bg-red-500/10 text-red-400",
               )}
             >
               {pkg.isActive ? "Active" : "Inactive"}

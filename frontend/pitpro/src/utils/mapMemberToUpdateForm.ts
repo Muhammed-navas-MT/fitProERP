@@ -1,8 +1,8 @@
-import { MemberDTO } from "@/components/member/profileManagement/healthDetailsTab";
+import { MemberDetailType } from "@/components/member/profileManagement/healthDetailsTab";
 import { UpdateMemberProfileFormValues } from "@/validation/updateMemberProfileValidation";
 
 export function mapMemberToUpdateForm(
-  member: MemberDTO
+  member: MemberDetailType
 ): UpdateMemberProfileFormValues {
   return {
     name: member.name || "",

@@ -19,7 +19,7 @@ const SuperAdminSlice = createSlice({
     name:"SuperAdmin",
     initialState,
     reducers:{
-        setSuperAdminData:(state,action:PayloadAction<ISuperAdmin>):ISuperAdmin => {
+        setSuperAdminData:(_,action:PayloadAction<ISuperAdmin>):ISuperAdmin => {
             return action.payload
         },
         updateSuperAdminData :(state,action:PayloadAction<ISuperAdmin>)=>{

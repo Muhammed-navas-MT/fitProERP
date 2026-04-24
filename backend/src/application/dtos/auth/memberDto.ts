@@ -1,6 +1,6 @@
 export interface IAddMemberDTO {
   trainerId: string;
-  branchId:string;
+  branchId: string;
   name: string;
   email: string;
   phone: string;
@@ -20,7 +20,7 @@ export interface IAddMemberDTO {
 
 export interface UpdateMemberDTO {
   trainerId?: string;
-  branchId?:string
+  branchId?: string;
   name?: string;
   phone?: string;
   address?: string;
@@ -34,4 +34,3 @@ export interface UpdateMemberDTO {
     fitnessGoal?: string;
   };
 }
-

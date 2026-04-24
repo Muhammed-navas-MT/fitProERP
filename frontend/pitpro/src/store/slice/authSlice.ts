@@ -7,23 +7,25 @@ export interface IAuthSlice {
   role: UserRole;
   status: string;
   name: string;
-  subdomain:string;
+  subdomain: string;
+  profileImg?: string;
 }
 
 const initialState: IAuthSlice = {
   _id: "",
   email: "",
   name: "",
-  role:"MEMBER",
+  role: "MEMBER",
   status: "",
-  subdomain:"",
+  subdomain: "",
+  profileImg: undefined
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setData: (state, action: PayloadAction<IAuthSlice>): IAuthSlice => {
+    setData: (_, action: PayloadAction<IAuthSlice>): IAuthSlice => {
       return action.payload;
     },
     updateData: (state, action: PayloadAction<IAuthSlice>) => {

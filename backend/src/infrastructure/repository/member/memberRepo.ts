@@ -10,6 +10,7 @@ import {
 import {
   IPopulatedBranch,
   IPopulatedGym,
+  IPopulatedGymDetail,
   IPopulatedMember,
   IPopulatedMemberType,
   IPopulatedPlan,
@@ -294,5 +295,15 @@ export class MemberRepository
     return await this._model
       .findOne({ email: data.email, gymId: data.gymId })
       .lean();
+  }
+  async getMemberGymDetail(
+    memberId: string,
+  ): Promise<IPopulatedGymDetail | null> {
+    const detail = await this._model
+      .findById(memberId)
+      .populate<IPopulatedGymDetail>("gymId", "gymName logo")
+      .lean<IPopulatedGymDetail>();
+
+    return detail;
   }
 }
