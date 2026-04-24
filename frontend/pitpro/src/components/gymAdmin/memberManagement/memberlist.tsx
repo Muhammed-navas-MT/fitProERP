@@ -14,6 +14,18 @@ import { MembersSearch } from "./memberSearch";
 import { TableSkeleton } from "./TableSkeleton";
 import { NoMembersFound } from "./noMembersFound";
 import { UpdateMemberModal } from "./updateMemberFormModal";
+export interface Member {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  branchId: string;
+  branchName: string;
+  status: "ACTIVE" | "INACTIVE";
+  createdAt: string;
+  gender?: "MALE" | "FEMALE" | "OTHER";
+  avatar: string;
+}
 
 export function MemberList() {
   const [page, setPage] = useState(1);
@@ -38,8 +50,8 @@ export function MemberList() {
     );
   };
 
-  const handleEdit = (member) => {
-    setSelectedMemberId(member.id);
+  const handleEdit = (memberId:string) => {
+    setSelectedMemberId(memberId);
     setUpdateModalOpen(true); 
   };
 
@@ -80,7 +92,7 @@ export function MemberList() {
                 </td>
               </tr>
             ) : (
-              members.map((member) => (
+              members.map((member:Member) => (
                 <tr
                   key={member.id}
                   className="border-b border-zinc-900 hover:bg-zinc-900/40 transition"
@@ -130,7 +142,7 @@ export function MemberList() {
                       <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => handleEdit(member)}
+                        onClick={() => handleEdit(member.id)}
                         className="text-zinc-400 hover:bg-zinc-800 hover:text-white"
                       >
                         <Edit className="h-4 w-4" />

@@ -3,6 +3,7 @@ import { TrainerEntity } from "../../../../domain/entities/trainer/trainerEntity
 import { IListTrainerRequestDTO } from "../../../dtos/trainerDto/listAllTrainerDto";
 import { SalaryPaymentMethod } from "../../../../domain/enums/salaryPaymentMethod";
 import { StripeAccountStatus } from "../../../../domain/enums/stripeAccountStatus";
+import { IPopulatedGymDetail } from "../../../../infrastructure/repository/databaseConfigs/types/populatedMemberType";
 
 export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
   findByEmail(email: string): Promise<TrainerEntity | null>;
@@ -47,4 +48,5 @@ export interface ITrainerRepository extends IBaseRepository<TrainerEntity> {
       upiId?: string;
     },
   ): Promise<TrainerEntity | null>;
+  getTrainerGymDetail(memberId: string): Promise<IPopulatedGymDetail | null>;
 }

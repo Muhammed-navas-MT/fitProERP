@@ -28,7 +28,6 @@ export default function OTPGymAdminModal({ open, onClose,email,handleResendOtp }
   return (
     <Modal show={open} onClose={onClose}>
         <OTPVerification
-          userType="GYMADMIN"
           onSubmit={handleSubmit}
           onResend={async()=>handleResendOtp()}
         />

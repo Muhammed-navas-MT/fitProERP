@@ -20,6 +20,7 @@ import { FindProgressUseCase } from "../../../application/useCases/member/progre
 import { FindProgressGraphDataUseCase } from "../../../application/useCases/member/progressManagement/findProgressGraphDataUseCase";
 import { ListAllProgressUseCase } from "../../../application/useCases/member/progressManagement/listAllprogressUseCase";
 import { UpdateProgressUseCase } from "../../../application/useCases/member/progressManagement/updateProgressUseCase";
+import { ShowGymDetailUseCase } from "../../../application/useCases/member/showGymDetailUseCase";
 import { CancelSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/cancelSessionUseCase";
 import { CreateMemberSessionCheckoutSessionUseCase } from "../../../application/useCases/member/slotAndBookingManagement/createMemberSessionCheckoutSessionUseCase";
 import { ListAllAvailableSlotUseCase } from "../../../application/useCases/member/slotAndBookingManagement/listAllAvailableSlotUseCase";
@@ -105,9 +106,11 @@ const loginUseCase = new MemberLoginUseCase(
   hashService,
   gymAdminRepository,
 );
+const showGymDetailUseCase = new ShowGymDetailUseCase(memberRepository);
 export const injectedMemberLoginController = new MemberLoginController(
   loginUseCase,
   jwtService,
+  showGymDetailUseCase,
 );
 export const injectedCheckMemberAccessMiddleWare =
   new CheckMemberAccessMiddleWare(

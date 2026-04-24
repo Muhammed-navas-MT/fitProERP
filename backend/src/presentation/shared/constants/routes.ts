@@ -150,6 +150,8 @@ export const ROUTES = {
     UPDATE_SALARY_CONFIG: "/update_salary_config",
     LIST_ALL_SALARIES: "/list_all_salary",
     VIEW_SALARY: "/view_salary/:salaryId",
+    UPLOAD_CHAT_IMAGE: "/upload_chat",
+    SHOW_GYM_DETAIL: "/show_gym_detail",
   },
 
   MEMBER: {
@@ -196,5 +198,7 @@ export const ROUTES = {
     VERIFY_EMAIL: "/verify_email",
     VERIFY_OTP: "/verify_otp",
     NEW_PASSWORD: "/new_password",
+    SHOW_GYM_DETAIL: "/show_gym_detail",
+    UPLOAD_CHAT_IMAGE: "/upload_chat",
   },
 };

@@ -1,9 +1,17 @@
 import { cn } from "@/lib/utils";
 
+interface Exercise {
+  name: string;
+  equipment: string;
+  sets: string;
+  reps: string;
+  rest: string;
+}
+
 interface WorkoutDay {
   dayOfWeek: string;
   targetMuscles: string[];
-  exercises: { name: string; equipment: string; sets: number; reps: string; rest: string }[];
+  exercises: Exercise[];
 }
 
 interface DaySelectorCardProps {

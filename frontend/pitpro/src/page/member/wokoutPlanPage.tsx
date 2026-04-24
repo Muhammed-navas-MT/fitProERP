@@ -11,6 +11,8 @@ import {
 } from "@/hook/member/workoutPlanHooks";
 import { WorkoutPageSkeleton } from "@/components/member/workoutPlanCompoents/workoutPageSkeleton";
 import { EmptyWorkoutState } from "@/components/member/workoutPlanCompoents/emptyWorkoutState";
+import { useSelector } from "react-redux";
+import { rootstate } from "@/store/store";
 
 interface Exercise {
   name: string;
@@ -27,6 +29,16 @@ interface WorkoutDay {
 }
 
 export default function WorkoutPage() {
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
+
+  const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
   const [selectedDay, setSelectedDay] = useState<string>(today);
 
@@ -42,7 +54,8 @@ export default function WorkoutPage() {
 
         <div className="flex-1 flex flex-col md:ml-56">
           <Topbar
-            avatar={"MN"}
+            profileImg={profileImg}
+            avatar={avatarText}
             title={`Welcome Back, "Member"!`}
             subtitle="Ready to crush your fitness goals today."
           />
@@ -59,14 +72,15 @@ export default function WorkoutPage() {
     return <div className="p-6 text-red-500">Failed to load workout plan</div>;
   }
 
-  if ((!workout || !workout.days || workout.days.length === 0) ) {
+  if (!workout || !workout.days || workout.days.length === 0) {
     return (
       <div className="flex min-h-screen bg-zinc-950 text-zinc-50">
         <Sidebar />
 
         <div className="flex-1 flex flex-col md:ml-56">
           <Topbar
-            avatar={"MN"}
+            profileImg={profileImg}
+            avatar={avatarText}
             title={`Welcome Back, "Member"!`}
             subtitle="Ready to crush your fitness goals today."
           />
@@ -89,7 +103,8 @@ export default function WorkoutPage() {
 
       <div className="flex-1 flex flex-col md:ml-56">
         <Topbar
-          avatar={"MN"}
+          profileImg={profileImg}
+          avatar={avatarText}
           title={`Welcome Back, "Member"!`}
           subtitle="Ready to crush your fitness goals today."
         />

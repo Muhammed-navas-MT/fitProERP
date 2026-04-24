@@ -7,6 +7,7 @@ export class DashboardMapper {
     completedSessionCount: number,
     activeMembers: number,
     totalMembers: number,
+    salary: number,
   ): DashboardSummaryDto {
     return {
       clients: {
@@ -14,7 +15,7 @@ export class DashboardMapper {
         active: activeMembers,
       },
       earnings: {
-        monthly: 0,
+        monthly: salary,
       },
       sessions: {
         completed: completedSessionCount,

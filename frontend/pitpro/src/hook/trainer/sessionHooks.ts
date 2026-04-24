@@ -6,6 +6,13 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+export enum SessionStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+}
+
 interface ListSessionResponse {
   data: {
     sessions: ListSessionItem[];
@@ -34,7 +41,7 @@ export const useMarkAsCompleted = (page: number, limit: number) => {
     onSuccess: (data, sessionId) => {
       queryClient.setQueryData<ListSessionResponse>(
         ["sessions", page, limit],
-        (oldData) => {
+        (oldData): ListSessionResponse | undefined => {
           if (!oldData) return oldData;
 
           return {
@@ -43,13 +50,17 @@ export const useMarkAsCompleted = (page: number, limit: number) => {
               ...oldData.data,
               sessions: oldData.data.sessions.map((session) =>
                 session.id === sessionId
-                  ? { ...session, status: "COMPLETED" }
+                  ? {
+                      ...session,
+                      status: "COMPLETED" as SessionStatus,
+                    }
                   : session,
               ),
             },
           };
         },
       );
+
       toast.success(data.message);
     },
 

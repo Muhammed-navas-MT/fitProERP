@@ -7,8 +7,6 @@ import { z } from "zod";
 import { createSlotRuleSchema } from "@/validation/slotRuleValidation";
 import { useCreateSlotRule } from "@/hook/trainer/slotRuleHooks";
 
-
-
 type FormData = z.infer<typeof createSlotRuleSchema>;
 
 export default function CreateSlotRulePage() {
@@ -54,7 +52,11 @@ export default function CreateSlotRulePage() {
       <Sidebar />
 
       <div className="lg:pl-[220px]">
-        <Header title="Create Slot Rule" subtitle="Set your availability" avatar="MN" />
+        <Header
+          title="Create Slot Rule"
+          subtitle="Set your availability"
+          avatar="MN"
+        />
 
         <main className="p-6">
           <form
@@ -132,7 +134,9 @@ export default function CreateSlotRulePage() {
 
               <button
                 type="button"
-                onClick={() => append({ startTime: "", endTime: "" })}
+                onClick={() =>
+                  append({ startTime: "", endTime: "", amount: 0 })
+                }
                 className="text-purple-400 mt-2"
               >
                 + Add Slot

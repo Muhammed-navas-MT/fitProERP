@@ -251,7 +251,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
                 <Label>Gender</Label>
                 <Select
                   value={watch("gender")}
-                  onValueChange={(val) => setValue("gender", val)}
+                  onValueChange={(val: "MALE" | "FEMALE" | "OTHER") => setValue("gender", val)}
                 >
                   <SelectTrigger className="border-[#2a2a2a] bg-[#1a1a1a] text-white">
                     <SelectValue placeholder="Gender" />

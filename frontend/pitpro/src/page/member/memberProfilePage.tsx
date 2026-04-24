@@ -16,9 +16,11 @@ import { rootstate } from "@/store/store";
 export default function MemberProfilePage() {
   const { data, isLoading, isError, error } = useViewMemberProfile();
   const [open, setOpen] = useState(false);
-   const [openPassword, setOpenPassword] = useState(false);
-   const name = useSelector((state:rootstate)=>state.authData.name);
-    const avatarText = name
+  const [openPassword, setOpenPassword] = useState(false);
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
+  const avatarText = name
     ?.split(" ")
     .map((word) => word[0])
     .slice(0, 2)
@@ -44,6 +46,7 @@ export default function MemberProfilePage() {
           title="Profile Settings"
           subtitle="Manage your personal information"
           avatar={avatarText}
+          profileImg={profileImg}
         />
 
         <main className="p-4 md:p-8">
@@ -72,7 +75,7 @@ export default function MemberProfilePage() {
                     </button>
 
                     <button
-                      onClick={() =>setOpenPassword(true)}
+                      onClick={() => setOpenPassword(true)}
                       className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
                     >
                       Update Password

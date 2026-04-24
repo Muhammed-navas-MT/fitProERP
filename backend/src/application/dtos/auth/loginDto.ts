@@ -30,6 +30,7 @@ export interface GymAdminLoginResponseDTO {
   role: Roles;
   status: string;
   subdomain: string;
+  logo: string;
 }
 
 export interface MemberLoginResponseDTO {
@@ -39,4 +40,5 @@ export interface MemberLoginResponseDTO {
   role: Roles;
   status: string;
   subdomain: string;
+  profileImg?: string;
 }

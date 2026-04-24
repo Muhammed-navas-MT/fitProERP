@@ -69,7 +69,7 @@ export function EditSubscriptionForm() {
         )
       )
       .filter(Boolean)
-      .map((f) => ({ description: f as GymOwnerFeature }));
+      .map((f:GymOwnerFeature) => ({ description: f as GymOwnerFeature }));
 
     reset({
       planName: data.data.planName,

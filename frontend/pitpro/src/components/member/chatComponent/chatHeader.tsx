@@ -8,7 +8,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({
   otherParticipant,
-  isTyping,
+  // isTyping,
   trainerName
 }: ChatHeaderProps) {
   return (

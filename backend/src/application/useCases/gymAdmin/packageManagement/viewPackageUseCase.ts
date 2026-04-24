@@ -9,16 +9,12 @@ export class ViewPackageUseCase implements IViewPackageUseCase {
   constructor(private _packageRepository: IPackageRespository) {}
 
   async execute(id: string): Promise<IViewPackageResponseDTO | null> {
-    try {
-      const pkg = await this._packageRepository.findByIdAndBranch(id);
+    const pkg = await this._packageRepository.findByIdAndBranch(id);
 
-      if (!pkg) {
-        throw new NOtFoundException(PackageErrorMessage.NOT_FOUND);
-      }
-
-      return PackageMapper.toViewPackageResponse(pkg);
-    } catch (error) {
-      throw error;
+    if (!pkg) {
+      throw new NOtFoundException(PackageErrorMessage.NOT_FOUND);
     }
+
+    return PackageMapper.toViewPackageResponse(pkg);
   }
 }

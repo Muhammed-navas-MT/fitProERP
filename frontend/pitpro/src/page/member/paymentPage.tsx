@@ -10,6 +10,8 @@ import { TablePagination } from "@/components/member/tablePagination";
 import { PaymentDetailsModal } from "@/components/member/paymentComponents/paymentDetailsModal";
 import { PaymentsPageSkeleton } from "@/components/member/paymentComponents/paymentsPageSkeleton";
 import { PaymentMethod } from "@/types/paymentMethod";
+import { useSelector } from "react-redux";
+import { rootstate } from "@/store/store";
 
 export interface PaymentItem {
   id: string;
@@ -30,8 +32,20 @@ export interface PaymentItem {
 export default function PaymentsPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const { name, profileImg } = useSelector(
+    (state: rootstate) => state.authData,
+  );
 
-  const [selectedPayment, setSelectedPayment] = useState<PaymentItem | null>(null);
+  const avatarText = name
+    ?.split(" ")
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  const [selectedPayment, setSelectedPayment] = useState<PaymentItem | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
@@ -55,7 +69,8 @@ export default function PaymentsPage() {
 
       <div className="md:ml-56">
         <Topbar
-          avatar="MP"
+          profileImg={profileImg}
+          avatar={avatarText}
           title="Payments"
           subtitle="Track all your membership payments"
         />

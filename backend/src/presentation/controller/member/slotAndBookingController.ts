@@ -25,6 +25,7 @@ export class SlotAndBookingController {
     try {
       const memberId = res.locals.data.id;
       const trainerId = req.query.trainerId ? String(req.query.trainerId) : "";
+      console.log(trainerId, "in listing ");
       const data = await this._listAvailableSlotUseCase.execute({
         memberId,
         trainerId,

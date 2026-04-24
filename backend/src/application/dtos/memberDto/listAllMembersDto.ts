@@ -127,6 +127,8 @@ export interface MemberDetailDto {
     startDate?: Date;
     endDate?: Date;
     price: number;
+    sessionCount: number;
+    usedSession: number;
     status: PaymentStatus;
   };
   status: Status;

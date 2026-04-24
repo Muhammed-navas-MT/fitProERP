@@ -4,6 +4,7 @@ import { ListMessagesUseCase } from "../../../application/useCases/shared/chatMa
 import { MarkConversationSeenUseCase } from "../../../application/useCases/shared/chatManagement/markConversationSeenUseCase";
 // import { MarkMessageSeenUseCase } from "../../../application/useCases/shared/chatManagement/markMessageSeenUseCase";
 import { SendMessageUseCase } from "../../../application/useCases/shared/chatManagement/sendMessageUseCase";
+import { UploadMessageImageUseCase } from "../../../application/useCases/shared/chatManagement/uploadMessageImageUseCase";
 import { CreateNotificationUseCase } from "../../../application/useCases/shared/notificationManagement/createNotificationUseCase";
 import { MessageController } from "../../../presentation/controller/shared/chatController";
 import { conversationModel } from "../../repository/databaseConfigs/models/conversationModel";
@@ -53,10 +54,17 @@ const markConversationMessagesSeenUseCase = new MarkConversationSeenUseCase(
   socketService,
 );
 
+const uploadImageUseCase = new UploadMessageImageUseCase(
+  messageRepository,
+  conversationRepository,
+  socketService,
+);
+
 export const injectedChatController = new MessageController(
   sendMessageUseCase,
   listMessageuseCase,
   markConversationMessagesSeenUseCase,
   createConversationUseCase,
   listConverSationUseCase,
+  uploadImageUseCase,
 );

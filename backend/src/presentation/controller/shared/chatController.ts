@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import { IListMessagesUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/listMessagesUseCaseInterface";
 import { ISendMessageUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/sendMessageUseCaseInterface";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
@@ -8,6 +9,8 @@ import { ChatUserModel } from "../../../domain/enums/chatUserModel";
 import { ICreateConversationUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/createConversationUseCaseInterface";
 import { IListConversationsUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/listConversationsUseCaseInterface";
 import { IMarkConversationSeenUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/markConversationSeenUseCase";
+import { BadRequestException } from "../../../application/constants/exceptions";
+import { IUploadMessageImageUseCase } from "../../../application/interfaces/useCase/shared/chatManagement/uploadMessageImageUseCaseInterface"; // CHANGED
 
 export class MessageController {
   constructor(
@@ -16,6 +19,7 @@ export class MessageController {
     private _markConversationSeenUseCase: IMarkConversationSeenUseCase,
     private _createConversationUseCase: ICreateConversationUseCase,
     private _listConversationsUseCase: IListConversationsUseCase,
+    private _uploadMessageImageUseCase: IUploadMessageImageUseCase,
   ) {}
 
   private getChatUserModel(role: Roles): ChatUserModel {
@@ -171,6 +175,76 @@ export class MessageController {
         HTTP_STATUS_CODE.OK,
         res,
         "Conversations fetched successfully",
+        response,
+      );
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  uploadImage = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const file = req.file;
+      const { conversationId, receiverId, text } = req.body;
+
+      if (!file) {
+        throw new BadRequestException("Message image is required");
+      }
+
+      if (!conversationId?.trim()) {
+        throw new BadRequestException("Conversation id is required");
+      }
+
+      if (!receiverId?.trim()) {
+        throw new BadRequestException("Receiver id is required");
+      }
+
+      const senderId = res.locals.data.id;
+      const senderRole = res.locals.data.role;
+
+      const senderModel =
+        senderRole === Roles.TRAINER
+          ? ChatUserModel.TRAINER
+          : ChatUserModel.MEMBER;
+
+      const receiverModel =
+        senderModel === ChatUserModel.MEMBER
+          ? ChatUserModel.TRAINER
+          : ChatUserModel.MEMBER;
+
+      const uploadResult = await cloudinary.uploader.upload(file.path, {
+        folder: "chat-images",
+        resource_type: "image",
+        transformation: [
+          {
+            width: 1200,
+            height: 1200,
+            crop: "limit",
+          },
+          {
+            quality: "auto",
+          },
+        ],
+      });
+
+      const response = await this._uploadMessageImageUseCase.execute({
+        conversationId,
+        senderId,
+        senderModel,
+        receiverId,
+        receiverModel,
+        text,
+        imageUrl: uploadResult.secure_url,
+      });
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.CREATE,
+        res,
+        "Image message sent successfully",
         response,
       );
     } catch (error) {

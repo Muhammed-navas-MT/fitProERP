@@ -4,13 +4,13 @@ import {
   UpdateMemberProfileSchema,
   UpdateMemberProfileFormValues,
 } from "@/validation/updateMemberProfileValidation";
-import { MemberDTO } from "./healthDetailsTab";
+import { MemberDetailType } from "./healthDetailsTab";
 import { mapMemberToUpdateForm } from "@/utils/mapMemberToUpdateForm";
 import { useUpdateMemberProfile } from "@/hook/member/profileManagementHook";
 import { toast } from "sonner";
 
 interface UpdateProfileModalProps {
-  member: MemberDTO;
+  member: MemberDetailType;
   isOpen: boolean;
   onClose: () => void;
 }

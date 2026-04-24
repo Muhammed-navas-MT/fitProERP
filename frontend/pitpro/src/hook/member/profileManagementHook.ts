@@ -7,12 +7,11 @@ import {
   deleteProfilePicturedService,
 } from "@/services/member/profileManagementServices";
 import { UpdateMemberProfileFormValues } from "@/validation/updateMemberProfileValidation";
-import { MemberDTO } from "@/components/member/profileManagement/healthDetailsTab";
+import { MemberDetailType } from "@/components/member/profileManagement/healthDetailsTab";
 
 export const memberQueryKeys = {
   profile: ["member-profile"] as const,
 };
-
 
 export const useViewMemberProfile = () => {
   return useQuery({
@@ -42,42 +41,42 @@ export const useChangeMemberPassword = () => {
 };
 
 export const useUploadProfilePicture = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (file: File) => uploacdProfilePicturedService(file),
 
     onSuccess: (data) => {
-      queryClient.setQueryData<MemberDTO>(
+      queryClient.setQueryData<MemberDetailType>(
         memberQueryKeys.profile,
         (old) => {
-          if (!old) return old
+          if (!old) return old;
           return {
             ...old,
             profileImg: data.image,
-          }
-        }
-      )
+          };
+        },
+      );
     },
-  })
-}
+  });
+};
 
 export const useDeleteProfilePicture = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: deleteProfilePicturedService,
 
     onSuccess: () => {
-      queryClient.setQueryData<MemberDTO>(
+      queryClient.setQueryData<MemberDetailType>(
         memberQueryKeys.profile,
         (old) => {
-          if (!old) return old
+          if (!old) return old;
           return {
             ...old,
-            profileImg:"",
-          }
-        }
-      )
+            profileImg: "",
+          };
+        },
+      );
     },
-  })
-}
+  });
+};

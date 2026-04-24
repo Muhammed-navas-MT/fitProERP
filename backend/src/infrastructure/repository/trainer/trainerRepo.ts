@@ -7,6 +7,7 @@ import { IListTrainerRequestDTO } from "../../../application/dtos/trainerDto/lis
 import { Status } from "../../../domain/enums/status";
 import { SalaryPaymentMethod } from "../../../domain/enums/salaryPaymentMethod";
 import { StripeAccountStatus } from "../../../domain/enums/stripeAccountStatus";
+import { IPopulatedGymDetail } from "../databaseConfigs/types/populatedMemberType";
 
 export class TrainerRepository
   extends BaseRepository<ITrainerModel>
@@ -205,5 +206,16 @@ export class TrainerRepository
     return await this._model
       .findByIdAndUpdate(trainerId, { $set: updateData }, { new: true })
       .lean<TrainerEntity | null>();
+  }
+
+  async getTrainerGymDetail(
+    trainerId: string,
+  ): Promise<IPopulatedGymDetail | null> {
+    const detail = await this._model
+      .findById(trainerId)
+      .populate<IPopulatedGymDetail>("gymId", "gymName logo")
+      .lean<IPopulatedGymDetail>();
+
+    return detail;
   }
 }

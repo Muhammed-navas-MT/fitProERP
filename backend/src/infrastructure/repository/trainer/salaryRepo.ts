@@ -150,4 +150,14 @@ export class TrainerSalaryRepository
       .lean<IPopulatedSalary>();
     return salary;
   }
+  async findLastMonthSalaryByTrainerId(
+    trainerId: string,
+  ): Promise<TrainerSalaryEntity | null> {
+    const salary = await this._model
+      .findOne({ trainerId })
+      .sort({ createdAt: -1 })
+      .lean<TrainerSalaryEntity>();
+
+    return salary;
+  }
 }

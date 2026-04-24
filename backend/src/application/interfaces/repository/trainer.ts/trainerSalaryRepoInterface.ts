@@ -39,4 +39,7 @@ export interface ITrainerSalaryRepository extends IBaseRepository<TrainerSalaryE
     paymentIntentId: string,
   ): Promise<TrainerSalaryEntity | null>;
   findDetailById(salaryId: string): Promise<IPopulatedSalary | null>;
+  findLastMonthSalaryByTrainerId(
+    trainerId: string,
+  ): Promise<TrainerSalaryEntity | null>;
 }

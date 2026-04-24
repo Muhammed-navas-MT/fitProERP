@@ -20,6 +20,7 @@ export class LoginMapper {
       phone: gymAdmin.phone || "",
       subdomain: gymAdmin.subdomain || "",
       status: gymAdmin.status || "",
+      logo: gymAdmin.logo,
     };
   }
   static trainerLoginMapper(data: {
@@ -47,6 +48,7 @@ export class LoginMapper {
       role: member.role || "",
       status: member.status || "",
       subdomain: subdomain,
+      profileImg: member?.profileImg,
     };
   }
 }

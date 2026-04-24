@@ -4,6 +4,7 @@ import {
   listMessagesService,
   markConversationSeenService,
   sendMessageService,
+  uploadChatImageService,
 } from "@/services/member/chatService";
 import {
   CreateConversationPayload,
@@ -80,6 +81,35 @@ export const useMarkConversationSeen = () => {
       queryClient.invalidateQueries({
         queryKey: ["messages", conversationId],
       });
+    },
+  });
+};
+
+export const useUploadChatImage = (conversationId?: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      file: File;
+      conversationId: string;
+      receiverId: string;
+      text?: string;
+    }) => uploadChatImageService(data),
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["messages", variables.conversationId],
+      });
+
+      if (conversationId) {
+        queryClient.invalidateQueries({
+          queryKey: ["messages", conversationId],
+        });
+      }
     },
   });
 };

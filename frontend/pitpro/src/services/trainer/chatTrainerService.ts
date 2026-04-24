@@ -1,6 +1,9 @@
 import AxiosInstance from "@/axios/axios";
 import { API_ROUTES } from "@/constants/apiRoutes";
-import { CreateConversationPayload, SendMessagePayload } from "@/types/member/chatType";
+import {
+  CreateConversationPayload,
+  SendMessagePayload,
+} from "@/types/member/chatType";
 import { AxiosError } from "axios";
 
 export const createTrainerConversationService = async (
@@ -12,7 +15,7 @@ export const createTrainerConversationService = async (
       data,
     );
 
-    return response.data
+    return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
@@ -32,7 +35,7 @@ export const TrainerConversationService = async (
       data,
     );
 
-    return response.data
+    return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
@@ -101,9 +104,7 @@ export const listMessagesService = async (
   }
 };
 
-export const markConversationSeenService = async (
-  conversationId: string,
-) => {
+export const markConversationSeenService = async (conversationId: string) => {
   try {
     const response = await AxiosInstance.patch(
       `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.CONVERSATION}/${conversationId}/seen`,
@@ -112,8 +113,43 @@ export const markConversationSeenService = async (
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "Failed to mark seen");
+    }
+    throw error;
+  }
+};
+
+export const uploadTrainerChatImageService = async (data: {
+  file: File;
+  conversationId: string;
+  receiverId: string;
+  text?: string;
+}) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", data.file);
+    formData.append("conversationId", data.conversationId);
+    formData.append("receiverId", data.receiverId);
+
+    if (data.text?.trim()) {
+      formData.append("text", data.text.trim());
+    }
+
+    const response = await AxiosInstance.post(
+      `${API_ROUTES.TRAINER.BASE}${API_ROUTES.TRAINER.UPLOAD_CHAT_IMAGE}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to mark seen",
+        error.response?.data?.message || "Failed to upload chat image",
       );
     }
     throw error;

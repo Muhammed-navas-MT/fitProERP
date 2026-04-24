@@ -64,3 +64,13 @@ export interface MarkConversationSeenDto {
   conversationId: string;
   viewerId: string;
 }
+
+export interface UploadMessageImageDto {
+  conversationId: string;
+  senderId: string;
+  senderModel: ChatUserModel;
+  receiverId: string;
+  receiverModel: ChatUserModel;
+  imageUrl: string;
+  text?: string;
+}

@@ -25,6 +25,7 @@ export interface IViewPackageType {
   price: number;
   durationInDays: number;
   features: string[];
+  sessionCount: number;
   isDailySession: boolean;
   isActive: boolean;
 }
