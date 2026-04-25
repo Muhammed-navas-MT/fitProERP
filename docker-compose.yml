@@ -2,9 +2,7 @@ version: "3.9"
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+  image: navasmt/fitpro
     container_name: fitpro-backend
     ports:
       - "3000:3000"
