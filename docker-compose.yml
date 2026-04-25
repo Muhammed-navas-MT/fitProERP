@@ -5,11 +5,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: pitpro-backend
+    container_name: fitpro-backend
     ports:
       - "3000:3000"
     env_file:
       - ./backend/.env
-    depends_on:
-      - redis
     restart: unless-stopped
