@@ -145,9 +145,9 @@ export default function Sidebar({
   return (
     <div
       className={`
-        w-64 h-screen bg-[#111418] border-r border-gray-800 flex flex-col transition-all duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-      `}
+    sticky top-0 h-screen w-64 shrink-0 bg-[#111418] border-r border-gray-800 flex flex-col transition-all duration-300
+    ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+  `}
     >
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3">

@@ -4,7 +4,11 @@ import { ISuperAdminPaymentModel } from "../databaseConfigs/models/superAdminPay
 import { ISuperAdminPaymentRepository } from "../../../application/interfaces/repository/superAdmin/paymentRepoInterface";
 import { IListPaymentRequestDTO } from "../../../application/dtos/superAdminDto/paymentDto";
 import { IPopulatedPayment } from "../databaseConfigs/types/populatedPaymentType";
-import { RevenueOverviewDto } from "../../../application/dtos/superAdminDto/dashboardDto";
+import {
+  PlanDistributionType,
+  RevenueOverviewDto,
+} from "../../../application/dtos/superAdminDto/dashboardDto";
+import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 
 export class SuperAdminPaymentRepository
   extends BaseRepository<ISuperAdminPaymentModel>
@@ -162,6 +166,42 @@ export class SuperAdminPaymentRepository
     }
 
     return output;
+  }
+  async getPlanDistribution(): Promise<PlanDistributionType[]> {
+    const result = await this._model.aggregate([
+      {
+        $match: {
+          status: PaymentStatus.PAID,
+        },
+      },
+      {
+        $lookup: {
+          from: "subscriptions",
+          localField: "packageId",
+          foreignField: "_id",
+          as: "subscription",
+        },
+      },
+      {
+        $unwind: "$subscription",
+      },
+      {
+        $group: {
+          _id: "$packageId",
+          planName: { $first: "$subscription.planName" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          planName: 1,
+          count: 1,
+        },
+      },
+    ]);
+
+    return result;
   }
   private getMonthsAgoStart(months: number): Date {
     const now = new Date();

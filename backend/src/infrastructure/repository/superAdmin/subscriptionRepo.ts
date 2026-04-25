@@ -23,7 +23,7 @@ export class SubscriptionRepository
   }
 
   async listAllSubscriptions(
-    params: IListSubscriptionRequestDTO
+    params: IListSubscriptionRequestDTO,
   ): Promise<{ subscription: SubscriptionEntity[]; total: number }> {
     const skip = (params.page - 1) * params.limit;
     const filter = params.search
@@ -51,7 +51,7 @@ export class SubscriptionRepository
   }
 
   async listAllActiveSubscription(): Promise<SubscriptionEntity[]> {
-      const subsriptions = await this._model.find({isActive:true});
-      return subsriptions;
+    const subsriptions = await this._model.find({ isActive: true });
+    return subsriptions;
   }
 }

@@ -9,6 +9,7 @@ export interface SuperAdminDashboardDto {
   };
   revenueOverview: RevenueOverviewDto[];
   gymGrowth: GymGrowthDto[];
+  subscriptionAnalysis: SubscriptionAnalysisData;
 }
 
 export interface RevenueOverviewDto {
@@ -18,5 +19,24 @@ export interface RevenueOverviewDto {
 
 export interface GymGrowthDto {
   month: string;
+  count: number;
+}
+
+export interface PlanDistributionItem {
+  planName: string;
+  count: number;
+}
+
+export interface SubscriptionAnalysisData {
+  totalSubscriptions: number;
+  activeSubscriptions: number;
+  inactiveSubscriptions: number;
+  planDistribution: PlanDistributionItem[];
+}
+
+export interface PlanDistributionType {
+  packageId: {
+    planName: string;
+  };
   count: number;
 }

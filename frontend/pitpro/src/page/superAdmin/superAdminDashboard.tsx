@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Building2, Dumbbell, TrendingUp } from "lucide-react";
 import Sidebar from "@/components/superAdmin/Sidebar";
@@ -7,7 +5,29 @@ import Header from "@/components/superAdmin/Header";
 import StatCard from "@/components/superAdmin/dashboard/statCard";
 import RevenueOverviewChart from "@/components/superAdmin/dashboard/revenueOverviewChart";
 import GymGrowthChart from "@/components/superAdmin/dashboard/gymGrowthChart";
+import SubscriptionAnalyticsChart from "@/components/superAdmin/dashboard/subscriptionAnalyticsChart";
 import { useDashboardDetail } from "@/hook/superAdmin/dashboardHooks";
+
+const subscription = {
+  totalSubscriptions: 42,
+  activeSubscriptions: 35,
+  inactiveSubscriptions: 7,
+
+  planDistribution: [
+    {
+      planName: "Basic",
+      count: 12,
+    },
+    {
+      planName: "Premium",
+      count: 18,
+    },
+    {
+      planName: "Enterprise",
+      count: 12,
+    },
+  ],
+};
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("en-IN", {
@@ -30,30 +50,26 @@ export default function DashboardPage() {
   };
 
   const { data, isLoading } = useDashboardDetail();
-  console.log(data);
 
   const dashboardData = data?.data;
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0d10] flex items-center justify-center text-white">
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0d10] text-white">
         Loading dashboard...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0d10] flex">
-      {/* Desktop Sidebar */}
+    <div className="flex min-h-screen bg-[#0a0d10]">
       <div className="hidden lg:block">
         <Sidebar isOpen={true} isMobile={false} />
       </div>
 
-      {/* Mobile Sidebar */}
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} isMobile={true} />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex min-h-screen flex-1 flex-col">
         <Header
           title="Dashboard"
           description="Welcome to FitPro ERP Super Admin Panel"
@@ -61,13 +77,14 @@ export default function DashboardPage() {
           onMenuToggle={toggleSidebar}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
+          <div className="mb-6 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
             <StatCard
               title="Total Gyms"
               value={dashboardData?.summary.totalGyms ?? 0}
-              change={formatPercentage(dashboardData?.summary.gymGrowthPercentage ?? 0)}
+              change={formatPercentage(
+                dashboardData?.summary.gymGrowthPercentage ?? 0,
+              )}
               icon={Dumbbell}
               iconColor="text-blue-500"
             />
@@ -75,7 +92,9 @@ export default function DashboardPage() {
             <StatCard
               title="Total Branches"
               value={dashboardData?.summary.totalBranches ?? 0}
-              change={formatPercentage(dashboardData?.summary.branchGrowthPercentage ?? 0)}
+              change={formatPercentage(
+                dashboardData?.summary.branchGrowthPercentage ?? 0,
+              )}
               icon={Building2}
               iconColor="text-cyan-500"
             />
@@ -83,16 +102,22 @@ export default function DashboardPage() {
             <StatCard
               title="Monthly Revenue"
               value={formatCurrency(dashboardData?.summary.monthlyRevenue ?? 0)}
-              change={formatPercentage(dashboardData?.summary.revenueGrowthPercentage ?? 0)}
+              change={formatPercentage(
+                dashboardData?.summary.revenueGrowthPercentage ?? 0,
+              )}
               icon={TrendingUp}
               iconColor="text-emerald-500"
             />
           </div>
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
             <RevenueOverviewChart data={dashboardData?.revenueOverview ?? []} />
+
             <GymGrowthChart data={dashboardData?.gymGrowth ?? []} />
+
+            <SubscriptionAnalyticsChart
+              data={subscription}
+            />
           </div>
         </main>
       </div>

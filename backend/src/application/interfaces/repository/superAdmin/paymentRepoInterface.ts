@@ -1,6 +1,9 @@
 import { SuperAdminPaymentEntity } from "../../../../domain/entities/superAdmin/paymentEntity";
 import { IPopulatedPayment } from "../../../../infrastructure/repository/databaseConfigs/types/populatedPaymentType";
-import { RevenueOverviewDto } from "../../../dtos/superAdminDto/dashboardDto";
+import {
+  PlanDistributionType,
+  RevenueOverviewDto,
+} from "../../../dtos/superAdminDto/dashboardDto";
 import { IListPaymentRequestDTO } from "../../../dtos/superAdminDto/paymentDto";
 import { IBaseRepository } from "../base/baseRepo";
 
@@ -12,4 +15,5 @@ export interface ISuperAdminPaymentRepository extends IBaseRepository<SuperAdmin
   getCurrentMonthRevenue(start: Date, end: Date): Promise<number>;
   getLastMonthRevenue(start: Date, end: Date): Promise<number>;
   getRevenueOverviewByMonth(months?: number): Promise<RevenueOverviewDto[]>;
+  getPlanDistribution(): Promise<PlanDistributionType[]>;
 }
