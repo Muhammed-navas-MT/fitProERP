@@ -18,18 +18,35 @@ const AxiosInstance = axios.create({
 
 AxiosInstance.interceptors.request.use((config) => {
   const accessToken = store.getState().token.token;
+
   const host = window.location.hostname;
-  const parts = host.split(".");
-  let subdomain = null;
-  if (parts.length === 2 && parts[1] === "localhost") {
-    subdomain = parts[0];
+
+  let subdomain: string | null = null;
+
+  if (host.includes("localhost")) {
+    const parts = host.split(".");
+    if (parts.length >= 2) {
+      subdomain = parts[0];
+    }
   }
-  if (subdomain) {
+
+  else {
+    const parts = host.split(".");
+
+    if (parts.length > 2) {
+      subdomain = parts[0];
+    }
+  }
+
+  if (subdomain && subdomain !== "www") {
     config.headers["X-Tenant"] = subdomain;
   }
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+  config.withCredentials = true;
+
   return config;
 });
 

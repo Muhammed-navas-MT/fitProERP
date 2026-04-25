@@ -37,29 +37,36 @@ class Express_app {
   }
 
   setMiddleware() {
+    const allowedOrigins =
+      process.env.ALLOWED_ORIGINS?.split(",").map((url) => url.trim()) || [];
+
+    const allowedDomainRegex = process.env.ALLOWED_DOMAIN_REGEX || "";
+
     this._app.use(
       cors({
         origin: (origin, callback) => {
           if (!origin) return callback(null, true);
-          const allowed = [
-            /^https?:\/\/localhost(:\d+)?$/,
-            /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
-            /^https?:\/\/([a-zA-Z0-9-]+)\.localhost(:\d+)?$/,
-          ];
 
-          if (allowed.some((regex) => regex.test(origin))) {
+          const isAllowed =
+            allowedOrigins.includes(origin) ||
+            new RegExp(
+              `^https:\\/\\/([a-zA-Z0-9-]+\\.)*${allowedDomainRegex}$`,
+            ).test(origin);
+
+          if (isAllowed) {
             return callback(null, true);
           }
+
           return callback(new Error("CORS Not Allowed"));
         },
         credentials: true,
       }),
     );
+
     this._app.use(express.json());
     this._app.use(express.urlencoded({ extended: true }));
     this._app.use(cookieParser());
   }
-
   private _setSuperAdminRoutes() {
     const superAdminRoutes = new SuperAdminRoutes();
     this._app.use(ROUTES.AUTH.SUPERADMIN.BASE, superAdminRoutes.get_routes());
