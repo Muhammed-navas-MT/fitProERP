@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   backend:
-  image: navasmt/fitpro
+    image: navasmt/fitpro
     container_name: fitpro-backend
     ports:
       - "3000:3000"
