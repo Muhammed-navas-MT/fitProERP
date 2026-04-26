@@ -24,12 +24,12 @@ export const PaymentSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-     stripeSessionId: {
-      type:String
-     },
-      currency:{
-        type:String
-      },
+    stripeSessionId: {
+      type: String,
+    },
+    currency: {
+      type: String,
+    },
     status: {
       type: String,
       enum: Object.values(PaymentStatus),
@@ -38,5 +38,5 @@ export const PaymentSchema = new mongoose.Schema(
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
-  }
+  },
 );

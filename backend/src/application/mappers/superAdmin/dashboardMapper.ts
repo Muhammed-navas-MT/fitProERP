@@ -35,12 +35,7 @@ export class SuperAdminDashboardMapper {
         activeSubscriptions: data.subscriptioncounts.active,
         inactiveSubscriptions: data.subscriptioncounts.inactive,
         totalSubscriptions: data.subscriptioncounts.total,
-        planDistribution: data.planDistribution.map((plan) => {
-          return {
-            count: plan.count,
-            planName: plan.packageId.planName,
-          };
-        }),
+        planDistribution: data.planDistribution,
       },
     };
   }

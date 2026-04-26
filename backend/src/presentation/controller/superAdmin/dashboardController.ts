@@ -14,6 +14,7 @@ export class SuperAdminDashboardController {
       const superAdminId = res.locals.data.id;
       const response =
         await this._getDashboardDetailUseCase.execute(superAdminId);
+      console.log(response, "in super admin dasboard");
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
