@@ -65,7 +65,7 @@ jobs:
             sudo docker stop fitpro || true
             sudo docker rm fitpro || true
 
-            docker run -d \
+            sudo docker run -d \
               --env-file /home/ubuntu/fitProERP/backend/.env \
               -p 3000:3000 \
               --name fitpro \
