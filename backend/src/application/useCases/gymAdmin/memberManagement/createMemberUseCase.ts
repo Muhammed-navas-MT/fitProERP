@@ -25,6 +25,7 @@ import { ICreateMemberUseCase } from "../../../interfaces/useCase/gymAdmin/membe
 import { MemberMapper } from "../../../mappers/memeberMapper";
 import { BranchStatus } from "../../../../domain/enums/branchStatus";
 import { NotificationType } from "../../../../domain/enums/notificationTypes";
+import { configEnv } from "../../../../config/envConfig";
 
 export class CreateMemberUseCase implements ICreateMemberUseCase {
   private _hashService: IHashService;
@@ -104,7 +105,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     const createdMemberId = await this._memberRepository.create(newMember);
 
     const htmlContent = this._sendPasswordTemplateGenerator.generateHtml({
-      loginUrl: `http://${gym.subdomain}.localhost:5173/member/login`,
+      loginUrl: `${configEnv.CLIENT_PROTOCOL}://${gym.subdomain}.${configEnv.CLIENT_DOMAIN}.${configEnv.CLIENT_PORT}/member/login`,
       password,
       name: data.name,
       gymName: gym.gymName,

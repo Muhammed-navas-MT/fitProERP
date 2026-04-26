@@ -25,7 +25,7 @@ export class RejectGymUseCase implements IRejectGymUseCase {
       reason,
       gymName: gymAdmin.gymName,
       supportEmail: "support.fitpro@gmail.com",
-      gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}:${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
+      gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}.${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
     });
     const payload: EmailPayloadType = {
       recieverMailId: gymAdmin.email,

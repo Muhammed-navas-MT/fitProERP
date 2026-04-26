@@ -9,7 +9,7 @@ export interface SuperAdminDashboardDto {
   };
   revenueOverview: RevenueOverviewDto[];
   gymGrowth: GymGrowthDto[];
-  // subscriptionAnalysis: SubscriptionAnalysisData;
+  subscriptionAnalysis: SubscriptionAnalysisData;
 }
 
 export interface RevenueOverviewDto {

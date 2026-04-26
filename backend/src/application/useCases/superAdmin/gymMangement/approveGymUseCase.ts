@@ -1,3 +1,4 @@
+import { configEnv } from "../../../../config/envConfig";
 import { Status } from "../../../../domain/enums/status";
 import { EmailPayloadType } from "../../../../domain/type/emailPayload";
 import { GymAdminAuthError } from "../../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
@@ -16,26 +17,22 @@ export class ApproveGymUseCase implements IApproveGymUseCase {
   ) {}
 
   async approve(id: string): Promise<void> {
-    try {
-      const gymAdmin = await this._gymRepository.findById(id);
-      if (!gymAdmin) {
-        throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
-      }
-
-      await this._gymRepository.update({ status: Status.IN_ACTIVE }, id);
-      const htmlContent = this._approveGymEmailContentGenerator.generateHtml({
-        gymUrl: `http://${gymAdmin.subdomain}.localhost:5173/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
-        gymName: gymAdmin.gymName,
-        subdomain: gymAdmin.subdomain,
-      });
-      const payload: EmailPayloadType = {
-        recieverMailId: gymAdmin.email,
-        subject: "Gym Approved Successfully",
-        content: htmlContent,
-      };
-      await this._emailService.sendEmail(payload);
-    } catch (error) {
-      throw error;
+    const gymAdmin = await this._gymRepository.findById(id);
+    if (!gymAdmin) {
+      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
     }
+
+    await this._gymRepository.update({ status: Status.IN_ACTIVE }, id);
+    const htmlContent = this._approveGymEmailContentGenerator.generateHtml({
+      gymUrl: `${configEnv.CLIENT_PROTOCOL}://${gymAdmin.subdomain}.${configEnv.CLIENT_DOMAIN}.${configEnv.CLIENT_PORT}/gym-admin${ROUTES.GYMADMIN.AUTH.LOGIN}`,
+      gymName: gymAdmin.gymName,
+      subdomain: gymAdmin.subdomain,
+    });
+    const payload: EmailPayloadType = {
+      recieverMailId: gymAdmin.email,
+      subject: "Gym Approved Successfully",
+      content: htmlContent,
+    };
+    await this._emailService.sendEmail(payload);
   }
 }

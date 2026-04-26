@@ -41,8 +41,6 @@ export class MemberLoginUseCase implements IMemberLoginUseCase {
       throw new ForbiddenException(MemberError.GYM_NOT_ACTIVE);
     }
 
-    console.log(member);
-
     const isPasswordValid = await this.hashService.compare(
       data.password,
       member.password,

@@ -2,6 +2,7 @@ import { SuperAdminDashboardDto } from "../../../dtos/superAdminDto/dashboardDto
 import { IBranchRepository } from "../../../interfaces/repository/gymAdmin/branchRepoInterface";
 import { IGymAdminRepository } from "../../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
 import { ISuperAdminPaymentRepository } from "../../../interfaces/repository/superAdmin/paymentRepoInterface";
+import { ISubscripctionRespoditery } from "../../../interfaces/repository/superAdmin/subscriptionRepoInterface";
 import { IGetDashboardDetailUseCase } from "../../../interfaces/useCase/superAdmin/dashboardManagement/getDashboardDetailUseCaseInterface";
 import { SuperAdminDashboardMapper } from "../../../mappers/superAdmin/dashboardMapper";
 
@@ -10,6 +11,7 @@ export class GetDashboardDetailUseCase implements IGetDashboardDetailUseCase {
     private _gymAdminRepository: IGymAdminRepository,
     private _branchRepository: IBranchRepository,
     private _superAdminPaymentRepository: ISuperAdminPaymentRepository,
+    private _subscriptionRepository: ISubscripctionRespoditery,
   ) {}
 
   async execute(superAdminId: string): Promise<SuperAdminDashboardDto> {
@@ -29,6 +31,8 @@ export class GetDashboardDetailUseCase implements IGetDashboardDetailUseCase {
       lastMonthRevenue,
       revenueOverview,
       gymAdminGrowth,
+      subscriptionCount,
+      planDistribution,
     ] = await Promise.all([
       this._gymAdminRepository.countTotalGymAdmins(),
       this._gymAdminRepository.countGymAdminsCreatedThisMonth(
@@ -55,6 +59,8 @@ export class GetDashboardDetailUseCase implements IGetDashboardDetailUseCase {
 
       this._superAdminPaymentRepository.getRevenueOverviewByMonth(6),
       this._gymAdminRepository.getGymAdminGrowthByMonth(6),
+      this._subscriptionRepository.activeAndInactiveSubscriptionCount(),
+      this._superAdminPaymentRepository.getPlanDistribution(),
     ]);
 
     const gymAdminGrowthPercentage = this.calculateGrowthPercentage(
@@ -72,6 +78,12 @@ export class GetDashboardDetailUseCase implements IGetDashboardDetailUseCase {
       lastMonthRevenue,
     );
 
+    const subscriptioncounts = {
+      total: subscriptionCount.active + subscriptionCount.inactive,
+      active: subscriptionCount.active,
+      inactive: subscriptionCount.inactive,
+    };
+
     return SuperAdminDashboardMapper.toDto({
       totalGymAdmins,
       gymAdminGrowthPercentage,
@@ -81,6 +93,8 @@ export class GetDashboardDetailUseCase implements IGetDashboardDetailUseCase {
       revenueGrowthPercentage,
       revenueOverview,
       gymAdminGrowth,
+      subscriptioncounts,
+      planDistribution,
     });
   }
 

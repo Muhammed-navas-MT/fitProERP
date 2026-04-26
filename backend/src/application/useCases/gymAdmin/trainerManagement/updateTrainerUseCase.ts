@@ -13,27 +13,25 @@ import { Status } from "../../../../domain/enums/status";
 export class UpdateTrainerUseCase implements IUpdateTrainerUseCase {
   constructor(
     private readonly _trainerRepository: ITrainerRepository,
-    private readonly _memberRepository: IMemberRepository
+    private readonly _memberRepository: IMemberRepository,
   ) {}
 
   async updateTrainer(
     trainerData: IUpdateTrainerDTO,
-    trainerId: string
+    trainerId: string,
   ): Promise<void> {
-
     if (!trainerId) {
       throw new ForbiddenException(TrainerError.ID_INVALID);
     }
 
-    const existingTrainer =
-      await this._trainerRepository.findById(trainerId);
+    const existingTrainer = await this._trainerRepository.findById(trainerId);
 
     if (!existingTrainer) {
       throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
     }
 
-    if(!existingTrainer.branchId){
-      throw new BadRequestException(TrainerError.BRANCH_ID_INVALID)
+    if (!existingTrainer.branchId) {
+      throw new BadRequestException(TrainerError.BRANCH_ID_INVALID);
     }
 
     const statusChangedToInactive =
@@ -41,26 +39,22 @@ export class UpdateTrainerUseCase implements IUpdateTrainerUseCase {
       trainerData.status === Status.IN_ACTIVE;
 
     const branchChanged =
-      trainerData.branchId &&
-      trainerData.branchId !== existingTrainer.branchId;
+      trainerData.branchId && trainerData.branchId !== existingTrainer.branchId;
 
     if (statusChangedToInactive || branchChanged) {
-
       const activeTrainerCount =
         await this._trainerRepository.countActiveTrainersByBranch(
-          existingTrainer.branchId
+          existingTrainer.branchId,
         );
 
       if (activeTrainerCount <= 1) {
-        throw new ForbiddenException(
-          TrainerError.ONE_TRAINER_REQUIRED
-        );
+        throw new ForbiddenException(TrainerError.ONE_TRAINER_REQUIRED);
       }
 
       const otherTrainers =
         await this._trainerRepository.findActiveTrainersByBranchExcludingTrainer(
           existingTrainer.branchId,
-          trainerId
+          trainerId,
         );
 
       const members =

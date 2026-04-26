@@ -1,3 +1,4 @@
+import { configEnv } from "../../../../config/envConfig";
 import { Status } from "../../../../domain/enums/status";
 import { EmailPayloadType } from "../../../../domain/type/emailPayload";
 import { TrainerError } from "../../../../presentation/shared/constants/errorMessage/trainerMessage";
@@ -57,7 +58,7 @@ export class CreateTrainerUseCase implements ICreateTrainerUseCase {
     await this._trainerRepository.create({ ...data, password: hashPassword });
 
     const htmlContent = this._sendPasswordEmailContentGenerator.generateHtml({
-      loginUrl: `http://${gym.subdomain}.localhost:5173/trainer/login`,
+      loginUrl: `${configEnv.CLIENT_PROTOCOL}://${gym.subdomain}.${configEnv.CLIENT_DOMAIN}.${configEnv.CLIENT_PORT}/trainer/login`,
       password,
       name: data.name,
       gymName: gym.gymName,

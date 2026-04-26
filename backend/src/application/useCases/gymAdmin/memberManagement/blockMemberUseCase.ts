@@ -13,10 +13,6 @@ export class BlockMemberUseCase implements IBlockMemberUseCase {
     if (!member) {
       throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
     }
-    await this._memberRepository.update(
-      { status: Status.BLOCKED },
-      memberId
-    );
+    await this._memberRepository.update({ status: Status.BLOCKED }, memberId);
   }
 }
-

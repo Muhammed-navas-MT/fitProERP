@@ -9,9 +9,9 @@ export class UnBlockTrainerUseCase implements IUnBlockTrainerUseCase {
 
   async unBlockTrainer(trainerId: string): Promise<void> {
     const trainer = await this._trainerRepository.findById(trainerId);
-    if (!trainer) throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND)
+    if (!trainer) throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
 
     trainer.status = Status.ACTIVE;
-    await this._trainerRepository.update({ status: trainer.status },trainerId );
+    await this._trainerRepository.update({ status: trainer.status }, trainerId);
   }
 }

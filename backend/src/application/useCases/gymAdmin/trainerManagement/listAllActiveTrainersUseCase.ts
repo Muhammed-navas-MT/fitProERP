@@ -4,16 +4,17 @@ import { IListActiveTrainersByBranchIdUseCase } from "../../../interfaces/useCas
 import { TrainerMapper } from "../../../mappers/trainerMapper";
 
 export class ListAllActiveTrainersByBranch implements IListActiveTrainersByBranchIdUseCase {
-    constructor(
-        private _trainerRepository:ITrainerRepository
-    ) {}
+  constructor(private _trainerRepository: ITrainerRepository) {}
 
-    async listTrainers(gymId: string, branchId: string): Promise<IListActiveTrainers[] | null> {
-        try {
-            const trainers = await this._trainerRepository.findActiveTrainersByBranchAndGym(branchId,gymId);
-            return TrainerMapper.toActiveTrainersResponse(trainers);
-        } catch (error) {
-            throw error;
-        }
-    }
+  async listTrainers(
+    gymId: string,
+    branchId: string,
+  ): Promise<IListActiveTrainers[] | null> {
+    const trainers =
+      await this._trainerRepository.findActiveTrainersByBranchAndGym(
+        branchId,
+        gymId,
+      );
+    return TrainerMapper.toActiveTrainersResponse(trainers);
+  }
 }
