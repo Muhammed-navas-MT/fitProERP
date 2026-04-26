@@ -54,4 +54,16 @@ export class SubscriptionRepository
     const subsriptions = await this._model.find({ isActive: true });
     return subsriptions;
   }
+
+  async activeAndInactiveSubscriptionCount(): Promise<{
+    active: number;
+    inactive: number;
+  }> {
+    const [active, inactive] = await Promise.all([
+      this._model.countDocuments({ isActive: true }),
+      this._model.countDocuments({ isActive: false }),
+    ]);
+
+    return { active, inactive };
+  }
 }

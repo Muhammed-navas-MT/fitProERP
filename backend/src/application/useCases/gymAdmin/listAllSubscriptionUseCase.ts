@@ -7,19 +7,25 @@ import { IListAllActiveSubscriptionUseCase } from "../../interfaces/useCase/gymA
 import { SubscriptionMapper } from "../../mappers/subscriptionMapper";
 
 export class ListAllSubscription implements IListAllActiveSubscriptionUseCase {
-    constructor(
-        private _subscriptionRepository:ISubscripctionRespoditery,
-        private _gymAdminRepository:GymAdminRepository
-    ){};
+  constructor(
+    private _subscriptionRepository: ISubscripctionRespoditery,
+    private _gymAdminRepository: GymAdminRepository,
+  ) {}
 
-    async listAllSubscription(gymId:string): Promise<IListActiveSubscriptionResponseDTO | null> {
-        const gymAdmin = await this._gymAdminRepository.findById(gymId);
-        if(!gymAdmin){
-            throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
-        };
-        const subscriptions = await this._subscriptionRepository.listAllActiveSubscription();
-
-        const response = SubscriptionMapper.toListAllActiveSubscriptionResponse(subscriptions,gymAdmin.packageId);
-        return response;
+  async listAllSubscription(
+    gymId: string,
+  ): Promise<IListActiveSubscriptionResponseDTO | null> {
+    const gymAdmin = await this._gymAdminRepository.findById(gymId);
+    if (!gymAdmin) {
+      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
     }
-};
+    const subscriptions =
+      await this._subscriptionRepository.listAllActiveSubscription();
+
+    const response = SubscriptionMapper.toListAllActiveSubscriptionResponse(
+      subscriptions,
+      gymAdmin.packageId,
+    );
+    return response;
+  }
+}

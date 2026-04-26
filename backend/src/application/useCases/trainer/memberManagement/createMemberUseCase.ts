@@ -24,6 +24,7 @@ import { Member } from "../../../dtos/memberDto/listAllMembersDto";
 import { Roles } from "../../../../domain/enums/roles";
 import { NotificationType } from "../../../../domain/enums/notificationTypes";
 import { INotificationService } from "../../../interfaces/service/notificationServiceInterface";
+import { configEnv } from "../../../../config/envConfig";
 
 export class CreateMemberUseCase implements ICreateMemberUseCase {
   private _hashService: IHashService;
@@ -94,7 +95,7 @@ export class CreateMemberUseCase implements ICreateMemberUseCase {
     const memberId = await this._memberRepository.create(newMember);
 
     const htmlContent = this._sendPasswordTemplateGenerator.generateHtml({
-      loginUrl: `http://${gym.subdomain}.localhost:5173/member/login`,
+      loginUrl: `${configEnv.CLIENT_PROTOCOL}://${gym.subdomain}.${configEnv.CLIENT_DOMAIN}.${configEnv.CLIENT_PORT}/member/login`,
       password,
       name: data.name,
       gymName: gym.gymName,

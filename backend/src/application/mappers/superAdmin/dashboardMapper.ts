@@ -1,5 +1,6 @@
 import {
   GymGrowthDto,
+  PlanDistributionType,
   RevenueOverviewDto,
   SuperAdminDashboardDto,
 } from "../../dtos/superAdminDto/dashboardDto";
@@ -13,6 +14,8 @@ interface SuperAdminDashboardMapperInput {
   revenueGrowthPercentage: number;
   revenueOverview: RevenueOverviewDto[];
   gymAdminGrowth: GymGrowthDto[];
+  subscriptioncounts: { total: number; active: number; inactive: number };
+  planDistribution: PlanDistributionType[];
 }
 
 export class SuperAdminDashboardMapper {
@@ -28,6 +31,17 @@ export class SuperAdminDashboardMapper {
       },
       revenueOverview: data.revenueOverview,
       gymGrowth: data.gymAdminGrowth,
+      subscriptionAnalysis: {
+        activeSubscriptions: data.subscriptioncounts.active,
+        inactiveSubscriptions: data.subscriptioncounts.inactive,
+        totalSubscriptions: data.subscriptioncounts.total,
+        planDistribution: data.planDistribution.map((plan) => {
+          return {
+            count: plan.count,
+            planName: plan.packageId.planName,
+          };
+        }),
+      },
     };
   }
 }

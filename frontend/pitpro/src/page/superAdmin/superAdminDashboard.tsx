@@ -52,6 +52,7 @@ export default function DashboardPage() {
   const { data, isLoading } = useDashboardDetail();
 
   const dashboardData = data?.data;
+  console.log(data,"in super admin dasboard data");
 
   if (isLoading) {
     return (

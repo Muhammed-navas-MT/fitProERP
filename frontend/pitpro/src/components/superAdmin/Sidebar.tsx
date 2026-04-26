@@ -1,6 +1,6 @@
 import {
   LayoutDashboard,
-  BarChart3,
+  // BarChart3,
   CreditCard,
   Building2,
   Wallet,
@@ -48,11 +48,11 @@ export default function Sidebar({
       label: "Dashboard",
       href: `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}`,
     },
-    {
-      icon: BarChart3,
-      label: "Analytics",
-      href: "#",
-    },
+    // {
+    //   icon: BarChart3,
+    //   label: "Analytics",
+    //   href: "#",
+    // },
     {
       icon: CreditCard,
       label: "Subscription",

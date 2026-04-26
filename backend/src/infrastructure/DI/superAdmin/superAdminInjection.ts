@@ -125,6 +125,7 @@ const getDashboardDetailUseCase = new GetDashboardDetailUseCase(
   gymAdminRepository,
   branchRepository,
   paymentRepository,
+  subscriptionRepo,
 );
 
 export const injectedDashboardController = new SuperAdminDashboardController(

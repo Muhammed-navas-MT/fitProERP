@@ -104,8 +104,8 @@ export class CreateMemberSessionCheckoutSessionUseCase implements ICreateMemberS
       throw new ForbiddenException("Invalid session amount");
     }
 
-    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/book_trainer`;
-    const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/session-payment-cancel`;
+    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}.${process.env.CLIENT_PORT}/member/book_trainer`;
+    const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}.${process.env.CLIENT_PORT}/member/session-payment-cancel`;
 
     const { url } = await this._stripeService.createCheckoutSession({
       amount: data.amount,

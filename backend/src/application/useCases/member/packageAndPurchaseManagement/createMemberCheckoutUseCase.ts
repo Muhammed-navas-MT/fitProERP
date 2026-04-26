@@ -33,8 +33,8 @@ export class CreateMemberCheckoutSessionUseCase implements ICreateMemberCheckout
       throw new ForbiddenException("Member missing branch or gym assignment");
     }
 
-    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/success`;
-    const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}:${process.env.CLIENT_PORT}/member/cancel`;
+    const successUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}.${process.env.CLIENT_PORT}/member/success`;
+    const cancelUrl = `${process.env.CLIENT_PROTOCOL}://${data.subdomain}.${process.env.CLIENT_DOMAIN}.${process.env.CLIENT_PORT}/member/cancel`;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",

@@ -27,9 +27,6 @@ export class UnBlockMemberUseCase implements IUnBlockMemberUseCase {
       }
     }
 
-    await this._memberRepository.update(
-      { status },
-      memberId
-    );
+    await this._memberRepository.update({ status }, memberId);
   }
 }

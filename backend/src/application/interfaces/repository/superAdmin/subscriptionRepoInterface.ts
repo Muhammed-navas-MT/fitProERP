@@ -2,9 +2,15 @@ import { IBaseRepository } from "../base/baseRepo";
 import { SubscriptionEntity } from "../../../../domain/entities/superAdmin/subscriptionEntity";
 import { IListSubscriptionRequestDTO } from "../../../dtos/superAdminDto/subscriptionDto";
 
-export interface ISubscripctionRespoditery extends IBaseRepository<SubscriptionEntity>{
-    findByPlanName(planName:string):Promise<SubscriptionEntity|null>;
-    listAllSubscriptions(params:IListSubscriptionRequestDTO):Promise<{subscription:SubscriptionEntity[],total:number}>
-    getAllSubscriptions():Promise<SubscriptionEntity[]>;
-    listAllActiveSubscription():Promise<SubscriptionEntity[]>
+export interface ISubscripctionRespoditery extends IBaseRepository<SubscriptionEntity> {
+  findByPlanName(planName: string): Promise<SubscriptionEntity | null>;
+  listAllSubscriptions(
+    params: IListSubscriptionRequestDTO,
+  ): Promise<{ subscription: SubscriptionEntity[]; total: number }>;
+  getAllSubscriptions(): Promise<SubscriptionEntity[]>;
+  listAllActiveSubscription(): Promise<SubscriptionEntity[]>;
+  activeAndInactiveSubscriptionCount(): Promise<{
+    active: number;
+    inactive: number;
+  }>;
 }

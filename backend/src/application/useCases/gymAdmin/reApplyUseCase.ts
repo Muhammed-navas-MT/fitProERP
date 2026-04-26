@@ -7,37 +7,43 @@ import { ICloudinaryService } from "../../interfaces/service/cloudinaryServiceIn
 import { IReApplyUseCase } from "../../interfaces/useCase/gymAdmin/reapplyAfterRejectionUseCaseInterface";
 
 export class ReApplyUseCase implements IReApplyUseCase {
-    private _gymAdminRepository:IGymAdminRepository;
-    private _cloudinaryService:ICloudinaryService;
+  private _gymAdminRepository: IGymAdminRepository;
+  private _cloudinaryService: ICloudinaryService;
 
-    constructor(gymAdminRepository:IGymAdminRepository,cloudinaryService:ICloudinaryService){
-        this._gymAdminRepository = gymAdminRepository;
-        this._cloudinaryService =cloudinaryService;
+  constructor(
+    gymAdminRepository: IGymAdminRepository,
+    cloudinaryService: ICloudinaryService,
+  ) {
+    this._gymAdminRepository = gymAdminRepository;
+    this._cloudinaryService = cloudinaryService;
+  }
+  async execute(data: IReApplyDTO): Promise<void> {
+    const findGymAdmin = await this._gymAdminRepository.findByEmail(data.email);
+    if (!findGymAdmin) {
+      throw new NOtFoundException(GymAdminAuthError.EMAIL_ALREADY_EXISTS);
     }
-    async execute(data:IReApplyDTO): Promise<void> {
-        try {
-            const findGymAdmin = await this._gymAdminRepository.findByEmail(data.email);
-            if(!findGymAdmin){
-                throw new NOtFoundException(GymAdminAuthError.EMAIL_ALREADY_EXISTS);
-            };
 
-            if (typeof data.businessLicense !== "string") {
-                data.businessLicense = await this._cloudinaryService.uploadImageToCloudinary(data.businessLicense);
-            }
+    if (typeof data.businessLicense !== "string") {
+      data.businessLicense =
+        await this._cloudinaryService.uploadImageToCloudinary(
+          data.businessLicense,
+        );
+    }
 
-            if (typeof data.insuranceCertificate !== "string") {
-                data.insuranceCertificate = await this._cloudinaryService.uploadImageToCloudinary(data.insuranceCertificate);
-            }
+    if (typeof data.insuranceCertificate !== "string") {
+      data.insuranceCertificate =
+        await this._cloudinaryService.uploadImageToCloudinary(
+          data.insuranceCertificate,
+        );
+    }
 
-            await this._gymAdminRepository.update({
-                businessLicense:data.businessLicense,
-                insuranceCertificate:data.insuranceCertificate,
-                status:Status.PENDING
-            },
-            findGymAdmin._id?.toString() as string
-        )
-        } catch (error) {
-            throw error
-        }
-    };
+    await this._gymAdminRepository.update(
+      {
+        businessLicense: data.businessLicense,
+        insuranceCertificate: data.insuranceCertificate,
+        status: Status.PENDING,
+      },
+      findGymAdmin._id?.toString() as string,
+    );
+  }
 }
