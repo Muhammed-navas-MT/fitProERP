@@ -23,10 +23,10 @@ class Express_app {
   private _app: Express;
   constructor() {
     this._app = express();
-    this._setLoggingMiddleware();
     MongodbConfig.connect();
     this._startCronJobs();
     this._setWebHookRoutes();
+    this._setLoggingMiddleware();
     this.setMiddleware();
     this._setAuthRoutes();
     this._setSuperAdminRoutes();
