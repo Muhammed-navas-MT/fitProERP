@@ -8,27 +8,6 @@ import GymGrowthChart from "@/components/superAdmin/dashboard/gymGrowthChart";
 import SubscriptionAnalyticsChart from "@/components/superAdmin/dashboard/subscriptionAnalyticsChart";
 import { useDashboardDetail } from "@/hook/superAdmin/dashboardHooks";
 
-const subscription = {
-  totalSubscriptions: 42,
-  activeSubscriptions: 35,
-  inactiveSubscriptions: 7,
-
-  planDistribution: [
-    {
-      planName: "Basic",
-      count: 12,
-    },
-    {
-      planName: "Premium",
-      count: 18,
-    },
-    {
-      planName: "Enterprise",
-      count: 12,
-    },
-  ],
-};
-
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -52,7 +31,6 @@ export default function DashboardPage() {
   const { data, isLoading } = useDashboardDetail();
 
   const dashboardData = data?.data;
-  console.log(data,"in super admin dasboard data");
 
   if (isLoading) {
     return (
@@ -117,7 +95,7 @@ export default function DashboardPage() {
             <GymGrowthChart data={dashboardData?.gymGrowth ?? []} />
 
             <SubscriptionAnalyticsChart
-              data={subscription}
+              data={dashboardData?.subscriptionAnalysis}
             />
           </div>
         </main>

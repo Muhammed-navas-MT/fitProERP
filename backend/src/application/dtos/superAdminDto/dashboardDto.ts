@@ -35,8 +35,6 @@ export interface SubscriptionAnalysisData {
 }
 
 export interface PlanDistributionType {
-  packageId: {
-    planName: string;
-  };
+  planName: string;
   count: number;
 }
