@@ -252,4 +252,12 @@ export class LeaveRepository
 
     return leaves;
   }
+
+  async findTotalLeaveCount(trainerId: string): Promise<number> {
+    const result = await this._model.aggregate([
+      { $match: { trainerId: new Types.ObjectId(trainerId) } },
+      { $group: { _id: null, count: { $sum: "$leaveCount" } } },
+    ]);
+    return result[0]
+  }
 }
