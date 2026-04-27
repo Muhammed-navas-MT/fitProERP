@@ -14,6 +14,8 @@ import { ICacheService } from "../../../interfaces/service/cacheServiceInterface
 import { IRRuleService } from "../../../interfaces/service/RRuleserviceInterface";
 import { IListAllAvailableSlotUseCase } from "../../../interfaces/useCase/member/slotAndBookingManagement/listAllAvailableSlotUseCaseInterface";
 
+const DEFAULT_TIME_ZONE = "Asia/Kolkata";
+
 interface SlotDay {
   date: string;
   slots: {
@@ -25,6 +27,51 @@ interface SlotDay {
   }[];
 }
 
+function getDatePartsByTimeZone(
+  date: Date = new Date(),
+  timeZone: string = DEFAULT_TIME_ZONE,
+): { date: string; time: string } {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const parts = formatter.formatToParts(date);
+
+  const get = (type: string): string =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  return {
+    date: `${get("year")}-${get("month")}-${get("day")}`,
+    time: `${get("hour")}:${get("minute")}`,
+  };
+}
+
+function isPastSlot(
+  slotDate: string,
+  startTime: string,
+  timeZone: string = DEFAULT_TIME_ZONE,
+): boolean {
+  const now = getDatePartsByTimeZone(new Date(), timeZone);
+
+  if (slotDate < now.date) return true;
+  if (slotDate > now.date) return false;
+
+  return startTime <= now.time;
+}
+
+function formatDateByTimeZone(
+  date: Date,
+  timeZone: string = DEFAULT_TIME_ZONE,
+): string {
+  return getDatePartsByTimeZone(date, timeZone).date;
+}
+
 export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase {
   constructor(
     private _memberRepository: IMemberRepository,
@@ -34,21 +81,6 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
     private _cacheService: ICacheService,
     private _leaveRepository: ILeaveRepository,
   ) {}
-
-  private _getTodayDateString(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  private _getCurrentTimeString(): string {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
 
   async execute(
     params: AvailableSlotRequestDto,
@@ -78,8 +110,10 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
       return result;
     }
 
-    const today = this._getTodayDateString();
-    const currentTime = this._getCurrentTimeString();
+    const { date: today } = getDatePartsByTimeZone(
+      new Date(),
+      DEFAULT_TIME_ZONE,
+    );
 
     const futureDates = allDates.filter((date) => date >= today);
 
@@ -87,8 +121,10 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
       return result;
     }
 
-    const rangeStart = new Date(futureDates[0]);
-    const rangeEnd = new Date(futureDates[futureDates.length - 1]);
+    const rangeStart = new Date(`${futureDates[0]}T00:00:00`);
+    const rangeEnd = new Date(
+      `${futureDates[futureDates.length - 1]}T23:59:59`,
+    );
 
     const leaves =
       await this._leaveRepository.findLeavesByTrainerIdAndDateRange(
@@ -112,11 +148,7 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
       end.setHours(0, 0, 0, 0);
 
       while (cursor <= end) {
-        const year = cursor.getFullYear();
-        const month = String(cursor.getMonth() + 1).padStart(2, "0");
-        const day = String(cursor.getDate()).padStart(2, "0");
-        leaveDateSet.add(`${year}-${month}-${day}`);
-
+        leaveDateSet.add(formatDateByTimeZone(cursor, DEFAULT_TIME_ZONE));
         cursor.setDate(cursor.getDate() + 1);
       }
     }
@@ -150,8 +182,7 @@ export class ListAllAvailableSlotUseCase implements IListAllAvailableSlotUseCase
       const currentDate = filteredDates[i];
 
       const currentAndFutureSlots = slotRule.slots.filter((slot) => {
-        if (currentDate > today) return true;
-        return slot.startTime >= currentTime;
+        return !isPastSlot(currentDate, slot.startTime, DEFAULT_TIME_ZONE);
       });
 
       if (!currentAndFutureSlots.length) continue;
