@@ -1,7 +1,7 @@
 services:
   backend:
     image: navasmt/fitpro
-    container_name: fitpro-backend
+    container_name: fitpro
     ports:
       - "3000:3000"
     env_file:
