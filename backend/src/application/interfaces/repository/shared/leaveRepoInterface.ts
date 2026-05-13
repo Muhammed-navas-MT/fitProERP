@@ -29,5 +29,4 @@ export interface ILeaveRepository extends IBaseRepository<ITrainerLeaveEntity> {
     rangeStart: Date,
     rangeEnd: Date,
   ): Promise<ITrainerLeaveEntity[]>;
-  findTotalLeaveCount(trainerId: string): Promise<number>;
 }
