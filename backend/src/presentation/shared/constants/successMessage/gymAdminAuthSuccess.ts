@@ -1,6 +1,7 @@
 export enum GymAdminAuthSuccess {
   REGISTRATION_SEND_OTP = "OTP for Registration in compass",
   OTP_SUCCESSFULL = "Otp sent successfully",
+  RESEND_OTP_SEND = "Resend otp sent Successfully",
   OTP_VERIFIED_SUCCESSFULL = "Otp verified successfully",
   REGISTRATION_SUCCESS = "Account created successfully! You can now log in",
   LOGIN_SUCCESS = "Account login successfully",
@@ -12,4 +13,6 @@ export enum GymAdminAuthSuccess {
   GYM_APPROVED = "Gym account Approved successfully",
   GYM_REJECTED = "Gym account Rejected",
   PASSWORD_CHANGED = "Password changed successfully",
+  REGISTRATION_PROGRESS_RESTORED = "Registration progress restored successfully.",
+  GYM_INFORMATION = "Gym information has been saved successfully.",
 }

@@ -1,23 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import OwnerInformationStep from "./ownerInfoStep";
 import GymInformationStep from "./gymInfostep";
 import UploadDocumentsStep from "./uploadDocument";
 import { useNavigate } from "react-router-dom";
-import { step1Schema, step2Schema, step3Schema } from "@/validation/gymRegistrationSchema";
+import {
+  step1Schema,
+  step2Schema,
+  step3Schema,
+} from "@/validation/gymRegistrationSchema";
 import { SignupPayload } from "@/types/authPayload";
-import { useGymAdminEmailVerification, useGymAdminSignUp } from "@/hook/gymAdmin/gymAdminSignupHook";
+import {
+  useGymAdminEmailVerification,
+  useGymAdminResumeRegistration,
+  useGymAdminSignUp,
+  useGymAdminResendOtp,
+  useGymInfo,
+} from "@/hook/gymAdmin/gymAdminSignupHook";
 import { ZodError } from "zod";
 import { toast } from "sonner";
 import OTPGymAdminModal from "@/components/modal/OtpgymAdminModal";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { signupStorage } from "@/utils/signupStorage";
 
 export default function GymRegistrationForm() {
   const navigate = useNavigate();
-  const { mutate: registerGymAdmin, isPending } = useGymAdminSignUp();
-  const { mutate: emailVerification} = useGymAdminEmailVerification();
+  const { mutate: registerGymAdmin, isPending: isRegistrationPending } =
+    useGymAdminSignUp();
+  const { mutate: emailVerification, isPending: isEmailVerifyPending } =
+    useGymAdminEmailVerification();
+  const { mutate: gymInfo, isPending: isGyminfoPending } = useGymInfo();
+  const { mutate: resendOtp } = useGymAdminResendOtp();
+  const [signupId, setSignupId] = useState("");
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [showModal,setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<SignupPayload>({
     ownerName: "",
@@ -33,6 +49,38 @@ export default function GymRegistrationForm() {
     businessLicense: null,
     insuranceCertificate: null,
   });
+
+  const isPending =
+    isRegistrationPending || isEmailVerifyPending || isGyminfoPending;
+
+  const { data: registrationData } = useGymAdminResumeRegistration(signupId);
+
+  useEffect(() => {
+    const singupId = signupStorage.getSignupId();
+    if (singupId) {
+      setSignupId(singupId);
+    }
+  }, [signupId]);
+
+  useEffect(() => {
+    if (!registrationData) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      ownerName: registrationData?.data.ownerName ?? "",
+      email: registrationData?.data.email ?? "",
+      phone: registrationData?.data.phone ?? "",
+      gymName: registrationData?.data.gymName ?? "",
+      tagline: registrationData?.data.tagline ?? "",
+      description: registrationData?.data.description ?? "",
+      logo: registrationData?.data.logo ?? null,
+    }));
+    if (registrationData?.data.isVerified) {
+      setCurrentStep(registrationData?.data.currentStep + 1 || 1);
+    } else {
+      setCurrentStep(1);
+    }
+  }, [registrationData]);
 
   const handleFormDataChange = (data: Partial<SignupPayload>) => {
     setFormData((prev) => ({ ...prev, ...data }));
@@ -113,38 +161,78 @@ export default function GymRegistrationForm() {
     if (!isValid) return;
 
     if (currentStep < 3) {
-      if(currentStep == 1){
-        emailVerification({email:formData.email},{
-          onSuccess:(res)=>{
-            toast.success(res?.message || "Otp sent your Email!");
-            setShowModal(true);
+      if (currentStep == 1) {
+        emailVerification(
+          {
+            email: formData.email,
+            ownerName: formData.ownerName,
+            confirmPassword: formData.confirmPassword,
+            password: formData.password,
+            phone: formData.phone,
+            signupId: signupId,
           },
-          onError:(err)=>{
-            console.log(err)
-            toast.error(err.message||"Please try again!")
-          }
-        })
-      }else{
+          {
+            onSuccess: (res: {
+              data: { signupId: string };
+              message: string;
+            }) => {
+              signupStorage.saveSignupId(res.data.signupId);
+              toast.success(res?.message || "Otp sent your Email!");
+              setShowModal(true);
+            },
+            onError: (err) => {
+              console.log(err);
+              toast.error(err.message || "Please try again!");
+            },
+          },
+        );
+      } else if (currentStep === 2) {
+        const data = new FormData();
+
+        data.append("signupId", signupId);
+        data.append("gymName", formData.gymName);
+        data.append("tagline", formData.tagline);
+        data.append("description", formData.description);
+
+        if (formData.logo) {
+          data.append("logo", formData.logo);
+        }
+
+        gymInfo(data, {
+          onSuccess: (res: { message: string }) => {
+            toast.success(res?.message);
+            setCurrentStep((prev) => prev + 1);
+          },
+          onError: (err) => {
+            toast.error(err.message);
+          },
+        });
+      } else {
         setCurrentStep((s) => s + 1);
       }
       setStepErrors({});
     } else {
       try {
         const data = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            if (value instanceof File) data.append(key, value);
-            else data.append(key, String(value));
-          }
-        });
+        if (formData.businessLicense) {
+          data.append("businessLicense", formData.businessLicense);
+        }
+
+        if (formData.insuranceCertificate) {
+          data.append("insuranceCertificate", formData.insuranceCertificate);
+        }
+        data.append("signupId", signupId);
 
         registerGymAdmin(data, {
           onSuccess: () => {
             toast.success("Registration completed successfully!");
-            navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}`);
+            navigate(
+              `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.PENDINGAPPROVAL}`,
+            );
           },
           onError: (error) => {
-            const errorMessage = error?.message || "Registration failed. Please try again.";
+            const errorMessage =
+              error?.message || "Registration failed. Please try again.";
             toast.error(errorMessage);
           },
         });
@@ -160,23 +248,23 @@ export default function GymRegistrationForm() {
     if (currentStep > 1) setCurrentStep((s) => s - 1);
   };
 
-  const handleCloseModal = ()=> {
+  const handleCloseModal = () => {
     setShowModal(false);
     setCurrentStep((s) => s + 1);
   };
 
-  const handleResendOtp = ()=> {
-    emailVerification({email:formData.email},{
-      onSuccess:(res)=>{
+  const handleResendOtp = () => {
+    resendOtp(signupId, {
+      onSuccess: (res) => {
         toast.success(res?.message || "Otp sent your Email!");
         setShowModal(true);
       },
-      onError:(err)=>{
-        console.log(err)
-        toast.error(err.message||"Please try again!")
-      }
-    })
-  }
+      onError: (err) => {
+        console.log(err);
+        toast.error(err.message || "Please try again!");
+      },
+    });
+  };
 
   const steps = [
     { number: 1, label: "Owner\nInformation" },
@@ -187,11 +275,29 @@ export default function GymRegistrationForm() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <OwnerInformationStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
+        return (
+          <OwnerInformationStep
+            formData={formData}
+            onDataChange={handleFormDataChange}
+            errors={stepErrors}
+          />
+        );
       case 2:
-        return <GymInformationStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
+        return (
+          <GymInformationStep
+            formData={formData}
+            onDataChange={handleFormDataChange}
+            errors={stepErrors}
+          />
+        );
       case 3:
-        return <UploadDocumentsStep formData={formData} onDataChange={handleFormDataChange} errors={stepErrors} />;
+        return (
+          <UploadDocumentsStep
+            formData={formData}
+            onDataChange={handleFormDataChange}
+            errors={stepErrors}
+          />
+        );
       default:
         return null;
     }
@@ -206,7 +312,9 @@ export default function GymRegistrationForm() {
         handleResendOtp={handleResendOtp}
       />
 
-      <div className={`flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 via-neutral-950 to-black text-white transition-all duration-300 ${showModal ? "blur-sm pointer-events-none" : ""}`}>
+      <div
+        className={`flex flex-col min-h-screen bg-gradient-to-b from-neutral-900 via-neutral-950 to-black text-white transition-all duration-300 ${showModal ? "blur-sm pointer-events-none" : ""}`}
+      >
         <header className="bg-neutral-900 shadow-[0_0_30px_-10px_rgba(249,115,22,0.4)]">
           <div className="flex items-center justify-between max-w-6xl mx-auto text-white py-3 px-4 sm:px-6 lg:px-8">
             <button
@@ -218,7 +326,9 @@ export default function GymRegistrationForm() {
               <span className="sm:hidden">Back</span>
             </button>
             <h1 className="text-xl sm:text-2xl font-bold">Gym Registration</h1>
-            <div className="text-sm text-neutral-400">Step {currentStep} of 3</div>
+            <div className="text-sm text-neutral-400">
+              Step {currentStep} of 3
+            </div>
           </div>
         </header>
 
@@ -229,7 +339,9 @@ export default function GymRegistrationForm() {
                 <div key={step.number} className="flex flex-col items-center">
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                      step.number <= currentStep ? "bg-orange-500 shadow-lg shadow-orange-500/30" : "bg-neutral-800"
+                      step.number <= currentStep
+                        ? "bg-orange-500 shadow-lg shadow-orange-500/30"
+                        : "bg-neutral-800"
                     }`}
                   >
                     {step.number}
@@ -240,15 +352,22 @@ export default function GymRegistrationForm() {
 
             <div className="hidden sm:flex justify-between items-center mb-4">
               {steps.map((step) => (
-                <div key={step.number} className="flex flex-col items-center flex-1">
+                <div
+                  key={step.number}
+                  className="flex flex-col items-center flex-1"
+                >
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-1 transition-all ${
-                      step.number <= currentStep ? "bg-orange-500 shadow-lg shadow-orange-500/30" : "bg-neutral-800"
+                      step.number <= currentStep
+                        ? "bg-orange-500 shadow-lg shadow-orange-500/30"
+                        : "bg-neutral-800"
                     }`}
                   >
                     {step.number}
                   </div>
-                  <div className="text-xs text-center text-neutral-400 whitespace-pre-line">{step.label}</div>
+                  <div className="text-xs text-center text-neutral-400 whitespace-pre-line">
+                    {step.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -284,8 +403,8 @@ export default function GymRegistrationForm() {
               {isPending
                 ? "Processing..."
                 : currentStep === 3
-                ? "Complete Registration"
-                : "Next Step"}
+                  ? "Complete Registration"
+                  : "Next Step"}
             </button>
           </div>
         </div>

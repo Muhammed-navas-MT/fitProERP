@@ -2,26 +2,34 @@ import { NextFunction, Request, Response } from "express";
 import { ResponseHelper } from "../../shared/utils/responseHelper";
 import { IVerifyEmailAndOtpUseCase } from "../../../application/interfaces/useCase/gymAdmin/verifyEmail&Otp";
 import {
+  IGymInfoRequestDTO,
   IVerifyEmailRequestDTO,
   IVerifyOtpRequestDTO,
 } from "../../../application/dtos/auth/verifyOtpDto";
-import { emailVerificationShema } from "../../shared/validations/emailValidationZodSchema";
-import { InvalidDataException } from "../../../application/constants/exceptions";
-import { GymAdminAuthSuccess } from "../../shared/constants/successMessage/gymAdminAuthSuccess";
-import { ISignupRequsetDTO } from "../../../application/dtos/auth/gymAdminSignupDto";
 import {
-  signupSchema,
-  signupWithConfirmPasswordSchema,
+  BadRequestException,
+  InvalidDataException,
+} from "../../../application/constants/exceptions";
+import { GymAdminAuthSuccess } from "../../shared/constants/successMessage/gymAdminAuthSuccess";
+import { IDocumentRequsetDTO } from "../../../application/dtos/auth/gymAdminSignupDto";
+import {
+  gymInfoSchema,
+  ownerInfoWithConfirmPasswordSchema,
 } from "../../shared/validations/gymAdminSignUpZodSchema";
 import { GymAdminAuthError } from "../../shared/constants/errorMessage/gymAdminAuthError";
 import { ISingupUseCase } from "../../../application/interfaces/useCase/gymAdmin/gymAdminSignUpUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
-import cloudinary from "../../../config/cloudinary";
+import { IResendOtpUseCase } from "../../../application/interfaces/useCase/gymAdmin/resendOtpUseCaseInterface";
+import { IResumeRegistrationUseCase } from "../../../application/interfaces/useCase/gymAdmin/resumeRegistrationUseCaseInterface";
+import { IGymInformationUseCase } from "../../../application/interfaces/useCase/gymAdmin/gymInformantionUseCaseInterface";
 
 export class SignUpController {
   constructor(
     private _VerifyEmailAndOtpUseCase: IVerifyEmailAndOtpUseCase,
     private _singupUseCase: ISingupUseCase,
+    private _resendOtpUseCase: IResendOtpUseCase,
+    private _resumeRegistrationUseCase: IResumeRegistrationUseCase,
+    private _gymInformationUseCase: IGymInformationUseCase,
   ) {}
 
   async verifyEmail(
@@ -31,14 +39,47 @@ export class SignUpController {
   ): Promise<void> {
     try {
       const data: IVerifyEmailRequestDTO = req.body;
+      const { signupId: existingSignupId } = req.body || "";
 
-      const validationError = emailVerificationShema.safeParse(data);
-      if (validationError.error) {
-        throw new InvalidDataException(validationError.error.issues[0].message);
+      const validationResult =
+        ownerInfoWithConfirmPasswordSchema.safeParse(data);
+      if (validationResult.error) {
+        throw new InvalidDataException(
+          validationResult.error.issues[0].message,
+        );
       }
 
-      await this._VerifyEmailAndOtpUseCase.signUpSendOtp(data);
-      ResponseHelper.success(200, res, GymAdminAuthSuccess.OTP_SUCCESSFULL);
+      const signupId = await this._VerifyEmailAndOtpUseCase.signUpSendOtp({
+        ...validationResult.data,
+        signupId: existingSignupId,
+      });
+      ResponseHelper.success(200, res, GymAdminAuthSuccess.OTP_SUCCESSFULL, {
+        signupId,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async resendOtp(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { signupId } = req.body;
+
+      if (!signupId) {
+        throw new BadRequestException(GymAdminAuthError.SINUP_ID_REQUEIRED);
+      }
+
+      await this._resendOtpUseCase.execute(signupId);
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        GymAdminAuthSuccess.RESEND_OTP_SEND,
+      );
     } catch (error) {
       next(error);
     }
@@ -51,8 +92,9 @@ export class SignUpController {
   ): Promise<void> {
     try {
       const otp: IVerifyOtpRequestDTO = req.body;
-      console.log(otp, "otp is this");
+
       await this._VerifyEmailAndOtpUseCase.verify(otp);
+
       ResponseHelper.success(
         200,
         res,
@@ -63,57 +105,78 @@ export class SignUpController {
     }
   }
 
-  async signup(req: Request, res: Response, next: NextFunction) {
+  async gymInformation(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
-      const gymAdminData: ISignupRequsetDTO = req.body;
-      gymAdminData.subdomain = gymAdminData.gymName
+      const gymInfo: IGymInfoRequestDTO = req.body;
+
+      gymInfo.subdomain = gymInfo.gymName
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "")
         .replace(/[^a-z]/g, "");
 
+      const validationResult = gymInfoSchema.safeParse(gymInfo);
+
+      if (!validationResult.success) {
+        throw new BadRequestException(validationResult.error.issues[0].message);
+      }
+
+      await this._gymInformationUseCase.execute({
+        ...validationResult.data,
+        logo: req.file,
+        signupId: gymInfo.signupId,
+      });
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        GymAdminAuthSuccess.GYM_INFORMATION,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async resumeRegistration(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { signupId } = req.params;
+
+      const data = await this._resumeRegistrationUseCase.execute(signupId);
+
+      console.log(data);
+
+      ResponseHelper.success(
+        HTTP_STATUS_CODE.OK,
+        res,
+        GymAdminAuthSuccess.REGISTRATION_PROGRESS_RESTORED,
+        data,
+      );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async signup(req: Request, res: Response, next: NextFunction) {
+    try {
+      const gymAdminData: IDocumentRequsetDTO = req.body;
+
       const files = req.files as {
         [fieldname: string]: Express.Multer.File[];
       };
-      if (files?.logo?.[0]) {
-        const result = await cloudinary.uploader.upload(files.logo[0].path, {
-          folder: "gym_logos",
-        });
-        gymAdminData.logo = result.secure_url;
-      }
-      if (files?.businessLicense?.[0]) {
-        const result = await cloudinary.uploader.upload(
-          files.businessLicense[0].path,
-          {
-            folder: "gym_documents",
-          },
-        );
-        gymAdminData.businessLicense = result.secure_url;
-      }
 
-      if (files?.insuranceCertificate?.[0]) {
-        const result = await cloudinary.uploader.upload(
-          files.insuranceCertificate[0].path,
-          {
-            folder: "gym_documents",
-          },
-        );
-        gymAdminData.insuranceCertificate = result.secure_url;
-      }
-
-      const zodValication = signupSchema.safeParse(gymAdminData);
-      if (zodValication.error) {
-        throw new InvalidDataException(zodValication.error.issues[0].message);
-      }
-
-      const confirmPassword =
-        signupWithConfirmPasswordSchema.safeParse(gymAdminData);
-      if (confirmPassword.error) {
-        throw new InvalidDataException(
-          GymAdminAuthError.PASSWORDS_DO_NOT_MATCH,
-        );
-      }
-      await this._singupUseCase.signUp(gymAdminData);
+      await this._singupUseCase.signUp({
+        ...gymAdminData,
+        businessLicense: files?.businessLicense?.[0],
+        insuranceCertificate: files?.insuranceCertificate?.[0],
+      });
 
       ResponseHelper.success(
         HTTP_STATUS_CODE.CREATE,

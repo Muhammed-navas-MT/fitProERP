@@ -1,14 +1,13 @@
 import type React from "react";
-import {
-  Building2,
-  Upload,
-  X,
-  Crop
-} from "lucide-react";
+import { Building2, Upload, X, Crop } from "lucide-react";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { SignupPayload } from "@/types/authPayload";
-import ReactCrop, { type Crop as CropType, centerCrop, makeAspectCrop } from "react-image-crop";
+import ReactCrop, {
+  type Crop as CropType,
+  centerCrop,
+  makeAspectCrop,
+} from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
 interface Props {
@@ -17,7 +16,11 @@ interface Props {
   errors: Record<string, string>;
 }
 
-export default function GymInformationStep({ formData, onDataChange, errors }: Props) {
+export default function GymInformationStep({
+  formData,
+  onDataChange,
+  errors,
+}: Props) {
   const [dragActive, setDragActive] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showCropper, setShowCropper] = useState(false);
@@ -25,6 +28,12 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
   const [crop, setCrop] = useState<CropType>();
   const imgRef = useRef<HTMLImageElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (formData?.logo && typeof formData.logo === "string") {
+      setPreviewUrl(formData.logo);
+    }
+  }, [formData]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -74,10 +83,10 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
         },
         1,
         img.width,
-        img.height
+        img.height,
       ),
       img.width,
-      img.height
+      img.height,
     );
 
     setCrop(cropInit);
@@ -106,14 +115,16 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
       0,
       0,
       crop.width * scaleX,
-      crop.height * scaleY
+      crop.height * scaleY,
     );
 
     return new Promise<File | null>((resolve) => {
       canvas.toBlob((blob) => {
         if (!blob) return resolve(null);
 
-        const file = new File([blob], "cropped-image.jpg", { type: "image/jpeg" });
+        const file = new File([blob], "cropped-image.jpg", {
+          type: "image/jpeg",
+        });
         resolve(file);
       }, "image/jpeg");
     });
@@ -133,7 +144,6 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
 
   return (
     <div className="rounded-2xl border border-orange-500/40 bg-gradient-to-b from-neutral-900 via-neutral-950 to-black overflow-hidden shadow-[0_0_40px_-12px_rgba(249,115,22,0.4)]">
-      
       {/* Header */}
       <div className="bg-black px-4 sm:px-8 py-6 text-center border-b border-neutral-800">
         <div className="flex justify-center mb-4">
@@ -148,7 +158,9 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
       {/* Content */}
       <div className="px-4 py-6 space-y-4">
         <div>
-          <label className="block text-sm text-neutral-300 mb-2">Gym Name</label>
+          <label className="block text-sm text-neutral-300 mb-2">
+            Gym Name
+          </label>
           <input
             type="text"
             value={formData.gymName}
@@ -156,7 +168,9 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
             className="w-full px-4 py-3 rounded-lg bg-neutral-900 text-white border border-neutral-700 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             placeholder="FitZone Gym"
           />
-          {errors.gymName && <p className="text-red-500 text-xs">{errors.gymName}</p>}
+          {errors.gymName && (
+            <p className="text-red-500 text-xs">{errors.gymName}</p>
+          )}
         </div>
 
         <div>
@@ -168,11 +182,15 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
             className="w-full px-4 py-3 rounded-lg bg-neutral-900 text-white border border-neutral-700 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             placeholder="BE YOUR OWN HERO"
           />
-          {errors.tagline && <p className="text-red-500 text-xs">{errors.tagline}</p>}
+          {errors.tagline && (
+            <p className="text-red-500 text-xs">{errors.tagline}</p>
+          )}
         </div>
 
         <div>
-          <label className="block text-sm text-neutral-300 mb-2">Gym Logo</label>
+          <label className="block text-sm text-neutral-300 mb-2">
+            Gym Logo
+          </label>
 
           {previewUrl ? (
             <div className="relative">
@@ -230,7 +248,9 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
         </div>
 
         <div>
-          <label className="block text-sm text-neutral-300 mb-2">Description</label>
+          <label className="block text-sm text-neutral-300 mb-2">
+            Description
+          </label>
           <textarea
             rows={4}
             value={formData.description}
@@ -238,7 +258,9 @@ export default function GymInformationStep({ formData, onDataChange, errors }: P
             className="w-full px-4 py-3 rounded-lg bg-neutral-900 text-white border border-neutral-700 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
             placeholder="Describe your gym..."
           />
-          {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+          {errors.description && (
+            <p className="text-red-500 text-xs">{errors.description}</p>
+          )}
         </div>
       </div>
 

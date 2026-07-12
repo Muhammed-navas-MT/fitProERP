@@ -1,20 +1,14 @@
 import { z } from "zod";
-import { Roles } from "../../../domain/enums/roles";
 import { GymAdminAuthError } from "../constants/errorMessage/gymAdminAuthError";
 
-export const signupSchema = z.object({
-  gymName: z
-    .string({ error: GymAdminAuthError.GYM_NAME_INVALID_TYPE })
-    .min(3, { error: GymAdminAuthError.GYM_NAME_TOO_SHORT })
-    .max(100, { error: GymAdminAuthError.GYM_NAME_TOO_LONG })
-    .regex(/^[a-zA-Z\s]+$/, { error: GymAdminAuthError.GYM_NAME_INVALID_CHARACTERS })
-    .transform((val) => val.trim()),
-
+export const ownerInfoSchema = z.object({
   ownerName: z
     .string({ error: GymAdminAuthError.OWNER_NAME_INVALID_TYPE })
     .min(2, { error: GymAdminAuthError.OWNER_NAME_TOO_SHORT })
     .max(50, { error: GymAdminAuthError.OWNER_NAME_TOO_LONG })
-    .regex(/^[a-zA-Z\s.]+$/, { error: GymAdminAuthError.OWNER_NAME_INVALID_CHARACTERS })
+    .regex(/^[a-zA-Z\s.]+$/, {
+      error: GymAdminAuthError.OWNER_NAME_INVALID_CHARACTERS,
+    })
     .transform((val) => val.trim()),
 
   email: z
@@ -26,7 +20,7 @@ export const signupSchema = z.object({
     .string({ error: GymAdminAuthError.PHONE_INVALID_TYPE })
     .regex(
       /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/,
-      { error: GymAdminAuthError.PHONE_INVALID_FORMAT }
+      { error: GymAdminAuthError.PHONE_INVALID_FORMAT },
     )
     .min(10, { error: GymAdminAuthError.PHONE_TOO_SHORT })
     .transform((val) => val.trim()),
@@ -39,11 +33,35 @@ export const signupSchema = z.object({
     .regex(/[a-z]/, { error: GymAdminAuthError.PASSWORD_NO_LOWERCASE })
     .regex(/[0-9]/, { error: GymAdminAuthError.PASSWORD_NO_NUMBER })
     .regex(/[^A-Za-z0-9]/, { error: GymAdminAuthError.PASSWORD_NO_SPECIAL }),
+});
 
-  role: z
-      .enum([Roles.GYMADMIN,Roles.MEMBER,Roles.SUPERADMIN,Roles.TRAINER],{
-          error:GymAdminAuthError.ROLE_INVALID
-      }),
+export const ownerInfoWithConfirmPasswordSchema = ownerInfoSchema
+  .extend({
+    confirmPassword: z.string({
+      error: GymAdminAuthError.PASSWORD_INVALID_TYPE,
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    error: GymAdminAuthError.PASSWORDS_DO_NOT_MATCH,
+  });
+
+export const gymInfoSchema = z.object({
+  gymName: z
+    .string({ error: GymAdminAuthError.GYM_NAME_INVALID_TYPE })
+    .min(3, { error: GymAdminAuthError.GYM_NAME_TOO_SHORT })
+    .max(100, { error: GymAdminAuthError.GYM_NAME_TOO_LONG })
+    .regex(/^[a-zA-Z\s]+$/, {
+      error: GymAdminAuthError.GYM_NAME_INVALID_CHARACTERS,
+    })
+    .transform((val) => val.trim()),
+
+  subdomain: z
+    .string({ error: GymAdminAuthError.SUBDOMAIN_INVALID_TYPE })
+    .min(3, { error: GymAdminAuthError.SUBDOMAIN_TOO_SHORT })
+    .max(100, { error: GymAdminAuthError.SUBDOMAIN_TOO_LONG })
+    .regex(/^[a-z]+$/, {
+      error: GymAdminAuthError.SUBDOMAIN_INVALID_FORMAT,
+    }),
 
   description: z
     .string({ error: GymAdminAuthError.DESCRIPTION_INVALID_TYPE })
@@ -52,17 +70,4 @@ export const signupSchema = z.object({
   tagline: z
     .string({ error: GymAdminAuthError.TAGLINE_INVALID_TYPE })
     .transform((val) => val.trim()),
-
-  businessLicense: z.string().optional(),  
-  insuranceCertificate: z.string().optional(),
-  logo: z.string().optional(),
 });
-
-export const signupWithConfirmPasswordSchema = signupSchema
-  .extend({
-    confirmPassword: z.string({ error: GymAdminAuthError.PASSWORD_INVALID_TYPE }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    error: GymAdminAuthError.PASSWORDS_DO_NOT_MATCH
-  });
-

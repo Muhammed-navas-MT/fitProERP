@@ -1,23 +1,29 @@
 import { Roles } from "../../../domain/enums/roles";
 
 export interface ISignupRequsetDTO {
-    gymName: string;
-    ownerName: string;
-    email: string;
-    phone: string;
-    password: string;
-    confirmPassword: string;
-    role: Roles;
-    description: string;
-    subdomain: string;
-    tagline: string;
-    businessLicense: Express.Multer.File | string;
-    insuranceCertificate: Express.Multer.File | string;
-    logo: Express.Multer.File | string;
+  gymName: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  role: Roles;
+  description: string;
+  subdomain: string;
+  tagline: string;
+  businessLicense: Express.Multer.File | string;
+  insuranceCertificate: Express.Multer.File | string;
+  logo: Express.Multer.File | string;
+}
+
+export interface IDocumentRequsetDTO {
+  signupId: string;
+  insuranceCertificate: Express.Multer.File | undefined;
+  businessLicense: Express.Multer.File | undefined;
 }
 
 export interface IReApplyDTO {
-    email:string;
-    businessLicense: Express.Multer.File | string;
-    insuranceCertificate: Express.Multer.File | string;
+  email: string;
+  businessLicense: Express.Multer.File | undefined;
+  insuranceCertificate: Express.Multer.File | undefined;
 }

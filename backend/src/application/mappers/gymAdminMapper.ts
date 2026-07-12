@@ -7,7 +7,6 @@ import { ISignupRequsetDTO } from "../dtos/auth/gymAdminSignupDto";
 import {
   IGymAdminDetailDTO,
   IGymListItemDTO,
-  IListGymsResponseDTO,
 } from "../dtos/superAdminDto/gymManagementDtos";
 
 export class GymAdminMapper {
@@ -29,18 +28,18 @@ export class GymAdminMapper {
       status: Status.PENDING,
       // packageId:"",
       subscriptionEnd: new Date(new Date().setDate(new Date().getDate() - 1)),
-      subscriptionStart:new Date(new Date().setDate(new Date().getDate() - 1)),
-      limits:{
-        maxBranches:0,
-        maxMembers:0,
-        maxTrainers:0
-      }
+      subscriptionStart: new Date(new Date().setDate(new Date().getDate() - 1)),
+      limits: {
+        maxBranches: 0,
+        maxMembers: 0,
+        maxTrainers: 0,
+      },
     };
   }
 
   static toListGymsResponse(
     gym: GymAdminEntity & { planName: string },
-    trainersCount: number
+    trainersCount: number,
   ): IGymListItemDTO {
     return {
       id: (gym._id as string) || "",
@@ -57,41 +56,40 @@ export class GymAdminMapper {
   }
 
   static mapGymAdminToDetailDTO(
-  gymAdmin: GymAdminEntity,
-  subscription: SubscriptionEntity | null,
-  membersCount: number,
-  trainersCount: number
-): IGymAdminDetailDTO {
-  return {
-    id: (gymAdmin._id as string) || "",
-    name: gymAdmin.gymName || "",
-    status: gymAdmin.status ?? Status.PENDING,
-    businessLicense: gymAdmin.businessLicense || "",
-    insuranceCertificate: gymAdmin.insuranceCertificate || "",
-    totalBranches: gymAdmin.branches?.length ?? 0,
-    totalMembers: membersCount ?? 0,
-    totalTrainers: trainersCount ?? 0,
+    gymAdmin: GymAdminEntity,
+    subscription: SubscriptionEntity | null,
+    membersCount: number,
+    trainersCount: number,
+  ): IGymAdminDetailDTO {
+    return {
+      id: (gymAdmin._id as string) || "",
+      name: gymAdmin.gymName || "",
+      status: gymAdmin.status ?? Status.PENDING,
+      businessLicense: gymAdmin.businessLicense || "",
+      insuranceCertificate: gymAdmin.insuranceCertificate || "",
+      totalBranches: gymAdmin.branches?.length ?? 0,
+      totalMembers: membersCount ?? 0,
+      totalTrainers: trainersCount ?? 0,
 
-    owner: {
-      name: gymAdmin.ownerName || "",
-      email: gymAdmin.email || "",
-      phone: gymAdmin.phone || "",
-    },
+      owner: {
+        name: gymAdmin.ownerName || "",
+        email: gymAdmin.email || "",
+        phone: gymAdmin.phone || "",
+      },
 
-    subscription: subscription
-      ? {
-          currentPlan: subscription.planName || "",
-          price: subscription.price || 0,
-          memberSince: gymAdmin.createdAt?.toISOString() || "",
-          limits:{
-            maxBranches:subscription.limits.maxBranches,
-            maxMembers:subscription.limits.maxMembers,
-            maxTrainers:subscription.limits.maxTrainers
-          },
-          duration:subscription.duration
-        }
-      : null,
-  };
-}
-
+      subscription: subscription
+        ? {
+            currentPlan: subscription.planName || "",
+            price: subscription.price || 0,
+            memberSince: gymAdmin.createdAt?.toISOString() || "",
+            limits: {
+              maxBranches: subscription.limits.maxBranches,
+              maxMembers: subscription.limits.maxMembers,
+              maxTrainers: subscription.limits.maxTrainers,
+            },
+            duration: subscription.duration,
+          }
+        : null,
+    };
+  }
 }

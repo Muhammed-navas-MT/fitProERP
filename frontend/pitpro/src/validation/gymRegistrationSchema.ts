@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export type UserRole = "MEMBER" | "TRAINER" | "GYMADMIN" | "SUPERADMIN";
-const fileSchema =  z.file().mime(["image/jpeg", "image/png", "image/svg+xml", "image/webp"]).max(5 * 1024 * 1024,"File must be under 5 MB")
+const fileSchema = z
+  .file()
+  .mime(["image/jpeg", "image/png", "image/svg+xml", "image/webp"])
+  .max(5 * 1024 * 1024, "File must be under 5 MB");
 
 export const step1Schema = z
   .object({
@@ -22,10 +25,7 @@ export const step1Schema = z
 
     phone: z
       .string({ error: "Phone number must be a string" })
-      .regex(
-        /^[1-9][0-9]{9}$/,
-        { error: "Phone number is invalid format" }
-      )
+      .regex(/^[1-9][0-9]{9}$/, { error: "Phone number is invalid format" })
       .min(10, { error: "Phone number is too short" })
       .transform((val) => val.trim()),
 
@@ -59,8 +59,6 @@ export const step1Schema = z
     path: ["confirmPassword"],
   });
 
-
-
 export const step2Schema = z.object({
   gymName: z
     .string({ error: "Gym name must be a string" })
@@ -81,12 +79,10 @@ export const step2Schema = z.object({
     .min(10, { error: "Description is too short" })
     .transform((val) => val.trim()),
 
-  logo: fileSchema,
+  logo: z.union([fileSchema, z.string().url("Invalid logo URL")]),
 });
-
 
 export const step3Schema = z.object({
   businessLicense: fileSchema,
   insuranceCertificate: fileSchema,
 });
-
