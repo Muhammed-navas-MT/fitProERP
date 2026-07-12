@@ -120,6 +120,10 @@ import { SaveBillingEmailUseCase } from "../../../application/useCases/gymAdmin/
 import { SaveBillingPaymentMethodUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/saveBillingPaymentMethodUseCase";
 import { ExchangeRateApiService } from "../../services/exchangeRateApiService";
 import { FindSalaryDetailUseCase } from "../../../application/useCases/gymAdmin/salaryManagement/findSalaryDetailUseCase";
+import { IdGnerator } from "../../services/cryptoIdGenerator";
+import { ResendOtpUseCase } from "../../../application/useCases/gymAdmin/resendOtpUseCase";
+import { ResumeRegistrationUseCase } from "../../../application/useCases/gymAdmin/resumeRegistrationUseCase";
+import { GymInformationUseCase } from "../../../application/useCases/gymAdmin/gymInformationUseCase";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -142,6 +146,7 @@ const sessionRepository = new SessionRepository(sessionModel);
 const stripeService = new StripeService(stripe);
 const sendForgetPasswordOtpEmailContentGenerator =
   new SendForgotPasswordOtpEmailContentGenerator();
+const idGenerator = new IdGnerator();
 const notificationUseCase = new CreateNotificationUseCase(
   noticationRepository,
   socketService,
@@ -149,7 +154,7 @@ const notificationUseCase = new CreateNotificationUseCase(
 const notificationService = new NotificationService(notificationUseCase);
 const signUpUseCase = new SignUpUseCase(
   gymAdminRepository,
-  hashService,
+  cacheService,
   cloudinaryService,
 );
 const loginUseCase = new GymAdminLoginUseCase(gymAdminRepository, hashService);
@@ -159,10 +164,27 @@ const verifyEmailAndOtpUseCase = new VerifyemailAndOtpUseCase(
   emailService,
   gymAdminRepository,
   cacheService,
+  idGenerator,
+  hashService,
+);
+const resendOtpUseCase = new ResendOtpUseCase(
+  cacheService,
+  otpService,
+  signUpOtpEmailContentGenerator,
+  emailService,
+);
+const resumeRegistrationUseCase = new ResumeRegistrationUseCase(cacheService);
+const gymInformationUseCase = new GymInformationUseCase(
+  cacheService,
+  gymAdminRepository,
+  cloudinaryService,
 );
 export const injectedGymAdminSingUpController = new SignUpController(
   verifyEmailAndOtpUseCase,
   signUpUseCase,
+  resendOtpUseCase,
+  resumeRegistrationUseCase,
+  gymInformationUseCase,
 );
 export const injectedGymAdminLoginController = new GymAdminLoginController(
   loginUseCase,

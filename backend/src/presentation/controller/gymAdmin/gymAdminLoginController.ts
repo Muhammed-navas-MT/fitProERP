@@ -20,6 +20,8 @@ export class GymAdminLoginController {
     try {
       const { email, password }: LoginRequestDTO = req.body;
       const subdomain = req.tenant || "";
+      console.log(req.body);
+      console.log(subdomain);
       const response = await this._loginUseCase.login({
         email,
         password,

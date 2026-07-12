@@ -29,6 +29,9 @@ export const API_ROUTES = {
     AUTH: {
       EMAIL_VERIFY: "/verify_email",
       OTP_VERIFY: "/verify_otp",
+      RESEND_OTP: "/resend_otp",
+      RESUME: "/resume",
+      GYM_INFO: "/gym_information",
       SIGNUP: "/signup",
       LOGIN: "/login",
       LOGOUT: "/logout",

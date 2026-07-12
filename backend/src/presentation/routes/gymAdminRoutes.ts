@@ -44,6 +44,18 @@ export class GymAdminRoutes {
         injectedGymAdminSingUpController.verifyEmail(req, res, next);
       },
     );
+    this._route.get(
+      GYMADMIN.AUTH.RESUME,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminSingUpController.resumeRegistration(req, res, next);
+      },
+    );
+    this._route.post(
+      GYMADMIN.AUTH.RESEND_OTP,
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminSingUpController.resendOtp(req, res, next);
+      },
+    );
     this._route.post(
       GYMADMIN.AUTH.OTP_VERIFY,
       (req: Request, res: Response, next: NextFunction) => {
@@ -51,9 +63,15 @@ export class GymAdminRoutes {
       },
     );
     this._route.post(
+      GYMADMIN.AUTH.GYM_INFO,
+      upload.single("logo"),
+      (req: Request, res: Response, next: NextFunction) => {
+        injectedGymAdminSingUpController.gymInformation(req, res, next);
+      },
+    );
+    this._route.post(
       GYMADMIN.AUTH.SIGNUP,
       upload.fields([
-        { name: "logo", maxCount: 1 },
         { name: "businessLicense", maxCount: 1 },
         { name: "insuranceCertificate", maxCount: 1 },
       ]),

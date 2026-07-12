@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 export class SubdomainMiddleware {
   verifySubdomain = async (req: Request, res: Response, next: NextFunction) => {
     const subdomain = req.headers["x-tenant"] as string | undefined;
+    console.log("subdomain");
     if (subdomain) {
       req.tenant = subdomain;
       return next();

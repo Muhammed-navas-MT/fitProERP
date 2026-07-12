@@ -57,4 +57,12 @@ export class CacheService implements ICacheService {
     }
     await this._redisClient.del(key);
   }
+
+  async getTTL(key: string): Promise<number> {
+    if (!this._redisClient.isOpen) {
+      await this.connect();
+    }
+
+    return await this._redisClient.ttl(key);
+  }
 }

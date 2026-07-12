@@ -1,56 +1,76 @@
 import { ISingupUseCase } from "../../interfaces/useCase/gymAdmin/gymAdminSignUpUseCaseInterface";
-import { ISignupRequsetDTO } from "../../dtos/auth/gymAdminSignupDto";
+import { IDocumentRequsetDTO } from "../../dtos/auth/gymAdminSignupDto";
 import { IGymAdminRepository } from "../../interfaces/repository/gymAdmin/gymAdminRepoInterface";
-import { AlreadyExistException } from "../../constants/exceptions";
+import {
+  AlreadyExistException,
+  BadRequestException,
+  NOtFoundException,
+} from "../../constants/exceptions";
 import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 import { GymAdminMapper } from "../../mappers/gymAdminMapper";
-import { IHashService } from "../../interfaces/service/hashServiceInterface";
 import { ICloudinaryService } from "../../interfaces/service/cloudinaryServiceInterface";
+import { ICacheService } from "../../interfaces/service/cacheServiceInterface";
 
 export class SignUpUseCase implements ISingupUseCase {
   private _gymAdminRepository: IGymAdminRepository;
-  private _hashService: IHashService;
+  private _cacheService: ICacheService;
   private _cloudinaryService: ICloudinaryService;
 
   constructor(
     gymAdminRepository: IGymAdminRepository,
-    hashService: IHashService,
+    cacheService: ICacheService,
     cloudinaryService: ICloudinaryService,
   ) {
     this._gymAdminRepository = gymAdminRepository;
-    this._hashService = hashService;
+    this._cacheService = cacheService;
     this._cloudinaryService = cloudinaryService;
   }
-  async signUp(data: ISignupRequsetDTO): Promise<void> {
-    const findGymAdmin = await this._gymAdminRepository.findByEmail(data.email);
-    if (findGymAdmin) {
-      throw new AlreadyExistException(GymAdminAuthError.EMAIL_ALREADY_EXISTS);
+  async signUp(data: IDocumentRequsetDTO): Promise<void> {
+    const cachedRegistration = await this._cacheService.getData(data.signupId);
+    if (!cachedRegistration) {
+      throw new NOtFoundException(GymAdminAuthError.REGISTRATION_EXPIRED);
     }
+    const registrationData = JSON.parse(cachedRegistration);
 
-    const hashPassword = await this._hashService.hash(data.password);
-    data.password = hashPassword;
+    const existGymBySubdomain = await this._gymAdminRepository.findBySubdomian(
+      registrationData.subdomain,
+    );
 
-    if (typeof data.logo !== "string") {
-      data.logo = await this._cloudinaryService.uploadImageToCloudinary(
-        data.logo,
+    if (existGymBySubdomain) {
+      throw new AlreadyExistException(
+        GymAdminAuthError.GYM_NAME_ALREADY_EXISTS,
       );
     }
 
-    if (typeof data.businessLicense !== "string") {
-      data.businessLicense =
-        await this._cloudinaryService.uploadImageToCloudinary(
-          data.businessLicense,
-        );
+    if (!registrationData.isVerified) {
+      throw new BadRequestException(GymAdminAuthError.EMAIL_NOT_VERIFIED);
     }
 
-    if (typeof data.insuranceCertificate !== "string") {
-      data.insuranceCertificate =
-        await this._cloudinaryService.uploadImageToCloudinary(
-          data.insuranceCertificate,
-        );
+    let licenseUrl;
+    let insuranceUrl;
+
+    if (data.businessLicense) {
+      licenseUrl = await this._cloudinaryService.uploadImageToCloudinary(
+        data.businessLicense,
+        "gym_documents",
+      );
     }
 
-    const gymAdminEntity = GymAdminMapper.toGymAdminEntity(data);
+    if (data.insuranceCertificate) {
+      insuranceUrl = await this._cloudinaryService.uploadImageToCloudinary(
+        data.insuranceCertificate,
+        "gym_documents",
+      );
+    }
+
+    const gymAdminEntity = GymAdminMapper.toGymAdminEntity({
+      ...data,
+      businessLicense: licenseUrl,
+      insuranceCertificate: insuranceUrl,
+      ...registrationData,
+    });
     await this._gymAdminRepository.create(gymAdminEntity);
+    await this._cacheService.deleteData(data.signupId);
+    await this._cacheService.deleteData(registrationData.email);
   }
 }

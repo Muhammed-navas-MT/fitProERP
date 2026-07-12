@@ -15,6 +15,7 @@ export enum GymAdminAuthError {
 
   EMAIL_INVALID_FORMAT = "Invalid email format",
   EMAIL_ALREADY_EXISTS = "An account with this email already exists",
+  EMAIL_ALREADY_ACTIVE_REGISTRATION = "Email is already in an active registration",
 
   PHONE_INVALID_TYPE = "Phone number must be a string",
   PHONE_INVALID_FORMAT = "Invalid phone number format",
@@ -53,6 +54,7 @@ export enum GymAdminAuthError {
   SIGNUP_FAILED = "Failed to create account",
   ACCOUNT_CREATION_FAILED = "Failed to create account. Please try again",
   VERIFICATION_EMAIL_FAILED = "Account created but failed to send verification email",
+  EMAIL_NOT_VERIFIED = "Email verification is required to complete the registration.",
 
   GYM_NOT_FOUND = "Gym not found",
   GYM_NOT_ACTIVE = "This gym is currently inactive. Please take Subscrption",
@@ -61,6 +63,15 @@ export enum GymAdminAuthError {
   GYM_STATUS_INVALID = "Status is invalid",
   UPDATE_STATUS_FAILD = "Status update Failed",
 
+  SUBDOMAIN_INVALID_TYPE = "Subdomain must be a string.",
+  SUBDOMAIN_TOO_SHORT = "Subdomain must be at least 3 characters.",
+  SUBDOMAIN_TOO_LONG = "Subdomain cannot exceed 100 characters.",
+  SUBDOMAIN_INVALID_FORMAT = "Invalid subdomain format.",
+
   SUBSCRIPTION_END = "Your subscription has ended",
   PASSWORD_INCORRECT = "Current password is incorrect",
+  SINUP_ID_REQUEIRED = "Signup ID is required",
+  REGISTRATION_EXPIRED = "Your registration session has expired. Please start the registration process again.",
+  OTP_ALREADY_VERIFIED = "OTP has already been verified.",
+  OTP_EXPIRED = "OTP has expired. Please request a new OTP.",
 }

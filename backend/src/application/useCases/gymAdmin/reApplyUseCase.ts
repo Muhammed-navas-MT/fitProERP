@@ -23,24 +23,28 @@ export class ReApplyUseCase implements IReApplyUseCase {
       throw new NOtFoundException(GymAdminAuthError.EMAIL_ALREADY_EXISTS);
     }
 
-    if (typeof data.businessLicense !== "string") {
-      data.businessLicense =
-        await this._cloudinaryService.uploadImageToCloudinary(
-          data.businessLicense,
-        );
+    let businessLicense;
+    let insuranceCertificate;
+
+    if (data.businessLicense) {
+      businessLicense = await this._cloudinaryService.uploadImageToCloudinary(
+        data.businessLicense,
+        "gym_documents",
+      );
     }
 
-    if (typeof data.insuranceCertificate !== "string") {
-      data.insuranceCertificate =
+    if (data.insuranceCertificate) {
+      insuranceCertificate =
         await this._cloudinaryService.uploadImageToCloudinary(
           data.insuranceCertificate,
+          "gym_documents",
         );
     }
 
     await this._gymAdminRepository.update(
       {
-        businessLicense: data.businessLicense,
-        insuranceCertificate: data.insuranceCertificate,
+        businessLicense,
+        insuranceCertificate,
         status: Status.PENDING,
       },
       findGymAdmin._id?.toString() as string,

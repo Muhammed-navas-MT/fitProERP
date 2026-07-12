@@ -10,7 +10,8 @@ interface OTPVerificationProps {
 }
 
 const OTP_LENGTH = 6;
-const TIMER_SECONDS = 60;
+const OTP_VALID_TIMER_SECONDS = 300;
+const RESEND_OTP_TIMER_SECONDS = 120;
 
 export function OTPVerification({
   icon,
@@ -18,18 +19,26 @@ export function OTPVerification({
   onResend,
 }: OTPVerificationProps) {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
-  const [timer, setTimer] = useState(TIMER_SECONDS);
+  const [otpTimer, setOtpTimer] = useState(OTP_VALID_TIMER_SECONDS);
+  const [resendTimer,setResendTimer] = useState(RESEND_OTP_TIMER_SECONDS);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    if (otpTimer > 0) {
+      const interval = setInterval(() => setOtpTimer((prev) => prev - 1), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [otpTimer]);
+
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const interval = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
       return () => clearInterval(interval);
     } else setCanResend(true);
-  }, [timer]);
+  }, [resendTimer]);
 
   const handleInputChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
@@ -76,7 +85,7 @@ export function OTPVerification({
     try {
       setLoading(true);
       await onResend();
-      setTimer(TIMER_SECONDS);
+      setResendTimer(RESEND_OTP_TIMER_SECONDS);
       setCanResend(false);
       setOtp(Array(OTP_LENGTH).fill(""));
       setError("");
@@ -107,8 +116,10 @@ export function OTPVerification({
     error: "text-red-500 text-center text-sm animate-pulse",
   };
 
-  const minutesLeft = Math.floor(timer / 60);
-  const secondsLeft = timer % 60;
+  const minutesLeft = Math.floor(otpTimer / 60);
+  const secondsLeft = otpTimer % 60;
+  const resendMinutesLeft = Math.floor(resendTimer/60);
+  const resendSecondsLeft = resendTimer % 60;
 
   return (
     <div className={theme.container}>
@@ -182,8 +193,8 @@ export function OTPVerification({
               </button>
             ) : (
               <span className={`${theme.timer} opacity-70`}>
-                Resend in {minutesLeft}:
-                {secondsLeft.toString().padStart(2, "0")}
+                Resend in {resendMinutesLeft}:
+                {resendSecondsLeft.toString().padStart(2, "0")}
               </span>
             )}
           </div>
