@@ -40,7 +40,7 @@ class Express_app {
     const allowedOrigins =
       process.env.ALLOWED_ORIGINS?.split(",").map((url) => url.trim()) || [];
 
-    // const allowedDomainRegex = "localhost";
+    const allowedDomainRegex = process.env.ALLOWED_DOMAIN_REGEX || "";
 
     this._app.use(
       cors({
@@ -50,7 +50,7 @@ class Express_app {
           const isAllowed =
             allowedOrigins.includes(origin) ||
             new RegExp(
-              `^http:\\/\\/([a-zA-Z0-9-]+\\.)*${"localhost:5173"}$`,
+              `^https:\\/\\/([a-zA-Z0-9-]+\\.)*${allowedDomainRegex}$`,
             ).test(origin);
 
           if (isAllowed) {
