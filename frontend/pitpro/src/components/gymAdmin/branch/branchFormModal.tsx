@@ -131,28 +131,53 @@ export function BranchFormModal({
             <div>
               <Label>Phone</Label>
               <Input placeholder="Phone" {...register("phone")} />
+              {errors.phone && (
+              <p className="text-sm text-red-500">
+                {errors.phone.message}
+              </p>
+            )}
             </div>
 
             <div>
               <Label>Pincode</Label>
               <Input placeholder="Pincode" {...register("pincode")} />
+              {errors.pincode && (
+              <p className="text-sm text-red-500">
+                {errors.pincode.message}
+              </p>
+            )}
             </div>
           </div>
 
           <div>
             <Label>Street Address</Label>
             <Input placeholder="Street Address" {...register("street")} />
+            {errors.street && (
+              <p className="text-sm text-red-500">
+                {errors.street.message}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>City</Label>
               <Input placeholder="City" {...register("city")} />
+              {errors.city && (
+              <p className="text-sm text-red-500">
+                {errors.city.message}
+              </p>
+            )}
             </div>
 
             <div>
               <Label>State</Label>
               <Input placeholder="State" {...register("state")} />
+              {errors.state && (
+              <p className="text-sm text-red-500">
+                {errors.state.message}
+              </p>
+            )}
             </div>
           </div>
 
@@ -160,13 +185,28 @@ export function BranchFormModal({
             <div>
               <Label>Country</Label>
               <Input placeholder="Country" {...register("country")} />
+              {errors.country && (
+              <p className="text-sm text-red-500">
+                {errors.country.message}
+              </p>
+            )}
             </div>
 
             <div>
               <Label>Working Hours</Label>
               <div className="grid grid-cols-2 gap-2">
                 <Input type="time" {...register("openTime")} />
+                {errors.openTime && (
+              <p className="text-sm text-red-500">
+                {errors.openTime.message}
+              </p>
+            )}
                 <Input type="time" {...register("closeTime")} />
+                {errors.closeTime && (
+              <p className="text-sm text-red-500">
+                {errors.closeTime.message}
+              </p>
+            )}
               </div>
             </div>
           </div>
@@ -174,7 +214,7 @@ export function BranchFormModal({
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 text-black font-semibold"
+            className="w-full bg-orange-600 text-black hover:bg-orange-500 font-semibold"
           >
             {loading
               ? "Saving..."

@@ -1,0 +1,17 @@
+export const TRAINER_SPECIALIZATIONS = [
+  "Personal Training",
+  "Strength Training",
+  "Weight Loss",
+  "Bodybuilding",
+  "Powerlifting",
+  "CrossFit",
+  "HIIT",
+  "Cardio Fitness",
+  "Sports Conditioning",
+  "Athletic Performance",
+  "Mobility & Flexibility",
+  "Rehabilitation",
+  "Posture Correction",
+  "Women's Fitness",
+  "Nutrition Coaching",
+] as const;
