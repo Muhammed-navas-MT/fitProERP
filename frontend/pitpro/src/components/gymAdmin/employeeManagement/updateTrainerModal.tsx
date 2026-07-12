@@ -20,6 +20,7 @@ import { useUpdateTrainer } from "@/hook/gymAdmin/trainerManagementHook";
 import { useListActiveBranch } from "@/hook/gymAdmin/branchHooks";
 import { toast } from "sonner";
 import { UpdateTrainerType } from "@/types/updateTrainerType";
+import { TRAINER_SPECIALIZATIONS } from "@/constants/trainerSpecializations";
 
 interface EditEmployeeDialogProps {
   open: boolean;
@@ -203,11 +204,24 @@ export function EditEmployeeDialog({
               <Label>Specializations</Label>
               <div className="mt-1 flex gap-2">
                 <Input
-                  placeholder="Enter specialization"
+                  list="trainer-specializations"
+                  placeholder="Select or type specialization"
                   value={newSpec}
                   onChange={(e) => setNewSpec(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addSpecialization();
+                    }
+                  }}
                   className="border-zinc-800 bg-black text-white"
                 />
+
+                <datalist id="trainer-specializations">
+                  {TRAINER_SPECIALIZATIONS.map((spec) => (
+                    <option key={spec} value={spec} />
+                  ))}
+                </datalist>
                 <Button
                   type="button"
                   onClick={addSpecialization}

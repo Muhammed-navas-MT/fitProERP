@@ -36,6 +36,38 @@ class Express_app {
     this._setErrorHandleMiddleware();
   }
 
+  // setMiddleware() {
+  //   const allowedOrigins =
+  //     process.env.ALLOWED_ORIGINS?.split(",").map((url) => url.trim()) || [];
+
+  //   // const allowedDomainRegex = "localhost";
+
+  //   this._app.use(
+  //     cors({
+  //       origin: (origin, callback) => {
+  //         if (!origin) return callback(null, true);
+
+  //         const isAllowed =
+  //           allowedOrigins.includes(origin) ||
+  //           new RegExp(
+  //             `^http:\\/\\/([a-zA-Z0-9-]+\\.)*${"localhost:5173"}$`,
+  //           ).test(origin);
+
+  //         if (isAllowed) {
+  //           return callback(null, true);
+  //         }
+
+  //         return callback(new Error("CORS Not Allowed"));
+  //       },
+  //       credentials: true,
+  //     }),
+  //   );
+
+  //   this._app.use(express.json());
+  //   this._app.use(express.urlencoded({ extended: true }));
+  //   this._app.use(cookieParser());
+  // }
+
   setMiddleware() {
     const allowedOrigins =
       process.env.ALLOWED_ORIGINS?.split(",").map((url) => url.trim()) || [];

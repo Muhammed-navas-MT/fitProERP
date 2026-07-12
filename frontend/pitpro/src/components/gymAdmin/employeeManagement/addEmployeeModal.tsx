@@ -24,6 +24,7 @@ import { TrainerAddPayload } from "@/types/authPayload";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { TRAINER_SPECIALIZATIONS } from "@/constants/trainerSpecializations";
 
 interface AddEmployeeDialogProps {
   open: boolean;
@@ -147,7 +148,9 @@ export function AddEmployeeDialog({
               type="button"
               onClick={() => {
                 onOpenChange(false);
-                navigate(`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${ FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`);
+                navigate(
+                  `${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LIST_BRANCH}`,
+                );
               }}
               className="bg-yellow-500 text-black hover:bg-yellow-600"
             >
@@ -218,7 +221,8 @@ export function AddEmployeeDialog({
               <Label className="text-white">Specializations</Label>
               <div className="mt-1 flex gap-2">
                 <Input
-                  placeholder="Enter specialization"
+                  list="trainer-specializations"
+                  placeholder="Select or type specialization"
                   value={newSpec}
                   onChange={(e) => setNewSpec(e.target.value)}
                   onKeyDown={(e) => {
@@ -229,6 +233,12 @@ export function AddEmployeeDialog({
                   }}
                   className="border-zinc-800 bg-black text-white"
                 />
+
+                <datalist id="trainer-specializations">
+                  {TRAINER_SPECIALIZATIONS.map((spec) => (
+                    <option key={spec} value={spec} />
+                  ))}
+                </datalist>
                 <Button
                   type="button"
                   onClick={addSpecialization}
@@ -369,9 +379,7 @@ export function AddEmployeeDialog({
                   className="border-zinc-800 bg-black text-white"
                 />
                 {endTime && (
-                  <p className="text-xs text-zinc-400">
-                    {formatTime(endTime)}
-                  </p>
+                  <p className="text-xs text-zinc-400">{formatTime(endTime)}</p>
                 )}
                 {errors.dutyTime?.endTime && (
                   <p className="text-sm text-red-500">
