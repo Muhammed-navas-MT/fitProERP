@@ -9,21 +9,24 @@ import { IFindGymUseCase } from "../../../application/interfaces/useCase/superAd
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { IApproveGymUseCase } from "../../../application/interfaces/useCase/superAdmin/gymMangement/approveGymUseCaseInterface";
 import { IRejectGymUseCase } from "../../../application/interfaces/useCase/superAdmin/gymMangement/rejectGymUseCaseInterface";
+import { Roles } from "../../../domain/enums/roles";
+import { BadRequestException } from "../../../application/constants/exceptions";
+import { SuperAdminError } from "../../shared/constants/errorMessage/superAdminMessages";
 
 export class GymAdminManagementController {
   constructor(
     private _listGymsUseCase: IListGymsUseCase,
     private _blockGymUseCase: IBlockGymUseCase,
     private _unBlockGymUseCase: IUnBlockGymUseCase,
-    private _findgym:IFindGymUseCase,
-    private _approveGym:IApproveGymUseCase,
-    private _rejectGym:IRejectGymUseCase
+    private _findgym: IFindGymUseCase,
+    private _approveGym: IApproveGymUseCase,
+    private _rejectGym: IRejectGymUseCase,
   ) {}
 
   async listGyms(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const params: IListGymsRequestDTO = {
@@ -31,6 +34,10 @@ export class GymAdminManagementController {
         limit: Number(req.query?.limit) || 5,
         page: Number(req.query?.page) || 1,
       };
+
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
 
       const data = await this._listGymsUseCase.listAllGym(params);
       ResponseHelper.success(200, res, GymAdminAuthSuccess.GYMS_LISTED, data);
@@ -42,10 +49,13 @@ export class GymAdminManagementController {
   async blockGym(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { gymId } = req.params;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       await this._blockGymUseCase.blockGym(gymId);
       ResponseHelper.success(200, res, GymAdminAuthSuccess.GYM_UPDATED);
     } catch (error) {
@@ -56,55 +66,79 @@ export class GymAdminManagementController {
   async unBlockGym(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { gymId } = req.params;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       await this._unBlockGymUseCase.unBlockGym(gymId);
       ResponseHelper.success(200, res, GymAdminAuthSuccess.GYM_UPDATED);
     } catch (error) {
       next(error);
     }
-  };
-  async findGym(req:Request,res:Response,next:NextFunction):Promise<void>{
+  }
+  async findGym(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.gymId;
-      const gymDetail = await this._findgym.findGym(id)
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
+      const gymDetail = await this._findgym.findGym(id);
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
         GymAdminAuthSuccess.GYM_DETAIL,
-        gymDetail
-      )
+        gymDetail,
+      );
     } catch (error) {
       next(error);
     }
-  };
-  async approveGym(req:Request,res:Response,next:NextFunction):Promise<void>{
+  }
+  async approveGym(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.gymId;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       await this._approveGym.approve(id);
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        GymAdminAuthSuccess.GYM_APPROVED
-      )
+        GymAdminAuthSuccess.GYM_APPROVED,
+      );
     } catch (error) {
-      next(error)
+      next(error);
     }
-  };
-  async rejectGym(req:Request,res:Response,next:NextFunction):Promise<void>{
+  }
+  async rejectGym(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.gymId;
-      const reason = req.body.reason
-      await this._rejectGym.reject(id,reason);
+      const reason = req.body.reason;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
+      await this._rejectGym.reject(id, reason);
       ResponseHelper.success(
         HTTP_STATUS_CODE.OK,
         res,
-        GymAdminAuthSuccess.GYM_REJECTED
-      )
+        GymAdminAuthSuccess.GYM_REJECTED,
+      );
     } catch (error) {
-      next(error)
+      next(error);
     }
-  };
+  }
 }

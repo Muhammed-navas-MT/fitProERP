@@ -78,7 +78,7 @@ export default function TrainerLoginPage() {
             buttonColor="bg-[#5B2D8B] hover:bg-[#4A1E73]"
             isLoading={isPending}
             onSubmit={handleLogin}
-            forgetPasswordLink={FRONTEND_ROUTES.MEMBER.FORGET_PASSWORD}
+            forgetPasswordLink={FRONTEND_ROUTES.MEMBER.FORGOT_PASSWORD}
           />
         </div>
       </div>

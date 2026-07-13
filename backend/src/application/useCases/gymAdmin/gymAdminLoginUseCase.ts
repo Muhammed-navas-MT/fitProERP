@@ -1,8 +1,9 @@
 import { Status } from "../../../domain/enums/status";
 import { GymAdminAuthError } from "../../../presentation/shared/constants/errorMessage/gymAdminAuthError";
 import {
+  BadRequestException,
   ForbiddenException,
-  NOtFoundException,
+  InvalidDataException,
 } from "../../constants/exceptions";
 import {
   GymAdminLoginResponseDTO,
@@ -31,11 +32,11 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
       data.subdomain,
     );
     if (!findGym) {
-      throw new NOtFoundException("Enter valid subdomain....");
+      throw new BadRequestException("Enter valid subdomain....");
     }
     const gymAdmin = await this._gymAdminRepository.findByEmail(data.email);
     if (!gymAdmin) {
-      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
+      throw new InvalidDataException(GymAdminAuthError.GYM_NOT_FOUND);
     }
 
     const isPassswordValid = await this._hashService.compare(
@@ -43,7 +44,7 @@ export class GymAdminLoginUseCase implements IGymAdminLoginUseCase {
       gymAdmin.password,
     );
     if (!isPassswordValid) {
-      throw new NOtFoundException(GymAdminAuthError.GYM_NOT_FOUND);
+      throw new InvalidDataException(GymAdminAuthError.PASSWORD_INCORRECT);
     }
 
     if (gymAdmin.status === Status.PENDING) {

@@ -12,6 +12,7 @@ import { connectSocket, disconnectSocket } from "./lib/socket";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { rootstate } from "./store/store";
+import NotFoundContent from "./components/shared/notFound";
 
 const App = () => {
   const token = useSelector((state: rootstate) => state.token.token);
@@ -55,6 +56,7 @@ const App = () => {
             path={FRONTEND_ROUTES.GYM_ADMIN.SIGNUP}
             element={<GymRegistrationForm />}
           />
+          <Route path={"*"}element={<NotFoundContent/>}/>
         </Routes>
       </BrowserRouter>
     </>
