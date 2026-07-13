@@ -1,4 +1,4 @@
-import { Route,Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import PricingPage from "@/page/gymAdmin/pricingPage";
 import Home from "@/page/gymAdmin/langdingPage";
@@ -13,26 +13,70 @@ import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import PaymentsPage from "@/page/superAdmin/paymentsPage";
 import PaymentDetailPage from "@/page/superAdmin/paymentDetailPage";
+import TenantGuard from "@/components/shared/protectedComponets/tenantGuard";
+import SuperAdminNotFound from "@/components/superAdmin/superAdminNotFound";
 
 const SuperAdminRoutes = () => {
-    return (
-        <Routes>
-            <Route element ={<PublicRoute redirectTo={`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}`}/>}>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LOGIN} element={<SuperAdminLoginPage/>}/>
-            </Route>
-            <Route element = {<ProtectedRoute redirectTo={`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`}/>}>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD} element={<SuperAdminDashboard/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION} element={<SubscriptionPage/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION} element={<AddSubscriptionPage/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION} element={<EditSubscriptionPage/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS} element={<GymsPage/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.GYM_DETAIL} element={<GymDetailPage/>}/>
-                <Route path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_PAYMENTS} element={<PaymentsPage/>}/>
-                <Route path={`${FRONTEND_ROUTES.SUPER_ADMIN.PAYMENT_DETAIL}/:paymentId`} element={<PaymentDetailPage/>}/>
-            </Route>
-            <Route path={FRONTEND_ROUTES.LANDING} element={<Home/>}/>
-            <Route path={FRONTEND_ROUTES.SUBSCRPIPTION} element={<PricingPage/>}/>
-        </Routes>
-    )
-}
+  return (
+    <Routes>
+      <Route element={<TenantGuard requireSubdomain={false} />}>
+        <Route
+          element={
+            <PublicRoute
+              redirectTo={`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}`}
+            />
+          }
+        >
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}
+            element={<SuperAdminLoginPage />}
+          />
+        </Route>
+        <Route
+          element={
+            <ProtectedRoute
+              redirectTo={`${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`}
+            />
+          }
+        >
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.DASHBOARD}
+            element={<SuperAdminDashboard />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_SUBSCRIPTION}
+            element={<SubscriptionPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.ADD_SUBSCRIPTION}
+            element={<AddSubscriptionPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.EDIT_SUBSCRIPTION}
+            element={<EditSubscriptionPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_GYMS}
+            element={<GymsPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.GYM_DETAIL}
+            element={<GymDetailPage />}
+          />
+          <Route
+            path={FRONTEND_ROUTES.SUPER_ADMIN.LIST_PAYMENTS}
+            element={<PaymentsPage />}
+          />
+          <Route
+            path={`${FRONTEND_ROUTES.SUPER_ADMIN.PAYMENT_DETAIL}/:paymentId`}
+            element={<PaymentDetailPage />}
+          />
+        </Route>
+      </Route>
+      <Route path={FRONTEND_ROUTES.LANDING} element={<Home />} />
+      <Route path={FRONTEND_ROUTES.SUBSCRPIPTION} element={<PricingPage />} />
+      <Route path="*" element={<SuperAdminNotFound />} />
+    </Routes>
+  );
+};
 export default SuperAdminRoutes;

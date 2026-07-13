@@ -1,5 +1,7 @@
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
+import TenantGuard from "@/components/shared/protectedComponets/tenantGuard";
+import TrainerNotFound from "@/components/trainer/trainerNotFound";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import TrainerChatPage from "@/page/trainer/chatTrainerPage";
 import DashboardPage from "@/page/trainer/dashboardPage";
@@ -16,8 +18,9 @@ import { Route, Routes } from "react-router-dom";
 const TrainerRoutes = () => {
   return (
     <Routes>
+      <Route element={<TenantGuard requireSubdomain={true} />}>
       <Route
-        path={FRONTEND_ROUTES.TRAINER.FORGET_PASSWORD}
+        path={FRONTEND_ROUTES.TRAINER.FORGOT_PASSWORD}
         element={<TrainerForgetPasswordPage />}
       />
       <Route
@@ -70,6 +73,8 @@ const TrainerRoutes = () => {
           element={<TrainerSalaryConfigPage />}
         />
       </Route>
+      </Route>
+      <Route path="*" element={<TrainerNotFound />} />
     </Routes>
   );
 };

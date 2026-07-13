@@ -1,7 +1,8 @@
 import { Status } from "../../../domain/enums/status";
 import {
+  BadRequestException,
   ForbiddenException,
-  NOtFoundException,
+  InvalidDataException,
 } from "../../constants/exceptions";
 import {
   LoginRequestDTO,
@@ -22,7 +23,7 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
   constructor(
     trainerRepository: ITrainerRepository,
     hashService: IHashService,
-    gymAdminRepository: IGymAdminRepository
+    gymAdminRepository: IGymAdminRepository,
   ) {
     this._trainerRepository = trainerRepository;
     this._hashService = hashService;
@@ -30,42 +31,38 @@ export class TrainerLoginUseCase implements ITrainerLoginUseCase {
   }
 
   async login(data: LoginRequestDTO): Promise<TrainerLoginResponseDTO> {
-    try {
-      const trainer = await this._trainerRepository.findByEmail(data.email);
-      if (!trainer) {
-        throw new NOtFoundException(TrainerError.TRAINER_NOT_FOUND);
-      }
+    const trainer = await this._trainerRepository.findByEmail(data.email);
+    if (!trainer) {
+      throw new BadRequestException(TrainerError.TRAINER_NOT_FOUND);
+    }
 
-      const gym = await this._gymAdminRepository.findById(trainer.gymId);
-      if (!gym) {
-        throw new NOtFoundException(TrainerError.GYM_NOT_FOUND);
-      }
+    const gym = await this._gymAdminRepository.findById(trainer.gymId);
+    if (!gym) {
+      throw new InvalidDataException(TrainerError.GYM_NOT_FOUND);
+    }
 
-      const isPasswordValid = await this._hashService.compare(
-        data.password,
-        trainer.password
-      );
+    const isPasswordValid = await this._hashService.compare(
+      data.password,
+      trainer.password,
+    );
 
-      if (!isPasswordValid) {
-        throw new ForbiddenException(TrainerError.INVALID_CREDENTIALS);
-      }
-      if (gym.status !== Status.ACTIVE) {
-        throw new ForbiddenException(TrainerError.GYM_NOT_ACTIVE);
-      }
+    if (!isPasswordValid) {
+      throw new ForbiddenException(TrainerError.INVALID_CREDENTIALS);
+    }
+    if (gym.status !== Status.ACTIVE) {
+      throw new ForbiddenException(TrainerError.GYM_NOT_ACTIVE);
+    }
 
-      if (trainer.status === Status.PENDING) {
-        throw new ForbiddenException(TrainerError.TRAINER_IS_PENDING);
-      } else if (trainer.status === Status.ACTIVE) {
-        const response = LoginMapper.trainerLoginMapper({
-          trainer,
-          subdomain: gym.subdomain,
-        });
-        return response;
-      } else {
-        throw new ForbiddenException(TrainerError.STATUS_INVALID);
-      }
-    } catch (error) {
-      throw error;
+    if (trainer.status === Status.PENDING) {
+      throw new ForbiddenException(TrainerError.TRAINER_IS_PENDING);
+    } else if (trainer.status === Status.ACTIVE) {
+      const response = LoginMapper.trainerLoginMapper({
+        trainer,
+        subdomain: gym.subdomain,
+      });
+      return response;
+    } else {
+      throw new ForbiddenException(TrainerError.STATUS_INVALID);
     }
   }
 }

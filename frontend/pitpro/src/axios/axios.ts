@@ -76,15 +76,14 @@ AxiosInstance.interceptors.response.use(
       } catch (error) {
         console.log(error);
         const authContext = store.getState().authContext;
-        console.log(authContext);
         if (authContext.role === "SUPERADMIN") {
           store.dispatch(clearSuperAdminData());
-          window.location.href = `${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`;
+          window.location.href = `https://fitproerp.services${FRONTEND_ROUTES.SUPER_ADMIN.BASE}/${FRONTEND_ROUTES.SUPER_ADMIN.LOGIN}`;
         } else if (authContext.role === "GYMADMIN") {
-          window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`;
+          window.location.href = `https://${authContext.subdomain}.fitproerp.services${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LOGIN}`;
           store.dispatch(clearGymAdminData());
         } else if (authContext.role === "TRAINER") {
-          window.location.href = `http://${authContext.subdomain}.localhost:5173${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`;
+          window.location.href = `https://${authContext.subdomain}.fitproerp.services${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LOGIN}`;
           store.dispatch(clearData());
         }
         store.dispatch(deleteToken());

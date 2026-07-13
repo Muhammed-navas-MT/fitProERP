@@ -57,7 +57,7 @@ export default function GymAdminLoginPage() {
             buttonColor="bg-orange-600 hover:bg-orange-700"
             isLoading={isPending}
             onSubmit={handleLogin}
-            forgetPasswordLink={FRONTEND_ROUTES.GYM_ADMIN.FORGET_PASSWORD}
+            forgetPasswordLink={FRONTEND_ROUTES.GYM_ADMIN.FORGOT_PASSWORD}
           />
         </div>
       </div>

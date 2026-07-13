@@ -1,8 +1,8 @@
 import { Status } from "../../../domain/enums/status";
 import { MemberError } from "../../../presentation/shared/constants/errorMessage/memberMessage";
 import {
+  BadRequestException,
   ForbiddenException,
-  NOtFoundException,
 } from "../../constants/exceptions";
 import {
   LoginRequestDTO,
@@ -25,7 +25,7 @@ export class MemberLoginUseCase implements IMemberLoginUseCase {
     const gym = await this.gymAdminRepository.findBySubdomian(data.subdomain);
 
     if (!gym) {
-      throw new NOtFoundException(MemberError.GYM_NOT_FOUND);
+      throw new BadRequestException(MemberError.GYM_NOT_FOUND);
     }
 
     const member = await this.memberRepository.findByEmailAndGymId({
@@ -34,7 +34,7 @@ export class MemberLoginUseCase implements IMemberLoginUseCase {
     });
 
     if (!member) {
-      throw new NOtFoundException(MemberError.MEMBER_NOT_FOUND);
+      throw new BadRequestException(MemberError.INVALID_CREDENTIALS);
     }
 
     if (gym.status !== Status.ACTIVE) {

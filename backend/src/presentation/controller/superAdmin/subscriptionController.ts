@@ -6,7 +6,10 @@ import {
 } from "../../../application/dtos/superAdminDto/subscriptionDto";
 import { subscriptionSchema } from "../../shared/validations/subscriptionZodSchema";
 import { SubscriptionError } from "../../shared/constants/errorMessage/subscriptionError";
-import { InvalidDataException } from "../../../application/constants/exceptions";
+import {
+  BadRequestException,
+  InvalidDataException,
+} from "../../../application/constants/exceptions";
 import { IBlockSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/blockSubscriptionUseCaseInterface";
 import { ICreateSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/createSubscriptionUseCaseInterface";
 import { IFindSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/findSubscripitionUseCaseInterface";
@@ -15,6 +18,8 @@ import { IUnBlockSubscriptionUseCase } from "../../../application/interfaces/use
 import { IUpdateSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/subscription/updateSubscriptionUseCaseInterface";
 import { HTTP_STATUS_CODE } from "../../shared/constants/statusCode/statusCode";
 import { IListAllActiveSubscriptionUseCase } from "../../../application/interfaces/useCase/superAdmin/listAllActiveSubscriptionUseCaseInterface";
+import { Roles } from "../../../domain/enums/roles";
+import { SuperAdminError } from "../../shared/constants/errorMessage/superAdminMessages";
 
 export class SubscriptionController {
   constructor(
@@ -39,8 +44,10 @@ export class SubscriptionController {
       if (validationError.error) {
         throw new InvalidDataException(validationError.error.issues[0].message);
       }
-      const id =
-        await this._createSubscriptionUseCase.createSubscription(subscription);
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
+      await this._createSubscriptionUseCase.createSubscription(subscription);
       ResponseHelper.success(201, res, SubscriptionError.SUBSCRIPTION_CREATED);
     } catch (error) {
       next(error);
@@ -54,6 +61,9 @@ export class SubscriptionController {
   ): Promise<void> {
     try {
       const { subscriptionId } = req.params;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       await this._blockSubscriptionUseCase.blockSubscription(subscriptionId);
       ResponseHelper.success(200, res, SubscriptionError.SUBSCRIPTION_UPDATED);
     } catch (error) {
@@ -68,6 +78,9 @@ export class SubscriptionController {
   ): Promise<void> {
     try {
       const { subscriptionId } = req.params;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       await this._unBlockSubscriptionUseCase.unBlockSubscription(
         subscriptionId,
       );
@@ -84,6 +97,9 @@ export class SubscriptionController {
   ): Promise<void> {
     try {
       const { subscriptionId } = req.params;
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
       const subscription =
         await this._findSubscriptionUseCase.findSubscripition(subscriptionId);
       ResponseHelper.success(
@@ -110,6 +126,10 @@ export class SubscriptionController {
         throw new InvalidDataException(validationError.error.issues[0].message);
       }
 
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
+
       const { subscriptionId } = req.params;
       await this._updateSubscriptionUseCase.updateSubscription(
         subscription,
@@ -132,6 +152,10 @@ export class SubscriptionController {
         limit: Number(req.query?.limit) || 5,
         page: Number(req.query?.page) || 1,
       };
+
+      if (res.locals.data.role !== Roles.SUPERADMIN) {
+        throw new BadRequestException(SuperAdminError.SUPERADMIN_ONLY);
+      }
 
       const data =
         await this._listSubscriptionUseCase.listSubscriptions(params);

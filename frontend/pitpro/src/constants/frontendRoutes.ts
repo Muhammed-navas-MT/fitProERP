@@ -25,9 +25,10 @@ export const FRONTEND_ROUTES = {
     LIST_EXPENSE: "expenses",
     PROFIT: "profit_analytics",
     LEAVE: "leaves",
-    FORGET_PASSWORD: "forget_password",
+    FORGOT_PASSWORD: "forgot_password",
     SALARY: "salary",
     SALARY_DETAIL: "salary_detail",
+    NOT_FOUND:"not_found"
   },
   SUPER_ADMIN: {
     BASE: "/super-admin",
@@ -40,6 +41,7 @@ export const FRONTEND_ROUTES = {
     GYM_DETAIL: "gym-detail/:gymId",
     LIST_PAYMENTS: "payments",
     PAYMENT_DETAIL: "payment_detail",
+    NOT_FOUND:"not_found"
   },
   TRAINER: {
     BASE: "/trainer",
@@ -51,8 +53,9 @@ export const FRONTEND_ROUTES = {
     LEAVE: "leaves",
     SESSION: "sessions",
     CHAT: "chat",
-    FORGET_PASSWORD: "forget_password",
+    FORGOT_PASSWORD: "forgot_password",
     SALARY: "salary",
+    NOT_FOUND:"not_found"
   },
   MEMBER: {
     BASE: "/member",
@@ -68,6 +71,8 @@ export const FRONTEND_ROUTES = {
     BOOK_TRAINER: "book_trainer",
     PROGRESS: "progress",
     CHAT: "chat",
-    FORGET_PASSWORD: "forget_password",
+    FORGOT_PASSWORD: "forgot_password",
+    NOT_FOUND:"not_found"
   },
+  NOT_FOUND:"not_found"
 };

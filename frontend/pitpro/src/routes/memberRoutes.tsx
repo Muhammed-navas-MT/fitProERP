@@ -1,8 +1,10 @@
 import MemberSuccess from "@/components/member/dashboard/successPage";
+import MemberNotFound from "@/components/member/memberNotfound";
 import PackageAccessRoute from "@/components/shared/protectedComponets/memberPackageAccessRoute";
 import MemberStatusRoute from "@/components/shared/protectedComponets/memberStatusRoute";
 import ProtectedRoute from "@/components/shared/protectedComponets/protectedRoute";
 import PublicRoute from "@/components/shared/protectedComponets/PublicRoute";
+import TenantGuard from "@/components/shared/protectedComponets/tenantGuard";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import ChatPage from "@/page/member/chatPage";
 import MemberDashboard from "@/page/member/dashboardPage";
@@ -21,7 +23,8 @@ import { Route, Routes } from "react-router-dom";
 const MemberRoutes = () => {
   return (
     <Routes>
-        <Route path={FRONTEND_ROUTES.MEMBER.FORGET_PASSWORD} element= {<MemberForgetPasswordPage/>}/>
+      <Route element={<TenantGuard requireSubdomain={true} />}>
+        <Route path={FRONTEND_ROUTES.MEMBER.FORGOT_PASSWORD} element= {<MemberForgetPasswordPage/>}/>
       <Route
         element={
           <PublicRoute
@@ -71,6 +74,8 @@ const MemberRoutes = () => {
           <Route path={FRONTEND_ROUTES.MEMBER.CHAT} element={<ChatPage/>}/>
         </Route>
       </Route>
+       </Route>
+      <Route path="*" element={<MemberNotFound />} />
     </Routes>
   );
 };
