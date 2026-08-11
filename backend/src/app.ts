@@ -18,6 +18,8 @@ import { accessAndErrorLoggerMiddleware } from "./presentation/middlewares/loggi
 import cron from "node-cron";
 import { injectedIGenerateMonthlyProfitJob } from "./infrastructure/DI/jobs/generateMonthlyProfitJob";
 import { initSocket } from "./infrastructure/services/socketServer";
+import { injectedMemberPackageExpiredJob } from "./infrastructure/DI/member/memberInjection";
+import { injectedGymAdminSubscriptionExpiryJob } from "./infrastructure/DI/gymAdmin/gymAdminInjection";
 
 class Express_app {
   private _app: Express;
@@ -100,6 +102,7 @@ class Express_app {
     );
   }
   private _startCronJobs() {
+    //Monthly profit
     cron.schedule("0 0 1 * *", async () => {
       try {
         console.log("Running Monthly Profit Cron Job...");
@@ -109,6 +112,30 @@ class Express_app {
         console.log("Monthly Profit Generated");
       } catch (error) {
         console.error("Cron Error:", error);
+      }
+    });
+    // Member package expiry
+    cron.schedule("0 0 * * *", async () => {
+      try {
+        console.log("Running Member Package Expiry Cron Job...");
+
+        await injectedMemberPackageExpiredJob.execute();
+
+        console.log("Member Package Expiry Check Completed");
+      } catch (error) {
+        console.error("Member Package Expiry Cron Error:", error);
+      }
+    });
+    // GymAdmin subscription expiry
+    cron.schedule("0 0 * * *", async () => {
+      try {
+        console.log("Running GymAdmin subscription Expiry Cron Job...");
+
+        await injectedGymAdminSubscriptionExpiryJob.execute();
+
+        console.log("GymAdmin subscription Expiry Check Completed");
+      } catch (error) {
+        console.error("GymAdmin subscription Expiry Cron Error:", error);
       }
     });
   }

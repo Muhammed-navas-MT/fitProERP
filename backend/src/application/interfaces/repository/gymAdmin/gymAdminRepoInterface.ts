@@ -37,4 +37,5 @@ export interface IGymAdminRepository extends IBaseRepository<GymAdminEntity> {
       isDefaultPaymentMethodAdded?: boolean;
     },
   ): Promise<GymAdminEntity | null>;
+  updateExpiredGymAdmins(date: Date): Promise<void>;
 }

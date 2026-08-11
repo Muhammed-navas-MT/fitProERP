@@ -7,6 +7,7 @@ import { VerifyMemberEmailUseCase } from "../../../application/useCases/member/f
 import { VerifyMemberOtpUseCase } from "../../../application/useCases/member/forgetPasswordManagement/verifyMemberOtpUseCase";
 import { ListActiveTrainersUseCase } from "../../../application/useCases/member/listActiveTrainersUseCase";
 import { MemberLoginUseCase } from "../../../application/useCases/member/memberLoginUseCase";
+import { MemberPackageExpiryUseCase } from "../../../application/useCases/member/memberPackageexpiryUseCase";
 import { CreateMemberCheckoutSessionUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/createMemberCheckoutUseCase";
 import { ListActivePackagesUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/listActivepackagesUseCase";
 import { ListAllPaymentsUseCase } from "../../../application/useCases/member/packageAndPurchaseManagement/listAllPaymentsUseCase";
@@ -40,6 +41,7 @@ import { ProgressController } from "../../../presentation/controller/member/prog
 import { SlotAndBookingController } from "../../../presentation/controller/member/slotAndBookingController";
 import { TrainerController } from "../../../presentation/controller/member/trainerManagementController";
 import { WorkoutPlanController } from "../../../presentation/controller/member/workoutPlanController";
+import { MemberPackageExpiryJob } from "../../../presentation/jobs/memberPackageExpiredJob";
 import { CheckMemberAccessMiddleWare } from "../../../presentation/middlewares/checkMemberAccessMiddleware";
 import { branchModel } from "../../repository/databaseConfigs/models/branchModel";
 import { dietPlanModel } from "../../repository/databaseConfigs/models/deitPlanModel";
@@ -291,3 +293,10 @@ export const injectedForgetPasswordMemberController =
     verifyMemberOtpUseCase,
     newPasswordUseCase,
   );
+
+const memberPackageExpiryUseCase = new MemberPackageExpiryUseCase(
+  memberRepository,
+);
+export const injectedMemberPackageExpiredJob = new MemberPackageExpiryJob(
+  memberPackageExpiryUseCase,
+);

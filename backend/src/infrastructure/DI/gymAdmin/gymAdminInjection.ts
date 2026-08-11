@@ -124,6 +124,8 @@ import { IdGnerator } from "../../services/cryptoIdGenerator";
 import { ResendOtpUseCase } from "../../../application/useCases/gymAdmin/resendOtpUseCase";
 import { ResumeRegistrationUseCase } from "../../../application/useCases/gymAdmin/resumeRegistrationUseCase";
 import { GymInformationUseCase } from "../../../application/useCases/gymAdmin/gymInformationUseCase";
+import { GymAdminSubscriptionExpiryUseCase } from "../../../application/useCases/gymAdmin/gymAdminSubscriptionExpiryUseCase";
+import { GymAdminSubscriptionExpiryJob } from "../../../presentation/jobs/gymAdminSubscriptionExpiredJobs";
 
 const otpService = new OtpService();
 const signUpOtpEmailContentGenerator = new SignUpOtpEmailContentGenerator();
@@ -484,3 +486,9 @@ export const injectedSalaryController = new TrainerSalaryController(
   saveBillingPaymentMethodUseCase,
   findSalaryDetailUseCase,
 );
+
+const gymAdminSubscriptionExpiryUseCase = new GymAdminSubscriptionExpiryUseCase(
+  gymAdminRepository,
+);
+export const injectedGymAdminSubscriptionExpiryJob =
+  new GymAdminSubscriptionExpiryJob(gymAdminSubscriptionExpiryUseCase);

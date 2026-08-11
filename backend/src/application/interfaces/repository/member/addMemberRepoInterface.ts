@@ -53,4 +53,5 @@ export interface IMemberRepository extends IBaseRepository<MemberEntity> {
     gymId: string;
   }): Promise<MemberEntity | null>;
   getMemberGymDetail(memberId: string): Promise<IPopulatedGymDetail | null>;
+  updateExpiredMembers(date: Date): Promise<void>;
 }
