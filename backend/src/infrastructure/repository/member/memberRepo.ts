@@ -306,4 +306,20 @@ export class MemberRepository
 
     return detail;
   }
+  async updateExpiredMembers(date: Date): Promise<void> {
+    await this._model.updateMany(
+      {
+        "package.endDate": {
+          $exists: true,
+          $lte: date,
+        },
+        status: { $ne: Status.IN_ACTIVE },
+      },
+      {
+        $set: {
+          status: Status.IN_ACTIVE,
+        },
+      },
+    );
+  }
 }

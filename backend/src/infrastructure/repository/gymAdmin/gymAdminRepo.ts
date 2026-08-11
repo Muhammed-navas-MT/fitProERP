@@ -231,4 +231,22 @@ export class GymAdminRepository
       .findByIdAndUpdate(gymId, { $set: updateData }, { new: true })
       .lean<GymAdminEntity | null>();
   }
+  async updateExpiredGymAdmins(date: Date): Promise<void> {
+    await this._model.updateMany(
+      {
+        subscriptionEnd: {
+          $exists: true,
+          $lte: date,
+        },
+        status: {
+          $ne: Status.IN_ACTIVE,
+        },
+      },
+      {
+        $set: {
+          status: Status.IN_ACTIVE,
+        },
+      },
+    );
+  }
 }
