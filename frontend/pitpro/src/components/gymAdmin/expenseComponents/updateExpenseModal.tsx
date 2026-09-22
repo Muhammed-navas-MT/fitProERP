@@ -78,8 +78,8 @@ export default function UpdateExpenseModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-zinc-900 w-full max-w-lg rounded-xl border border-zinc-800 p-6">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+      <div className="bg-zinc-900 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl border border-zinc-800 p-4 sm:p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-white">Update Expense</h2>
@@ -228,7 +228,7 @@ export default function UpdateExpenseModal({
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
             <button
               type="button"
               onClick={handleClose}

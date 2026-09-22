@@ -47,9 +47,9 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
   console.log(leave, "view leave page");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-[500px] rounded-lg bg-zinc-900 p-6 text-white shadow-lg">
-        <div className="mb-5 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="flex max-h-[85vh] w-full max-w-[500px] flex-col rounded-lg bg-zinc-900 p-4 text-white shadow-lg sm:p-6">
+        <div className="mb-5 flex shrink-0 items-center justify-between">
           <h2 className="text-lg font-semibold">Trainer Leave Details</h2>
           <button
             onClick={onClose}
@@ -62,7 +62,7 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
         {isLoading && <p className="text-zinc-400">Loading...</p>}
 
         {leave && (
-          <div className="space-y-4 text-sm">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto text-sm">
             {leave.isExided && (
               <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
                 <div className="flex items-start gap-3">
@@ -143,7 +143,7 @@ export default function ViewLeaveModal({ leaveId, onClose }: Props) {
           </div>
         )}
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex shrink-0 justify-end">
           <button
             onClick={onClose}
             className="rounded bg-zinc-700 px-4 py-2 text-sm hover:bg-zinc-600"

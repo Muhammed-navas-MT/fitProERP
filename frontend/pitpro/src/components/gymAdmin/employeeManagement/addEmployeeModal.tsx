@@ -128,7 +128,7 @@ export function AddEmployeeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-2xl border-zinc-800 bg-zinc-900 text-white">
+      <DialogContent className="w-[calc(100%-2rem)] max-h-[90vh] max-w-2xl overflow-y-auto border-zinc-800 bg-zinc-900 text-white">
         <DialogHeader>
           <DialogTitle className="text-2xl text-orange-500">
             Add New Employee

@@ -90,7 +90,7 @@ export default function SalaryDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto border border-zinc-800 bg-gradient-to-br from-black via-zinc-950 to-zinc-900 p-0 text-zinc-100 shadow-2xl sm:max-w-6xl">
+      <DialogContent className="w-[calc(100%-2rem)] max-h-[92vh] overflow-y-auto border border-zinc-800 bg-gradient-to-br from-black via-zinc-950 to-zinc-900 p-0 text-zinc-100 shadow-2xl sm:max-w-6xl">
         <DialogHeader className="sticky top-0 z-10 border-b border-zinc-800 bg-black/90 px-6 py-4 backdrop-blur">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">

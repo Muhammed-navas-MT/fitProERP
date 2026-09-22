@@ -29,6 +29,7 @@ import {
 } from "@/types/member/chatType";
 import { Topbar } from "@/components/member/topbar";
 import { Sidebar } from "@/components/member/memberSidebar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { useFindAssignedTrainers } from "@/hook/member/trainerHooks";
 import ChatMessageArea from "@/components/member/chatComponent/chatMessageArea";
 
@@ -349,9 +350,13 @@ export default function ChatPage() {
           profileImg={profileImg}
         />
 
-        <div className="h-[calc(100vh-80px)] overflow-hidden bg-black">
-          <div className="flex h-full overflow-hidden bg-black text-white">
-            <aside className="flex h-full w-[340px] min-w-[280px] flex-col overflow-hidden border-r border-zinc-900 bg-zinc-950">
+        <div className="h-[calc(100dvh-64px)] overflow-hidden bg-black pb-16 md:h-[calc(100dvh-80px)] md:pb-0">
+          <div className="flex h-full overflow-hidden bg-black text-white relative">
+            <aside
+              className={`flex h-full flex-col overflow-hidden border-r border-zinc-900 bg-zinc-950 absolute inset-y-0 left-0 z-10 w-full md:relative md:w-[340px] md:min-w-[280px] transition-transform ${
+                selectedConversationId ? "-translate-x-full md:translate-x-0 hidden md:flex" : "translate-x-0 flex"
+              }`}
+            >
               <div className="shrink-0 border-b border-zinc-900 px-4 py-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Chats</h2>
@@ -370,7 +375,11 @@ export default function ChatPage() {
               </div>
             </aside>
 
-            <section className="flex min-w-0 flex-1 flex-col bg-black">
+            <section
+              className={`flex min-w-0 flex-1 flex-col bg-black h-full w-full absolute inset-0 z-20 md:relative md:z-0 ${
+                !selectedConversationId ? "hidden md:flex" : "flex"
+              }`}
+            >
               {!selectedConversationId ? (
                 <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
                   <MessageCircle size={56} className="text-zinc-800" />
@@ -401,7 +410,7 @@ export default function ChatPage() {
               ) : (
                 <>
                   <div className="shrink-0 border-b border-zinc-900">
-                    <div className="flex items-center justify-between px-4 py-3">
+                    <div className="flex items-center justify-between px-4 py-3 min-w-0">
                       <ChatHeader
                         otherParticipant={otherParticipant}
                         isTyping={isOtherUserTyping}
@@ -411,10 +420,10 @@ export default function ChatPage() {
                       <button
                         type="button"
                         onClick={handleCloseChat}
-                        className="ml-3 flex items-center gap-2 rounded-lg border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-orange-500/40 hover:text-white"
+                        className="ml-3 flex shrink-0 items-center gap-2 rounded-lg border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-orange-500/40 hover:text-white"
                       >
                         <X size={16} />
-                        Close Chat
+                        <span className="hidden sm:inline">Close Chat</span>
                       </button>
                     </div>
                   </div>
@@ -448,6 +457,8 @@ export default function ChatPage() {
           </div>
         </div>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

@@ -104,9 +104,9 @@ export function OTPVerification({
     icon: "w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-6 text-orange-500",
     title: "text-center text-2xl font-bold mb-2 text-white",
     subtitle: "text-center text-sm mb-6 text-gray-400",
-    inputContainer: "flex gap-3 justify-center mb-6",
+    inputContainer: "flex gap-2 sm:gap-3 justify-center mb-6",
     input:
-      "w-12 h-12 text-center text-lg font-bold border-2 rounded-lg bg-gray-800 border-gray-700 text-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-all duration-200 shadow-md",
+      "w-10 h-12 sm:w-12 sm:h-12 text-center text-lg font-bold border-2 rounded-lg bg-gray-800 border-gray-700 text-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500 focus:ring-offset-1 transition-all duration-200 shadow-md",
     button:
       "w-full py-3 px-4 rounded-xl font-semibold bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 shadow-lg hover:shadow-xl text-base transition-all duration-200",
     footer: "flex items-center justify-between text-sm text-gray-400",

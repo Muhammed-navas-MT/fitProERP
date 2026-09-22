@@ -24,6 +24,7 @@ import {
 
 import { Sidebar } from "@/components/trainer/trainerSidebar";
 import { Header } from "@/components/trainer/trainerHeader";
+import { TrainerMobileNav } from "@/components/trainer/trainerMobileNav";
 import ChatConversationList from "@/components/trainer/trainerChatManagement/chatConversationList";
 import ChatHeader from "@/components/trainer/trainerChatManagement/chatHeader";
 import ChatInput from "@/components/trainer/trainerChatManagement/chatInput";
@@ -281,19 +282,23 @@ export default function TrainerChatPage() {
   const isSending = isSendingMessage || isUploadingImage;
 
   return (
-    <div className="flex min-h-screen bg-[#0f0f0f] text-white">
+    <div className="flex bg-[#0f0f0f] text-white h-[100dvh] overflow-hidden">
       <Sidebar />
 
-      <div className="w-full lg:pl-[220px]">
+      <div className="w-full lg:pl-[220px] flex flex-col h-[100dvh] overflow-hidden">
         <Header
           title="Chat"
           subtitle="Connect with your members in real time"
           avatar="TR"
         />
 
-        <main className="h-[calc(100vh-80px)] overflow-hidden">
-          <div className="flex h-full overflow-hidden bg-[#0f0f0f] text-white">
-            <aside className="flex h-full w-[340px] min-w-[280px] flex-col overflow-hidden border-r border-[#2a2a2a] bg-[#1a1a1a]">
+        <main className="flex-1 overflow-hidden flex flex-col min-h-0 pb-20 lg:pb-0">
+          <div className="flex flex-1 overflow-hidden bg-[#0f0f0f] text-white relative">
+            <aside
+              className={`flex h-full flex-col overflow-hidden border-r border-[#2a2a2a] bg-[#1a1a1a] absolute inset-y-0 left-0 z-10 w-full md:relative md:w-[340px] md:min-w-[280px] transition-transform ${
+                selectedConversationId ? "-translate-x-full md:translate-x-0 hidden md:flex" : "translate-x-0 flex"
+              }`}
+            >
               <div className="shrink-0 border-b border-[#2a2a2a] px-4 py-4">
                 <h2 className="text-xl font-bold text-purple-400">Chats</h2>
               </div>
@@ -309,7 +314,11 @@ export default function TrainerChatPage() {
               </div>
             </aside>
 
-            <section className="flex min-w-0 flex-1 flex-col bg-[#0f0f0f]">
+            <section
+              className={`flex min-w-0 flex-1 flex-col bg-[#0f0f0f] h-full w-full absolute inset-0 z-20 md:relative md:z-0 ${
+                !selectedConversationId ? "hidden md:flex" : "flex"
+              }`}
+            >
               {!selectedConversationId ? (
                 <div className="flex flex-1 items-center justify-center bg-[#0f0f0f]">
                   <div className="flex flex-col items-center gap-4 text-center">
@@ -328,7 +337,7 @@ export default function TrainerChatPage() {
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center justify-between border-b border-[#2a2a2a] bg-[#1a1a1a] pr-4">
+                  <div className="flex items-center justify-between border-b border-[#2a2a2a] bg-[#1a1a1a] pr-4 shrink-0">
                     <div className="min-w-0 flex-1">
                       <ChatHeader
                         otherParticipant={otherParticipant}
@@ -340,14 +349,14 @@ export default function TrainerChatPage() {
                     <button
                       type="button"
                       onClick={handleCloseChat}
-                      className="ml-3 flex items-center gap-2 rounded-lg border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-purple-500/40 hover:text-white"
+                      className="ml-3 flex items-center gap-2 rounded-lg border border-[#2a2a2a] bg-[#121212] px-3 py-2 text-sm text-gray-300 transition-colors hover:border-purple-500/40 hover:text-white shrink-0"
                     >
                       <X size={16} />
-                      Close Chat
+                      <span className="hidden sm:inline">Close Chat</span>
                     </button>
                   </div>
 
-                  <div className="min-h-0 flex-1 overflow-hidden">
+                  <div className="min-h-0 flex-1 overflow-hidden flex flex-col">
                     <ChatMessageArea
                       messages={messages}
                       isLoading={isMessagesLoading}
@@ -356,7 +365,7 @@ export default function TrainerChatPage() {
                     />
                   </div>
 
-                  <div className="shrink-0">
+                  <div className="shrink-0 bg-[#0f0f0f]">
                     <ChatInput
                       messageText={messageText}
                       setMessageText={setMessageText}
@@ -376,6 +385,8 @@ export default function TrainerChatPage() {
           </div>
         </main>
       </div>
+
+      <TrainerMobileNav />
     </div>
   );
 }

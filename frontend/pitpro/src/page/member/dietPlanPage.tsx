@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 
 import { useListDiet, useCreateDietPlan } from "@/hook/member/dietPlanHooks";
 
@@ -51,10 +52,12 @@ export default function DietPlanPage() {
             profileImg={profileImg}
           />
 
-          <main className="p-6">
+          <main className="p-4 pb-24 sm:p-6 md:pb-6">
             <DietPageSkeleton />
           </main>
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
@@ -72,10 +75,12 @@ export default function DietPlanPage() {
             profileImg={profileImg}
           />
 
-          <main className="flex-1 flex items-center justify-center">
+          <main className="flex-1 flex items-center justify-center p-4 pb-24 md:pb-4">
             <EmptyDietState onCreate={createDiet} />
           </main>
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
@@ -95,8 +100,8 @@ export default function DietPlanPage() {
           subtitle="Stay consistent with your nutrition."
         />
 
-        <main className="flex-1 overflow-y-auto p-6 space-y-8">
-          <div className="flex justify-between items-end">
+        <main className="flex-1 overflow-y-auto p-4 pb-24 sm:p-6 md:pb-6 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
             <div>
               <h1 className="text-3xl text-orange-600 font-bold">Diet Plan</h1>
 
@@ -132,6 +137,8 @@ export default function DietPlanPage() {
           </AnimatePresence>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

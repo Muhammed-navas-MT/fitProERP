@@ -1,6 +1,11 @@
-import { ReusableTable, TableColumn } from "@/components/shared/reusableTable";
-import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  AdminTable,
+  type AdminTableColumn,
+} from "@/components/gymAdmin/ui/AdminTable";
+import { StatusBadge } from "@/components/gymAdmin/ui/StatusBadge";
+import { adminIconBtn } from "@/components/gymAdmin/ui/adminUi";
 
 export interface IListRevenueItemType {
   id: string;
@@ -24,7 +29,7 @@ interface Props {
 }
 
 export function RevenueTable({ revenues, onView }: Props) {
-  const columns: TableColumn<IListRevenueItemType>[] = [
+  const columns: AdminTableColumn<IListRevenueItemType>[] = [
     {
       header: "Member",
       render: (rev) => (
@@ -54,8 +59,8 @@ export function RevenueTable({ revenues, onView }: Props) {
     {
       header: "Amount",
       render: (rev) => (
-        <span className="text-green-400 font-semibold">
-          ₹{rev.amount}
+        <span className="font-semibold text-green-400">
+          ₹{rev.amount.toLocaleString()}
         </span>
       ),
     },
@@ -70,21 +75,16 @@ export function RevenueTable({ revenues, onView }: Props) {
     {
       header: "Status",
       render: (rev) => (
-        <span
-          className={`rounded px-3 py-1 text-xs font-medium ${
-            rev.status === "SUCCESS"
-              ? "bg-green-600/20 text-green-400"
-              : "bg-red-600/20 text-red-400"
-          }`}
-        >
-          {rev.status}
-        </span>
+        <StatusBadge
+          status={rev.status}
+          tone={rev.status === "SUCCESS" ? "success" : "danger"}
+        />
       ),
     },
     {
       header: "Date",
       render: (rev) => (
-        <span className="text-zinc-400 text-sm">
+        <span className="text-sm text-zinc-400">
           {new Date(rev.createdAt).toLocaleDateString()}
         </span>
       ),
@@ -94,24 +94,25 @@ export function RevenueTable({ revenues, onView }: Props) {
       className: "text-center",
       render: (rev) => (
         <div className="flex justify-center">
-          <Button
-            size="icon"
-            variant="ghost"
+          <button
+            type="button"
             onClick={() => onView(rev.id)}
-            className="text-blue-400 hover:bg-blue-500/10"
+            className={cn(adminIconBtn, "hover:text-blue-400")}
+            aria-label="View revenue record"
           >
             <Eye className="h-4 w-4" />
-          </Button>
+          </button>
         </div>
       ),
     },
   ];
 
   return (
-    <ReusableTable
+    <AdminTable
       title="Revenue List"
       data={revenues}
       columns={columns}
+      rowKey={(rev) => rev.id}
       emptyText="No revenue records found"
     />
   );

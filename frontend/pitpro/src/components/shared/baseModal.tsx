@@ -16,22 +16,22 @@ export function BaseModal({
   title,
   children,
   closeOnBackdrop = true,
-  backdropClassName = "bg-black/50",
+  backdropClassName = "bg-black/50 backdrop-blur-sm",
   containerClassName = "bg-zinc-900 border border-zinc-800",
 }: BaseModalProps) {
   if (!isOpen) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${backdropClassName}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0 ${backdropClassName}`}
       onClick={closeOnBackdrop ? onClose : undefined}
     >
       <div
-        className={`relative w-full max-w-md rounded-lg p-6 ${containerClassName}`}
+        className={`relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl p-5 sm:p-6 shadow-2xl ${containerClassName}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <h2 className="mb-4 text-xl font-semibold text-white">
+        <h2 className="mb-4 text-lg sm:text-xl font-semibold text-white">
           {title}
         </h2>
 

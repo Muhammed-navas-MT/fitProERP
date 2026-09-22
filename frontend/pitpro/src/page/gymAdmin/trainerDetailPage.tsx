@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 
 import { Sidebar } from "@/components/gymAdmin/sidebar";
 import { TopBar } from "@/components/gymAdmin/topbar";
+import { BackButton } from "@/components/shared/backButton";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 import { SpecializationCard } from "@/components/gymAdmin/employeeManagement/empolyeeSpecializationCard";
 import StatCard from "@/components/gymAdmin/employeeManagement/employeeStateCard";
@@ -45,17 +47,13 @@ export default function TrainerDetailsPage() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen bg-black text-white">
+      <div className="min-h-screen bg-zinc-950 text-white">
         <Sidebar />
-        <TopBar title="Trainer Details" subtitle="Loading..." />
-
-        <div className="ml-64 flex min-h-screen flex-col">
-          <main className="flex-1 p-6">
-            <div className="mx-auto w-full max-w-7xl">
-              <TrainerDetailsSkeleton />
-            </div>
-          </main>
-        </div>
+        <TopBar title="Trainer Details" subtitle="Loading...">
+          <div className="mx-auto w-full max-w-7xl">
+            <TrainerDetailsSkeleton />
+          </div>
+        </TopBar>
       </div>
     );
   }
@@ -71,60 +69,60 @@ export default function TrainerDetailsPage() {
   const dutyTime = `${trainer.dutyTime.startTime} - ${trainer.dutyTime.endTime}`;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-zinc-950 text-white">
       <Sidebar />
-      <TopBar title={trainer.name} subtitle="Employee Details" />
+      <TopBar title={trainer.name} subtitle="Employee Details">
+        <div className="mx-auto w-full max-w-7xl space-y-6">
+          <BackButton
+            fallback={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LIST_EMPLOYEES}`}
+          />
 
-      <div className="ml-64 flex min-h-screen flex-col">
-        <main className="flex-1 p-6">
-          <div className="mx-auto w-full max-w-7xl space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              <StatCard icon={Calendar} label="Joined" value={joinedDate} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <StatCard icon={Calendar} label="Joined" value={joinedDate} />
 
-              <StatCard
-                icon={Briefcase}
-                label="Experience"
-                value={`${trainer.experience} Years`}
-              />
+            <StatCard
+              icon={Briefcase}
+              label="Experience"
+              value={`${trainer.experience} Years`}
+            />
 
-              <StatCard
-                icon={Calendar}
-                label="Sessions / Day"
-                value={trainer.sessionCount ?? 0}
-              />
+            <StatCard
+              icon={Calendar}
+              label="Sessions / Day"
+              value={trainer.sessionCount ?? 0}
+            />
 
-              <StatCard
-                icon={Briefcase}
-                label="Leaves / Month"
-                value={trainer.allocatedLeaveCount ?? 0}
-              />
+            <StatCard
+              icon={Briefcase}
+              label="Leaves / Month"
+              value={trainer.allocatedLeaveCount ?? 0}
+            />
 
-              <DutyCard duty={dutyTime} />
-            </div>
-
-            <div className="rounded-xl border border-orange-500/20 bg-black p-6 space-y-6">
-              <div>
-                <h2 className="text-xl font-bold">Personal Information</h2>
-                <p className="text-sm text-zinc-400">Trainer details</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoField label="Full Name" value={trainer.name} icon={Mail} />
-                <InfoField label="Email" value={trainer.email} icon={Mail} />
-                <InfoField label="Phone" value={trainer.phone} icon={Phone} />
-                <SpecializationCard specializations={trainer.specialization} />
-              </div>
-
-              <InfoField
-                label="Address"
-                value={trainer.address}
-                icon={MapPin}
-                full
-              />
-            </div>
+            <DutyCard duty={dutyTime} />
           </div>
-        </main>
-      </div>
+
+          <div className="rounded-xl border border-orange-500/20 bg-black p-4 sm:p-6 space-y-6">
+            <div>
+              <h2 className="text-xl font-bold">Personal Information</h2>
+              <p className="text-sm text-zinc-400">Trainer details</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InfoField label="Full Name" value={trainer.name} icon={Mail} />
+              <InfoField label="Email" value={trainer.email} icon={Mail} />
+              <InfoField label="Phone" value={trainer.phone} icon={Phone} />
+              <SpecializationCard specializations={trainer.specialization} />
+            </div>
+
+            <InfoField
+              label="Address"
+              value={trainer.address}
+              icon={MapPin}
+              full
+            />
+          </div>
+        </div>
+      </TopBar>
     </div>
   );
 }

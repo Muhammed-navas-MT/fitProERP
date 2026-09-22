@@ -50,24 +50,24 @@ export default function DashboardPage() {
       <Sidebar />
 
       <TopBar title="Dashboard" subtitle="Welcome back!" showUserMenu={true}>
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {statsData.map((stat) => (
-            <StatsCard
-              key={stat.title}
-              title={stat.title}
-              total={stat.total}
-              active={stat.active}
-              icon={stat.icon}
-            />
-          ))}
-        </div>
+        <div className="space-y-5">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
+            {statsData.map((stat) => (
+              <StatsCard
+                key={stat.title}
+                title={stat.title}
+                total={stat.total}
+                active={stat.active}
+                icon={stat.icon}
+              />
+            ))}
+          </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <MembershipChart data={dashboardData?.memberShipGrowth ?? []} />
-          <RevenueChart data={dashboardData?.revenueGrowth ?? []} />
-        </div>
+          <div className="grid gap-4 sm:gap-5 xl:grid-cols-2">
+            <MembershipChart data={dashboardData?.memberShipGrowth ?? []} />
+            <RevenueChart data={dashboardData?.revenueGrowth ?? []} />
+          </div>
 
-        <div className="mt-6">
           <RecentActivity activities={dashboardData?.recentActivities ?? []} />
         </div>
       </TopBar>

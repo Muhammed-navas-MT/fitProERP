@@ -137,7 +137,7 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
   if (loadingMember || loadingTrainers || loadingBranches) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100%-2rem)] bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-orange-400">Update Member</DialogTitle>
           </DialogHeader>
@@ -149,7 +149,7 @@ export function UpdateMemberModal({ open, onOpenChange, memberId }: UpdateMember
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100%-2rem)] bg-[#0f0f0f] border-[#2a2a2a] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-orange-400">Update Member</DialogTitle>
         </DialogHeader>

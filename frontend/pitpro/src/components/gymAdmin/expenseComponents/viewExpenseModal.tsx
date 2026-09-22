@@ -99,7 +99,7 @@ export function ViewExpenseModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg border border-zinc-800 bg-zinc-900 p-0">
+      <DialogContent className="w-[calc(100%-2rem)] max-w-lg max-h-[90vh] overflow-y-auto border border-zinc-800 bg-zinc-900 p-0">
         {/* Header */}
         <div className="px-5 pt-5 pb-3">
           <DialogHeader>

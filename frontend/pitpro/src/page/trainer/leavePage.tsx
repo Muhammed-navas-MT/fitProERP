@@ -17,6 +17,7 @@ import { ViewLeaveModal } from "@/components/trainer/leaveComponents/veiwLeaveMo
 import UpdateLeaveModal from "@/components/trainer/leaveComponents/updateLeaveModal";
 import { Header } from "@/components/trainer/trainerHeader";
 import { Sidebar } from "@/components/trainer/trainerSidebar";
+import { TrainerMobileNav } from "@/components/trainer/trainerMobileNav";
 
 import {
   TrainerReusableTable,
@@ -67,16 +68,16 @@ function SummaryCard({
   valueClassName = "text-white",
 }: SummaryCardProps) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-5 shadow-sm">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-zinc-400">{title}</p>
-          <h3 className={`mt-3 text-3xl font-bold ${valueClassName}`}>
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4 sm:p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-zinc-400 truncate">{title}</p>
+          <h3 className={`mt-2 sm:mt-3 text-2xl sm:text-3xl font-bold ${valueClassName}`}>
             {value}
           </h3>
         </div>
 
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-purple-400">
+        <div className="shrink-0 rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-purple-400">
           {icon}
         </div>
       </div>
@@ -201,7 +202,7 @@ export default function LeavesPage() {
           avatar={avatarText}
         />
 
-        <div className="p-4 lg:p-8">
+        <div className="p-3 sm:p-4 lg:p-8 pb-24 lg:pb-8">
           <div className="mx-auto max-w-7xl space-y-6">
             <MovingWarningBanner show={isExided} message={exidedmessage} />
 
@@ -230,17 +231,19 @@ export default function LeavesPage() {
             </div>
 
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-              <div className="flex flex-1 gap-3">
-                <SearchInput
-                  value={search}
-                  onChange={setSearch}
-                  placeholder="Search by reason..."
-                />
+              <div className="flex flex-col sm:flex-row flex-1 gap-3">
+                <div className="flex-1 min-w-0">
+                  <SearchInput
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="Search by reason..."
+                  />
+                </div>
 
                 <select
                   value={status ?? ""}
                   onChange={(e) => setStatus(e.target.value || undefined)}
-                  className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white"
+                  className="w-full sm:w-auto rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white"
                 >
                   <option value="">All Status</option>
                   <option value="PENDING">Pending</option>
@@ -251,7 +254,7 @@ export default function LeavesPage() {
 
               <button
                 onClick={() => setAddOpen(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 sm:w-auto"
               >
                 <Plus className="h-4 w-4" />
                 Apply Leave
@@ -272,7 +275,7 @@ export default function LeavesPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between text-sm text-zinc-400">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-zinc-400">
               <p>
                 Showing {(page - 1) * limit + 1} - {Math.min(page * limit, total)}{" "}
                 of {total}
@@ -317,6 +320,8 @@ export default function LeavesPage() {
           </div>
         </div>
       </div>
+
+      <TrainerMobileNav />
     </div>
   );
 }

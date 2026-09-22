@@ -4,7 +4,7 @@ import { TopBar } from "@/components/gymAdmin/topbar";
 
 export default function SubscriptionPage() {
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen bg-zinc-950">
       {/* Sidebar (hidden on mobile if your sidebar supports it) */}
       <Sidebar />
 

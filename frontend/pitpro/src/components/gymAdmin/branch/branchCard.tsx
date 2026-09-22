@@ -1,4 +1,4 @@
-import { Edit2, Lock, Unlock, MoreVertical } from "lucide-react";
+import { Edit2, Lock, Unlock, MoreVertical, Building2, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { StatusBadge } from "@/components/gymAdmin/ui/StatusBadge";
 
 interface BranchCardProps {
   id: string;
@@ -35,59 +36,43 @@ export function BranchCard({
   onToggleUnBlock,
 }: BranchCardProps) {
   const isBranchActive = isActive === "ACTIVE";
-  console.log(id,"adsfasdfsadfasdfasdfas")
+
   return (
-    <div className="rounded-lg border border-orange-500/30 bg-black p-6">
-      <div className="mb-4 flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <div className="rounded-full bg-orange-500/20 p-2">
-            <svg
-              className="h-5 w-5 text-orange-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M4.05 3H3a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2h-1.05A2 2 0 0016 1H4a2 2 0 00-2 2zm12 9V5H4v7h12z"
-                clipRule="evenodd"
-              />
-            </svg>
+    <div className="flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 shadow-sm transition-colors hover:border-orange-500/30">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-orange-500">
+            <Building2 className="h-5 w-5" />
           </div>
 
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-white">{name}</h3>
-
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  isBranchActive
-                    ? "bg-green-500/10 text-green-500"
-                    : "bg-red-500/10 text-red-500"
-                }`}
-              >
-                {isBranchActive ? "ACTIVE" : "INACTIVE"}
-              </span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="truncate font-semibold text-white">{name}</h3>
+              <StatusBadge status={isBranchActive ? "Active" : "Inactive"} />
             </div>
 
-            <p className="text-xs text-zinc-400">{address}</p>
-            <p className="mt-1 text-xs text-zinc-400">{phone}</p>
+            <p className="mt-1 flex items-start gap-1.5 text-xs text-zinc-400">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span className="line-clamp-2">{address}</span>
+            </p>
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-zinc-400">
+              <Phone className="h-3.5 w-3.5 shrink-0" />
+              {phone}
+            </p>
           </div>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="text-zinc-400 hover:text-white">
+            <button className="rounded-md p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
               <MoreVertical className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent
-            align="end"
-            className="bg-zinc-900 border-zinc-800"
-          >
+          <DropdownMenuContent align="end" className="border-zinc-800 bg-zinc-900">
             <DropdownMenuItem
               onClick={() => onEdit(id)}
-              className="text-white cursor-pointer hover:bg-zinc-800"
+              className="cursor-pointer text-white hover:bg-zinc-800"
             >
               <Edit2 className="mr-2 h-4 w-4" />
               Edit
@@ -96,7 +81,7 @@ export function BranchCard({
               onClick={() =>
                 isBranchActive ? onToggleBlock(id) : onToggleUnBlock(id)
               }
-              className="text-white cursor-pointer hover:bg-zinc-800"
+              className="cursor-pointer text-white hover:bg-zinc-800"
             >
               {isBranchActive ? (
                 <>
@@ -114,35 +99,29 @@ export function BranchCard({
         </DropdownMenu>
       </div>
 
-      <div className="border-t border-zinc-800 pt-4">
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-lg font-bold text-white">{members}</p>
-            <p className="text-xs text-zinc-400">Members</p>
-          </div>
-          <div>
-            <p className="text-lg font-bold text-white">{staff}</p>
-            <p className="text-xs text-zinc-400">Staff</p>
-          </div>
-          <div>
-            <p className="text-lg font-bold text-white">
-              {revenue.toLocaleString()}
-            </p>
-            <p className="text-xs text-zinc-400">Revenue</p>
-          </div>
+      <div className="mt-4 grid grid-cols-3 divide-x divide-zinc-800 rounded-lg border border-zinc-800 bg-zinc-950/40 py-3 text-center">
+        <div>
+          <p className="text-lg font-bold text-white">{members}</p>
+          <p className="text-xs text-zinc-400">Members</p>
+        </div>
+        <div>
+          <p className="text-lg font-bold text-white">{staff}</p>
+          <p className="text-xs text-zinc-400">Staff</p>
+        </div>
+        <div>
+          <p className="text-lg font-bold text-white">{revenue.toLocaleString()}</p>
+          <p className="text-xs text-zinc-400">Revenue</p>
         </div>
       </div>
 
-      <div className="mt-4 flex gap-2">
-        <Button
-          onClick={() => onEdit(id)}
-          variant="outline"
-          className="flex-1 border-orange-500/30 text-orange-500 hover:bg-orange-500/10"
-        >
-          <Edit2 className="mr-2 h-4 w-4" />
-          Edit
-        </Button>
-      </div>
+      <Button
+        onClick={() => onEdit(id)}
+        variant="outline"
+        className="mt-4 w-full border-orange-500/30 bg-transparent text-orange-500 hover:bg-orange-500/10 hover:text-orange-400"
+      >
+        <Edit2 className="mr-2 h-4 w-4" />
+        Edit
+      </Button>
     </div>
   );
 }

@@ -80,20 +80,20 @@ export default function MembersList() {
   { label: "Assigned Members", value: `${assignedMember}`, color: "from-blue-500/20 to-purple-500/20" },
   { label: "Active Members", value: `${activeMember}`, color: "from-purple-500/20 to-pink-500/20" },
 ]}/>
-      <Card className="bg-[#0f0f0f] border-[#2a2a2a] p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <h2 className="text-xl font-semibold text-white">Members</h2>
+      <Card className="bg-[#0f0f0f] border-[#2a2a2a] p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-white">Members</h2>
 
           <Button
             onClick={() => setIsAddMemberOpen(true)}
-            className="bg-gradient-to-r from-purple-600 to-blue-600
+            className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600
                        hover:from-purple-700 hover:to-blue-700 text-white"
           >
             Add Member
           </Button>
         </div>
 
-        <div className="relative mb-6">
+        <div className="relative mb-4 sm:mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <Input
             placeholder="Search members by name or email..."
@@ -102,7 +102,7 @@ export default function MembersList() {
               setSearchInput(e.target.value);
               setPage(1);
             }}
-            className="pl-10 bg-[#1a1a1a] border-[#2a2a2a]
+            className="w-full pl-10 bg-[#1a1a1a] border-[#2a2a2a]
                        text-white placeholder:text-gray-500"
           />
         </div>
@@ -173,7 +173,7 @@ export default function MembersList() {
               Next
             </Button>
           </div>
-        )}``
+        )}
       </Card>
 
       <AddMemberModal

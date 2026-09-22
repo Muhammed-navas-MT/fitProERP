@@ -1,8 +1,10 @@
 import { Sidebar } from "@/components/gymAdmin/sidebar"
 import { TopBar } from "@/components/gymAdmin/topbar"
+import { BackButton } from "@/components/shared/backButton"
 import { useFindMember } from "@/hook/gymAdmin/memberHooks";
 import { Mail, Phone, MapPin, Heart, Weight, Ruler, Target, AlertCircle, Calendar, CreditCard } from "lucide-react"
 import { useParams } from "react-router-dom";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 import { MemberDetailSkeleton } from "./memberDetailSkeleton";
 
 export default function MemberDetailPage() {
@@ -44,30 +46,34 @@ export default function MemberDetailPage() {
     : 0
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       <Sidebar />
 
       <div className="flex w-full flex-col">
         <TopBar title={member.name} subtitle={`Member ID: ${member.id} • Status: ${member.status}`}>
           <div className="space-y-6">
+            <BackButton
+              fallback={`${FRONTEND_ROUTES.GYM_ADMIN.BASE}/${FRONTEND_ROUTES.GYM_ADMIN.LIST_MEMBERS}`}
+            />
+
             {/* Header Card with Profile */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6">
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 {/* Profile Section */}
-                <div className="flex items-center gap-6">
-                  <div className="h-32 w-32 overflow-hidden rounded-lg bg-gradient-to-br from-orange-500 to-orange-600">
+                <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:gap-6 sm:text-left">
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 sm:h-32 sm:w-32">
                     <img
                       src={member.profileImg || "/placeholder.svg"}
                       alt={member.name}
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <div>
-                      <h2 className="text-3xl font-bold text-white">{member.name}</h2>
+                  <div className="w-full min-w-0 space-y-3">
+                    <div className="min-w-0">
+                      <h2 className="truncate text-2xl font-bold text-white sm:text-3xl">{member.name}</h2>
                       <p className="text-sm text-zinc-400">{member.role}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-2 sm:justify-start">
                       <div className={`h-3 w-3 rounded-full ${isMembershipActive ? "bg-green-500" : "bg-red-500"}`} />
                       <span className={isMembershipActive ? "text-green-400" : "text-red-400"}>{member.status}</span>
                     </div>
@@ -165,7 +171,7 @@ export default function MemberDetailPage() {
             </div>
 
             {/* Health Details */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6">
               <h3 className="mb-4 text-lg font-semibold text-orange-500">Health Information</h3>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {/* Gender */}
@@ -256,21 +262,21 @@ export default function MemberDetailPage() {
             </div>
 
             {/* Progress Card */}
-            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 sm:p-6">
               <h3 className="mb-4 text-lg font-semibold text-orange-500">Weight Progress</h3>
-              <div className="flex items-center justify-between rounded-lg border border-zinc-700 bg-black/50 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-zinc-700 bg-black/50 p-4">
                 <div>
                   <p className="text-sm text-zinc-400">Current vs Target</p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-xl font-bold text-white sm:text-2xl">
                     {member.healthDetails.weight.value}{" "}
-                    <span className="text-lg text-zinc-400">
+                    <span className="text-base text-zinc-400 sm:text-lg">
                       / {member.healthDetails.targetWeight.value} {member.healthDetails.weight.unit}
                     </span>
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-zinc-400">Difference</p>
-                  <p className="text-2xl font-bold text-orange-400">
+                  <p className="text-xl font-bold text-orange-400 sm:text-2xl">
                     {Math.abs(member.healthDetails.weight.value - member.healthDetails.targetWeight.value)}{" "}
                     {member.healthDetails.weight.unit}
                   </p>

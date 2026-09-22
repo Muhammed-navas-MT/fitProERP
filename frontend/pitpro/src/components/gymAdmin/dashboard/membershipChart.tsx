@@ -1,5 +1,6 @@
 "use client";
 
+import { Users } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -21,34 +22,42 @@ interface MembershipChartProps {
 
 export function MembershipChart({ data }: MembershipChartProps) {
   return (
-    <div className="rounded-lg border border-orange-500/20 bg-black/40 p-6">
-      <div className="mb-4 flex items-center gap-2">
-        <svg
-          className="h-5 w-5 text-orange-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-          />
-        </svg>
-        <h3 className="text-lg font-semibold text-white">Membership Growth</h3>
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 shadow-sm sm:p-6">
+      <div className="mb-5 flex items-center gap-2.5">
+        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/10 text-orange-500">
+          <Users className="h-4 w-4" />
+        </span>
+        <h3 className="text-base font-semibold text-white">Membership Growth</h3>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-          <XAxis dataKey="month" stroke="#666" />
-          <YAxis stroke="#666" />
+      <ResponsiveContainer width="100%" height={280}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#27272a"
+            vertical={false}
+          />
+          <XAxis
+            dataKey="month"
+            stroke="#52525b"
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 12 }}
+          />
+          <YAxis
+            stroke="#52525b"
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 12 }}
+            width={48}
+            allowDecimals={false}
+          />
           <Tooltip
+            cursor={{ stroke: "#3f3f46" }}
             contentStyle={{
-              backgroundColor: "#000",
-              border: "1px solid #333",
-              borderRadius: "8px",
+              backgroundColor: "#09090b",
+              border: "1px solid #27272a",
+              borderRadius: "10px",
               color: "#fff",
             }}
           />
@@ -56,8 +65,10 @@ export function MembershipChart({ data }: MembershipChartProps) {
             type="monotone"
             dataKey="count"
             stroke="#f97316"
-            strokeWidth={3}
+            strokeWidth={2.5}
             name="Members"
+            dot={{ r: 3, fill: "#f97316", strokeWidth: 0 }}
+            activeDot={{ r: 5 }}
           />
         </LineChart>
       </ResponsiveContainer>

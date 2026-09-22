@@ -16,6 +16,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import {
   getBMICategoryBg,
   getBMICategoryColor,
@@ -123,7 +124,7 @@ export default function ProgressPage() {
           profileImg={profileImg}
         />
 
-        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 lg:p-8">
+        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 pb-24 md:pb-8 lg:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-bold text-orange-700">
@@ -456,7 +457,7 @@ export default function ProgressPage() {
                   <ProgressHistoryTable data={sortedData} />
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-sm text-zinc-400">
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-zinc-400">
                   <p>
                     Showing {(page - 1) * 5 + 1} - {Math.min(page * 5, total)}{" "}
                     of {total}
@@ -489,6 +490,8 @@ export default function ProgressPage() {
           )}
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

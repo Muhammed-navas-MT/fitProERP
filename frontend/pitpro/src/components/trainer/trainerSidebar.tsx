@@ -7,7 +7,6 @@ import {
   Users,
   Dumbbell,
   MessageSquare,
-  Bell,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,7 +21,7 @@ import { clearData } from "@/store/slice/authSlice";
 import { clearAuthContext } from "@/store/slice/authContextState";
 import { useEffect, useState } from "react";
 
-const mainMenuItems = [
+export const mainMenuItems = [
   {
     icon: LayoutDashboard,
     label: "Dashboard",
@@ -50,7 +49,7 @@ const mainMenuItems = [
   },
 ];
 
-const clientManagementItems = [
+export const clientManagementItems = [
   {
     icon: Users,
     label: "Members",
@@ -209,78 +208,6 @@ export function Sidebar() {
         </div>
       </aside>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#1f1f1f] bg-[#0f0f0f] px-4 py-2 lg:hidden">
-        <div className="flex items-center justify-around">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              navigate(
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`,
-              )
-            }
-            className={cn(
-              "h-auto flex-col py-2",
-              location.pathname ===
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.DASHBOARD}`
-                ? "text-white"
-                : "text-gray-400 hover:text-white",
-            )}
-          >
-            <LayoutDashboard className="h-5 w-5" />
-            <span className="mt-1 text-xs">Dashboard</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              navigate(
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`,
-              )
-            }
-            className={cn(
-              "h-auto flex-col py-2",
-              location.pathname ===
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.LIST_MEMBERS}`
-                ? "text-white"
-                : "text-gray-400 hover:text-white",
-            )}
-          >
-            <Users className="h-5 w-5" />
-            <span className="mt-1 text-xs">Members</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              navigate(
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.CHAT}`,
-              )
-            }
-            className={cn(
-              "h-auto flex-col py-2",
-              location.pathname ===
-                `${FRONTEND_ROUTES.TRAINER.BASE}/${FRONTEND_ROUTES.TRAINER.CHAT}`
-                ? "text-white"
-                : "text-gray-400 hover:text-white",
-            )}
-          >
-            <MessageSquare className="h-5 w-5" />
-            <span className="mt-1 text-xs">Chat</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-auto flex-col py-2 text-gray-400 hover:text-white"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="mt-1 text-xs">Alerts</span>
-          </Button>
-        </div>
-      </nav>
     </>
   );
 }

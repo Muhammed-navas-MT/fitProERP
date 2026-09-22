@@ -14,17 +14,17 @@ export function BranchProfitability({ branches }: BranchProfitabilityProps) {
         {branches.map((branch) => (
           <div
             key={branch.branchId}
-            className="flex items-center justify-between"
+            className="flex items-center justify-between gap-3"
           >
-            <div>
-              <p className="text-sm font-medium text-zinc-100">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-zinc-100 truncate">
                 {branch.branchName}
               </p>
               <p className="text-xs text-zinc-500">
                 Profit Margin: {branch.profitMargin}%
               </p>
             </div>
-            <p className="text-sm font-semibold text-emerald-400">
+            <p className="text-sm font-semibold text-emerald-400 shrink-0">
               ₹{branch.netProfit.toLocaleString("en-IN")}
             </p>
           </div>

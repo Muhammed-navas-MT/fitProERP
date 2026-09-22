@@ -5,7 +5,12 @@ import { SearchFilter } from "@/components/gymAdmin/searchFilterBar";
 import { ViewExpenseModal } from "@/components/gymAdmin/expenseComponents/viewExpenseModal";
 import { AddExpenseModal } from "@/components/gymAdmin/expenseComponents/addExpenseModal";
 import { ExpenseStackedBarChart } from "@/components/gymAdmin/expenseComponents/expenseStackedBarChart";
-import { ReusableTable } from "@/components/shared/reusableTable";
+import {
+  AdminTable,
+  type AdminTableColumn,
+} from "@/components/gymAdmin/ui/AdminTable";
+import { Pagination } from "@/components/gymAdmin/ui/Pagination";
+import { StatusBadge } from "@/components/gymAdmin/ui/StatusBadge";
 import UpdateExpenseModal from "@/components/gymAdmin/expenseComponents/updateExpenseModal";
 import ExpensePageSkeleton from "@/components/gymAdmin/expenseComponents/ExpensePageSkeleton";
 
@@ -72,12 +77,12 @@ export default function ExpensePage() {
     setViewOpen(true);
   };
 
-  const columns = [
+  const columns: AdminTableColumn<IExpenseItem>[] = [
     {
       header: "Branch",
-      render: (row: IExpenseItem) => (
+      render: (row) => (
         <div>
-          <p className="font-medium">{row.branch.branchName}</p>
+          <p className="font-medium text-white">{row.branch.branchName}</p>
           <p className="text-xs text-zinc-400">
             {row.branch.city} • {row.branch.pincode}
           </p>
@@ -86,45 +91,47 @@ export default function ExpensePage() {
     },
     {
       header: "Type",
-      render: (row: IExpenseItem) => row.expenseType,
+      render: (row) => row.expenseType,
     },
     {
       header: "Amount",
-      render: (row: IExpenseItem) => (
-        <span className="text-red-400 font-semibold">
+      render: (row) => (
+        <span className="font-semibold text-red-400">
           ₹{row.amount.toLocaleString()}
         </span>
       ),
     },
     {
       header: "Payment",
-      render: (row: IExpenseItem) => row.paymentMethod,
+      render: (row) => row.paymentMethod,
     },
     {
       header: "Status",
-      render: (row: IExpenseItem) => (
-        <span className="text-sm">{row.status}</span>
-      ),
+      render: (row) => <StatusBadge status={row.status} />,
     },
     {
       header: "Date",
-      render: (row: IExpenseItem) =>
-        new Date(row.paymentDate).toLocaleDateString(),
+      render: (row) => (
+        <span className="text-zinc-400">
+          {new Date(row.paymentDate).toLocaleDateString()}
+        </span>
+      ),
     },
     {
       header: "Action",
-      render: (row: IExpenseItem) => (
-        <div className="flex gap-3">
+      className: "text-center",
+      render: (row) => (
+        <div className="flex justify-center gap-2 text-sm font-medium">
           <button
             onClick={() => handleView(row.id)}
-            className="text-blue-400 hover:underline"
+            className="rounded-md px-2 py-1 text-blue-400 transition-colors hover:bg-blue-500/10"
           >
             View
           </button>
 
           <button
             onClick={() => handleEdit(row.id)}
-            className="text-orange-400 hover:underline"
+            className="rounded-md px-2 py-1 text-orange-400 transition-colors hover:bg-orange-500/10"
           >
             Edit
           </button>
@@ -164,79 +171,56 @@ export default function ExpensePage() {
 
       <TopBar title="Expenses" subtitle="Track gym expenses">
 
-        <SearchFilter
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          actionLabel="Add Expense"
-          onActionClick={() => setAddOpen(true)}
-        />
+        <div className="space-y-5">
+          <SearchFilter
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            actionLabel="Add Expense"
+            onActionClick={() => setAddOpen(true)}
+          />
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
+              <p className="text-sm text-zinc-400">Total Expenses</p>
+              <h2 className="mt-2 text-2xl font-bold text-red-400">
+                ₹{grandTotal.toLocaleString()}
+              </h2>
+            </div>
 
-          <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
-            <p className="text-sm text-zinc-400">Total Expenses</p>
-            <h2 className="text-2xl font-bold mt-2 text-red-400">
-              ₹{grandTotal.toLocaleString()}
-            </h2>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
+              <p className="text-sm text-zinc-400">This Month</p>
+              <h2 className="mt-2 text-2xl font-bold text-orange-400">
+                ₹{thisMonthTotalExpense.toLocaleString()}
+              </h2>
+            </div>
+
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
+              <p className="text-sm text-zinc-400">Categories</p>
+              <h2 className="mt-2 text-2xl font-bold text-blue-400">7</h2>
+            </div>
           </div>
 
-          <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
-            <p className="text-sm text-zinc-400">This Month</p>
-            <h2 className="text-2xl font-bold mt-2 text-orange-400">
-              ₹{thisMonthTotalExpense.toLocaleString()}
-            </h2>
-          </div>
-
-          <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
-            <p className="text-sm text-zinc-400">Categories</p>
-            <h2 className="text-2xl font-bold mt-2 text-blue-400">7</h2>
-          </div>
-
-        </div>
-
-        {/* Table */}
-        <div className="mt-8">
-
-          <ReusableTable
+          {/* Table */}
+          <AdminTable
             title="Expense List"
             columns={columns}
             data={expenseData}
+            rowKey={(row: IExpenseItem) => row.id}
+            emptyText="No expenses found"
+            footer={
+              totalPages > 1 ? (
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                  summary={`Page ${page} of ${totalPages}`}
+                />
+              ) : undefined
+            }
           />
 
-          <div className="flex justify-between items-center mt-4">
-
-            <p className="text-sm text-zinc-400">
-              Page {page} of {totalPages}
-            </p>
-
-            <div className="flex gap-2">
-
-              <button
-                disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="px-3 py-1 bg-zinc-800 rounded disabled:opacity-40"
-              >
-                Prev
-              </button>
-
-              <button
-                disabled={page === totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1 bg-zinc-800 rounded disabled:opacity-40"
-              >
-                Next
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Chart */}
-
-        <div className="grid gap-6 mt-8">
+          {/* Chart */}
           <ExpenseStackedBarChart data={expenseSummary} />
         </div>
 

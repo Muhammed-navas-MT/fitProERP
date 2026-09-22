@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -9,8 +9,6 @@ import {
   BarChart3,
   CreditCard,
   LogOut,
-  Menu,
-  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
@@ -79,8 +77,6 @@ export function Sidebar() {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
 
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [logoError, setLogoError] = useState(false);
 
   const { mutate: logout, isPending } = useMemberLogout();
@@ -88,13 +84,6 @@ export function Sidebar() {
 
   const gymName = gymDetail?.data?.gymName || "Gym";
   const gymLogo = gymDetail?.data?.logo || "";
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   useEffect(() => {
     setLogoError(false);
@@ -165,7 +154,6 @@ export function Sidebar() {
             <Link
               key={item.href}
               to={item.href}
-              onClick={() => isMobile && setIsMobileOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
                 isActive
@@ -196,36 +184,8 @@ export function Sidebar() {
   );
 
   return (
-    <>
-      {isMobile && (
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="fixed top-4 left-4 z-40 rounded-lg border border-gray-800 bg-[#0a0a0a] p-2 md:hidden"
-        >
-          {isMobileOpen ? (
-            <X size={24} className="text-white" />
-          ) : (
-            <Menu size={24} className="text-white" />
-          )}
-        </button>
-      )}
-
-      <aside className="fixed left-0 top-0 hidden h-screen w-56 flex-col border-r border-gray-800 bg-[#000000] md:flex">
-        {sidebarContent}
-      </aside>
-
-      {isMobile && isMobileOpen && (
-        <aside className="fixed inset-y-0 left-0 z-30 flex h-screen w-56 flex-col border-r border-gray-800 bg-[#000000] md:hidden">
-          {sidebarContent}
-        </aside>
-      )}
-
-      {isMobile && isMobileOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black/60 md:hidden"
-          onClick={() => setIsMobileOpen(false)}
-        />
-      )}
-    </>
+    <aside className="fixed left-0 top-0 hidden h-screen w-56 flex-col border-r border-gray-800 bg-[#000000] md:flex">
+      {sidebarContent}
+    </aside>
   );
 }

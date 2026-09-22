@@ -397,7 +397,7 @@ export default function SalaryManagement() {
             </div>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-orange-500/20 bg-black/40 p-4 lg:p-6">
-              <table className="w-full border-collapse text-sm">
+              <table className="w-full min-w-[720px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 text-left text-zinc-400">
                     <th className="px-2 py-3">Trainer</th>
@@ -499,7 +499,7 @@ export default function SalaryManagement() {
               </table>
 
               {totalPages > 1 && (
-                <div className="mt-6 flex justify-center gap-2">
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -559,7 +559,7 @@ export default function SalaryManagement() {
       />
 
       <AlertDialog open={isPayDialogOpen} onOpenChange={setIsPayDialogOpen}>
-        <AlertDialogContent className="border border-zinc-800 bg-[#0a0a0a]">
+        <AlertDialogContent className="w-[calc(100%-2rem)] border border-zinc-800 bg-[#0a0a0a]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-white">
               Confirm Payment

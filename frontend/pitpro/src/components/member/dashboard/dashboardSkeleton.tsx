@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { rootstate } from "@/store/store";
 import { useSelector } from "react-redux";
@@ -32,7 +33,7 @@ export default function MemberDashboardSkeleton() {
           profileImg={profileImg}
         />
 
-        <main className="space-y-6 p-4 lg:p-8">
+        <main className="space-y-6 p-4 pb-24 md:pb-6 lg:p-8">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[1, 2, 3].map((item) => (
               <Card
@@ -169,6 +170,8 @@ export default function MemberDashboardSkeleton() {
           </Card>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

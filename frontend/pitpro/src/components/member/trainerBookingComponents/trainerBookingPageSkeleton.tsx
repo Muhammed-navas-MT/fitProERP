@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface Props {
@@ -20,7 +21,7 @@ export function TrainerBookingPageSkeleton({ avatar = "MB", profileImg }: Props)
           subtitle="Book your personal training session easily."
         />
 
-        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 lg:p-8">
+        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 pb-24 md:pb-6 lg:p-8">
           {/* Header */}
           <div className="space-y-2">
             <div className="h-8 w-56 animate-pulse rounded bg-zinc-800" />
@@ -147,6 +148,8 @@ export function TrainerBookingPageSkeleton({ avatar = "MB", profileImg }: Props)
           </div>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

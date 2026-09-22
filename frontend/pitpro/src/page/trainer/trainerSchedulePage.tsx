@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Sidebar } from "@/components/trainer/trainerSidebar";
 import { Header } from "@/components/trainer/trainerHeader";
+import { TrainerMobileNav } from "@/components/trainer/trainerMobileNav";
 import {
   Clock,
   Settings2,
@@ -140,7 +141,7 @@ export default function TrainerSchedulePage() {
     <div className="flex min-h-screen bg-[#0f0f0f] text-white">
       <Sidebar />
 
-      <div className="lg:pl-[220px] w-full">
+      <div className="flex-1 min-w-0 lg:pl-[220px]">
         <Header
           title="Schedule"
           subtitle="Manage training sessions and availability"
@@ -148,11 +149,11 @@ export default function TrainerSchedulePage() {
         />
 
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-6 lg:p-7">
-            <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-7 pb-24 lg:pb-7">
+            <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-3xl font-bold text-purple-400 mb-2">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-purple-400 mb-2">
                     Overview
                   </h2>
                   <p className="text-sm text-gray-400">
@@ -160,7 +161,7 @@ export default function TrainerSchedulePage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <Button
                     variant="outline"
                     onClick={() => setIsViewOpen(true)}
@@ -180,7 +181,7 @@ export default function TrainerSchedulePage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 space-y-6">
                   {/* Upcoming Sessions */}
                   <div className="space-y-4">
@@ -247,10 +248,10 @@ export default function TrainerSchedulePage() {
                         sessions.map((session) => (
                           <div
                             key={session.id}
-                            className="group flex items-center justify-between p-4 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] hover:border-purple-500/30 transition-all"
+                            className="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] hover:border-purple-500/30 transition-all"
                           >
-                            <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 overflow-hidden">
+                            <div className="flex items-center gap-4 min-w-0">
+                              <div className="w-12 h-12 shrink-0 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20 overflow-hidden">
                                 {session.memberDetail.profileImg ? (
                                   <img
                                     src={session.memberDetail.profileImg}
@@ -262,8 +263,8 @@ export default function TrainerSchedulePage() {
                                 )}
                               </div>
 
-                              <div>
-                                <h4 className="font-medium text-white">
+                              <div className="min-w-0">
+                                <h4 className="font-medium text-white truncate">
                                   {session.memberDetail.name}
                                 </h4>
 
@@ -283,7 +284,7 @@ export default function TrainerSchedulePage() {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-4 relative">
+                            <div className="flex items-center gap-4 relative self-end sm:self-auto">
                               <span
                                 className={`text-xs px-2 py-1 rounded-full border ${getStatusClass(
                                   session.status,
@@ -384,8 +385,8 @@ export default function TrainerSchedulePage() {
                     )}
                   </section>
                   {/* Available Slots */}
-                  <section className="rounded-3xl border border-purple-500/10 bg-[#1a1a1a] p-5">
-                    <div className="mb-5 flex items-center justify-between">
+                  <section className="rounded-3xl border border-purple-500/10 bg-[#1a1a1a] p-3 sm:p-5">
+                    <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-purple-400" />
                         <h3 className="text-lg font-semibold text-purple-300">
@@ -475,6 +476,8 @@ export default function TrainerSchedulePage() {
           </div>
         </main>
       </div>
+
+      <TrainerMobileNav />
 
       <CreateSlotRuleModal
         isOpen={isModalOpen}

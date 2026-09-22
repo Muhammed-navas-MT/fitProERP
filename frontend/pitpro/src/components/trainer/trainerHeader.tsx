@@ -1,4 +1,4 @@
-import { Bell, Menu } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -131,23 +131,15 @@ export function Header({ avatar, title, subtitle }: HeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-[#1f1f1f] bg-[#0f0f0f] px-4 lg:px-6">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden text-gray-400 hover:text-white"
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
-      <div className="flex flex-col">
-        <h1 className="text-sm font-semibold text-white">{title}</h1>
-        <p className="text-xs text-gray-400">{subtitle}</p>
+    <header className="sticky top-0 z-40 flex h-14 sm:h-16 items-center gap-2 sm:gap-4 border-b border-[#1f1f1f] bg-[#0f0f0f] px-3 sm:px-4 lg:px-6">
+      <div className="flex flex-col min-w-0">
+        <h1 className="text-sm font-semibold text-white truncate">{title}</h1>
+        <p className="text-[11px] sm:text-xs text-gray-400 truncate">{subtitle}</p>
       </div>
 
       <div className="flex-1" />
 
-      <div ref={wrapperRef} className="relative">
+      <div ref={wrapperRef} className="relative shrink-0">
         <Button
           variant="ghost"
           size="icon"
@@ -169,7 +161,7 @@ export function Header({ avatar, title, subtitle }: HeaderProps) {
         />
       </div>
 
-      <Avatar className="h-9 w-9">
+      <Avatar className="h-8 w-8 sm:h-9 sm:w-9 shrink-0">
         <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white">
           {avatar}
         </AvatarFallback>

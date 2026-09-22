@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/trainer/trainerSidebar";
 import { Header } from "../trainerHeader";
+import { TrainerMobileNav } from "../trainerMobileNav";
 import { useSelector } from "react-redux";
 import { rootstate } from "@/store/store";
 
@@ -28,26 +29,26 @@ export default function TrainerLeavePageSkeleton() {
                 />
 
         {/* Animated Content */}
-        <div className="p-4 lg:p-8 animate-pulse">
+        <div className="p-3 sm:p-4 lg:p-8 pb-24 lg:pb-8 animate-pulse">
           <div className="max-w-7xl mx-auto space-y-6">
 
             {/* Filters Skeleton */}
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
 
-              <div className="flex-1 flex gap-3">
+              <div className="flex-1 flex flex-col sm:flex-row gap-3">
                 <div className="h-10 w-full bg-zinc-800 rounded-lg"></div>
-                <div className="h-10 w-40 bg-zinc-800 rounded-lg"></div>
+                <div className="h-10 w-full sm:w-40 bg-zinc-800 rounded-lg"></div>
               </div>
 
-              <div className="h-10 w-36 bg-zinc-800 rounded-lg"></div>
+              <div className="h-10 w-full lg:w-36 bg-zinc-800 rounded-lg"></div>
 
             </div>
 
             {/* Table Skeleton */}
-            <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+            <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-x-auto">
 
               {/* Table Header */}
-              <div className="grid grid-cols-7 gap-4 p-4 border-b border-zinc-800">
+              <div className="grid min-w-[640px] grid-cols-7 gap-4 p-4 border-b border-zinc-800">
                 {Array.from({ length: 7 }).map((_, i) => (
                   <div key={i} className="h-4 bg-zinc-800 rounded"></div>
                 ))}
@@ -57,7 +58,7 @@ export default function TrainerLeavePageSkeleton() {
               {Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-7 gap-4 p-4 border-b border-zinc-800"
+                  className="grid min-w-[640px] grid-cols-7 gap-4 p-4 border-b border-zinc-800"
                 >
                   {Array.from({ length: 7 }).map((_, j) => (
                     <div key={j} className="h-4 bg-zinc-800 rounded"></div>
@@ -67,7 +68,7 @@ export default function TrainerLeavePageSkeleton() {
             </div>
 
             {/* Pagination Skeleton */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="h-4 w-40 bg-zinc-800 rounded"></div>
 
               <div className="flex gap-2">
@@ -81,6 +82,8 @@ export default function TrainerLeavePageSkeleton() {
         </div>
 
       </div>
+
+      <TrainerMobileNav />
     </div>
   );
 }

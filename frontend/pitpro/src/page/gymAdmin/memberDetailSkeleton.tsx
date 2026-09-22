@@ -2,10 +2,10 @@ import { Sidebar } from "@/components/gymAdmin/sidebar"
 
 export function MemberDetailSkeleton() {
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       <Sidebar />
 
-      <div className="flex w-full flex-col p-6 space-y-6">
+      <div className="flex w-full flex-col space-y-6 p-4 lg:ml-52 lg:p-6">
         {/* Header */}
         <div className="h-10 w-1/3 rounded bg-zinc-800 animate-pulse" />
 
