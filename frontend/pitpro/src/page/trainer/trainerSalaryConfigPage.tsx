@@ -17,6 +17,7 @@ import { toast } from "sonner";
 
 import { Sidebar } from "@/components/trainer/trainerSidebar";
 import { Header } from "@/components/trainer/trainerHeader";
+import { TrainerMobileNav } from "@/components/trainer/trainerMobileNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { rootstate } from "@/store/store";
@@ -255,7 +256,7 @@ export default function TrainerSalaryConfigPage() {
           avatar={avatarText}
         />
 
-        <main className="p-4 pb-20 lg:p-6 lg:pb-6">
+        <main className="p-3 sm:p-4 pb-24 lg:p-6 lg:pb-6">
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
             <div className="space-y-6 xl:col-span-2">
               <div className="rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] p-6">
@@ -367,9 +368,9 @@ export default function TrainerSalaryConfigPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] p-6">
+              <div className="rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] p-4 sm:p-6">
                 <div className="mb-6 flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/10">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
                     <IndianRupee className="h-5 w-5 text-emerald-400" />
                   </div>
                   <div>
@@ -382,8 +383,88 @@ export default function TrainerSalaryConfigPage() {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[760px] border-collapse text-sm">
+                {/* Mobile: card list */}
+                <div className="space-y-3 md:hidden">
+                  {isSalaryHistoryLoading ? (
+                    <div className="py-8 text-center text-gray-400">
+                      Loading salary history...
+                    </div>
+                  ) : salaryHistory.length > 0 ? (
+                    salaryHistory.map((item) => (
+                      <div
+                        key={item.id}
+                        className="rounded-xl border border-[#222222] bg-[#141414] p-4"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium text-white">
+                            {item.salaryMonthLabel}
+                          </span>
+                          {renderPaymentStatus(item.paymentStatus)}
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <p className="text-xs text-gray-500">Gross</p>
+                            <p className="text-gray-300">
+                              ₹{item.grossSalary.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Deduction</p>
+                            <p className="text-red-400">
+                              -₹{item.totalDeduction.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Net Salary</p>
+                            <p className="font-semibold text-emerald-400">
+                              ₹{item.netSalary.toLocaleString("en-IN")}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Paid Date</p>
+                            <p className="text-gray-400">
+                              {item.paidAt
+                                ? new Date(item.paidAt).toLocaleDateString(
+                                    "en-IN",
+                                    {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    },
+                                  )
+                                : "—"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex items-center justify-between gap-2">
+                          <span className="text-xs text-gray-500 capitalize">
+                            {item.paymentMethod.toLowerCase().replace(/_/g, " ")}
+                          </span>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleViewSalary(item.id)}
+                            className="border-[#2a2a2a] bg-transparent text-white hover:bg-[#222222]"
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-8 text-center text-gray-400">
+                      No salary history found.
+                    </div>
+                  )}
+                </div>
+
+                {/* Desktop / tablet: table */}
+                <div className="hidden overflow-x-auto md:block">
+                  <table className="w-full min-w-[680px] border-collapse text-sm">
                     <thead>
                       <tr className="border-b border-[#2a2a2a] text-left text-gray-400">
                         <th className="px-3 py-3">Month</th>
@@ -574,6 +655,8 @@ export default function TrainerSalaryConfigPage() {
           </div>
         </main>
       </div>
+
+      <TrainerMobileNav />
 
       <TrainerSalaryDetailModal
         open={isSalaryDetailOpen}

@@ -51,9 +51,9 @@ export function MemberCard({
   };
 
   return (
-    <div className="flex items-center gap-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4 hover:border-purple-500/50 transition-colors">
+    <div className="flex items-center gap-3 sm:gap-4 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-3 sm:p-4 hover:border-purple-500/50 transition-colors">
       {/* Avatar */}
-      <Avatar className="h-12 w-12 bg-gradient-to-br from-purple-500 to-blue-500">
+      <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 bg-gradient-to-br from-purple-500 to-blue-500">
         {isValidImageUrl(member.profileImg) ? (
           <AvatarImage src={member.profileImg} alt={member.name} />
         ) : (

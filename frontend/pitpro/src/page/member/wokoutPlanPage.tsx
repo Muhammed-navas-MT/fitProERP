@@ -5,6 +5,7 @@ import { DaySelectorCard } from "@/components/member/workoutPlanCompoents/daySel
 import { WorkoutDetail } from "@/components/member/workoutPlanCompoents/workoutDetail";
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import {
   useCreateWorkoutPlan,
   useListWorkout,
@@ -60,16 +61,37 @@ export default function WorkoutPage() {
             subtitle="Ready to crush your fitness goals today."
           />
 
-          <main className="p-6">
+          <main className="p-4 pb-24 sm:p-6 md:pb-6">
             <WorkoutPageSkeleton />
           </main>
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
 
   if (isError) {
-    return <div className="p-6 text-red-500">Failed to load workout plan</div>;
+    return (
+      <div className="flex min-h-screen bg-zinc-950 text-zinc-50">
+        <Sidebar />
+
+        <div className="flex-1 flex flex-col md:ml-56">
+          <Topbar
+            profileImg={profileImg}
+            avatar={avatarText}
+            title={`Welcome Back, "Member"!`}
+            subtitle="Ready to crush your fitness goals today."
+          />
+
+          <main className="flex-1 flex items-center justify-center p-6 text-red-500">
+            Failed to load workout plan
+          </main>
+        </div>
+
+        <MemberMobileNav />
+      </div>
+    );
   }
 
   if (!workout || !workout.days || workout.days.length === 0) {
@@ -85,10 +107,12 @@ export default function WorkoutPage() {
             subtitle="Ready to crush your fitness goals today."
           />
 
-          <main className="flex-1 flex items-center justify-center">
+          <main className="flex-1 flex items-center justify-center p-4 pb-24 md:pb-4">
             <EmptyWorkoutState onCreate={createWorkout} />
           </main>
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
@@ -109,7 +133,7 @@ export default function WorkoutPage() {
           subtitle="Ready to crush your fitness goals today."
         />
 
-        <main className="flex-1 overflow-y-auto p-6 space-y-8">
+        <main className="flex-1 overflow-y-auto p-4 pb-24 sm:p-6 md:pb-6 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-3xl text-orange-600 font-bold tracking-tight">
@@ -153,6 +177,8 @@ export default function WorkoutPage() {
           </AnimatePresence>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

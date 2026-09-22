@@ -89,7 +89,7 @@ export default function GymInfoPage() {
         <div className="mx-auto w-full max-w-7xl space-y-6 px-1">
           {/* Hero Section */}
           <div className="overflow-hidden rounded-3xl border border-orange-500/20 bg-gradient-to-br from-[#171717] via-black to-[#121212] shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
-            <div className="relative p-8 md:p-10">
+            <div className="relative p-5 sm:p-8 md:p-10">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.15),transparent_30%)]" />
 
               <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">

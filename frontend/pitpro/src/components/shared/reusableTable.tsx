@@ -25,11 +25,11 @@ export function ReusableTable<T>({
         <h2 className="mb-4 text-lg font-semibold text-white">{title}</h2>
       )}
 
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full min-w-[640px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-zinc-800 text-left text-zinc-400">
             {columns.map((col, index) => (
-              <th key={index} className="py-3 px-2">
+              <th key={index} className="whitespace-nowrap py-3 px-2">
                 {col.header}
               </th>
             ))}
@@ -55,7 +55,7 @@ export function ReusableTable<T>({
                 {columns.map((col, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`py-3 px-2 ${col.className ?? ""}`}
+                    className={`whitespace-nowrap py-3 px-2 ${col.className ?? ""}`}
                   >
                     {col.render(row)}
                   </td>

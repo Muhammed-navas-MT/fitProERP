@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/member/memberSidebar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { Topbar } from "@/components/member/topbar";
 import { useDebounce } from "@/hook/useDebounce";
 import { useGetAllPayments } from "@/hook/member/paymentHooks";
@@ -75,7 +76,7 @@ export default function PaymentsPage() {
           subtitle="Track all your membership payments"
         />
 
-        <main className="p-4 lg:p-8">
+        <main className="p-4 pb-24 md:pb-6 lg:p-8">
           {isLoading ? (
             <PaymentsPageSkeleton />
           ) : (
@@ -86,7 +87,7 @@ export default function PaymentsPage() {
                 total={total}
               />
 
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
                 <TableSearch
                   value={search}
                   onChange={(value) => {
@@ -108,6 +109,8 @@ export default function PaymentsPage() {
           )}
         </main>
       </div>
+
+      <MemberMobileNav />
 
       <PaymentDetailsModal
         payment={selectedPayment}

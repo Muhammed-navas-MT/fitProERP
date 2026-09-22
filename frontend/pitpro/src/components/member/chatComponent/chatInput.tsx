@@ -30,6 +30,7 @@ export default function ChatInput({
   onRemoveImage,
 }: ChatInputProps) {
   const [showEmoji, setShowEmoji] = useState(false);
+  const [emojiPickerWidth, setEmojiPickerWidth] = useState(320);
   const emojiRef = useRef<HTMLDivElement>(null);
 
   // CHANGED: file input ref
@@ -47,6 +48,17 @@ export default function ChatInput({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateEmojiPickerWidth = () => {
+      setEmojiPickerWidth(Math.min(320, window.innerWidth - 32));
+    };
+
+    updateEmojiPickerWidth();
+    window.addEventListener("resize", updateEmojiPickerWidth);
+
+    return () => window.removeEventListener("resize", updateEmojiPickerWidth);
   }, []);
 
   // CHANGED: allow send if either text or image exists
@@ -78,7 +90,7 @@ export default function ChatInput({
   };
 
   return (
-    <div className="border-t border-zinc-900 bg-zinc-950 px-4 py-3">
+    <div className="border-t border-zinc-900 bg-zinc-950 px-2 sm:px-4 py-2 sm:py-3">
       {imagePreviewUrl && (
         <div className="mb-3 rounded-2xl border border-zinc-800 bg-zinc-900 p-3">
           <div className="relative inline-block">
@@ -100,7 +112,7 @@ export default function ChatInput({
         </div>
       )}
 
-      <div className="relative flex items-center gap-3">
+      <div className="relative flex items-center gap-1.5 sm:gap-3">
         <div ref={emojiRef} className="relative">
           <button
             type="button"
@@ -113,14 +125,14 @@ export default function ChatInput({
           </button>
 
           {showEmoji && (
-            <div className="absolute bottom-14 left-0 z-50">
+            <div className="absolute bottom-14 left-0 z-50 max-w-[calc(100vw-2rem)]">
               <EmojiPicker
                 theme={Theme.DARK}
                 onEmojiClick={(emojiData) => {
                   setMessageText(messageText + emojiData.emoji);
                   setShowEmoji(false);
                 }}
-                width={300}
+                width={emojiPickerWidth}
                 height={380}
               />
             </div>
@@ -139,7 +151,7 @@ export default function ChatInput({
           type="button"
           onClick={handleOpenFilePicker}
           disabled={disabled || isSending}
-          className={`flex rounded-full p-2 transition-colors ${
+          className={`flex shrink-0 rounded-full p-2 transition-colors ${
             selectedImageFile
               ? "text-orange-500"
               : "text-zinc-400 hover:text-white"
@@ -160,14 +172,14 @@ export default function ChatInput({
             selectedImageFile ? "Add a caption (optional)..." : "Type a message..."
           }
           disabled={disabled}
-          className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+          className="min-w-0 flex-1 rounded-xl border border-zinc-800 bg-zinc-900 px-3 sm:px-4 py-2.5 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
         />
 
         <button
           type="button"
           onClick={onSend}
           disabled={isSendDisabled}
-          className={`flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors ${
+          className={`flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full text-white transition-colors ${
             isSendDisabled
               ? "cursor-not-allowed bg-zinc-800"
               : "bg-orange-600 hover:bg-orange-500"

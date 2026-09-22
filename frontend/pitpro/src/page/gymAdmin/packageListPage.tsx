@@ -7,6 +7,7 @@ import { AddPackageModal } from "@/components/gymAdmin/packageManagement/addPack
 import { UpdatePackageModal } from "@/components/gymAdmin/packageManagement/updatePackageModal";
 import { ViewPackageModal } from "@/components/gymAdmin/packageManagement/viewPackageModal";
 import { SearchFilter } from "@/components/gymAdmin/searchFilterBar";
+import { Pagination } from "@/components/gymAdmin/ui/Pagination";
 import {
   IListPackageItemType,
   ICreatePackageType,
@@ -131,57 +132,41 @@ export default function PackagePage() {
       <Sidebar />
 
       <TopBar title="Packages" subtitle="Manage your gym packages">
-        <SearchFilter
-          searchValue={searchQuery}
-          onSearchChange={setSearchQuery}
-          filterValue={branchFilter}
-          onFilterChange={setBranchFilter}
-          filterOptions={activeBranches.map(
-            (branch: { id: string; branchName: string; address: string }) => ({
-              label: `${branch.branchName} - ${branch.address}`,
-              value: branch.id,
-            })
+        <div className="space-y-5">
+          <SearchFilter
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            filterValue={branchFilter}
+            onFilterChange={setBranchFilter}
+            filterOptions={activeBranches.map(
+              (branch: { id: string; branchName: string; address: string }) => ({
+                label: `${branch.branchName} - ${branch.address}`,
+                value: branch.id,
+              })
+            )}
+            actionLabel="+ Add Package"
+            onActionClick={() => setAddOpen(true)}
+          />
+
+          <PackageTable
+            packages={filteredPackages}
+            onView={handleView}
+            onEdit={handleEdit}
+            onBlock={handleBlock}
+            onUnblock={handleUnblock}
+            isBlocking={blockPackage.isPending}
+            isUnblocking={unblockPackage.isPending}
+          />
+
+          {!isLoading && packagesData && (
+            <Pagination
+              page={packagesData.data.page}
+              totalPages={packagesData.data.totalPages}
+              onPageChange={handlePageChange}
+              summary={`Page ${packagesData.data.page} of ${packagesData.data.totalPages}`}
+            />
           )}
-          actionLabel="+ Add Package"
-          onActionClick={() => setAddOpen(true)}
-        />
-
-        <PackageTable
-          packages={filteredPackages}
-          onView={handleView}
-          onEdit={handleEdit}
-          onBlock={handleBlock}
-          onUnblock={handleUnblock}
-          isBlocking={blockPackage.isPending}
-          isUnblocking={unblockPackage.isPending}
-        />
-
-        {!isLoading && packagesData && (
-          <div className="mt-6 flex items-center justify-between text-sm text-zinc-400">
-            <span>
-              Page {packagesData.data.page} of {packagesData.data.totalPages}
-            </span>
-            <div className="flex gap-2">
-              <button
-                disabled={packagesData.data.page === 1}
-                onClick={() => handlePageChange(packagesData.data.page - 1)}
-                className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-              >
-                Previous
-              </button>
-
-              <button
-                disabled={
-                  packagesData.data.page === packagesData.data.totalPages
-                }
-                onClick={() => handlePageChange(packagesData.data.page + 1)}
-                className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
       </TopBar>
 
       <AddPackageModal

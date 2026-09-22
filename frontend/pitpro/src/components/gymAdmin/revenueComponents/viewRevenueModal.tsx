@@ -35,6 +35,8 @@ export function ViewRevenueModal({ open, onClose, revenue }: Props) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent
         className="
+        w-[calc(100%-2rem)]
+        max-h-[90vh] overflow-y-auto
         bg-zinc-950 border border-zinc-800
         text-white max-w-xl p-0
         data-[state=open]:animate-in
@@ -79,21 +81,21 @@ export function ViewRevenueModal({ open, onClose, revenue }: Props) {
           <div className="h-px bg-zinc-800" />
 
           {/* Member */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p className="text-zinc-500 text-xs">Member</p>
               <p>{revenue.memberName}</p>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-zinc-500 text-xs">Email</p>
-              <p>{revenue.email}</p>
+              <p className="break-all">{revenue.email}</p>
             </div>
           </div>
 
           <div className="h-px bg-zinc-800" />
 
           {/* Branch */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p className="text-zinc-500 text-xs">Branch</p>
               <p>{revenue.branchName}</p>
@@ -110,7 +112,7 @@ export function ViewRevenueModal({ open, onClose, revenue }: Props) {
           <div className="h-px bg-zinc-800" />
 
           {/* Payment */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <p className="text-zinc-500 text-xs">Source</p>
               <p>{revenue.source}</p>

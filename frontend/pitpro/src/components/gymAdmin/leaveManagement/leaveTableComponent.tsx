@@ -1,5 +1,9 @@
-import { ReusableTable, TableColumn } from "@/components/shared/reusableTable";
 import { format } from "date-fns";
+import {
+  AdminTable,
+  type AdminTableColumn,
+} from "@/components/gymAdmin/ui/AdminTable";
+import { StatusBadge } from "@/components/gymAdmin/ui/StatusBadge";
 
 enum LeaveStatus {
   PENDING = "PENDING",
@@ -41,7 +45,7 @@ export function LeaveTable({
   onApprove,
   onReject,
 }: Props) {
-  const columns: TableColumn<IListTrainerLeaveItem>[] = [
+  const columns: AdminTableColumn<IListTrainerLeaveItem>[] = [
     {
       header: "Trainer",
       render: (leave) => (
@@ -83,43 +87,26 @@ export function LeaveTable({
     {
       header: "Reason",
       render: (leave) => (
-        <p className="text-zinc-300 max-w-[200px] truncate">
-          {leave.reason}
-        </p>
+        <p className="max-w-[220px] truncate text-zinc-300">{leave.reason}</p>
       ),
     },
 
     {
       header: "Leave Count",
       render: (leave) => (
-        <p className="text-zinc-300 max-w-[200px] truncate">
-          {leave.leaveCount} Days
-        </p>
+        <span className="text-zinc-300">{leave.leaveCount} Days</span>
       ),
     },
 
     {
       header: "Status",
-      render: (leave) => (
-         <span
-                className={`px-3 py-1 rounded text-xs font-medium
-                ${
-                  leave.status === "APPROVED"
-                    ? "bg-green-600/20 text-green-400"
-                    : leave.status === "REJECTED"
-                    ? "bg-red-600/20 text-red-400"
-                    : "bg-yellow-500/20 text-yellow-400"
-                }`}
-              >
-                {leave.status}
-              </span>
-      ),
+      render: (leave) => <StatusBadge status={leave.status} />,
     },
 
     {
       header: "Applied Date",
       render: (leave) => (
-        <span>
+        <span className="text-zinc-400">
           {format(new Date(leave.appliedDate), "dd MMM yyyy")}
         </span>
       ),
@@ -129,10 +116,10 @@ export function LeaveTable({
     {
       header: "Actions",
       render: (leave) => (
-        <div className="flex gap-3 text-sm">
+        <div className="flex flex-wrap gap-2 text-sm font-medium">
           <button
             onClick={() => onView(leave.id)}
-            className="text-blue-400 hover:underline"
+            className="rounded-md px-2 py-1 text-blue-400 transition-colors hover:bg-blue-500/10"
           >
             View
           </button>
@@ -141,14 +128,14 @@ export function LeaveTable({
             <>
               <button
                 onClick={() => onApprove(leave.id)}
-                className="text-green-400 hover:underline"
+                className="rounded-md px-2 py-1 text-green-400 transition-colors hover:bg-green-500/10"
               >
                 Approve
               </button>
 
               <button
                 onClick={() => onReject(leave.id)}
-                className="text-red-400 hover:underline"
+                className="rounded-md px-2 py-1 text-red-400 transition-colors hover:bg-red-500/10"
               >
                 Reject
               </button>
@@ -160,10 +147,11 @@ export function LeaveTable({
   ];
 
   return (
-    <ReusableTable
+    <AdminTable
       title="Trainer Leaves"
       data={leaves}
       columns={columns}
+      rowKey={(leave) => leave.id}
       emptyText="No leave requests found"
     />
   );

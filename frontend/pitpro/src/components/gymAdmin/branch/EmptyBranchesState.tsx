@@ -1,34 +1,38 @@
-import { Button } from "@/components/ui/button"
+import { Building2, SearchX } from "lucide-react";
+import { EmptyState } from "@/components/gymAdmin/ui/EmptyState";
+import { adminPrimaryBtn } from "@/components/gymAdmin/ui/adminUi";
 
 function EmptyBranchesState({
   isSearching,
   onAddBranch,
 }: {
-  isSearching: boolean
-  onAddBranch: () => void
+  isSearching: boolean;
+  onAddBranch: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 p-12 text-center">
-      <h3 className="text-xl font-semibold text-white">
-        {isSearching ? "No branches found" : "No branches yet"}
-      </h3>
-
-      <p className="mt-2 text-sm text-zinc-400 max-w-md">
-        {isSearching
-          ? "We couldn’t find any branches matching your search. Try a different keyword."
-          : "You haven’t added any branches yet. Create your first branch to start managing locations."}
-      </p>
-
-      {!isSearching && (
-        <Button
-          onClick={onAddBranch}
-          className="mt-6 bg-orange-500 text-black"
-        >
-          + Add Your First Branch
-        </Button>
-      )}
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/40">
+      <EmptyState
+        icon={isSearching ? SearchX : Building2}
+        title={isSearching ? "No branches found" : "No branches yet"}
+        description={
+          isSearching
+            ? "We couldn’t find any branches matching your search. Try a different keyword."
+            : "You haven’t added any branches yet. Create your first branch to start managing locations."
+        }
+        action={
+          !isSearching ? (
+            <button
+              type="button"
+              onClick={onAddBranch}
+              className={adminPrimaryBtn}
+            >
+              + Add Your First Branch
+            </button>
+          ) : undefined
+        }
+      />
     </div>
-  )
+  );
 }
 
-export default EmptyBranchesState
+export default EmptyBranchesState;

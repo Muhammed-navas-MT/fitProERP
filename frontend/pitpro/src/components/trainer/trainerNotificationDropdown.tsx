@@ -91,7 +91,7 @@ export default function TrainerNotificationDropdown({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-14 z-50 w-[380px] overflow-hidden rounded-3xl border border-purple-500/20 bg-[#1a1a1a] shadow-2xl shadow-black/40">
+    <div className="absolute right-0 top-14 z-50 w-[90vw] sm:w-[380px] -mr-2 sm:mr-0 overflow-hidden rounded-3xl border border-purple-500/20 bg-[#1a1a1a] shadow-2xl shadow-black/40">
       <div className="border-b border-[#2a2a2a] px-5 py-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">

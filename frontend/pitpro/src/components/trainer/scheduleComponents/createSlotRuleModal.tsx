@@ -162,7 +162,7 @@ export function CreateSlotRuleModal({
         if (!open) onClose();
       }}
     >
-      <DialogContent className="bg-[#1a1a1a] border border-[#2a2a2a] text-white max-w-lg rounded-lg">
+      <DialogContent className="w-[calc(100%-2rem)] bg-[#1a1a1a] border border-[#2a2a2a] text-white max-w-lg max-h-[90vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-white">
             {existingRule
@@ -180,7 +180,7 @@ export function CreateSlotRuleModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs text-gray-400 mb-1 block">
                   Start Date
@@ -254,13 +254,13 @@ export function CreateSlotRuleModal({
                       <span>Amount</span>
                     </div>
 
-                    <div className="flex gap-2 items-center">
+                    <div className="flex flex-wrap gap-2 items-center">
                       <Input
                         type="time"
                         step="60"
                         lang="en-GB"
                         {...register(`slots.${index}.startTime`)}
-                        className="bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
+                        className="min-w-[110px] flex-1 bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
                       />
 
                       <Input
@@ -268,7 +268,7 @@ export function CreateSlotRuleModal({
                         step="60"
                         lang="en-GB"
                         {...register(`slots.${index}.endTime`)}
-                        className="bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
+                        className="min-w-[110px] flex-1 bg-[#0f0f0f] border-[#2a2a2a] text-white [color-scheme:dark]"
                       />
 
                       <Input
@@ -279,7 +279,7 @@ export function CreateSlotRuleModal({
                         {...register(`slots.${index}.amount`, {
                           valueAsNumber: true,
                         })}
-                        className="bg-[#0f0f0f] border-[#2a2a2a] text-white"
+                        className="min-w-[90px] flex-1 bg-[#0f0f0f] border-[#2a2a2a] text-white"
                       />
 
                       {fields.length > 1 && (
@@ -325,7 +325,7 @@ export function CreateSlotRuleModal({
               </div>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
                 type="button"
                 onClick={onClose}

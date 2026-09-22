@@ -1,4 +1,4 @@
-import { Bell, Menu } from "lucide-react";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -144,17 +144,9 @@ export function Topbar({ avatar, title, subtitle, profileImg }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-[#1f1f1f] bg-black px-4 lg:px-6">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-gray-400 hover:text-white lg:hidden"
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
-      <div className="flex flex-col">
-        <h1 className="text-sm font-semibold text-white">{title}</h1>
-        <p className="text-xs text-gray-400">{subtitle}</p>
+      <div className="flex flex-col min-w-0">
+        <h1 className="text-sm font-semibold text-white truncate">{title}</h1>
+        <p className="text-xs text-gray-400 truncate">{subtitle}</p>
       </div>
 
       <div className="flex-1" />

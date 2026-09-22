@@ -39,10 +39,10 @@ export const ViewRuleModal = ({ isOpen, onClose }: Props) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-      <div className="w-full max-w-md rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl">
-        
+      <div className="flex max-h-[85vh] w-full max-w-md flex-col rounded-2xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl">
+
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#2a2a2a] p-5">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#2a2a2a] p-5">
           <h2 className="text-lg font-semibold text-white">Rule Details</h2>
 
           <button
@@ -65,7 +65,7 @@ export const ViewRuleModal = ({ isOpen, onClose }: Props) => {
           </div>
         ) : (
           <>
-            <div className="space-y-5 p-5">
+            <div className="space-y-5 overflow-y-auto p-5">
 
               {/* Dates */}
               <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -114,7 +114,7 @@ export const ViewRuleModal = ({ isOpen, onClose }: Props) => {
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end border-t border-[#2a2a2a] p-5">
+            <div className="flex shrink-0 justify-end border-t border-[#2a2a2a] p-5">
               <Button
                 onClick={onClose}
                 className="bg-[#2a2a2a] hover:bg-[#333] text-white"

@@ -109,7 +109,7 @@ export function BranchFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-black text-white border-none max-w-2xl">
+      <DialogContent className="w-[calc(100%-2rem)] bg-black text-white border-none max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-orange-500 text-xl">
             {mode === "add" ? "Add Branch" : "Edit Branch"}
@@ -127,7 +127,7 @@ export function BranchFormModal({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Phone</Label>
               <Input placeholder="Phone" {...register("phone")} />
@@ -159,7 +159,7 @@ export function BranchFormModal({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>City</Label>
               <Input placeholder="City" {...register("city")} />
@@ -181,7 +181,7 @@ export function BranchFormModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Country</Label>
               <Input placeholder="Country" {...register("country")} />

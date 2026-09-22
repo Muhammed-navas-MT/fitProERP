@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TopBar } from "@/components/gymAdmin/topbar";
 import { Sidebar } from "@/components/gymAdmin/sidebar";
 import { SearchFilter } from "@/components/gymAdmin/searchFilterBar";
+import { Pagination } from "@/components/gymAdmin/ui/Pagination";
 
 import {
   useLeaves,
@@ -100,8 +101,8 @@ export default function TrainerLeavePage() {
       <Sidebar />
 
       <TopBar title="Trainer Leaves" subtitle="Manage trainer leave requests">
-        {/* Filters */}
-        <div className="relative">
+        <div className="space-y-5">
+          {/* Filters */}
           <SearchFilter
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
@@ -118,42 +119,25 @@ export default function TrainerLeavePage() {
               }),
             )}
           />
+
+          {/* Leave Table */}
+          <LeaveTable
+            leaves={leaves}
+            onView={(id) => setViewLeaveId(id)}
+            onApprove={handleApprove}
+            onReject={handleRejectOpen}
+          />
+
+          {/* Pagination */}
+          {leavesData && (
+            <Pagination
+              page={leavesData.page}
+              totalPages={leavesData.totalPages}
+              onPageChange={handlePageChange}
+              summary={`Page ${leavesData.page} of ${leavesData.totalPages}`}
+            />
+          )}
         </div>
-
-        {/* Leave Table */}
-        <LeaveTable
-          leaves={leaves}
-          onView={(id) => setViewLeaveId(id)}
-          onApprove={handleApprove}
-          onReject={handleRejectOpen}
-        />
-
-        {/* Pagination */}
-        {leavesData && (
-          <div className="mt-6 flex items-center justify-between text-sm text-zinc-400">
-            <span>
-              Page {leavesData.page} of {leavesData.totalPages}
-            </span>
-
-            <div className="flex gap-2">
-              <button
-                disabled={leavesData.page === 1}
-                onClick={() => handlePageChange(leavesData.page - 1)}
-                className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-              >
-                Previous
-              </button>
-
-              <button
-                disabled={leavesData.page === leavesData.totalPages}
-                onClick={() => handlePageChange(leavesData.page + 1)}
-                className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* View Leave Modal */}
         <ViewLeaveModal

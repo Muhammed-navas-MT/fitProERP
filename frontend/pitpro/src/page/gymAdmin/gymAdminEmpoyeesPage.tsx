@@ -1,28 +1,15 @@
 import { Sidebar } from "@/components/gymAdmin/sidebar";
+import { TopBar } from "@/components/gymAdmin/topbar";
 import { EmployeesList } from "@/components/gymAdmin/employeeManagement/employeesList";
-import { Bell } from "lucide-react";
 
 export default function EmployeesPage() {
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       <Sidebar />
 
-      <div className="flex-1 lg:ml-52">
-        <div className="flex items-center justify-between border-b border-zinc-800 p-4 lg:p-6">
-          <div>
-            <h1 className="text-2xl font-bold text-orange-500 lg:text-3xl">Employees</h1>
-            <p className="text-sm text-zinc-400">Manage your gym staff and trainers</p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Bell className="h-5 w-5 text-orange-500" />
-          </div>
-        </div>
-
-        <div className="p-4 lg:p-8">
-          <EmployeesList />
-        </div>
-      </div>
+      <TopBar title="Employees" subtitle="Manage your gym staff and trainers">
+        <EmployeesList />
+      </TopBar>
     </div>
   );
 }

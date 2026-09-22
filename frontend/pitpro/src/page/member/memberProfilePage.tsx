@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/member/memberSidebar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { MemberDetailType } from "@/components/member/profileManagement/healthDetailsTab";
 import { ProfileHeader } from "@/components/member/profileManagement/profileHeader";
 import { MemberProfileSkeleton } from "@/components/member/profileManagement/profilepageSckeleton";
@@ -49,7 +50,7 @@ export default function MemberProfilePage() {
           profileImg={profileImg}
         />
 
-        <main className="p-4 md:p-8">
+        <main className="p-4 pb-24 md:p-8 md:pb-8">
           <div className="max-w-6xl mx-auto space-y-8">
             {/* Skeleton */}
             {isLoading && <MemberProfileSkeleton />}
@@ -66,7 +67,7 @@ export default function MemberProfilePage() {
               <>
                 <div className="relative bg-[#0a0a0a] border border-gray-800 rounded-2xl shadow-xl p-4">
                   {/* Buttons */}
-                  <div className="absolute top-4 right-4 flex space-x-2">
+                  <div className="mb-3 flex flex-wrap justify-end gap-2 sm:absolute sm:top-4 sm:right-4 sm:mb-0">
                     <button
                       onClick={() => setOpen(true)}
                       className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition"
@@ -107,6 +108,8 @@ export default function MemberProfilePage() {
           </div>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

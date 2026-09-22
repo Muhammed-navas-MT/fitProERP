@@ -139,12 +139,12 @@ export default function BranchesPage() {
     : undefined;
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-zinc-950 text-white">
       <Sidebar />
 
       <TopBar title="Branches" subtitle="Manage your gym locations">
-        <div className="p-4 lg:p-8">
-          <div className="mb-6 flex items-center gap-4">
+        <div className="space-y-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex-1">
               <BranchesSearch onSearch={setSearchQuery} />
             </div>
@@ -155,14 +155,14 @@ export default function BranchesPage() {
                 setSelectedBranchId(null)
                 setModalOpen(true)
               }}
-              className="bg-orange-500 text-black whitespace-nowrap"
+              className="whitespace-nowrap bg-orange-500 text-white hover:bg-orange-600"
             >
               + Add Branch
             </Button>
           </div>
 
           {isLoading && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <BranchCardSkeleton key={i} />
               ))}
@@ -170,7 +170,7 @@ export default function BranchesPage() {
           )}
 
           {isError && (
-            <div className="rounded-xl border border-red-900 bg-red-950 p-6 text-red-400">
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-red-400">
               Failed to load branches. Please try again.
             </div>
           )}
@@ -186,7 +186,7 @@ export default function BranchesPage() {
           )}
 
           {!isLoading && !isError && branches.length > 0 && (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {branches.map((branch) => (
                 <BranchCard
                   key={branch.id}

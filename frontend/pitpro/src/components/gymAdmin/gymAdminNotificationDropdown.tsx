@@ -91,7 +91,7 @@ export default function GymAdminNotificationDropdown({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-14 z-50 w-[380px] overflow-hidden rounded-3xl border border-orange-500/20 bg-zinc-950 shadow-2xl shadow-black/40">
+    <div className="absolute right-0 top-14 z-50 w-[90vw] sm:w-[380px] -mr-2 sm:mr-0 overflow-hidden rounded-3xl border border-orange-500/20 bg-zinc-950 shadow-2xl shadow-black/40">
       <div className="border-b border-zinc-800 px-5 py-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">

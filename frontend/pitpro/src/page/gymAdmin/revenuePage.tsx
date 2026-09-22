@@ -8,6 +8,7 @@ import RevenueTableSkeleton from "@/components/gymAdmin/revenueComponents/revenu
 import RevenueErrorState from "@/components/gymAdmin/revenueComponents/revenueErrorState";
 import { RevenueTable } from "@/components/gymAdmin/revenueComponents/revenueTable";
 import { ViewRevenueModal } from "@/components/gymAdmin/revenueComponents/viewRevenueModal";
+import { Pagination } from "@/components/gymAdmin/ui/Pagination";
 
 export interface IListRevenueItemType {
   id: string;
@@ -100,7 +101,7 @@ export default function RevenuePage() {
         ) : isError ? (
           <RevenueErrorState onRetry={refetch} />
         ) : (
-          <>
+          <div className="space-y-5">
             <SearchFilter
               searchValue={searchQuery}
               onSearchChange={setSearchQuery}
@@ -108,73 +109,54 @@ export default function RevenuePage() {
             />
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Total */}
-              <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
                 <p className="text-sm text-zinc-400">Total Revenue</p>
-                <h2 className="text-2xl font-bold mt-2">
+                <h2 className="mt-2 text-2xl font-bold text-white">
                   ₹{grandTotalAmount.toLocaleString()}
                 </h2>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="mt-1 text-xs text-zinc-500">
                   {totalCount} Transactions
                 </p>
               </div>
 
               {/* Plan */}
-              <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
                 <p className="text-sm text-zinc-400">Plan Revenue</p>
-                <h2 className="text-2xl font-bold mt-2 text-green-400">
+                <h2 className="mt-2 text-2xl font-bold text-green-400">
                   ₹{planRevenue.toLocaleString()}
                 </h2>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="mt-1 text-xs text-zinc-500">
                   {planCount} Plans Sold
                 </p>
               </div>
 
               {/* Session */}
-              <div className="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
                 <p className="text-sm text-zinc-400">Session Revenue</p>
-                <h2 className="text-2xl font-bold mt-2 text-blue-400">
+                <h2 className="mt-2 text-2xl font-bold text-blue-400">
                   ₹{sessionRevenue.toLocaleString()}
                 </h2>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className="mt-1 text-xs text-zinc-500">
                   {sessionCount} Sessions Sold
                 </p>
               </div>
             </div>
 
             {/* Table */}
-            <div className="mt-8">
-              <RevenueTable revenues={revenueData} onView={handleView} />
-            </div>
+            <RevenueTable revenues={revenueData} onView={handleView} />
 
             {/* Pagination */}
             {data && (
-              <div className="mt-6 flex items-center justify-between text-sm text-zinc-400">
-                <span>
-                  Page {data.data.page} of {data.data.totalPages}
-                </span>
-
-                <div className="flex gap-2">
-                  <button
-                    disabled={data.data.page === 1}
-                    onClick={() => handlePageChange(data.data.page - 1)}
-                    className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-                  >
-                    Previous
-                  </button>
-
-                  <button
-                    disabled={data.data.page === data.data.totalPages}
-                    onClick={() => handlePageChange(data.data.page + 1)}
-                    className="rounded px-3 py-1 hover:bg-zinc-800 disabled:text-zinc-600"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
+              <Pagination
+                page={data.data.page}
+                totalPages={data.data.totalPages}
+                onPageChange={handlePageChange}
+                summary={`Page ${data.data.page} of ${data.data.totalPages}`}
+              />
             )}
-          </>
+          </div>
         )}
       </TopBar>
 

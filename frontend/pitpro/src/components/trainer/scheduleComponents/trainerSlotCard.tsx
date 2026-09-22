@@ -10,7 +10,7 @@ interface TrainerSlotCardProps {
 
 export function TrainerSlotCard({ slot }: TrainerSlotCardProps) {
   return (
-    <div className="px-3 py-2 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] hover:border-purple-500/40 transition-all w-[160px]">
+    <div className="px-3 py-2 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] hover:border-purple-500/40 transition-all w-[calc(50%-0.375rem)] sm:w-40">
       
       {/* Time */}
       <div className="flex items-center gap-2 text-white">

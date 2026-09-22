@@ -19,11 +19,11 @@ export function TrainerReusableTable<T>({
 }: ReusableTableProps<T>) {
   return (
     <div className="rounded-lg border border-purple-500/20 bg-black/40 p-4 lg:p-6 overflow-x-auto">
-      <table className="w-full border-collapse text-sm">
+      <table className="w-full min-w-[640px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-zinc-800 text-left text-zinc-400">
             {columns.map((col, index) => (
-              <th key={index} className="py-3 px-2">
+              <th key={index} className="whitespace-nowrap py-3 px-2">
                 {col.header}
               </th>
             ))}
@@ -49,7 +49,7 @@ export function TrainerReusableTable<T>({
                 {columns.map((col, colIndex) => (
                   <td
                     key={colIndex}
-                    className={`py-3 px-2 ${col.className ?? ""}`}
+                    className={`whitespace-nowrap py-3 px-2 ${col.className ?? ""}`}
                   >
                     {col.render(row, rowIndex)}
                   </td>

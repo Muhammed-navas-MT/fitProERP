@@ -3,6 +3,7 @@ import { ChevronDown, Check, User } from "lucide-react";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import {
   useCheckoutSession,
   useListAllSession,
@@ -152,7 +153,7 @@ export default function TrainerBookingPage() {
           profileImg={profileImg}
         />
 
-        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 lg:p-8">
+        <main className="mx-auto w-full max-w-[1400px] space-y-6 p-4 pb-24 md:pb-6 lg:p-8">
           <BookingQuickStats
             days={days}
             activeDay={activeDay}
@@ -266,7 +267,7 @@ export default function TrainerBookingPage() {
                 limit={limit}
               />
               {/* Pagination */}
-              <div className="flex items-center justify-between text-sm text-zinc-400 mt-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-zinc-400 mt-4">
                 <p>
                   Showing {(page - 1) * limit + 1} -{" "}
                   {Math.min(page * limit, total)} of {total}
@@ -298,6 +299,8 @@ export default function TrainerBookingPage() {
           </div>
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

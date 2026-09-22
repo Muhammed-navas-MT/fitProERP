@@ -4,6 +4,7 @@ import { MemberSection } from "@/components/trainer/memberManagement/section";
 import { MemberStatCard } from "@/components/trainer/memberManagement/statCard";
 import { Header } from "@/components/trainer/trainerHeader";
 import { Sidebar } from "@/components/trainer/trainerSidebar";
+import { TrainerMobileNav } from "@/components/trainer/trainerMobileNav";
 import { useParams } from "react-router-dom";
 import { useFindMember } from "@/hook/trainer/memberManagementHook";
 import {
@@ -29,7 +30,8 @@ export default function MemberDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#0f0f0f] text-white">
         <Sidebar />
-        <div className="flex-1 lg:pl-[220px] p-6">Loading...</div>
+        <div className="flex-1 lg:pl-[220px] p-4 sm:p-6">Loading...</div>
+        <TrainerMobileNav />
       </div>
     );
   }
@@ -38,9 +40,10 @@ export default function MemberDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#0f0f0f] text-white">
         <Sidebar />
-        <div className="flex-1 lg:pl-[220px] p-6 text-red-500">
+        <div className="flex-1 lg:pl-[220px] p-4 sm:p-6 text-red-500">
           Failed to load member
         </div>
+        <TrainerMobileNav />
       </div>
     );
   }
@@ -83,22 +86,22 @@ export default function MemberDetailPage() {
 
 
   return (
-    <div className="flex min-h-screen bg-[#0f0f0f] text-white">
-      <Sidebar />
+      <div className="flex min-h-screen bg-[#0f0f0f] text-white">
+        <Sidebar />
 
-      <div className="flex w-full flex-col lg:pl-[220px]">
+        <div className="flex flex-1 min-w-0 flex-col lg:pl-[220px]">
         <Header
           title={member.name}
           subtitle={`Member ID: ${member.id} • Status: ${member.status}`}
           avatar={member.name?.[0]?.toUpperCase()}
         />
 
-        <div className="space-y-6 p-6">
+        <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 pb-24 lg:pb-6">
           {/* Profile */}
-          <div className="rounded-lg border border-[#2a2a2a] bg-[#141414] p-6">
+          <div className="rounded-lg border border-[#2a2a2a] bg-[#141414] p-4 sm:p-6">
             <div className="flex flex-col gap-6 md:flex-row md:justify-between">
-              <div className="flex items-center gap-6">
-                <div className="h-32 w-32 overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-600">
+              <div className="flex min-w-0 flex-1 flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6 text-center sm:text-left">
+                <div className="h-20 w-20 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-600">
                   <img
                     src={
                       member.profileImg ||
@@ -109,11 +112,11 @@ export default function MemberDetailPage() {
                   />
                 </div>
 
-                <div>
-                  <h2 className="text-3xl font-bold">{member.name}</h2>
+                <div className="w-full min-w-0">
+                  <h2 className="text-xl sm:text-3xl font-bold truncate">{member.name}</h2>
                   <p className="text-sm text-gray-400">{member.role}</p>
 
-                  <div className="mt-2 flex items-center gap-2">
+                  <div className="mt-2 flex items-center justify-center sm:justify-start gap-2">
                     <span
                       className={`h-3 w-3 rounded-full ${
                         isActive ? "bg-green-500" : "bg-red-500"
@@ -130,7 +133,7 @@ export default function MemberDetailPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <MemberStatCard
                   value={calculateAge(member.healthDetails.dateOfBirth)}
                   label="Years Old"
@@ -227,6 +230,8 @@ export default function MemberDetailPage() {
           </div>
         </div>
       </div>
+
+      <TrainerMobileNav />
     </div>
   );
 }

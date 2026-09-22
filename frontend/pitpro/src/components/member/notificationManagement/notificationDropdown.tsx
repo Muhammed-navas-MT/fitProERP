@@ -76,7 +76,7 @@ export default function NotificationDropdown({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-14 z-50 w-[340px] overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-xl">
+    <div className="absolute right-0 top-14 z-50 w-[90vw] sm:w-[340px] -mr-2 sm:mr-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-xl">
       <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
         <div className="flex items-center gap-2">
           <Bell className="h-4 w-4 text-orange-400" />

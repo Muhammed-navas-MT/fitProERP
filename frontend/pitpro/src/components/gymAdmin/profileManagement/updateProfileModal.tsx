@@ -86,9 +86,9 @@ export function UpdateProfileModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-xl border bg-black  border-orange-500/20 shadow-xl">
-        <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl border bg-black border-orange-500/20 shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-zinc-800 px-4 py-4 sm:px-6">
           <h2 className="text-lg font-semibold text-white">Update Profile</h2>
           <button
             onClick={onClose}
@@ -100,7 +100,7 @@ export function UpdateProfileModal({
 
         <form
           onSubmit={handleSubmit(onFormSubmit)}
-          className="space-y-5 px-6 py-5"
+          className="space-y-5 overflow-y-auto px-4 py-5 sm:px-6"
         >
           <div>
             <label className="mb-2 block text-sm font-medium text-zinc-300">
@@ -189,7 +189,7 @@ export function UpdateProfileModal({
             />
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}

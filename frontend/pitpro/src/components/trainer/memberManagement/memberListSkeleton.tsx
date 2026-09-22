@@ -25,9 +25,9 @@ export function MembersListSkeleton() {
             <Skeleton className="h-12 w-12 rounded-full bg-[#1a1a1a]" />
 
             {/* Info */}
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-40 bg-[#1a1a1a]" />
-              <Skeleton className="h-3 w-60 bg-[#1a1a1a]" />
+            <div className="flex-1 min-w-0 space-y-2">
+              <Skeleton className="h-4 w-2/3 max-w-40 bg-[#1a1a1a]" />
+              <Skeleton className="h-3 w-full max-w-60 bg-[#1a1a1a]" />
             </div>
 
             {/* Status */}

@@ -4,6 +4,7 @@ import MembershipCard, {
 } from "@/components/member/membershipManagement/memberShipCard";
 import { MembershipSkeleton } from "@/components/member/membershipManagement/membershipSkeleton";
 import { Sidebar } from "@/components/member/memberSidebar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { Topbar } from "@/components/member/topbar";
 import { useListActivepackage } from "@/hook/member/packageHook";
 import { rootstate } from "@/store/store";
@@ -36,10 +37,12 @@ export default function MemberShipPage() {
             avatar={avatarText}
           />
 
-          <main className="min-h-screen bg-neutral-950 px-4 py-10">
+          <main className="min-h-screen bg-neutral-950 px-4 py-10 pb-24 md:pb-10">
             <MembershipSkeleton />
           </main>
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
@@ -58,6 +61,8 @@ export default function MemberShipPage() {
 
           <EmptyMembershipState />
         </div>
+
+        <MemberMobileNav />
       </div>
     );
   }
@@ -74,6 +79,8 @@ export default function MemberShipPage() {
         />
         <MembershipCard packages={plans} />
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

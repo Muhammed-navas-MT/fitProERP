@@ -48,7 +48,7 @@ export function MembershipCard({ packages }: MembershipPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-black p-6">
+    <div className="min-h-screen bg-black p-4 pb-24 sm:p-6 md:pb-6">
       <div className="max-w-6xl mx-auto">
         {/* Active Plan */}
         {activePackage && (

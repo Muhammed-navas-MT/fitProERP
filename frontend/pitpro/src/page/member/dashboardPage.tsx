@@ -2,6 +2,7 @@
 
 import { Sidebar } from "@/components/member/memberSidebar";
 import { Topbar } from "@/components/member/topbar";
+import { MemberMobileNav } from "@/components/member/memberMobileNav";
 import { AttendanceCalendar } from "@/components/shared/attendanceCalendar";
 import { AttendanceCard } from "@/components/trainer/dashboard/attendanceCardComponent";
 import { TodaysWorkout } from "@/components/shared/todaysWorkout";
@@ -165,7 +166,7 @@ export default function MemberDashboard() {
           profileImg={profileImg}
         />
 
-        <main className="space-y-6 p-4 lg:p-8">
+        <main className="space-y-6 p-4 pb-24 md:pb-6 lg:p-8">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Card className="border border-gray-800 bg-[#0a0a0a] shadow-sm hover:shadow-md">
               <CardContent className="pt-6">
@@ -278,6 +279,8 @@ export default function MemberDashboard() {
           <TodaysWorkout sections={workoutSections} />
         </main>
       </div>
+
+      <MemberMobileNav />
     </div>
   );
 }

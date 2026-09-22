@@ -137,7 +137,7 @@ export default function BillingConfigModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border border-zinc-800 bg-[#0a0a0a] text-white sm:max-w-lg">
+      <DialogContent className="w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto border border-zinc-800 bg-[#0a0a0a] text-white sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-white">
             Billing Configuration

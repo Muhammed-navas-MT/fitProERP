@@ -115,7 +115,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
   if (loadingTrainers || loadingBranches) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
+        <DialogContent className="w-[calc(100%-2rem)] max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
           <DialogHeader>
             <DialogTitle className="bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-2xl font-bold text-transparent">
               Add New Member
@@ -131,7 +131,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
   if (!hasBranches) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
+        <DialogContent className="w-[calc(100%-2rem)] max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
           <DialogHeader>
             <DialogTitle className="bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-2xl font-bold text-transparent">
               Add New Member
@@ -173,7 +173,7 @@ export function AddMemberModal({ open, onOpenChange }: AddMemberModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
+      <DialogContent className="w-[calc(100%-2rem)] max-h-[90vh] max-w-2xl overflow-y-auto border-[#2a2a2a] bg-[#0f0f0f] text-white">
         <DialogHeader>
           <DialogTitle className="bg-gradient-to-r from-orange-400 to-orange-400 bg-clip-text text-2xl font-bold text-transparent">
             Add New Member
